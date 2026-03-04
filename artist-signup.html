@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become an Artist — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --error: #dc2626;
+            --success: #16a34a;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* Navigation - DARK */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
+            background: var(--white);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        /* Main Layout */
+        .signup-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            padding-top: 4.5rem;
+        }
+
+        /* Left Side - Info */
+        .signup-info {
+            background: var(--black);
+            color: var(--white);
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .signup-info-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .signup-info-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .signup-info-title strong {
+            font-weight: 600;
+        }
+
+        .signup-info-description {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-400);
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            max-width: 400px;
+        }
+
+        .signup-benefits {
+            list-style: none;
+        }
+
+        .signup-benefit {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.9375rem;
+            font-weight: 300;
+            color: var(--gray-300);
+        }
+
+        .signup-benefit-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .signup-benefit-icon svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--white);
+        }
+
+        /* Right Side - Form */
+        .signup-form-container {
+            background: var(--white);
+            padding: 3rem 4rem;
+            overflow-y: auto;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: var(--gray-200);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-step-number {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .progress-step.completed .progress-step-number {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .progress-step-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .progress-step.active .progress-step-label {
+            color: var(--black);
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-step-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .form-step-description {
+            font-size: 0.9375rem;
+            font-weight: 300;
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            font-family: 'Manrope', sans-serif;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .social-btn:hover {
+            border-color: var(--gray-400);
+            background: var(--gray-100);
+        }
+
+        .social-btn-google {
+            color: var(--gray-700);
+        }
+
+        .social-btn-apple {
+            color: var(--black);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.8125rem;
+            color: var(--gray-400);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--black);
+        }
+
+        .form-label-optional {
+            font-weight: 300;
+            color: var(--gray-400);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 0.9375rem;
+            font-family: 'Manrope', sans-serif;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 0.9375rem;
+            font-family: 'Manrope', sans-serif;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23737373' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 0.9375rem;
+            font-family: 'Manrope', sans-serif;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.375rem;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--gray-300);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--gray-400);
+            background: var(--gray-100);
+        }
+
+        .file-upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-upload-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--gray-500);
+        }
+
+        .file-upload-text {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-upload-hint {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        /* Checkbox */
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .form-checkbox input {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--black);
+            cursor: pointer;
+        }
+
+        .form-checkbox-text {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .form-checkbox-text a {
+            color: var(--black);
+            text-decoration: underline;
+        }
+
+        /* Terms Box */
+        .terms-box {
+            background: var(--gray-100);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .terms-box h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 0.75rem;
+        }
+
+        .terms-box ul {
+            margin-left: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .terms-box li {
+            margin-bottom: 0.375rem;
+        }
+
+        /* Buttons */
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: 'Manrope', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--gray-800);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gray-500);
+            padding: 0.875rem 1rem;
+        }
+
+        .btn-secondary:hover {
+            color: var(--black);
+        }
+
+        /* Success State */
+        .signup-success {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .signup-success.active {
+            display: block;
+        }
+
+        .signup-success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signup-success-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--white);
+        }
+
+        .signup-success-title {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .signup-success-text {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-500);
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            nav {
+                padding: 0 1.5rem;
+            }
+
+            .signup-container {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-info {
+                padding: 2rem 1.5rem;
+                min-height: auto;
+            }
+
+            .signup-info-title {
+                font-size: 1.75rem;
+            }
+
+            .signup-benefits {
+                display: none;
+            }
+
+            .signup-form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .progress-steps::before {
+                left: 20px;
+                right: 20px;
+            }
+
+            .progress-step-label {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        
+        <div class="nav-right">
+            <a href="index.html" class="nav-link">← Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="signup-container">
+        
+        <!-- Left - Info -->
+        <div class="signup-info">
+            <div class="signup-info-label">Join as Artist</div>
+            <h1 class="signup-info-title">
+                Start selling<br><strong>your artwork</strong>
+            </h1>
+            <p class="signup-info-description">
+                Join a curated marketplace of emerging artists. Reach collectors worldwide. Keep 70% of every sale.
+            </p>
+            
+            <ul class="signup-benefits">
+                <li class="signup-benefit">
+                    <div class="signup-benefit-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <span>No upfront fees — only pay when you sell</span>
+                </li>
+                <li class="signup-benefit">
+                    <div class="signup-benefit-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <span>Secure escrow payments — get paid when buyer confirms</span>
+                </li>
+                <li class="signup-benefit">
+                    <div class="signup-benefit-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <span>Ship from anywhere — we handle shipping estimates</span>
+                </li>
+                <li class="signup-benefit">
+                    <div class="signup-benefit-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <span>Museum-style presentation — your work deserves it</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Right - Form -->
+        <div class="signup-form-container">
+            
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="progress-step-number">1</div>
+                    <div class="progress-step-label">Account</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="progress-step-number">2</div>
+                    <div class="progress-step-label">Identity</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="progress-step-number">3</div>
+                    <div class="progress-step-label">Profile</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="progress-step-number">4</div>
+                    <div class="progress-step-label">Payout</div>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="progress-step-number">5</div>
+                    <div class="progress-step-label">Terms</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Account -->
+            <div class="form-step active" data-step="1">
+                <h2 class="form-step-title">Create your account</h2>
+                <p class="form-step-description">Sign up with your preferred method.</p>
+                
+                <!-- Social Login Options -->
+                <div class="social-login">
+                    <button type="button" class="social-btn social-btn-google">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+                    
+                    <button type="button" class="social-btn social-btn-apple">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                        </svg>
+                        <span>Continue with Apple</span>
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>or continue with email</span>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="john@example.com" required>
+                    <p class="form-hint">We'll send a verification link to this email.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" placeholder="+1 234 567 8900" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="Minimum 8 characters" required>
+                </div>
+
+                <div class="form-buttons">
+                    <div></div>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Identity Verification -->
+            <div class="form-step" data-step="2">
+                <h2 class="form-step-title">Verify your identity</h2>
+                <p class="form-step-description">We need this to protect buyers and ensure trust on our platform.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Full Legal Name</label>
+                    <input type="text" class="form-input" placeholder="As shown on your ID" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <select class="form-select" required>
+                            <option value="">Select country</option>
+                            <option value="AE">United Arab Emirates</option>
+                            <option value="US">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="CZ">Czech Republic</option>
+                            <option value="SE">Sweden</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" placeholder="City" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-input" placeholder="Street address" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Government ID</label>
+                    <label class="file-upload">
+                        <input type="file" accept="image/*,.pdf" required>
+                        <div class="file-upload-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </div>
+                        <div class="file-upload-text">Click to upload passport or national ID</div>
+                        <div class="file-upload-hint">JPG, PNG, or PDF • Max 10MB</div>
+                    </label>
+                    <p class="form-hint">Your ID is stored securely and only used for verification. It will never be shared.</p>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Artist Profile -->
+            <div class="form-step" data-step="3">
+                <h2 class="form-step-title">Create your artist profile</h2>
+                <p class="form-step-description">This is what collectors will see on your public profile.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Profile Photo</label>
+                    <label class="file-upload">
+                        <input type="file" accept="image/*" required>
+                        <div class="file-upload-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="file-upload-text">Upload a professional photo</div>
+                        <div class="file-upload-hint">Square format recommended • Min 400x400px</div>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Artist Name <span class="form-label-optional">(display name)</span></label>
+                    <input type="text" class="form-input" placeholder="How you want to be known" required>
+                    <p class="form-hint">Can be your real name or artistic pseudonym.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Artistic Category</label>
+                    <select class="form-select" required>
+                        <option value="">Select primary category</option>
+                        <option value="painting">Painting</option>
+                        <option value="photography">Photography</option>
+                        <option value="drawing">Drawing</option>
+                        <option value="sculpture">Sculpture</option>
+                        <option value="mixed-media">Mixed Media</option>
+                        <option value="digital">Digital Art</option>
+                        <option value="printmaking">Printmaking</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Biography</label>
+                    <textarea class="form-textarea" placeholder="Tell collectors about yourself, your background, and your artistic journey..." required></textarea>
+                    <p class="form-hint">150–500 words recommended. Include your training, influences, and what drives your work.</p>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Payout Information -->
+            <div class="form-step" data-step="4">
+                <h2 class="form-step-title">Set up payouts</h2>
+                <p class="form-step-description">How you'll receive payments when your artwork sells.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Payout Method</label>
+                    <select class="form-select" required id="payout-method">
+                        <option value="">Select method</option>
+                        <option value="bank">Bank Transfer (IBAN)</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
+                </div>
+
+                <div id="bank-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Account Holder Name</label>
+                        <input type="text" class="form-input" placeholder="Name on bank account">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">IBAN</label>
+                        <input type="text" class="form-input" placeholder="XX00 0000 0000 0000 0000 00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">BIC/SWIFT <span class="form-label-optional">(optional)</span></label>
+                        <input type="text" class="form-input" placeholder="XXXXXXXX">
+                    </div>
+                </div>
+
+                <div id="paypal-fields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">PayPal Email</label>
+                        <input type="email" class="form-input" placeholder="your@paypal.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tax ID <span class="form-label-optional">(if applicable)</span></label>
+                    <input type="text" class="form-input" placeholder="VAT number or tax ID">
+                    <p class="form-hint">Required in some countries. Leave blank if not applicable.</p>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Terms & Conditions -->
+            <div class="form-step" data-step="5">
+                <h2 class="form-step-title">Review and agree</h2>
+                <p class="form-step-description">Please read and accept our terms to complete your registration.</p>
+                
+                <div class="terms-box">
+                    <h4>Artist Agreement</h4>
+                    <p>By joining InfraMint as an artist, you agree to the following:</p>
+                    <ul>
+                        <li>I guarantee that all artwork I list is original and created by me.</li>
+                        <li>I am the sole owner of the artwork and have the right to sell it.</li>
+                        <li>I will not sell additional copies beyond any declared edition limits.</li>
+                        <li>I understand that fraud or misrepresentation may result in account suspension, withheld payments, and potential legal action.</li>
+                    </ul>
+                    
+                    <h4>Commission & Payments</h4>
+                    <ul>
+                        <li>InfraMint charges a 30% commission on each sale.</li>
+                        <li>Payments are held in escrow until the buyer confirms receipt.</li>
+                        <li>Payouts are processed within 5 business days of buyer confirmation.</li>
+                        <li>VAT will be applied where required by law.</li>
+                    </ul>
+                    
+                    <h4>Shipping Responsibilities</h4>
+                    <ul>
+                        <li>I am responsible for packaging artwork professionally and securely.</li>
+                        <li>I will obtain a shipping quote from my local courier after a sale.</li>
+                        <li>I will ship within 5 business days of payment confirmation.</li>
+                        <li>I will provide tracking information for all shipments.</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" required>
+                        <span class="form-checkbox-text">
+                            I have read and agree to the <a href="#">Artist Agreement</a>, <a href="#">Terms of Service</a>, and <a href="#">Privacy Policy</a>.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" required>
+                        <span class="form-checkbox-text">
+                            I understand that my identity will be verified and my artwork may be reviewed before being published.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" required>
+                        <span class="form-checkbox-text">
+                            I confirm that all information provided is accurate and truthful.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Complete Registration</button>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div class="signup-success" id="success-state">
+                <div class="signup-success-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 class="signup-success-title">Application Submitted!</h2>
+                <p class="signup-success-text">
+                    Thank you for applying to join InfraMint. We'll verify your information and review your profile within 2-3 business days. You'll receive an email once approved.
+                </p>
+                <a href="index.html" class="btn btn-primary">Back to Home</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function updateProgress() {
+            document.querySelectorAll('.progress-step').forEach(step => {
+                const stepNum = parseInt(step.dataset.step);
+                step.classList.remove('active', 'completed');
+                if (stepNum === currentStep) {
+                    step.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+                if (parseInt(step.dataset.step) === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateProgress();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateProgress();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function submitForm() {
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.querySelectorAll('.progress-steps').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById('success-state').classList.add('active');
+        }
+
+        // Payout method toggle
+        document.getElementById('payout-method').addEventListener('change', function() {
+            document.getElementById('bank-fields').style.display = this.value === 'bank' ? 'block' : 'none';
+            document.getElementById('paypal-fields').style.display = this.value === 'paypal' ? 'block' : 'none';
+        });
+    </script>
+
+</body>
+</html>
