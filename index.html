@@ -24,6 +24,7 @@
             --gray-400: #a3a3a3;
             --gray-500: #737373;
             --gray-600: #525252;
+            --gray-800: #262626;
             --gray-900: #171717;
         }
 
@@ -39,18 +40,19 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navigation */
+        /* Navigation - DARK */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 1.5rem 3rem;
+            padding: 0 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--gray-100);
+            background: var(--black);
+            height: 4rem;
         }
 
         .logo {
@@ -62,89 +64,116 @@
 
         .logo-bar {
             width: 2px;
-            height: 1.5rem;
-            background: var(--black);
+            height: 1.25rem;
+            background: var(--white);
         }
 
         .logo-text {
-            font-size: 1.125rem;
+            font-size: 1rem;
             letter-spacing: -0.01em;
         }
 
         .logo-text span:first-child {
             font-weight: 600;
-            color: var(--black);
+            color: var(--white);
         }
 
         .logo-text span:last-child {
             font-weight: 200;
-            color: var(--gray-400);
+            color: var(--gray-500);
         }
 
-        .nav-links {
+        .nav-center {
             display: flex;
-            gap: 3rem;
+            gap: 2.5rem;
             align-items: center;
         }
 
-        .nav-links a {
+        .nav-center a {
             font-size: 0.8125rem;
             font-weight: 400;
-            color: var(--gray-500);
+            color: var(--gray-400);
             text-decoration: none;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
             transition: color 0.2s ease;
         }
 
-        .nav-links a:hover {
-            color: var(--black);
+        .nav-center a:hover {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-login {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-login:hover {
+            color: var(--white);
         }
 
         .nav-cta {
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             font-weight: 500;
-            color: var(--black) !important;
-            padding: 0.625rem 1.25rem;
-            border: 1px solid var(--black);
+            color: var(--black);
+            background: var(--white);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
             transition: all 0.2s ease;
         }
 
         .nav-cta:hover {
-            background: var(--black);
-            color: var(--white) !important;
+            background: var(--gray-200);
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 1.5rem;
+            background: var(--gray-800);
+            margin: 0 0.5rem;
         }
 
         /* Hero Section */
         .hero {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            padding-top: 5rem;
+            grid-template-columns: 1fr 1.2fr;
+            padding-top: 4rem;
         }
 
         .hero-content {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 4rem 3rem 4rem 6rem;
+            padding: 3rem 3rem 3rem 4rem;
+            background: var(--white);
         }
 
         .hero-label {
             font-size: 0.6875rem;
             font-weight: 500;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.15em;
             color: var(--gray-400);
             text-transform: uppercase;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 300;
-            line-height: 1.1;
+            line-height: 1.15;
             letter-spacing: -0.03em;
-            margin-bottom: 2rem;
-            max-width: 500px;
+            margin-bottom: 1.5rem;
+            max-width: 450px;
         }
 
         .hero-title strong {
@@ -152,46 +181,47 @@
         }
 
         .hero-description {
-            font-size: 1rem;
+            font-size: 0.9375rem;
             font-weight: 300;
             color: var(--gray-500);
-            max-width: 380px;
+            max-width: 360px;
             line-height: 1.7;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
-        .hero-cta {
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .hero-cta-primary {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--white);
+            background: var(--black);
+            text-decoration: none;
+            padding: 0.875rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .hero-cta-primary:hover {
+            background: var(--gray-800);
+        }
+
+        .hero-cta-secondary {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--black);
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: var(--gray-500);
             text-decoration: none;
-            transition: gap 0.3s ease;
+            transition: color 0.2s ease;
         }
 
-        .hero-cta:hover {
-            gap: 1rem;
-        }
-
-        .hero-cta-arrow {
-            width: 2rem;
-            height: 1px;
-            background: var(--black);
-            position: relative;
-        }
-
-        .hero-cta-arrow::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: -3px;
-            width: 8px;
-            height: 8px;
-            border-top: 1px solid var(--black);
-            border-right: 1px solid var(--black);
-            transform: rotate(45deg);
+        .hero-cta-secondary:hover {
+            color: var(--black);
         }
 
         .hero-image {
@@ -205,31 +235,131 @@
             object-fit: cover;
         }
 
-        .hero-image-caption {
+        .hero-image-overlay {
             position: absolute;
-            bottom: 2rem;
-            right: 2rem;
-            font-size: 0.6875rem;
-            font-weight: 400;
-            letter-spacing: 0.1em;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .hero-image-title {
             color: var(--white);
-            background: rgba(0,0,0,0.5);
-            padding: 0.5rem 0.75rem;
-            backdrop-filter: blur(10px);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .hero-image-artist {
+            color: var(--gray-400);
+            font-size: 0.75rem;
+            font-weight: 300;
+            margin-top: 0.25rem;
+        }
+
+        .hero-image-price {
+            color: var(--white);
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        /* Featured Section */
+        .featured {
+            padding: 4rem;
+            background: var(--gray-100);
+        }
+
+        .featured-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .featured-title {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            text-transform: uppercase;
+        }
+
+        .featured-link {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .featured-link:hover {
+            color: var(--black);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .artwork-card {
+            background: var(--white);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .artwork-image {
+            aspect-ratio: 1;
+            background: var(--gray-200);
+            overflow: hidden;
+        }
+
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artwork-info {
+            padding: 1rem;
+        }
+
+        .artwork-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .artwork-artist {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            font-weight: 300;
+        }
+
+        .artwork-price {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            margin-top: 0.75rem;
         }
 
         /* Stats Strip */
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            border-top: 1px solid var(--gray-200);
-            border-bottom: 1px solid var(--gray-200);
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--black);
         }
 
         .stat {
-            padding: 3rem;
+            padding: 2.5rem 2rem;
             text-align: center;
-            border-right: 1px solid var(--gray-200);
+            border-right: 1px solid var(--gray-800);
         }
 
         .stat:last-child {
@@ -237,48 +367,24 @@
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 300;
             letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
+            color: var(--white);
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             font-weight: 400;
             color: var(--gray-500);
-            letter-spacing: 0.05em;
-        }
-
-        /* Philosophy Section */
-        .philosophy {
-            padding: 8rem 6rem;
-            max-width: 900px;
-        }
-
-        .philosophy-label {
-            font-size: 0.6875rem;
-            font-weight: 500;
-            letter-spacing: 0.2em;
-            color: var(--gray-400);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: 2rem;
-        }
-
-        .philosophy-text {
-            font-size: clamp(1.5rem, 3vw, 2.25rem);
-            font-weight: 300;
-            line-height: 1.4;
-            letter-spacing: -0.01em;
-        }
-
-        .philosophy-text strong {
-            font-weight: 500;
         }
 
         /* How It Works */
         .how-it-works {
-            padding: 6rem;
+            padding: 5rem 4rem;
             background: var(--white);
         }
 
@@ -286,28 +392,30 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 4rem;
-            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--gray-200);
         }
 
         .section-title {
             font-size: 0.6875rem;
             font-weight: 500;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.15em;
             color: var(--gray-400);
             text-transform: uppercase;
         }
 
-        .section-count {
-            font-size: 0.75rem;
-            color: var(--gray-400);
+        .section-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 0.5rem;
+            letter-spacing: -0.02em;
         }
 
         .steps {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 4rem;
+            gap: 3rem;
         }
 
         .step {
@@ -317,15 +425,15 @@
         .step-number {
             font-size: 0.6875rem;
             font-weight: 500;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             color: var(--gray-400);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .step-title {
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 500;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             letter-spacing: -0.01em;
         }
 
@@ -336,28 +444,39 @@
             line-height: 1.7;
         }
 
-        /* CTA Section */
+        /* Dual CTA */
         .cta-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            min-height: 60vh;
         }
 
-        .cta-content {
-            background: var(--black);
+        .cta-artists {
+            background: var(--gray-900);
             color: var(--white);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4rem 6rem;
+            padding: 5rem 4rem;
+        }
+
+        .cta-collectors {
+            background: var(--gray-100);
+            color: var(--black);
+            padding: 5rem 4rem;
+        }
+
+        .cta-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
         }
 
         .cta-title {
-            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            font-size: 1.75rem;
             font-weight: 300;
             line-height: 1.2;
             letter-spacing: -0.02em;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .cta-title strong {
@@ -365,53 +484,49 @@
         }
 
         .cta-description {
-            font-size: 0.9375rem;
+            font-size: 0.875rem;
             font-weight: 300;
-            color: var(--gray-400);
-            max-width: 400px;
-            margin-bottom: 2.5rem;
+            opacity: 0.6;
+            max-width: 320px;
+            margin-bottom: 2rem;
             line-height: 1.7;
         }
 
         .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.875rem;
+            display: inline-block;
+            font-size: 0.8125rem;
             font-weight: 500;
-            color: var(--white);
             text-decoration: none;
-            padding: 1rem 1.5rem;
-            border: 1px solid var(--white);
+            padding: 0.875rem 1.5rem;
             transition: all 0.2s ease;
-            width: fit-content;
         }
 
-        .cta-button:hover {
-            background: var(--white);
+        .cta-button-light {
             color: var(--black);
+            background: var(--white);
         }
 
-        .cta-image {
+        .cta-button-light:hover {
             background: var(--gray-200);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .cta-image-placeholder {
-            font-size: 0.75rem;
-            color: var(--gray-400);
-            letter-spacing: 0.1em;
+        .cta-button-dark {
+            color: var(--white);
+            background: var(--black);
+        }
+
+        .cta-button-dark:hover {
+            background: var(--gray-800);
         }
 
         /* Footer */
         footer {
-            padding: 4rem 6rem;
+            padding: 3rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--gray-200);
+            background: var(--white);
         }
 
         .footer-logo {
@@ -461,12 +576,18 @@
         }
 
         /* Mobile */
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
+            .featured-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
             nav {
-                padding: 1rem 1.5rem;
+                padding: 0 1.5rem;
             }
 
-            .nav-links {
+            .nav-center {
                 display: none;
             }
 
@@ -476,7 +597,7 @@
             }
 
             .hero-content {
-                padding: 6rem 1.5rem 3rem;
+                padding: 5rem 1.5rem 3rem;
                 order: 2;
             }
 
@@ -485,49 +606,54 @@
                 order: 1;
             }
 
+            .featured {
+                padding: 3rem 1.5rem;
+            }
+
+            .featured-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
             .stats {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .stat {
+                padding: 2rem 1.5rem;
+            }
+
+            .stat:nth-child(2) {
                 border-right: none;
-                border-bottom: 1px solid var(--gray-200);
-                padding: 2rem;
             }
 
-            .stat:last-child {
-                border-bottom: none;
-            }
-
-            .philosophy {
-                padding: 4rem 1.5rem;
+            .stat:nth-child(3),
+            .stat:nth-child(4) {
+                border-top: 1px solid var(--gray-800);
             }
 
             .how-it-works {
-                padding: 4rem 1.5rem;
+                padding: 3rem 1.5rem;
             }
 
             .steps {
                 grid-template-columns: 1fr;
-                gap: 3rem;
+                gap: 2rem;
             }
 
             .cta-section {
                 grid-template-columns: 1fr;
             }
 
-            .cta-content {
-                padding: 4rem 1.5rem;
-            }
-
-            .cta-image {
-                height: 40vh;
+            .cta-artists,
+            .cta-collectors {
+                padding: 3rem 1.5rem;
             }
 
             footer {
                 flex-direction: column;
-                gap: 2rem;
-                padding: 3rem 1.5rem;
+                gap: 1.5rem;
+                padding: 2rem 1.5rem;
                 text-align: center;
             }
 
@@ -540,7 +666,7 @@
 </head>
 <body>
 
-    <!-- Navigation -->
+    <!-- Navigation - DARK -->
     <nav>
         <a href="#" class="logo">
             <div class="logo-bar"></div>
@@ -548,11 +674,18 @@
                 <span>Infra</span><span>Mint</span>
             </div>
         </a>
-        <div class="nav-links">
+        
+        <div class="nav-center">
+            <a href="#gallery">Gallery</a>
             <a href="#how">How It Works</a>
             <a href="#artists">For Artists</a>
-            <a href="#gallery">Gallery</a>
             <a href="#about">About</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="#" class="nav-login">Collector Login</a>
+            <div class="nav-divider"></div>
+            <a href="#" class="nav-login">Artist Login</a>
             <a href="#" class="nav-cta">Start Selling</a>
         </div>
     </nav>
@@ -565,17 +698,71 @@
                 Where emerging artists <strong>find their collectors</strong>
             </h1>
             <p class="hero-description">
-                A platform built for art students and independent artists to sell their work directly. No gallery fees. Real shipping. Fair commissions.
+                A platform for art students and independent artists to sell work directly. No gallery fees. Real shipping. Fair commissions.
             </p>
-            <a href="#" class="hero-cta">
-                <span>Explore the gallery</span>
-                <div class="hero-cta-arrow"></div>
-            </a>
+            <div class="hero-ctas">
+                <a href="#" class="hero-cta-primary">Browse Gallery</a>
+                <a href="#" class="hero-cta-secondary">
+                    <span>Start Selling</span>
+                    <span>→</span>
+                </a>
+            </div>
         </div>
         <div class="hero-image">
-            <!-- Your torn poster image goes here -->
             <img src="https://images.unsplash.com/photo-1482160549825-59d1b23cb208?w=1200&q=80" alt="Urban Art">
-            <div class="hero-image-caption">Featured: Urban Layers</div>
+            <div class="hero-image-overlay">
+                <div>
+                    <div class="hero-image-title">Urban Layers</div>
+                    <div class="hero-image-artist">Featured Artwork</div>
+                </div>
+                <div class="hero-image-price">Coming Soon</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Artworks -->
+    <section class="featured" id="gallery">
+        <div class="featured-header">
+            <div class="featured-title">Featured Works</div>
+            <a href="#" class="featured-link">View all →</a>
+        </div>
+        <div class="featured-grid">
+            <a href="#" class="artwork-card">
+                <div class="artwork-image">
+                    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80" alt="Artwork">
+                </div>
+                <div class="artwork-info">
+                    <div class="artwork-title">Abstract Study #12</div>
+                    <div class="artwork-artist">Coming Soon</div>
+                </div>
+            </a>
+            <a href="#" class="artwork-card">
+                <div class="artwork-image">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Artwork">
+                </div>
+                <div class="artwork-info">
+                    <div class="artwork-title">Color Field</div>
+                    <div class="artwork-artist">Coming Soon</div>
+                </div>
+            </a>
+            <a href="#" class="artwork-card">
+                <div class="artwork-image">
+                    <img src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=600&q=80" alt="Artwork">
+                </div>
+                <div class="artwork-info">
+                    <div class="artwork-title">Texture Play</div>
+                    <div class="artwork-artist">Coming Soon</div>
+                </div>
+            </a>
+            <a href="#" class="artwork-card">
+                <div class="artwork-image">
+                    <img src="https://images.unsplash.com/photo-1549887534-1541e9326642?w=600&q=80" alt="Artwork">
+                </div>
+                <div class="artwork-info">
+                    <div class="artwork-title">Night Study</div>
+                    <div class="artwork-artist">Coming Soon</div>
+                </div>
+            </a>
         </div>
     </section>
 
@@ -593,63 +780,66 @@
             <div class="stat-number">—</div>
             <div class="stat-label">Countries</div>
         </div>
-    </section>
-
-    <!-- Philosophy -->
-    <section class="philosophy">
-        <div class="philosophy-label">Our Belief</div>
-        <p class="philosophy-text">
-            Art shouldn't sit in a storage room waiting for a gallery to notice it. <strong>Every artist deserves a global stage.</strong> We handle the logistics. You focus on creating.
-        </p>
+        <div class="stat">
+            <div class="stat-number">—</div>
+            <div class="stat-label">Sold</div>
+        </div>
     </section>
 
     <!-- How It Works -->
     <section class="how-it-works" id="how">
         <div class="section-header">
-            <div class="section-title">How It Works</div>
-            <div class="section-count">3 steps</div>
+            <div>
+                <div class="section-title">How It Works</div>
+                <div class="section-subtitle">Simple for artists, transparent for collectors</div>
+            </div>
         </div>
         <div class="steps">
             <div class="step">
                 <div class="step-number">01</div>
                 <h3 class="step-title">Upload your work</h3>
                 <p class="step-description">
-                    Photograph your artwork, set your price, and list it in minutes. We'll estimate shipping costs automatically.
+                    Photograph your artwork, set your price, and list it in minutes. We estimate shipping automatically.
                 </p>
             </div>
             <div class="step">
                 <div class="step-number">02</div>
-                <h3 class="step-title">Someone buys it</h3>
+                <h3 class="step-title">Collector buys it</h3>
                 <p class="step-description">
-                    When a collector purchases, you get the real shipping quote from your local post office. They pay art + shipping.
+                    When someone purchases, you get the real shipping quote from your post office. They pay art + shipping.
                 </p>
             </div>
             <div class="step">
                 <div class="step-number">03</div>
                 <h3 class="step-title">Ship & get paid</h3>
                 <p class="step-description">
-                    Upload the postal invoice, ship with tracking. Once delivered, the funds release to you. Simple.
+                    Upload the postal invoice, ship with tracking. Once delivered, funds release to you.
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
+    <!-- Dual CTA -->
     <section class="cta-section">
-        <div class="cta-content">
+        <div class="cta-artists" id="artists">
+            <div class="cta-label">For Artists</div>
             <h2 class="cta-title">
-                Ready to show<br>
-                <strong>your work?</strong>
+                Ready to sell<br><strong>your work?</strong>
             </h2>
             <p class="cta-description">
-                Join a community of emerging artists from Prague to Dubai. No upfront fees. You only pay when you sell.
+                Join artists from Prague to Dubai. No upfront fees. You only pay when you sell.
             </p>
-            <a href="#" class="cta-button">
-                <span>Become an artist</span>
-            </a>
+            <a href="#" class="cta-button cta-button-light">Create Artist Account</a>
         </div>
-        <div class="cta-image">
-            <span class="cta-image-placeholder">[ Artist work preview ]</span>
+        <div class="cta-collectors">
+            <div class="cta-label">For Collectors</div>
+            <h2 class="cta-title">
+                Discover<br><strong>emerging talent</strong>
+            </h2>
+            <p class="cta-description">
+                Find unique works directly from artists. Secure payments. Worldwide shipping.
+            </p>
+            <a href="#" class="cta-button cta-button-dark">Browse Gallery</a>
         </div>
     </section>
 
@@ -662,8 +852,8 @@
             </div>
         </div>
         <div class="footer-links">
-            <a href="#">For Artists</a>
             <a href="#">Gallery</a>
+            <a href="#">For Artists</a>
             <a href="#">How It Works</a>
             <a href="#">About</a>
             <a href="#">Terms</a>
