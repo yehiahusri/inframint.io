@@ -52,24 +52,24 @@
             justify-content: space-between;
             align-items: center;
             background: var(--black);
-            height: 4rem;
+            height: 4.5rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.875rem;
             text-decoration: none;
         }
 
         .logo-bar {
-            width: 2px;
-            height: 1.25rem;
+            width: 3px;
+            height: 1.75rem;
             background: var(--white);
         }
 
         .logo-text {
-            font-size: 1rem;
+            font-size: 1.25rem;
             letter-spacing: -0.01em;
         }
 
@@ -90,7 +90,7 @@
         }
 
         .nav-center a {
-            font-size: 0.8125rem;
+            font-size: 0.9375rem;
             font-weight: 400;
             color: var(--gray-400);
             text-decoration: none;
@@ -104,16 +104,15 @@
 
         .nav-right {
             display: flex;
-            gap: 0.5rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .nav-login {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             font-weight: 400;
             color: var(--gray-400);
             text-decoration: none;
-            padding: 0.5rem 1rem;
             transition: color 0.2s ease;
         }
 
@@ -121,40 +120,25 @@
             color: var(--white);
         }
 
-        .nav-cta {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--black);
-            background: var(--white);
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .nav-cta:hover {
-            background: var(--gray-200);
-        }
-
         .nav-divider {
             width: 1px;
-            height: 1.5rem;
-            background: var(--gray-800);
-            margin: 0 0.5rem;
+            height: 1.25rem;
+            background: var(--gray-700);
         }
 
-        /* Hero Section */
+        /* Hero Section - TIGHTER */
         .hero {
-            min-height: 100vh;
+            min-height: 85vh;
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            padding-top: 4rem;
+            grid-template-columns: 0.9fr 1.1fr;
+            padding-top: 4.5rem;
         }
 
         .hero-content {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 3rem 3rem 3rem 4rem;
+            padding: 2.5rem 2.5rem 2.5rem 3.5rem;
             background: var(--white);
         }
 
@@ -164,16 +148,16 @@
             letter-spacing: 0.15em;
             color: var(--gray-400);
             text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .hero-title {
-            font-size: clamp(2rem, 4vw, 3rem);
+            font-size: clamp(1.875rem, 3.5vw, 2.75rem);
             font-weight: 300;
             line-height: 1.15;
             letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            max-width: 450px;
+            margin-bottom: 1.25rem;
+            max-width: 400px;
         }
 
         .hero-title strong {
@@ -184,19 +168,19 @@
             font-size: 0.9375rem;
             font-weight: 300;
             color: var(--gray-500);
-            max-width: 360px;
-            line-height: 1.7;
-            margin-bottom: 2rem;
+            max-width: 340px;
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
         }
 
         .hero-ctas {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: center;
         }
 
         .hero-cta-primary {
-            font-size: 0.8125rem;
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--white);
             background: var(--black);
@@ -213,7 +197,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.8125rem;
+            font-size: 0.875rem;
             font-weight: 400;
             color: var(--gray-500);
             text-decoration: none;
@@ -268,7 +252,7 @@
 
         /* Featured Section */
         .featured {
-            padding: 4rem;
+            padding: 3.5rem 4rem;
             background: var(--gray-100);
         }
 
@@ -280,7 +264,7 @@
         }
 
         .featured-title {
-            font-size: 0.6875rem;
+            font-size: 0.75rem;
             font-weight: 500;
             letter-spacing: 0.15em;
             color: var(--gray-400);
@@ -288,7 +272,7 @@
         }
 
         .featured-link {
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
             color: var(--gray-500);
             text-decoration: none;
             transition: color 0.2s ease;
@@ -319,12 +303,26 @@
             aspect-ratio: 1;
             background: var(--gray-200);
             overflow: hidden;
+            position: relative;
         }
 
         .artwork-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* YH Signature on artworks */
+        .artwork-signature {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 0.75rem;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            letter-spacing: 0.05em;
         }
 
         .artwork-info {
@@ -341,12 +339,6 @@
             font-size: 0.75rem;
             color: var(--gray-500);
             font-weight: 300;
-        }
-
-        .artwork-price {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            margin-top: 0.75rem;
         }
 
         /* Stats Strip */
@@ -384,7 +376,7 @@
 
         /* How It Works */
         .how-it-works {
-            padding: 5rem 4rem;
+            padding: 4.5rem 4rem;
             background: var(--white);
         }
 
@@ -392,13 +384,13 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--gray-200);
         }
 
         .section-title {
-            font-size: 0.6875rem;
+            font-size: 0.75rem;
             font-weight: 500;
             letter-spacing: 0.15em;
             color: var(--gray-400);
@@ -406,7 +398,7 @@
         }
 
         .section-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.375rem;
             font-weight: 300;
             margin-top: 0.5rem;
             letter-spacing: -0.02em;
@@ -453,13 +445,13 @@
         .cta-artists {
             background: var(--gray-900);
             color: var(--white);
-            padding: 5rem 4rem;
+            padding: 4.5rem 4rem;
         }
 
         .cta-collectors {
             background: var(--gray-100);
             color: var(--black);
-            padding: 5rem 4rem;
+            padding: 4.5rem 4rem;
         }
 
         .cta-label {
@@ -467,12 +459,12 @@
             font-weight: 500;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             opacity: 0.5;
         }
 
         .cta-title {
-            font-size: 1.75rem;
+            font-size: 1.625rem;
             font-weight: 300;
             line-height: 1.2;
             letter-spacing: -0.02em;
@@ -487,14 +479,14 @@
             font-size: 0.875rem;
             font-weight: 300;
             opacity: 0.6;
-            max-width: 320px;
-            margin-bottom: 2rem;
+            max-width: 300px;
+            margin-bottom: 1.75rem;
             line-height: 1.7;
         }
 
         .cta-button {
             display: inline-block;
-            font-size: 0.8125rem;
+            font-size: 0.875rem;
             font-weight: 500;
             text-decoration: none;
             padding: 0.875rem 1.5rem;
@@ -521,7 +513,7 @@
 
         /* Footer */
         footer {
-            padding: 3rem 4rem;
+            padding: 2.5rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -542,7 +534,7 @@
         }
 
         .footer-text {
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
         }
 
         .footer-text span:first-child {
@@ -560,7 +552,7 @@
         }
 
         .footer-links a {
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
             color: var(--gray-500);
             text-decoration: none;
             transition: color 0.2s ease;
@@ -571,7 +563,7 @@
         }
 
         .footer-copy {
-            font-size: 0.6875rem;
+            font-size: 0.75rem;
             color: var(--gray-400);
         }
 
@@ -591,23 +583,31 @@
                 display: none;
             }
 
+            .nav-right {
+                gap: 1rem;
+            }
+
+            .nav-login {
+                font-size: 0.8125rem;
+            }
+
             .hero {
                 grid-template-columns: 1fr;
                 min-height: auto;
             }
 
             .hero-content {
-                padding: 5rem 1.5rem 3rem;
+                padding: 5rem 1.5rem 2.5rem;
                 order: 2;
             }
 
             .hero-image {
-                height: 50vh;
+                height: 45vh;
                 order: 1;
             }
 
             .featured {
-                padding: 3rem 1.5rem;
+                padding: 2.5rem 1.5rem;
             }
 
             .featured-grid {
@@ -633,7 +633,7 @@
             }
 
             .how-it-works {
-                padding: 3rem 1.5rem;
+                padding: 2.5rem 1.5rem;
             }
 
             .steps {
@@ -647,7 +647,7 @@
 
             .cta-artists,
             .cta-collectors {
-                padding: 3rem 1.5rem;
+                padding: 2.5rem 1.5rem;
             }
 
             footer {
@@ -683,10 +683,8 @@
         </div>
 
         <div class="nav-right">
-            <a href="#" class="nav-login">Collector Login</a>
-            <div class="nav-divider"></div>
             <a href="#" class="nav-login">Artist Login</a>
-            <a href="#" class="nav-cta">Start Selling</a>
+            <a href="#" class="nav-login">Collector Login</a>
         </div>
     </nav>
 
@@ -703,7 +701,7 @@
             <div class="hero-ctas">
                 <a href="#" class="hero-cta-primary">Browse Gallery</a>
                 <a href="#" class="hero-cta-secondary">
-                    <span>Start Selling</span>
+                    <span>Sell Your Art</span>
                     <span>→</span>
                 </a>
             </div>
@@ -730,6 +728,7 @@
             <a href="#" class="artwork-card">
                 <div class="artwork-image">
                     <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80" alt="Artwork">
+                    <div class="artwork-signature">YH</div>
                 </div>
                 <div class="artwork-info">
                     <div class="artwork-title">Abstract Study #12</div>
@@ -738,16 +737,18 @@
             </a>
             <a href="#" class="artwork-card">
                 <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Artwork">
+                    <img src="https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=600&q=80" alt="Artwork">
+                    <div class="artwork-signature">YH</div>
                 </div>
                 <div class="artwork-info">
-                    <div class="artwork-title">Color Field</div>
+                    <div class="artwork-title">Fluid Motion</div>
                     <div class="artwork-artist">Coming Soon</div>
                 </div>
             </a>
             <a href="#" class="artwork-card">
                 <div class="artwork-image">
                     <img src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=600&q=80" alt="Artwork">
+                    <div class="artwork-signature">YH</div>
                 </div>
                 <div class="artwork-info">
                     <div class="artwork-title">Texture Play</div>
@@ -756,10 +757,11 @@
             </a>
             <a href="#" class="artwork-card">
                 <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1549887534-1541e9326642?w=600&q=80" alt="Artwork">
+                    <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=600&q=80" alt="Artwork">
+                    <div class="artwork-signature">YH</div>
                 </div>
                 <div class="artwork-info">
-                    <div class="artwork-title">Night Study</div>
+                    <div class="artwork-title">Neon Dreams</div>
                     <div class="artwork-artist">Coming Soon</div>
                 </div>
             </a>
