@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --gray-900: #171717;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation - DARK */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
+            background: var(--white);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-center a {
+            font-size: 0.9375rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            transition: color 0.2s ease;
+        }
+
+        .nav-center a:hover,
+        .nav-center a.active {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-login {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-login:hover {
+            color: var(--white);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 8rem 4rem 4rem;
+            background: var(--white);
+        }
+
+        .page-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            max-width: 700px;
+        }
+
+        .page-title strong {
+            font-weight: 600;
+        }
+
+        /* Mission Section */
+        .mission {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 60vh;
+        }
+
+        .mission-content {
+            padding: 5rem 4rem;
+            background: var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mission-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .mission-text {
+            font-size: 1.375rem;
+            font-weight: 300;
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+            max-width: 480px;
+        }
+
+        .mission-text strong {
+            font-weight: 500;
+        }
+
+        .mission-image {
+            background: var(--gray-200);
+            overflow: hidden;
+        }
+
+        .mission-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Values Section */
+        .values {
+            padding: 5rem 4rem;
+            background: var(--white);
+        }
+
+        .values-header {
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .values-title {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            text-transform: uppercase;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        .value-item {
+            padding-right: 2rem;
+        }
+
+        .value-number {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .value-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .value-description {
+            font-size: 0.875rem;
+            font-weight: 300;
+            color: var(--gray-500);
+            line-height: 1.7;
+        }
+
+        /* Story Section */
+        .story {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .story-image {
+            background: var(--black);
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+        }
+
+        .story-quote {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--white);
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            max-width: 400px;
+        }
+
+        .story-quote-author {
+            margin-top: 1.5rem;
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .story-content {
+            padding: 4rem;
+            background: var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .story-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .story-text {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--gray-600);
+            line-height: 1.8;
+            max-width: 450px;
+        }
+
+        .story-text p {
+            margin-bottom: 1.25rem;
+        }
+
+        .story-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Stats */
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--black);
+        }
+
+        .about-stat {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-right: 1px solid var(--gray-800);
+        }
+
+        .about-stat:last-child {
+            border-right: none;
+        }
+
+        .about-stat-number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .about-stat-label {
+            font-size: 0.6875rem;
+            font-weight: 400;
+            color: var(--gray-500);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            padding: 5rem 4rem;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .contact-cta-title {
+            font-size: 1.75rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .contact-cta-title strong {
+            font-weight: 600;
+        }
+
+        .contact-cta-text {
+            font-size: 0.9375rem;
+            font-weight: 300;
+            color: var(--gray-500);
+            margin-bottom: 2rem;
+        }
+
+        .contact-cta-email {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--black);
+            text-decoration: none;
+            border-bottom: 1px solid var(--black);
+            padding-bottom: 0.25rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .contact-cta-email:hover {
+            opacity: 0.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--gray-200);
+            background: var(--white);
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-bar {
+            width: 2px;
+            height: 1.25rem;
+            background: var(--black);
+        }
+
+        .footer-text {
+            font-size: 0.9375rem;
+        }
+
+        .footer-text span:first-child {
+            font-weight: 600;
+        }
+
+        .footer-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-400);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--black);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 1.5rem;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .page-header {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .mission {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-content {
+                padding: 3rem 1.5rem;
+            }
+
+            .mission-image {
+                height: 40vh;
+            }
+
+            .values {
+                padding: 3rem 1.5rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .story {
+                grid-template-columns: 1fr;
+            }
+
+            .story-image {
+                padding: 3rem 1.5rem;
+                min-height: auto;
+            }
+
+            .story-content {
+                padding: 3rem 1.5rem;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .about-stat {
+                border-right: none;
+                border-bottom: 1px solid var(--gray-800);
+                padding: 2rem 1.5rem;
+            }
+
+            .about-stat:last-child {
+                border-bottom: none;
+            }
+
+            .contact-cta {
+                padding: 3rem 1.5rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        
+        <div class="nav-center">
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="index.html#artists">For Artists</a>
+            <a href="about.html" class="active">About</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="#" class="nav-login">Artist Login</a>
+            <a href="#" class="nav-login">Collector Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="page-label">About</div>
+        <h1 class="page-title">
+            Art should find its way<br><strong>into the world</strong>
+        </h1>
+    </header>
+
+    <!-- Mission Section -->
+    <section class="mission">
+        <div class="mission-content">
+            <div class="mission-label">Our Mission</div>
+            <p class="mission-text">
+                Too much great art sits unseen in studios, dorm rooms, and storage spaces. We built InfraMint to change that — <strong>a simple way for emerging artists to reach collectors directly</strong>, without gallery gatekeepers or complicated logistics.
+            </p>
+        </div>
+        <div class="mission-image">
+            <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&q=80" alt="Art Studio">
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values">
+        <div class="values-header">
+            <div class="values-title">What We Believe</div>
+        </div>
+        <div class="values-grid">
+            <div class="value-item">
+                <div class="value-number">01</div>
+                <h3 class="value-title">Artists first</h3>
+                <p class="value-description">
+                    No upfront fees. No hidden costs. You only pay when you sell. We succeed when you succeed.
+                </p>
+            </div>
+            <div class="value-item">
+                <div class="value-number">02</div>
+                <h3 class="value-title">Radical transparency</h3>
+                <p class="value-description">
+                    Real shipping costs from your post office. Clear commission rates. No surprises at checkout.
+                </p>
+            </div>
+            <div class="value-item">
+                <div class="value-number">03</div>
+                <h3 class="value-title">Global reach, local roots</h3>
+                <p class="value-description">
+                    Connect with collectors worldwide while shipping from your own neighborhood.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story">
+        <div class="story-image">
+            <div>
+                <p class="story-quote">
+                    "Every artist deserves a chance to be seen — not just those with gallery connections."
+                </p>
+                <p class="story-quote-author">— Yehia Husri, Founder</p>
+            </div>
+        </div>
+        <div class="story-content">
+            <div class="story-label">The Story</div>
+            <div class="story-text">
+                <p>
+                    InfraMint started with a simple observation: talented art students graduate with incredible work — and no way to sell it.
+                </p>
+                <p>
+                    Traditional galleries take 50% commissions and won't look at emerging artists. Online marketplaces are crowded with print-on-demand products. There was no clean, artist-friendly way to sell original work.
+                </p>
+                <p>
+                    So we built one. A platform that handles the hard parts — payments, shipping logistics, buyer trust — so artists can focus on what they do best: creating.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="about-stats">
+        <div class="about-stat">
+            <div class="about-stat-number">—</div>
+            <div class="about-stat-label">Commission Rate</div>
+        </div>
+        <div class="about-stat">
+            <div class="about-stat-number">0</div>
+            <div class="about-stat-label">Upfront Fees</div>
+        </div>
+        <div class="about-stat">
+            <div class="about-stat-number">∞</div>
+            <div class="about-stat-label">Countries</div>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="contact-cta">
+        <h2 class="contact-cta-title">Have questions? <strong>Let's talk.</strong></h2>
+        <p class="contact-cta-text">We'd love to hear from artists, collectors, and collaborators.</p>
+        <a href="mailto:hello@inframint.io" class="contact-cta-email">hello@inframint.io</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            <div class="footer-bar"></div>
+            <div class="footer-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#artists">For Artists</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="about.html">About</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+        </div>
+        <div class="footer-copy">© 2026 InfraMint</div>
+    </footer>
+
+</body>
+</html>
