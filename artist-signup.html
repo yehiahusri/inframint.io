@@ -431,8 +431,37 @@
         }
 
         .file-upload:hover {
-            border-color: var(--gray-400);
-            background: var(--gray-100);
+            border-color: var(--black);
+            background: var(--gray-200);
+        }
+
+        .file-upload.drag-over {
+            border-color: var(--black);
+            background: var(--gray-200);
+            transform: scale(1.02);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--success);
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .file-upload-success {
+            display: none;
+            color: var(--success);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .file-upload.has-file .file-upload-success {
+            display: block;
+        }
+
+        .file-upload.has-file .file-upload-icon,
+        .file-upload.has-file .file-upload-text,
+        .file-upload.has-file .file-upload-hint {
+            display: none;
         }
 
         .file-upload-icon {
@@ -837,15 +866,16 @@
 
                 <div class="form-group">
                     <label class="form-label">Government ID</label>
-                    <div class="file-upload" onclick="document.getElementById('gov-id-input').click()">
+                    <div class="file-upload" id="gov-id-upload" onclick="document.getElementById('gov-id-input').click()">
                         <input type="file" id="gov-id-input" accept="image/*,.pdf" required>
                         <div class="file-upload-icon">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
                         </div>
-                        <div class="file-upload-text">Click to upload passport or national ID</div>
+                        <div class="file-upload-text">Click or drag to upload passport or national ID</div>
                         <div class="file-upload-hint">JPG, PNG, or PDF • Max 10MB</div>
+                        <div class="file-upload-success">✓ <span class="file-name"></span></div>
                     </div>
                     <p class="form-hint">Your ID is stored securely and only used for verification. It will never be shared.</p>
                 </div>
@@ -863,15 +893,16 @@
                 
                 <div class="form-group">
                     <label class="form-label">Profile Photo</label>
-                    <div class="file-upload" onclick="document.getElementById('profile-photo-input').click()">
+                    <div class="file-upload" id="profile-photo-upload" onclick="document.getElementById('profile-photo-input').click()">
                         <input type="file" id="profile-photo-input" accept="image/*" required>
                         <div class="file-upload-icon">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                         </div>
-                        <div class="file-upload-text">Upload a professional photo</div>
+                        <div class="file-upload-text">Click or drag to upload a professional photo</div>
                         <div class="file-upload-hint">Square format recommended • Min 400x400px</div>
+                        <div class="file-upload-success">✓ <span class="file-name"></span></div>
                     </div>
                 </div>
 
@@ -1271,6 +1302,65 @@
 
         // Add Google button click handler
         document.querySelector('.social-btn-google').addEventListener('click', signInWithGoogle);
+
+        // File upload drag and drop functionality
+        function setupFileUpload(uploadBoxId, inputId) {
+            const uploadBox = document.getElementById(uploadBoxId);
+            const input = document.getElementById(inputId);
+            
+            if (!uploadBox || !input) return;
+
+            // Handle drag events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadBox.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // Highlight on drag
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadBox.addEventListener(eventName, () => {
+                    uploadBox.classList.add('drag-over');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadBox.addEventListener(eventName, () => {
+                    uploadBox.classList.remove('drag-over');
+                }, false);
+            });
+
+            // Handle drop
+            uploadBox.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    input.files = files;
+                    handleFileSelect(uploadBox, files[0]);
+                }
+            }, false);
+
+            // Handle normal file selection
+            input.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(uploadBox, e.target.files[0]);
+                }
+            });
+        }
+
+        function handleFileSelect(uploadBox, file) {
+            uploadBox.classList.add('has-file');
+            const fileNameSpan = uploadBox.querySelector('.file-name');
+            if (fileNameSpan) {
+                fileNameSpan.textContent = file.name;
+            }
+        }
+
+        // Initialize file uploads when DOM is ready
+        setupFileUpload('gov-id-upload', 'gov-id-input');
+        setupFileUpload('profile-photo-upload', 'profile-photo-input');
 
         // Check auth on page load
         checkAuth();
