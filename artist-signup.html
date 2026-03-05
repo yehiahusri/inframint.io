@@ -1032,7 +1032,7 @@
         // Initialize Supabase
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentStep = 1;
         const totalSteps = 5;
@@ -1094,7 +1094,7 @@
 
         // Google Sign In
         async function signInWithGoogle() {
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await _supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin + '/artist-signup.html?step=2'
@@ -1108,7 +1108,7 @@
 
         // Check if user is already logged in (returning from OAuth)
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await _supabase.auth.getSession();
             
             if (session) {
                 // User is logged in, pre-fill email and skip to step 2
@@ -1151,7 +1151,7 @@
                 let userId = formData.user_id;
                 
                 if (!userId) {
-                    const { data: authData, error: authError } = await supabase.auth.signUp({
+                    const { data: authData, error: authError } = await _supabase.auth.signUp({
                         email: formData.email_address || formData.email,
                         password: formData.password,
                         options: {
@@ -1177,7 +1177,7 @@
                 if (formData.government_id) {
                     const file = formData.government_id;
                     const fileName = `${userId}/${Date.now()}_${file.name}`;
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await _supabase.storage
                         .from('verification-docs')
                         .upload(fileName, file);
                     
@@ -1189,12 +1189,12 @@
                 if (formData.profile_photo) {
                     const file = formData.profile_photo;
                     const fileName = `${userId}/${Date.now()}_${file.name}`;
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await _supabase.storage
                         .from('artist-profiles')
                         .upload(fileName, file);
                     
                     if (!uploadError) {
-                        const { data: urlData } = supabase.storage
+                        const { data: urlData } = _supabase.storage
                             .from('artist-profiles')
                             .getPublicUrl(fileName);
                         profilePhotoUrl = urlData.publicUrl;
@@ -1202,7 +1202,7 @@
                 }
 
                 // Insert artist record
-                const { data: artistData, error: artistError } = await supabase
+                const { data: artistData, error: artistError } = await _supabase
                     .from('artists')
                     .insert({
                         user_id: userId,
