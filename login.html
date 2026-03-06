@@ -125,6 +125,35 @@
             color: var(--gray-500);
         }
 
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--gray-600);
+        }
+
+        .tab.active {
+            color: var(--black);
+            border-bottom-color: var(--black);
+        }
+
         /* Social */
         .social-btn {
             display: flex;
@@ -170,6 +199,12 @@
         /* Form */
         .form-group {
             margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
 
         .form-label {
@@ -224,13 +259,36 @@
             display: block;
         }
 
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--success);
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
         /* Footer */
         .login-footer {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid var(--gray-200);
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             color: var(--gray-500);
         }
 
@@ -244,26 +302,27 @@
             text-decoration: underline;
         }
 
-        .login-options {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
+        /* Admin Link */
+        .admin-link {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1rem;
         }
 
-        .login-options a {
-            font-size: 0.8125rem;
-            color: var(--gray-500);
+        .admin-link a {
+            font-size: 0.75rem;
+            color: var(--gray-400);
             text-decoration: none;
         }
 
-        .login-options a:hover {
-            color: var(--black);
+        .admin-link a:hover {
+            color: var(--gray-600);
         }
 
         @media (max-width: 500px) {
             nav { padding: 0 1.5rem; }
             .login-card { margin: 1rem; padding: 1.5rem; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -282,12 +341,20 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <h1 class="login-title">Welcome back</h1>
-                <p class="login-subtitle">Sign in to your account</p>
+                <h1 class="login-title">Welcome to InfraMint</h1>
+                <p class="login-subtitle">Sign in or create an account</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="signin">Sign In</div>
+                <div class="tab" data-tab="signup">Sign Up</div>
             </div>
 
             <div class="error-message" id="error-msg"></div>
+            <div class="success-message" id="success-msg"></div>
 
+            <!-- Google Button (shared) -->
             <button type="button" class="social-btn" id="google-btn">
                 <svg width="20" height="20" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -300,27 +367,55 @@
 
             <div class="divider"><span>or</span></div>
 
-            <form id="login-form">
+            <!-- Sign In Form -->
+            <form class="auth-form active" id="signin-form">
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
+                    <input type="email" class="form-input" id="signin-email" placeholder="you@example.com" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="password" placeholder="Your password" required>
+                    <input type="password" class="form-input" id="signin-password" placeholder="Your password" required>
                 </div>
 
                 <button type="submit" class="btn">Sign In</button>
             </form>
 
-            <div class="login-footer">
-                Don't have an account?<br><br>
-                <div class="login-options">
-                    <a href="collector-signup.html">Sign up as Collector</a>
-                    <span style="color: var(--gray-300);">|</span>
-                    <a href="artist-signup.html">Apply as Artist</a>
+            <!-- Sign Up Form -->
+            <form class="auth-form" id="signup-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" id="signup-firstname" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" id="signup-lastname" placeholder="Doe" required>
+                    </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="signup-password" placeholder="Minimum 8 characters" required minlength="8">
+                </div>
+
+                <button type="submit" class="btn">Create Account</button>
+            </form>
+
+            <div class="login-footer">
+                Want to sell your art?<br>
+                <a href="artist-signup.html">Apply as an Artist →</a>
+            </div>
+
+            <!-- Admin Link -->
+            <div class="admin-link">
+                <a href="admin.html">Admin Access</a>
             </div>
         </div>
     </div>
@@ -332,10 +427,34 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const formId = tab.dataset.tab === 'signin' ? 'signin-form' : 'signup-form';
+                document.getElementById(formId).classList.add('active');
+                
+                // Clear messages
+                document.getElementById('error-msg').classList.remove('show');
+                document.getElementById('success-msg').classList.remove('show');
+            });
+        });
+
         function showError(msg) {
             const el = document.getElementById('error-msg');
             el.textContent = msg;
             el.classList.add('show');
+            document.getElementById('success-msg').classList.remove('show');
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('success-msg');
+            el.textContent = msg;
+            el.classList.add('show');
+            document.getElementById('error-msg').classList.remove('show');
         }
 
         // Google Sign In
@@ -343,18 +462,18 @@
             const { error } = await db.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/index.html'
+                    redirectTo: window.location.origin + '/login.html?auth=success'
                 }
             });
             if (error) showError(error.message);
         });
 
         // Email Sign In
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        document.getElementById('signin-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
 
             const { data, error } = await db.auth.signInWithPassword({
                 email: email,
@@ -370,11 +489,81 @@
             window.location.href = 'index.html';
         });
 
-        // Check if already logged in
+        // Email Sign Up
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('signup-firstname').value;
+            const lastName = document.getElementById('signup-lastname').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            const { data, error } = await db.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    emailRedirectTo: window.location.origin + '/login.html?verified=true',
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName
+                    }
+                }
+            });
+
+            if (error) {
+                showError(error.message);
+                return;
+            }
+
+            // Check if email confirmation needed
+            if (data.user && !data.user.confirmed_at && !data.session) {
+                showSuccess('Check your email! We sent you a verification link.');
+            } else {
+                // Save to collectors table
+                await saveCollector(data.user, firstName, lastName, email);
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Save collector to database
+        async function saveCollector(user, firstName, lastName, email) {
+            const { error } = await db.from('collectors').insert({
+                user_id: user.id,
+                email: email,
+                first_name: firstName,
+                last_name: lastName
+            });
+            
+            // Ignore duplicate errors
+            if (error && error.code !== '23505') {
+                console.error('Error saving collector:', error);
+            }
+        }
+
+        // Check auth on load
         async function checkAuth() {
             const { data: { session } } = await db.auth.getSession();
+            const urlParams = new URLSearchParams(window.location.search);
+
             if (session) {
-                // Already logged in - redirect to home
+                // If returning from auth, save user as collector if not exists
+                if (urlParams.get('auth') === 'success' || urlParams.get('verified') === 'true') {
+                    const user = session.user;
+                    const meta = user.user_metadata || {};
+                    const names = (meta.full_name || '').split(' ');
+                    
+                    await saveCollector(
+                        user,
+                        meta.first_name || names[0] || '',
+                        meta.last_name || names.slice(1).join(' ') || '',
+                        user.email
+                    );
+                    
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Already logged in
                 window.location.href = 'index.html';
             }
         }
