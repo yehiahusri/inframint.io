@@ -558,7 +558,7 @@
             const { data, error } = await db.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/collector-signup.html?step=2'
+                    redirectTo: window.location.origin + '/collector-signup.html?auth=google'
                 }
             });
             
@@ -609,6 +609,11 @@
             } else {
                 // Email not required, go to step 2
                 currentUser = data.user;
+                localStorage.setItem('inframint_collector_data', JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email
+                }));
                 showStep2();
             }
         });
@@ -626,13 +631,18 @@
 
         // Save collector to database
         async function saveCollector(includeAddress) {
+            if (!currentUser) {
+                alert('Session expired. Please refresh and try again.');
+                return;
+            }
+
             const userData = JSON.parse(localStorage.getItem('inframint_collector_data') || '{}');
             
             const collectorData = {
                 user_id: currentUser.id,
                 email: currentUser.email,
-                first_name: userData.first_name || currentUser.user_metadata?.first_name || '',
-                last_name: userData.last_name || currentUser.user_metadata?.last_name || ''
+                first_name: userData.first_name || currentUser.user_metadata?.first_name || currentUser.user_metadata?.full_name?.split(' ')[0] || '',
+                last_name: userData.last_name || currentUser.user_metadata?.last_name || currentUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || ''
             };
 
             if (includeAddress) {
@@ -643,10 +653,21 @@
                 collectorData.phone = document.getElementById('phone').value;
             }
 
+            console.log('Saving collector:', collectorData);
+
             const { error } = await db.from('collectors').insert(collectorData);
 
             if (error) {
-                alert('Error: ' + error.message);
+                console.error('Insert error:', error);
+                // If already exists, still show success
+                if (error.code === '23505') {
+                    // Duplicate - user already registered
+                    localStorage.removeItem('inframint_collector_data');
+                    document.getElementById('step-2').classList.remove('active');
+                    document.getElementById('success-state').classList.add('active');
+                    return;
+                }
+                alert('Error saving: ' + error.message);
                 return;
             }
 
@@ -661,6 +682,7 @@
         // Show step 2
         function showStep2() {
             document.getElementById('step-1').classList.remove('active');
+            document.getElementById('email-verify-state').classList.remove('active');
             document.getElementById('step-2').classList.add('active');
         }
 
@@ -689,28 +711,28 @@
             const { data: { session } } = await db.auth.getSession();
             const urlParams = new URLSearchParams(window.location.search);
 
+            console.log('Session:', session);
+            console.log('URL params:', window.location.search);
+
             if (session) {
                 currentUser = session.user;
+                console.log('User logged in:', currentUser.email);
 
-                // Returning from email verification
-                if (urlParams.get('verified') === 'true') {
+                // Store user data
+                localStorage.setItem('inframint_collector_data', JSON.stringify({
+                    first_name: session.user.user_metadata?.first_name || session.user.user_metadata?.full_name?.split(' ')[0] || '',
+                    last_name: session.user.user_metadata?.last_name || session.user.user_metadata?.full_name?.split(' ').slice(1).join(' ') || '',
+                    email: session.user.email
+                }));
+
+                // Returning from any auth flow - show step 2
+                if (urlParams.get('verified') === 'true' || urlParams.get('auth') === 'google') {
                     showStep2();
                     return;
                 }
 
-                // Returning from Google OAuth
-                if (urlParams.get('step') === '2') {
-                    // Store Google user data
-                    if (session.user.user_metadata?.full_name) {
-                        const names = session.user.user_metadata.full_name.split(' ');
-                        localStorage.setItem('inframint_collector_data', JSON.stringify({
-                            first_name: names[0] || '',
-                            last_name: names.slice(1).join(' ') || '',
-                            email: session.user.email
-                        }));
-                    }
-                    showStep2();
-                }
+                // Already logged in - show step 2
+                showStep2();
             }
         }
 
