@@ -662,9 +662,9 @@
             <a href="about.html">About</a>
         </div>
 
-        <div class="nav-right">
-            <a href="artist-login.html" class="nav-login">Artist Login</a>
-            <a href="collector-login.html" class="nav-login">Collector Login</a>
+        <div class="nav-right" id="nav-right">
+            <a href="artist-login.html" class="nav-login" id="artist-login-link">Artist Login</a>
+            <a href="collector-login.html" class="nav-login" id="collector-login-link">Collector Login</a>
         </div>
     </nav>
 
@@ -839,6 +839,52 @@
         </div>
         <div class="footer-copy">© 2026 InfraMint</div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function checkAuth() {
+            const { data: { session } } = await db.auth.getSession();
+            
+            if (session) {
+                // Check if user is an artist
+                const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
+                
+                if (artist) {
+                    // Show dashboard link for artists
+                    document.getElementById('nav-right').innerHTML = `
+                        <a href="artist-dashboard.html" class="nav-login">Dashboard</a>
+                        <a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>
+                    `;
+                    document.getElementById('sign-out-btn').addEventListener('click', async function(e) {
+                        e.preventDefault();
+                        await db.auth.signOut();
+                        window.location.reload();
+                    });
+                } else {
+                    // Check if user is a collector
+                    const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                    
+                    if (collector) {
+                        document.getElementById('nav-right').innerHTML = `
+                            <a href="#" class="nav-login">My Account</a>
+                            <a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>
+                        `;
+                        document.getElementById('sign-out-btn').addEventListener('click', async function(e) {
+                            e.preventDefault();
+                            await db.auth.signOut();
+                            window.location.reload();
+                        });
+                    }
+                }
+            }
+        }
+
+        checkAuth();
+    </script>
 
 </body>
 </html>

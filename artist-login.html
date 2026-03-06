@@ -508,23 +508,20 @@
         // Check auth on load
         async function checkAuth() {
             const { data: { session } } = await db.auth.getSession();
-            const urlParams = new URLSearchParams(window.location.search);
 
             if (session) {
-                // Check if returning from Google auth
-                if (urlParams.get('auth') === 'google') {
-                    // Check if already registered as artist
-                    const { data: artist } = await db.from('artists').select('*').eq('user_id', session.user.id).single();
-                    
-                    if (artist) {
-                        // Already an artist - go to dashboard
-                        window.location.href = 'artist-dashboard.html';
-                    } else {
-                        // Need to complete artist registration
-                        window.location.href = 'artist-signup.html?step=2';
-                    }
+                // User is logged in - check if they're an artist
+                const { data: artist } = await db.from('artists').select('*').eq('user_id', session.user.id).single();
+                
+                if (artist) {
+                    // Already an artist - go to dashboard
+                    window.location.href = 'artist-dashboard.html';
+                } else {
+                    // Logged in but not an artist - need to complete registration
+                    window.location.href = 'artist-signup.html?step=2';
                 }
             }
+            // If no session, stay on login page
         }
 
         checkAuth();
