@@ -1088,13 +1088,44 @@
         document.getElementById('save-artwork').addEventListener('click', async function() {
             const title = document.getElementById('artwork-title').value.trim();
             const price = document.getElementById('artwork-price').value;
+            const fileInput = document.getElementById('artwork-file');
+            const file = fileInput.files[0];
 
             if (!title || !price) {
                 alert('Please enter title and price');
                 return;
             }
 
-            // For now, just insert basic data (file upload can be added later)
+            // Show loading state
+            const saveBtn = document.getElementById('save-artwork');
+            saveBtn.textContent = 'Uploading...';
+            saveBtn.disabled = true;
+
+            let imageUrl = 'https://placehold.co/400x400/f7f7f7/a3a3a3?text=No+Image';
+
+            // Upload image if selected
+            if (file) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = artistData.id + '/' + Date.now() + '.' + fileExt;
+
+                const { data: uploadData, error: uploadError } = await db.storage
+                    .from('artwork-images')
+                    .upload(fileName, file, { contentType: file.type });
+
+                if (uploadError) {
+                    alert('Image upload error: ' + uploadError.message);
+                    saveBtn.textContent = 'Add Artwork';
+                    saveBtn.disabled = false;
+                    return;
+                }
+
+                const { data: urlData } = db.storage
+                    .from('artwork-images')
+                    .getPublicUrl(fileName);
+
+                imageUrl = urlData.publicUrl;
+            }
+
             const { error } = await db.from('artworks').insert({
                 artist_id: artistData.id,
                 title: title,
@@ -1102,7 +1133,7 @@
                 price: parseFloat(price),
                 medium: document.getElementById('artwork-medium').value,
                 category: document.getElementById('artwork-medium').value,
-                primary_image_url: 'https://placehold.co/400x400/f7f7f7/a3a3a3?text=No+Image',
+                primary_image_url: imageUrl,
                 width_cm: parseInt(document.getElementById('artwork-width').value) || null,
                 height_cm: parseInt(document.getElementById('artwork-height').value) || null,
                 status: 'pending'
@@ -1110,8 +1141,21 @@
 
             if (error) {
                 alert('Error: ' + error.message);
+                saveBtn.textContent = 'Add Artwork';
+                saveBtn.disabled = false;
                 return;
             }
+
+            // Reset form
+            saveBtn.textContent = 'Add Artwork';
+            saveBtn.disabled = false;
+            document.getElementById('artwork-title').value = '';
+            document.getElementById('artwork-description').value = '';
+            document.getElementById('artwork-price').value = '';
+            document.getElementById('artwork-width').value = '';
+            document.getElementById('artwork-height').value = '';
+            fileInput.value = '';
+            document.getElementById('artwork-upload').classList.remove('has-file');
 
             closeModal();
             loadArtworks();
@@ -1143,13 +1187,17 @@
                 data.forEach(function(artwork) {
                     const card = document.createElement('div');
                     card.className = 'artwork-card';
+                    const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
                     card.innerHTML = 
                         '<div class="artwork-image">' +
-                            '<svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4">' +
-                                '<rect x="4" y="3" width="2" height="18"/>' +
-                                '<rect x="10" y="7" width="2" height="10"/>' +
-                                '<rect x="16" y="5" width="2" height="14"/>' +
-                            '</svg>' +
+                            (hasImage 
+                                ? '<img src="' + artwork.primary_image_url + '" alt="' + artwork.title + '">'
+                                : '<svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4">' +
+                                    '<rect x="4" y="3" width="2" height="18"/>' +
+                                    '<rect x="10" y="7" width="2" height="10"/>' +
+                                    '<rect x="16" y="5" width="2" height="14"/>' +
+                                  '</svg>'
+                            ) +
                         '</div>' +
                         '<div class="artwork-info">' +
                             '<div class="artwork-title">' + artwork.title + '</div>' +
