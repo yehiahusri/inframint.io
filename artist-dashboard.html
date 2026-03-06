@@ -385,6 +385,29 @@
             margin-top: 0.5rem;
         }
 
+        .artwork-delete {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .artwork-delete button {
+            width: 100%;
+            padding: 0.4rem;
+            background: none;
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .artwork-delete button:hover {
+            background: #dc2626;
+            color: white;
+        }
+
         /* Add Artwork Card */
         .add-artwork-card {
             border: 2px dashed var(--gray-300);
@@ -1205,7 +1228,22 @@
                             '<div class="artwork-status">' +
                                 '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + '</span>' +
                             '</div>' +
+                            '<div class="artwork-delete">' +
+                                '<button data-id="' + artwork.id + '">Delete</button>' +
+                            '</div>' +
                         '</div>';
+
+                    card.querySelector('.artwork-delete button').addEventListener('click', async function() {
+                        if (!confirm('Delete "' + artwork.title + '"? This cannot be undone.')) return;
+                        
+                        const { error } = await db.from('artworks').delete().eq('id', artwork.id);
+                        if (error) {
+                            alert('Error deleting: ' + error.message);
+                            return;
+                        }
+                        loadArtworks();
+                    });
+
                     grid.appendChild(card);
                 });
             }
