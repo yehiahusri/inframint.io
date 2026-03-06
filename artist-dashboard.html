@@ -1317,15 +1317,12 @@
                             '</div>' +
                         '</div>';
 
-                    // Click card to edit (but not when clicking delete)
-                    card.querySelector('.artwork-image').addEventListener('click', function() {
-                        openEditModal(artwork);
-                    });
-                    card.querySelector('.artwork-title').addEventListener('click', function() {
+                    // Click anywhere on card to edit
+                    card.addEventListener('click', function() {
                         openEditModal(artwork);
                     });
 
-                    // Delete
+                    // Delete — stop click from opening edit
                     card.querySelector('.delete-btn').addEventListener('click', async function(e) {
                         e.stopPropagation();
                         if (!confirm('Delete "' + artwork.title + '"? This cannot be undone.')) return;
