@@ -343,12 +343,6 @@
             gap: 1.5rem;
         }
 
-        .artwork-card {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            overflow: hidden;
-        }
-
         .artwork-image {
             aspect-ratio: 1;
             background: var(--gray-100);
@@ -531,6 +525,7 @@
             cursor: pointer;
             background: var(--gray-100);
             transition: all 0.2s;
+            position: relative;
         }
 
         .file-upload:hover {
@@ -541,10 +536,43 @@
             border-color: var(--success);
             border-style: solid;
             background: #f0fdf4;
+            padding: 0;
         }
 
         .file-upload input {
             display: none;
+        }
+
+        .file-upload .upload-preview {
+            display: none;
+            width: 100%;
+        }
+
+        .file-upload .upload-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .file-upload.has-file .upload-placeholder {
+            display: none;
+        }
+
+        .file-upload.has-file .upload-preview {
+            display: block;
+        }
+
+        .artwork-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .artwork-card:hover {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
         /* Message */
@@ -861,11 +889,11 @@
         </main>
     </div>
 
-    <!-- Add Artwork Modal -->
+    <!-- Artwork Modal (Add / Edit) -->
     <div class="modal-overlay" id="artwork-modal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title">Add New Artwork</h3>
+                <h3 class="modal-title" id="modal-title">Add New Artwork</h3>
                 <button class="modal-close" id="close-modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -873,12 +901,17 @@
                     <label class="form-label">Artwork Image</label>
                     <div class="file-upload" id="artwork-upload">
                         <input type="file" id="artwork-file" accept="image/*">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#737373">
-                            <rect x="4" y="3" width="2" height="18"/>
-                            <rect x="10" y="7" width="2" height="10"/>
-                            <rect x="16" y="5" width="2" height="14"/>
-                        </svg>
-                        <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload image</div>
+                        <div class="upload-placeholder">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="#737373">
+                                <rect x="4" y="3" width="2" height="18"/>
+                                <rect x="10" y="7" width="2" height="10"/>
+                                <rect x="16" y="5" width="2" height="14"/>
+                            </svg>
+                            <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload image</div>
+                        </div>
+                        <div class="upload-preview">
+                            <img id="artwork-preview-img" src="" alt="Preview">
+                        </div>
                     </div>
                 </div>
 
@@ -1084,19 +1117,60 @@
             setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        // Artwork modal
-        document.getElementById('add-artwork-btn').addEventListener('click', function() {
-            document.getElementById('artwork-modal').classList.add('active');
-        });
+        // Artwork modal — tracks whether we're adding or editing
+        let editingArtworkId = null;
 
+        function openAddModal() {
+            editingArtworkId = null;
+            document.getElementById('modal-title').textContent = 'Add New Artwork';
+            document.getElementById('save-artwork').textContent = 'Add Artwork';
+            // Clear form
+            document.getElementById('artwork-title').value = '';
+            document.getElementById('artwork-description').value = '';
+            document.getElementById('artwork-price').value = '';
+            document.getElementById('artwork-medium').value = 'oil';
+            document.getElementById('artwork-width').value = '';
+            document.getElementById('artwork-height').value = '';
+            document.getElementById('artwork-file').value = '';
+            document.getElementById('artwork-upload').classList.remove('has-file');
+            document.getElementById('artwork-preview-img').src = '';
+            document.getElementById('artwork-modal').classList.add('active');
+        }
+
+        function openEditModal(artwork) {
+            editingArtworkId = artwork.id;
+            document.getElementById('modal-title').textContent = 'Edit Artwork';
+            document.getElementById('save-artwork').textContent = 'Save Changes';
+            // Fill form with existing data
+            document.getElementById('artwork-title').value = artwork.title || '';
+            document.getElementById('artwork-description').value = artwork.description || '';
+            document.getElementById('artwork-price').value = artwork.price || '';
+            document.getElementById('artwork-medium').value = artwork.medium || 'oil';
+            document.getElementById('artwork-width').value = artwork.width_cm || '';
+            document.getElementById('artwork-height').value = artwork.height_cm || '';
+            document.getElementById('artwork-file').value = '';
+            // Show existing image if available
+            const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
+            if (hasImage) {
+                document.getElementById('artwork-preview-img').src = artwork.primary_image_url;
+                document.getElementById('artwork-upload').classList.add('has-file');
+            } else {
+                document.getElementById('artwork-preview-img').src = '';
+                document.getElementById('artwork-upload').classList.remove('has-file');
+            }
+            document.getElementById('artwork-modal').classList.add('active');
+        }
+
+        document.getElementById('add-artwork-btn').addEventListener('click', openAddModal);
         document.getElementById('close-modal').addEventListener('click', closeModal);
         document.getElementById('cancel-artwork').addEventListener('click', closeModal);
 
         function closeModal() {
             document.getElementById('artwork-modal').classList.remove('active');
+            editingArtworkId = null;
         }
 
-        // Artwork upload
+        // Artwork upload — click to choose file + show preview
         document.getElementById('artwork-upload').addEventListener('click', function() {
             document.getElementById('artwork-file').click();
         });
@@ -1104,10 +1178,35 @@
         document.getElementById('artwork-file').addEventListener('change', function() {
             if (this.files[0]) {
                 document.getElementById('artwork-upload').classList.add('has-file');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('artwork-preview-img').src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
             }
         });
 
-        // Save artwork
+        // Upload image helper
+        async function uploadArtworkImage(file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = artistData.id + '/' + Date.now() + '.' + fileExt;
+
+            const { data: uploadData, error: uploadError } = await db.storage
+                .from('artwork-images')
+                .upload(fileName, file, { contentType: file.type });
+
+            if (uploadError) {
+                throw new Error('Image upload failed: ' + uploadError.message);
+            }
+
+            const { data: urlData } = db.storage
+                .from('artwork-images')
+                .getPublicUrl(fileName);
+
+            return urlData.publicUrl;
+        }
+
+        // Save artwork (Add or Edit)
         document.getElementById('save-artwork').addEventListener('click', async function() {
             const title = document.getElementById('artwork-title').value.trim();
             const price = document.getElementById('artwork-price').value;
@@ -1119,90 +1218,75 @@
                 return;
             }
 
-            // Show loading state
             const saveBtn = document.getElementById('save-artwork');
-            saveBtn.textContent = 'Uploading...';
+            saveBtn.textContent = 'Saving...';
             saveBtn.disabled = true;
 
-            let imageUrl = 'https://placehold.co/400x400/f7f7f7/a3a3a3?text=No+Image';
+            try {
+                // Upload new image if selected
+                let imageUrl = null;
+                if (file) {
+                    imageUrl = await uploadArtworkImage(file);
+                }
 
-            // Upload image if selected
-            if (file) {
-                const fileExt = file.name.split('.').pop();
-                const fileName = artistData.id + '/' + Date.now() + '.' + fileExt;
+                const artworkData = {
+                    title: title,
+                    description: document.getElementById('artwork-description').value,
+                    price: parseFloat(price),
+                    medium: document.getElementById('artwork-medium').value,
+                    category: document.getElementById('artwork-medium').value,
+                    width_cm: parseInt(document.getElementById('artwork-width').value) || null,
+                    height_cm: parseInt(document.getElementById('artwork-height').value) || null,
+                };
 
-                const { data: uploadData, error: uploadError } = await db.storage
-                    .from('artwork-images')
-                    .upload(fileName, file, { contentType: file.type });
+                if (imageUrl) {
+                    artworkData.primary_image_url = imageUrl;
+                }
 
-                if (uploadError) {
-                    alert('Image upload error: ' + uploadError.message);
-                    saveBtn.textContent = 'Add Artwork';
-                    saveBtn.disabled = false;
+                let error;
+
+                if (editingArtworkId) {
+                    // Update existing
+                    const result = await db.from('artworks').update(artworkData).eq('id', editingArtworkId);
+                    error = result.error;
+                } else {
+                    // Insert new
+                    artworkData.artist_id = artistData.id;
+                    artworkData.status = 'pending';
+                    if (!imageUrl) {
+                        artworkData.primary_image_url = 'https://placehold.co/400x400/f7f7f7/a3a3a3?text=No+Image';
+                    }
+                    const result = await db.from('artworks').insert(artworkData);
+                    error = result.error;
+                }
+
+                if (error) {
+                    alert('Error: ' + error.message);
                     return;
                 }
 
-                const { data: urlData } = db.storage
-                    .from('artwork-images')
-                    .getPublicUrl(fileName);
-
-                imageUrl = urlData.publicUrl;
-            }
-
-            const { error } = await db.from('artworks').insert({
-                artist_id: artistData.id,
-                title: title,
-                description: document.getElementById('artwork-description').value,
-                price: parseFloat(price),
-                medium: document.getElementById('artwork-medium').value,
-                category: document.getElementById('artwork-medium').value,
-                primary_image_url: imageUrl,
-                width_cm: parseInt(document.getElementById('artwork-width').value) || null,
-                height_cm: parseInt(document.getElementById('artwork-height').value) || null,
-                status: 'pending'
-            });
-
-            if (error) {
-                alert('Error: ' + error.message);
-                saveBtn.textContent = 'Add Artwork';
+                closeModal();
+                loadArtworks();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                saveBtn.textContent = editingArtworkId ? 'Save Changes' : 'Add Artwork';
                 saveBtn.disabled = false;
-                return;
             }
-
-            // Reset form
-            saveBtn.textContent = 'Add Artwork';
-            saveBtn.disabled = false;
-            document.getElementById('artwork-title').value = '';
-            document.getElementById('artwork-description').value = '';
-            document.getElementById('artwork-price').value = '';
-            document.getElementById('artwork-width').value = '';
-            document.getElementById('artwork-height').value = '';
-            fileInput.value = '';
-            document.getElementById('artwork-upload').classList.remove('has-file');
-
-            closeModal();
-            loadArtworks();
         });
 
         // Load artworks
         async function loadArtworks() {
-            console.log('Loading artworks for artist_id:', artistData.id);
-            
             const { data, error } = await db.from('artworks')
                 .select('*')
                 .eq('artist_id', artistData.id)
                 .order('created_at', { ascending: false });
 
-            console.log('Artworks data:', data);
-            console.log('Artworks error:', error);
-
             const grid = document.getElementById('artwork-grid');
             grid.innerHTML = '<div class="add-artwork-card" id="add-artwork-btn"><div class="add-icon">+</div><div class="add-text">Add Artwork</div></div>';
 
-            // Re-attach event listener
-            document.getElementById('add-artwork-btn').addEventListener('click', function() {
-                document.getElementById('artwork-modal').classList.add('active');
-            });
+            // Re-attach add button
+            document.getElementById('add-artwork-btn').addEventListener('click', openAddModal);
 
             if (data && data.length > 0) {
                 document.getElementById('stat-artworks').textContent = data.length;
@@ -1229,11 +1313,21 @@
                                 '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + '</span>' +
                             '</div>' +
                             '<div class="artwork-delete">' +
-                                '<button data-id="' + artwork.id + '">Delete</button>' +
+                                '<button class="delete-btn">Delete</button>' +
                             '</div>' +
                         '</div>';
 
-                    card.querySelector('.artwork-delete button').addEventListener('click', async function() {
+                    // Click card to edit (but not when clicking delete)
+                    card.querySelector('.artwork-image').addEventListener('click', function() {
+                        openEditModal(artwork);
+                    });
+                    card.querySelector('.artwork-title').addEventListener('click', function() {
+                        openEditModal(artwork);
+                    });
+
+                    // Delete
+                    card.querySelector('.delete-btn').addEventListener('click', async function(e) {
+                        e.stopPropagation();
                         if (!confirm('Delete "' + artwork.title + '"? This cannot be undone.')) return;
                         
                         const { error } = await db.from('artworks').delete().eq('id', artwork.id);
@@ -1246,6 +1340,8 @@
 
                     grid.appendChild(card);
                 });
+            } else {
+                document.getElementById('stat-artworks').textContent = '0';
             }
         }
 
