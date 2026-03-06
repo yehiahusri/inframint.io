@@ -1119,10 +1119,15 @@
 
         // Load artworks
         async function loadArtworks() {
+            console.log('Loading artworks for artist_id:', artistData.id);
+            
             const { data, error } = await db.from('artworks')
                 .select('*')
                 .eq('artist_id', artistData.id)
                 .order('created_at', { ascending: false });
+
+            console.log('Artworks data:', data);
+            console.log('Artworks error:', error);
 
             const grid = document.getElementById('artwork-grid');
             grid.innerHTML = '<div class="add-artwork-card" id="add-artwork-btn"><div class="add-icon">+</div><div class="add-text">Add Artwork</div></div>';
