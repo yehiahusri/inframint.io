@@ -465,8 +465,8 @@
                 return;
             }
 
-            // Success - redirect to dashboard (or home for now)
-            window.location.href = 'index.html';
+            // Success - redirect to dashboard
+            window.location.href = 'artist-dashboard.html';
         });
 
         // Register
@@ -517,8 +517,8 @@
                     const { data: artist } = await db.from('artists').select('*').eq('user_id', session.user.id).single();
                     
                     if (artist) {
-                        // Already an artist - go to home/dashboard
-                        window.location.href = 'index.html';
+                        // Already an artist - go to dashboard
+                        window.location.href = 'artist-dashboard.html';
                     } else {
                         // Need to complete artist registration
                         window.location.href = 'artist-signup.html?step=2';

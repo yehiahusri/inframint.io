@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Dashboard — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --error: #dc2626;
+            --success: #16a34a;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            height: 4rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.5rem;
+            background: var(--black);
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-400);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-user {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .nav-link {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--black);
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            padding-top: 4rem;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            padding: 2rem 0;
+            position: fixed;
+            top: 4rem;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            margin: 0 -0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .sidebar-link:hover {
+            background: var(--gray-100);
+            color: var(--black);
+        }
+
+        .sidebar-link.active {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .sidebar-icon {
+            font-size: 1.125rem;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-500);
+            font-size: 0.9375rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 100px;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Form */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--gray-600);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            font-family: 'Manrope', sans-serif;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--black);
+        }
+
+        .form-input:disabled {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: 'Manrope', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--gray-800);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--black);
+            color: var(--black);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+        }
+
+        /* Profile Photo */
+        .profile-photo-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--gray-400);
+            overflow: hidden;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Artwork Grid */
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .artwork-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .artwork-image {
+            aspect-ratio: 1;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            font-size: 2rem;
+            overflow: hidden;
+        }
+
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artwork-info {
+            padding: 1rem;
+        }
+
+        .artwork-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .artwork-price {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .artwork-status {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Add Artwork Card */
+        .add-artwork-card {
+            border: 2px dashed var(--gray-300);
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-artwork-card:hover {
+            border-color: var(--black);
+            background: var(--gray-100);
+        }
+
+        .add-icon {
+            font-size: 2rem;
+            color: var(--gray-400);
+            margin-bottom: 0.5rem;
+        }
+
+        .add-text {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-500);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 1rem;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-400);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--gray-100);
+            transition: all 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--black);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--success);
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        /* Message */
+        .message {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .form-row { grid-template-columns: 1fr; }
+            nav { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        <div class="nav-right">
+            <span class="nav-user" id="user-name">Loading...</span>
+            <a class="nav-link" id="sign-out">Sign Out</a>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Dashboard</div>
+                <a class="sidebar-link active" data-section="overview">
+                    <span class="sidebar-icon">📊</span>
+                    Overview
+                </a>
+                <a class="sidebar-link" data-section="artworks">
+                    <span class="sidebar-icon">🖼️</span>
+                    My Artworks
+                </a>
+                <a class="sidebar-link" data-section="orders">
+                    <span class="sidebar-icon">📦</span>
+                    Orders
+                </a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Settings</div>
+                <a class="sidebar-link" data-section="profile">
+                    <span class="sidebar-icon">👤</span>
+                    Profile
+                </a>
+                <a class="sidebar-link" data-section="payouts">
+                    <span class="sidebar-icon">💳</span>
+                    Payouts
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Overview Section -->
+            <div class="section active" id="section-overview">
+                <div class="page-header">
+                    <h1 class="page-title">Welcome back!</h1>
+                    <p class="page-subtitle">Here's what's happening with your account</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Account Status</h2>
+                        <span class="status-badge status-pending" id="account-status">Pending Review</span>
+                    </div>
+                    <p style="color: var(--gray-500); font-size: 0.9375rem;" id="status-message">
+                        Your application is being reviewed. We'll notify you by email once approved.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 600;" id="stat-artworks">0</div>
+                        <div style="color: var(--gray-500); font-size: 0.875rem;">Artworks Listed</div>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 600;" id="stat-views">0</div>
+                        <div style="color: var(--gray-500); font-size: 0.875rem;">Total Views</div>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 600;" id="stat-sales">$0</div>
+                        <div style="color: var(--gray-500); font-size: 0.875rem;">Total Sales</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artworks Section -->
+            <div class="section" id="section-artworks">
+                <div class="page-header">
+                    <h1 class="page-title">My Artworks</h1>
+                    <p class="page-subtitle">Manage your artwork listings</p>
+                </div>
+
+                <div class="artwork-grid" id="artwork-grid">
+                    <div class="add-artwork-card" id="add-artwork-btn">
+                        <div class="add-icon">+</div>
+                        <div class="add-text">Add Artwork</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="section" id="section-orders">
+                <div class="page-header">
+                    <h1 class="page-title">Orders</h1>
+                    <p class="page-subtitle">Track your sales and shipments</p>
+                </div>
+
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <p>No orders yet. Once someone purchases your art, it will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="section" id="section-profile">
+                <div class="page-header">
+                    <h1 class="page-title">Profile</h1>
+                    <p class="page-subtitle">Manage your public artist profile</p>
+                </div>
+
+                <div class="message" id="profile-message"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Public Profile</h2>
+                    </div>
+
+                    <div class="profile-photo-section">
+                        <div class="profile-photo" id="profile-photo">👤</div>
+                        <div>
+                            <button class="btn btn-secondary btn-sm" id="change-photo-btn">Change Photo</button>
+                            <input type="file" id="photo-input" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Artist Name</label>
+                        <input type="text" class="form-input" id="profile-artist-name" placeholder="Your artist name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="profile-category">
+                            <option value="painting">Painting</option>
+                            <option value="photography">Photography</option>
+                            <option value="digital">Digital Art</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="mixed">Mixed Media</option>
+                            <option value="illustration">Illustration</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Biography</label>
+                        <textarea class="form-textarea" id="profile-bio" placeholder="Tell collectors about yourself and your art..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" id="save-profile-btn">Save Changes</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Personal Information</h2>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" id="profile-first-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" id="profile-last-name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="profile-email" disabled>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <select class="form-select" id="profile-country">
+                                <option value="AE">United Arab Emirates</option>
+                                <option value="US">United States</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-input" id="profile-city">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="save-personal-btn">Save Changes</button>
+                </div>
+            </div>
+
+            <!-- Payouts Section -->
+            <div class="section" id="section-payouts">
+                <div class="page-header">
+                    <h1 class="page-title">Payouts</h1>
+                    <p class="page-subtitle">Manage your payment settings</p>
+                </div>
+
+                <div class="message" id="payout-message"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Payout Method</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Method</label>
+                        <select class="form-select" id="payout-method">
+                            <option value="bank">Bank Transfer</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
+                    </div>
+
+                    <div id="payout-bank-fields">
+                        <div class="form-group">
+                            <label class="form-label">Account Holder Name</label>
+                            <input type="text" class="form-input" id="payout-bank-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">IBAN</label>
+                            <input type="text" class="form-input" id="payout-iban">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">BIC/SWIFT</label>
+                            <input type="text" class="form-input" id="payout-bic">
+                        </div>
+                    </div>
+
+                    <div id="payout-paypal-fields" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">PayPal Email</label>
+                            <input type="email" class="form-input" id="payout-paypal-email">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="save-payout-btn">Save Changes</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Artwork Modal -->
+    <div class="modal-overlay" id="artwork-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Artwork</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Artwork Image</label>
+                    <div class="file-upload" id="artwork-upload">
+                        <input type="file" id="artwork-file" accept="image/*">
+                        <div>📷</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--gray-600);">Click to upload image</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="artwork-title" placeholder="Name of your artwork">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="artwork-description" placeholder="Tell the story behind this piece..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price (USD)</label>
+                        <input type="number" class="form-input" id="artwork-price" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Medium</label>
+                        <select class="form-select" id="artwork-medium">
+                            <option value="oil">Oil on Canvas</option>
+                            <option value="acrylic">Acrylic</option>
+                            <option value="watercolor">Watercolor</option>
+                            <option value="digital">Digital</option>
+                            <option value="photography">Photography</option>
+                            <option value="mixed">Mixed Media</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Width (cm)</label>
+                        <input type="number" class="form-input" id="artwork-width" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Height (cm)</label>
+                        <input type="number" class="form-input" id="artwork-height" placeholder="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-artwork">Cancel</button>
+                <button class="btn btn-primary" id="save-artwork">Add Artwork</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let artistData = null;
+
+        // Check authentication
+        async function checkAuth() {
+            const { data: { session } } = await db.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'artist-login.html';
+                return;
+            }
+
+            currentUser = session.user;
+            
+            // Load artist data
+            const { data, error } = await db.from('artists')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .single();
+
+            if (error || !data) {
+                alert('Artist profile not found. Please complete your application.');
+                window.location.href = 'artist-signup.html';
+                return;
+            }
+
+            artistData = data;
+            populateProfile();
+        }
+
+        // Populate profile data
+        function populateProfile() {
+            document.getElementById('user-name').textContent = artistData.artist_name || artistData.first_name;
+            
+            // Update status badge
+            const statusBadge = document.getElementById('account-status');
+            const statusMessage = document.getElementById('status-message');
+            
+            if (artistData.status === 'approved') {
+                statusBadge.className = 'status-badge status-approved';
+                statusBadge.textContent = 'Approved';
+                statusMessage.textContent = 'Your account is approved! You can now list and sell artwork.';
+            } else if (artistData.status === 'rejected') {
+                statusBadge.className = 'status-badge status-rejected';
+                statusBadge.textContent = 'Rejected';
+                statusMessage.textContent = 'Unfortunately your application was not approved. Please contact support for more information.';
+            } else {
+                statusBadge.className = 'status-badge status-pending';
+                statusBadge.textContent = 'Pending Review';
+                statusMessage.textContent = 'Your application is being reviewed. We\'ll notify you by email once approved.';
+            }
+
+            // Profile fields
+            document.getElementById('profile-artist-name').value = artistData.artist_name || '';
+            document.getElementById('profile-category').value = artistData.category || 'painting';
+            document.getElementById('profile-bio').value = artistData.bio || '';
+            document.getElementById('profile-first-name').value = artistData.first_name || '';
+            document.getElementById('profile-last-name').value = artistData.last_name || '';
+            document.getElementById('profile-email').value = artistData.email || '';
+            document.getElementById('profile-country').value = artistData.country || 'US';
+            document.getElementById('profile-city').value = artistData.city || '';
+
+            // Payout fields
+            document.getElementById('payout-method').value = artistData.payout_method || 'bank';
+            document.getElementById('payout-bank-name').value = artistData.bank_account_name || '';
+            document.getElementById('payout-iban').value = artistData.bank_iban || '';
+            document.getElementById('payout-bic').value = artistData.bank_bic || '';
+            document.getElementById('payout-paypal-email').value = artistData.paypal_email || '';
+
+            togglePayoutFields();
+            loadArtworks();
+        }
+
+        // Navigation
+        document.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                const section = this.dataset.section;
+                
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + section).classList.add('active');
+            });
+        });
+
+        // Sign out
+        document.getElementById('sign-out').addEventListener('click', async function() {
+            await db.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        // Save profile
+        document.getElementById('save-profile-btn').addEventListener('click', async function() {
+            const { error } = await db.from('artists').update({
+                artist_name: document.getElementById('profile-artist-name').value,
+                category: document.getElementById('profile-category').value,
+                bio: document.getElementById('profile-bio').value
+            }).eq('id', artistData.id);
+
+            showMessage('profile-message', error ? 'Error saving: ' + error.message : 'Profile saved!', !error);
+        });
+
+        // Save personal info
+        document.getElementById('save-personal-btn').addEventListener('click', async function() {
+            const { error } = await db.from('artists').update({
+                first_name: document.getElementById('profile-first-name').value,
+                last_name: document.getElementById('profile-last-name').value,
+                country: document.getElementById('profile-country').value,
+                city: document.getElementById('profile-city').value
+            }).eq('id', artistData.id);
+
+            showMessage('profile-message', error ? 'Error saving: ' + error.message : 'Personal info saved!', !error);
+        });
+
+        // Payout method toggle
+        document.getElementById('payout-method').addEventListener('change', togglePayoutFields);
+
+        function togglePayoutFields() {
+            const method = document.getElementById('payout-method').value;
+            document.getElementById('payout-bank-fields').style.display = method === 'bank' ? 'block' : 'none';
+            document.getElementById('payout-paypal-fields').style.display = method === 'paypal' ? 'block' : 'none';
+        }
+
+        // Save payout
+        document.getElementById('save-payout-btn').addEventListener('click', async function() {
+            const method = document.getElementById('payout-method').value;
+            const updateData = { payout_method: method };
+
+            if (method === 'bank') {
+                updateData.bank_account_name = document.getElementById('payout-bank-name').value;
+                updateData.bank_iban = document.getElementById('payout-iban').value;
+                updateData.bank_bic = document.getElementById('payout-bic').value;
+            } else {
+                updateData.paypal_email = document.getElementById('payout-paypal-email').value;
+            }
+
+            const { error } = await db.from('artists').update(updateData).eq('id', artistData.id);
+            showMessage('payout-message', error ? 'Error saving: ' + error.message : 'Payout settings saved!', !error);
+        });
+
+        // Show message helper
+        function showMessage(elementId, text, isSuccess) {
+            const el = document.getElementById(elementId);
+            el.textContent = text;
+            el.className = 'message show ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // Artwork modal
+        document.getElementById('add-artwork-btn').addEventListener('click', function() {
+            document.getElementById('artwork-modal').classList.add('active');
+        });
+
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('cancel-artwork').addEventListener('click', closeModal);
+
+        function closeModal() {
+            document.getElementById('artwork-modal').classList.remove('active');
+        }
+
+        // Artwork upload
+        document.getElementById('artwork-upload').addEventListener('click', function() {
+            document.getElementById('artwork-file').click();
+        });
+
+        document.getElementById('artwork-file').addEventListener('change', function() {
+            if (this.files[0]) {
+                document.getElementById('artwork-upload').classList.add('has-file');
+            }
+        });
+
+        // Save artwork
+        document.getElementById('save-artwork').addEventListener('click', async function() {
+            const title = document.getElementById('artwork-title').value.trim();
+            const price = document.getElementById('artwork-price').value;
+
+            if (!title || !price) {
+                alert('Please enter title and price');
+                return;
+            }
+
+            // For now, just insert basic data (file upload can be added later)
+            const { error } = await db.from('artworks').insert({
+                artist_id: artistData.id,
+                title: title,
+                description: document.getElementById('artwork-description').value,
+                price: parseFloat(price),
+                medium: document.getElementById('artwork-medium').value,
+                width_cm: parseInt(document.getElementById('artwork-width').value) || null,
+                height_cm: parseInt(document.getElementById('artwork-height').value) || null,
+                status: 'draft'
+            });
+
+            if (error) {
+                alert('Error: ' + error.message);
+                return;
+            }
+
+            closeModal();
+            loadArtworks();
+        });
+
+        // Load artworks
+        async function loadArtworks() {
+            const { data, error } = await db.from('artworks')
+                .select('*')
+                .eq('artist_id', artistData.id)
+                .order('created_at', { ascending: false });
+
+            const grid = document.getElementById('artwork-grid');
+            grid.innerHTML = '<div class="add-artwork-card" id="add-artwork-btn"><div class="add-icon">+</div><div class="add-text">Add Artwork</div></div>';
+
+            // Re-attach event listener
+            document.getElementById('add-artwork-btn').addEventListener('click', function() {
+                document.getElementById('artwork-modal').classList.add('active');
+            });
+
+            if (data && data.length > 0) {
+                document.getElementById('stat-artworks').textContent = data.length;
+
+                data.forEach(function(artwork) {
+                    const card = document.createElement('div');
+                    card.className = 'artwork-card';
+                    card.innerHTML = `
+                        <div class="artwork-image">🖼️</div>
+                        <div class="artwork-info">
+                            <div class="artwork-title">${artwork.title}</div>
+                            <div class="artwork-price">$${artwork.price}</div>
+                            <div class="artwork-status">
+                                <span class="status-badge status-${artwork.status === 'listed' ? 'approved' : 'pending'}">${artwork.status}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // Profile photo
+        document.getElementById('change-photo-btn').addEventListener('click', function() {
+            document.getElementById('photo-input').click();
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+
+</body>
+</html>
