@@ -1153,6 +1153,10 @@
             }
         }
 
+        // Expose to global scope for onclick handlers
+        window.nextStep = nextStep;
+        window.prevStep = prevStep;
+
         // Google Sign In
         async function signInWithGoogle() {
             const { data, error } = await db.auth.signInWithOAuth({
@@ -1500,6 +1504,9 @@
         // Initialize file uploads when DOM is ready
         setupFileUpload('gov-id-upload', 'gov-id-input');
         setupFileUpload('profile-photo-upload', 'profile-photo-input');
+
+        // Expose submitForm to global scope
+        window.submitForm = submitForm;
 
         // Check auth on page load
         checkAuth();
