@@ -815,7 +815,7 @@
                 detailsHTML += '<div><div class="modal-detail-label">Edition</div><div class="modal-detail-value">' + edSold + ' of ' + edTotal + ' sold</div></div>';
             }
 
-            var statusLabel = allSold || artwork.status === 'sold' ? 'Sold Out' : (artwork.status === 'listed' ? 'Available' : 'Coming Soon');
+            var statusLabel = allSold || artwork.status === 'sold' ? 'Sold Out' : (artwork.status === 'listed' ? 'Available' : 'Available');
             detailsHTML += '<div><div class="modal-detail-label">Status</div><div class="modal-detail-value">' + statusLabel + '</div></div>';
 
             document.getElementById('modal-details').innerHTML = detailsHTML;

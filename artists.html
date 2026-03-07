@@ -430,7 +430,7 @@
                 } else if (work.status === 'listed') {
                     statusText = 'Available';
                 } else {
-                    statusText = 'Coming Soon';
+                    statusText = 'Available';
                 }
 
                 var card = document.createElement('div');
@@ -472,7 +472,7 @@
                 statusLabel = isEdition ? editionSold + ' of ' + editionTotal + ' sold' : 'Available';
                 statusClass = 'status-available';
             } else {
-                statusLabel = 'Coming Soon';
+                statusLabel = 'Available';
                 statusClass = 'status-pending';
             }
 
