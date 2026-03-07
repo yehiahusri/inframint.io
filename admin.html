@@ -269,19 +269,92 @@
 
                 <!-- Finance -->
                 <div class="sec" id="section-finance">
-                    <div class="ph"><h1>Finance</h1><p>Revenue breakdown and payouts</p></div>
+                    <div class="ph"><h1>Finance</h1><p>Revenue breakdown, payments, and quarterly reports</p></div>
+                    
+                    <!-- Period selector -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Period</span>
+                            <select class="fi" id="fin-period" style="width:auto;padding:.3rem .6rem;font-size:.7rem">
+                                <option value="all">All Time</option>
+                                <option value="q1">Q1 (Jan-Mar)</option>
+                                <option value="q2">Q2 (Apr-Jun)</option>
+                                <option value="q3">Q3 (Jul-Sep)</option>
+                                <option value="q4">Q4 (Oct-Dec)</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Revenue overview -->
+                        <div class="fin-grid">
+                            <div class="fin-card" style="border-left:3px solid var(--black)"><div class="fin-val" id="f-total">$0</div><div class="fin-lbl">Total Art Sales</div></div>
+                            <div class="fin-card"><div class="fin-val" id="f-total-shipping">$0</div><div class="fin-lbl">Shipping + Customs</div></div>
+                            <div class="fin-card" style="border-left:3px solid var(--ok)"><div class="fin-val" id="f-grand-total">$0</div><div class="fin-lbl">Grand Total Collected</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Revenue split -->
                     <div class="card">
                         <div class="ch"><span class="ct2">Revenue Split</span></div>
                         <div class="fin-grid">
-                            <div class="fin-card"><div class="fin-val" id="f-total">$0</div><div class="fin-lbl">Total Art Sales</div></div>
                             <div class="fin-card" style="border-left:3px solid var(--black)"><div class="fin-val" id="f-gallery">$0</div><div class="fin-lbl">Gallery (30%)</div></div>
                             <div class="fin-card" style="border-left:3px solid var(--ok)"><div class="fin-val" id="f-artists">$0</div><div class="fin-lbl">Artists (65%)</div></div>
-                        </div>
-                        <div class="fin-grid">
                             <div class="fin-card" style="border-left:3px solid var(--warn)"><div class="fin-val" id="f-partners">$0</div><div class="fin-lbl">Partners (5%)</div></div>
-                            <div class="fin-card"><div class="fin-val" id="f-shipping">$0</div><div class="fin-lbl">Shipping Collected</div></div>
-                            <div class="fin-card"><div class="fin-val" id="f-customs">$0</div><div class="fin-lbl">Customs Collected</div></div>
                         </div>
+                    </div>
+
+                    <!-- Paid vs Pending -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Payment Status</span></div>
+                        <div class="fin-grid">
+                            <div class="fin-card" style="border-left:3px solid var(--ok)"><div class="fin-val" id="f-paid">$0</div><div class="fin-lbl">Paid Out (Delivered)</div></div>
+                            <div class="fin-card" style="border-left:3px solid var(--warn)"><div class="fin-val" id="f-pending">$0</div><div class="fin-lbl">Pending (In Transit)</div></div>
+                            <div class="fin-card" style="border-left:3px solid var(--err)"><div class="fin-val" id="f-escrow">$0</div><div class="fin-lbl">In Escrow (Processing)</div></div>
+                        </div>
+                        <div style="margin-top:.75rem">
+                            <div style="height:8px;background:var(--g200);display:flex;overflow:hidden">
+                                <div id="bar-paid" style="background:var(--ok);height:100%;transition:width .3s"></div>
+                                <div id="bar-pending" style="background:var(--warn);height:100%;transition:width .3s"></div>
+                                <div id="bar-escrow" style="background:var(--err);height:100%;transition:width .3s"></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:.55rem;color:var(--g500);margin-top:.3rem">
+                                <span>● Paid</span><span>● Pending</span><span>● Escrow</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quarterly breakdown -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Quarterly Breakdown (Current Year)</span></div>
+                        <div class="tw"><table>
+                            <thead><tr><th>Quarter</th><th>Orders</th><th>Art Sales</th><th>Shipping</th><th>Gallery (30%)</th><th>Artists</th><th>Partners</th><th>Paid</th><th>Pending</th></tr></thead>
+                            <tbody id="tb-quarterly"></tbody>
+                        </table></div>
+                    </div>
+
+                    <!-- Payouts to artists -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Artist Payouts</span></div>
+                        <div class="tw"><table>
+                            <thead><tr><th>Artist</th><th>Total Sales</th><th>Their Earnings (65%)</th><th>Paid</th><th>Pending</th><th>Payout Method</th></tr></thead>
+                            <tbody id="tb-artist-pay"></tbody>
+                        </table></div>
+                    </div>
+
+                    <!-- Payouts to partners -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Partner Payouts</span></div>
+                        <div class="tw"><table>
+                            <thead><tr><th>Partner</th><th>Artists Recruited</th><th>Sales via Artists</th><th>Commission Earned (5%)</th><th>Paid</th><th>Pending</th><th>Payout Method</th></tr></thead>
+                            <tbody id="tb-partner-pay"></tbody>
+                        </table></div>
+                    </div>
+
+                    <!-- Monthly trend -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Monthly Revenue (Last 12 Months)</span></div>
+                        <div id="monthly-chart" style="display:flex;align-items:flex-end;gap:3px;height:120px;padding:.5rem 0"></div>
+                        <div id="monthly-labels" style="display:flex;gap:3px;font-size:.5rem;color:var(--g400)"></div>
                     </div>
                 </div>
 
@@ -432,12 +505,6 @@
         el('s-gal','$'+Math.round(rev*.3).toLocaleString());
         el('s-part','$'+Math.round(rev*.05).toLocaleString());
         el('s-art','$'+Math.round(rev*.65).toLocaleString());
-        el('f-total','$'+rev.toLocaleString());
-        el('f-gallery','$'+Math.round(rev*.3).toLocaleString());
-        el('f-artists','$'+Math.round(rev*.65).toLocaleString());
-        el('f-partners','$'+Math.round(rev*.05).toLocaleString());
-        el('f-shipping','$'+ship.toLocaleString());
-        el('f-customs','$'+cust.toLocaleString());
 
         renderPendingArtists(pendA);
         renderPendingPartners(pendP);
@@ -449,8 +516,157 @@
         renderFeatured();
         renderOrders();
         renderCommissions();
+        renderFinance('all');
         renderActivity();
     }
+
+    // ===== FINANCE =====
+    function renderFinance(period) {
+        var now=new Date();
+        var yr=now.getFullYear();
+        var orders=allOrders.filter(function(o) {
+            if (period==='all') return true;
+            if (!o.created_at) return false;
+            var d=new Date(o.created_at);
+            var m=d.getMonth(), y=d.getFullYear();
+            if (period==='year') return y===yr;
+            if (period==='month') return y===yr && m===now.getMonth();
+            if (period==='q1') return y===yr && m>=0 && m<=2;
+            if (period==='q2') return y===yr && m>=3 && m<=5;
+            if (period==='q3') return y===yr && m>=6 && m<=8;
+            if (period==='q4') return y===yr && m>=9 && m<=11;
+            return true;
+        });
+
+        var rev=0,ship=0,cust=0,paid=0,pending=0,escrow=0;
+        orders.forEach(function(o) {
+            var ap=Number(o.art_price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
+            rev+=ap; ship+=sh; cust+=cu;
+            if (o.status==='delivered') paid+=ap;
+            else if (o.status==='shipped') pending+=ap;
+            else escrow+=ap;
+        });
+
+        el('f-total','$'+rev.toLocaleString());
+        el('f-total-shipping','$'+(ship+cust).toLocaleString());
+        el('f-grand-total','$'+(rev+ship+cust).toLocaleString());
+        el('f-gallery','$'+Math.round(rev*.3).toLocaleString());
+        el('f-artists','$'+Math.round(rev*.65).toLocaleString());
+        el('f-partners','$'+Math.round(rev*.05).toLocaleString());
+        el('f-paid','$'+paid.toLocaleString());
+        el('f-pending','$'+pending.toLocaleString());
+        el('f-escrow','$'+escrow.toLocaleString());
+
+        // Progress bar
+        var total=paid+pending+escrow||1;
+        document.getElementById('bar-paid').style.width=Math.round(paid/total*100)+'%';
+        document.getElementById('bar-pending').style.width=Math.round(pending/total*100)+'%';
+        document.getElementById('bar-escrow').style.width=Math.round(escrow/total*100)+'%';
+
+        // Quarterly breakdown
+        var quarters=[{label:'Q1 (Jan-Mar)',m:[0,1,2]},{label:'Q2 (Apr-Jun)',m:[3,4,5]},{label:'Q3 (Jul-Sep)',m:[6,7,8]},{label:'Q4 (Oct-Dec)',m:[9,10,11]}];
+        var qb=document.getElementById('tb-quarterly');
+        qb.innerHTML='';
+        quarters.forEach(function(q) {
+            var qOrders=allOrders.filter(function(o) {
+                if (!o.created_at) return false;
+                var d=new Date(o.created_at);
+                return d.getFullYear()===yr && q.m.indexOf(d.getMonth())>=0;
+            });
+            var qRev=0,qShip=0,qPaid=0,qPend=0;
+            qOrders.forEach(function(o) {
+                var ap=Number(o.art_price||0);
+                qRev+=ap; qShip+=Number(o.shipping_cost||0)+Number(o.customs_cost||0);
+                if (o.status==='delivered') qPaid+=ap; else qPend+=ap;
+            });
+            qb.innerHTML+='<tr><td class="tn">'+q.label+'</td><td>'+qOrders.length+'</td><td>$'+qRev.toLocaleString()+'</td><td>$'+qShip.toLocaleString()+'</td><td>$'+Math.round(qRev*.3).toLocaleString()+'</td><td>$'+Math.round(qRev*.65).toLocaleString()+'</td><td>$'+Math.round(qRev*.05).toLocaleString()+'</td><td style="color:var(--ok)">$'+qPaid.toLocaleString()+'</td><td style="color:var(--warn)">$'+qPend.toLocaleString()+'</td></tr>';
+        });
+        // Year total row
+        var yOrders=allOrders.filter(function(o){return o.created_at&&new Date(o.created_at).getFullYear()===yr});
+        var yRev=0,yShip=0,yPaid=0,yPend=0;
+        yOrders.forEach(function(o){var ap=Number(o.art_price||0);yRev+=ap;yShip+=Number(o.shipping_cost||0)+Number(o.customs_cost||0);if(o.status==='delivered')yPaid+=ap;else yPend+=ap});
+        qb.innerHTML+='<tr style="font-weight:600;border-top:2px solid var(--g300)"><td>'+yr+' Total</td><td>'+yOrders.length+'</td><td>$'+yRev.toLocaleString()+'</td><td>$'+yShip.toLocaleString()+'</td><td>$'+Math.round(yRev*.3).toLocaleString()+'</td><td>$'+Math.round(yRev*.65).toLocaleString()+'</td><td>$'+Math.round(yRev*.05).toLocaleString()+'</td><td style="color:var(--ok)">$'+yPaid.toLocaleString()+'</td><td style="color:var(--warn)">$'+yPend.toLocaleString()+'</td></tr>';
+
+        // Artist payouts
+        var apb=document.getElementById('tb-artist-pay');
+        apb.innerHTML='';
+        var artistSales={};
+        allOrders.forEach(function(o) {
+            var aId=o.artist_id;
+            if (!aId) return;
+            if (!artistSales[aId]) artistSales[aId]={total:0,paid:0,pending:0};
+            var ap=Number(o.art_price||0);
+            artistSales[aId].total+=ap;
+            if (o.status==='delivered') artistSales[aId].paid+=ap;
+            else artistSales[aId].pending+=ap;
+        });
+        if (Object.keys(artistSales).length===0) {
+            apb.innerHTML='<tr class="empty"><td colspan="6">No sales yet</td></tr>';
+        } else {
+            allArtists.forEach(function(a) {
+                var s=artistSales[a.id];
+                if (!s) return;
+                var earn=Math.round(s.total*.65);
+                var earnPaid=Math.round(s.paid*.65);
+                var earnPend=Math.round(s.pending*.65);
+                var pay=a.payout_method==='paypal'?'PayPal':(a.bank_iban?'Bank ****'+a.bank_iban.slice(-4):'Not set');
+                apb.innerHTML+='<tr><td class="tn">'+(a.artist_name||a.first_name||'—')+'</td><td>$'+s.total.toLocaleString()+'</td><td>$'+earn.toLocaleString()+'</td><td style="color:var(--ok)">$'+earnPaid.toLocaleString()+'</td><td style="color:var(--warn)">$'+earnPend.toLocaleString()+'</td><td class="te">'+pay+'</td></tr>';
+            });
+        }
+
+        // Partner payouts
+        var ppb=document.getElementById('tb-partner-pay');
+        ppb.innerHTML='';
+        if (!allPartners.length) {
+            ppb.innerHTML='<tr class="empty"><td colspan="7">No partners yet</td></tr>';
+        } else {
+            allPartners.forEach(function(p) {
+                var pArtists=allPArtists.filter(function(r){return r.partner_id===p.id});
+                var artistIds=pArtists.map(function(r){return r.artist_id});
+                var pOrders=allOrders.filter(function(o){return artistIds.indexOf(o.artist_id)>=0});
+                var pRev=0,pPaid=0,pPend=0;
+                pOrders.forEach(function(o){var ap=Number(o.art_price||0);pRev+=ap;if(o.status==='delivered')pPaid+=ap;else pPend+=ap});
+                var comm=Math.round(pRev*.05);
+                var commPaid=Math.round(pPaid*.05);
+                var commPend=Math.round(pPend*.05);
+                var pay=p.payout_method==='paypal'?'PayPal':(p.bank_iban?'Bank ****'+p.bank_iban.slice(-4):'Not set');
+                ppb.innerHTML+='<tr><td class="tn">'+(p.first_name||'')+' '+(p.last_name||'')+'</td><td>'+pArtists.length+'</td><td>'+pOrders.length+'</td><td>$'+comm.toLocaleString()+'</td><td style="color:var(--ok)">$'+commPaid.toLocaleString()+'</td><td style="color:var(--warn)">$'+commPend.toLocaleString()+'</td><td class="te">'+pay+'</td></tr>';
+            });
+        }
+
+        // Monthly chart (last 12 months)
+        var chart=document.getElementById('monthly-chart');
+        var labels=document.getElementById('monthly-labels');
+        var months=[];
+        var monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        for(var i=11;i>=0;i--){
+            var md=new Date(yr,now.getMonth()-i,1);
+            months.push({y:md.getFullYear(),m:md.getMonth(),label:monthNames[md.getMonth()]});
+        }
+        var monthRevs=months.map(function(mo){
+            var mRev=0;
+            allOrders.forEach(function(o){
+                if(!o.created_at)return;
+                var d=new Date(o.created_at);
+                if(d.getFullYear()===mo.y&&d.getMonth()===mo.m)mRev+=Number(o.art_price||0);
+            });
+            return mRev;
+        });
+        var maxRev=Math.max.apply(null,monthRevs)||1;
+        chart.innerHTML='';
+        labels.innerHTML='';
+        monthRevs.forEach(function(r,idx){
+            var h=Math.max(2,Math.round(r/maxRev*110));
+            var bar=document.createElement('div');
+            bar.style.cssText='flex:1;height:'+h+'px;background:'+(r>0?'var(--black)':'var(--g200)')+';transition:height .3s;position:relative;cursor:pointer';
+            bar.title=months[idx].label+': $'+r.toLocaleString();
+            chart.appendChild(bar);
+            labels.innerHTML+='<div style="flex:1;text-align:center">'+months[idx].label+'</div>';
+        });
+    }
+
+    // Period filter
+    document.getElementById('fin-period').addEventListener('change',function(){renderFinance(this.value)});
 
     function el(id,v){document.getElementById(id).textContent=v}
     function img(url){return url&&!url.includes('placehold')?'<img src="'+url+'" class="thumb">':'—'}
