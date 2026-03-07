@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --gray-900: #171717;
+        }
+
+        html { font-size: 16px; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
+            background: var(--white);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-center a {
+            font-size: 0.9375rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-center a:hover,
+        .nav-center a.active {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-login {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-login:hover {
+            color: var(--white);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 7.5rem 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title strong {
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            font-size: 0.9375rem;
+            color: var(--gray-500);
+            font-weight: 300;
+        }
+
+        /* Filters */
+        .filters {
+            padding: 1.5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            padding: 0.5rem 1.25rem;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--black);
+            color: var(--black);
+        }
+
+        .filter-btn.active {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            padding: 2rem 3rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .gallery-card {
+            background: var(--white);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-card:hover {
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .gallery-card-image {
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-card:hover .gallery-card-image img {
+            transform: scale(1.03);
+        }
+
+        .gallery-card-image .placeholder-icon {
+            color: var(--gray-300);
+        }
+
+        .gallery-card-info {
+            padding: 1.25rem;
+        }
+
+        .gallery-card-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .gallery-card-artist {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            font-weight: 300;
+            margin-bottom: 0.75rem;
+        }
+
+        .gallery-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gallery-card-price {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .gallery-card-medium {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-icon div {
+            width: 3px;
+            background: var(--gray-300);
+            border-radius: 1px;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            font-size: 0.9375rem;
+            color: var(--gray-500);
+            font-weight: 300;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 6rem 2rem;
+            grid-column: 1 / -1;
+            color: var(--gray-400);
+            font-size: 0.9375rem;
+            font-weight: 300;
+        }
+
+        /* Artwork Detail Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+        }
+
+        .modal-image {
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: var(--gray-100);
+        }
+
+        .modal-content {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-close {
+            align-self: flex-end;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--black);
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-artist {
+            font-size: 0.9375rem;
+            color: var(--gray-500);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-artist a {
+            color: var(--gray-500);
+            text-decoration: none;
+            border-bottom: 1px solid var(--gray-300);
+            transition: color 0.2s;
+        }
+
+        .modal-artist a:hover {
+            color: var(--black);
+        }
+
+        .modal-price {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .modal-description {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            flex: 1;
+        }
+
+        .modal-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1.25rem 0;
+            border-top: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 2rem;
+        }
+
+        .modal-detail-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+            margin-bottom: 0.2rem;
+        }
+
+        .modal-detail-value {
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        .modal-cta {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            padding: 1rem;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .modal-cta:hover {
+            background: var(--gray-800);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--gray-200);
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-bar {
+            width: 2px;
+            height: 1.25rem;
+            background: var(--black);
+        }
+
+        .footer-text {
+            font-size: 1rem;
+        }
+
+        .footer-text span:first-child {
+            font-weight: 600;
+        }
+
+        .footer-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-400);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--black);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .modal-image {
+                aspect-ratio: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 1.5rem;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .page-header {
+                padding: 6.5rem 1.5rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .filters {
+                padding: 1rem 1.5rem;
+            }
+
+            .gallery {
+                padding: 1.5rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .gallery-card-info {
+                padding: 0.75rem;
+            }
+
+            .gallery-card-title {
+                font-size: 0.875rem;
+            }
+
+            .gallery-card-price {
+                font-size: 0.875rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .modal {
+                margin: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        
+        <div class="nav-center">
+            <a href="gallery.html" class="active">Gallery</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="index.html#artists">For Artists</a>
+            <a href="about.html">About</a>
+        </div>
+
+        <div class="nav-right" id="nav-right">
+            <a href="artist-login.html" class="nav-login">Artist Login</a>
+            <a href="collector-login.html" class="nav-login">Collector Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Browse <strong>Gallery</strong></h1>
+        <p class="page-subtitle">Original works from emerging artists worldwide</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="oil">Oil</button>
+        <button class="filter-btn" data-filter="acrylic">Acrylic</button>
+        <button class="filter-btn" data-filter="watercolor">Watercolor</button>
+        <button class="filter-btn" data-filter="digital">Digital</button>
+        <button class="filter-btn" data-filter="photography">Photography</button>
+        <button class="filter-btn" data-filter="mixed">Mixed Media</button>
+    </div>
+
+    <!-- Gallery -->
+    <div class="gallery">
+        <div class="gallery-grid" id="gallery-grid">
+            <div class="loading">Loading artworks...</div>
+        </div>
+    </div>
+
+    <!-- Artwork Detail Modal -->
+    <div class="modal-overlay" id="artwork-modal">
+        <div class="modal">
+            <div class="modal-image" id="modal-image"></div>
+            <div class="modal-content">
+                <button class="modal-close" id="modal-close">&times;</button>
+                <h2 class="modal-title" id="modal-title"></h2>
+                <div class="modal-artist" id="modal-artist"></div>
+                <div class="modal-price" id="modal-price"></div>
+                <div class="modal-description" id="modal-description"></div>
+                <div class="modal-details" id="modal-details"></div>
+                <button class="modal-cta" id="modal-cta">Inquire About This Work</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            <div class="footer-bar"></div>
+            <div class="footer-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="gallery.html">Gallery</a>
+            <a href="index.html#artists">For Artists</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="about.html">About</a>
+        </div>
+        <div class="footer-copy">© 2026 InfraMint</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let allArtworks = [];
+        let currentFilter = 'all';
+
+        // Medium display names
+        const mediumNames = {
+            oil: 'Oil on Canvas',
+            acrylic: 'Acrylic',
+            watercolor: 'Watercolor',
+            digital: 'Digital',
+            photography: 'Photography',
+            mixed: 'Mixed Media',
+            other: 'Other'
+        };
+
+        // Load artworks from Supabase
+        async function loadGallery() {
+            const { data, error } = await db.from('artworks')
+                .select('*, artists(artist_name, profile_image_url)')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading gallery:', error);
+                document.getElementById('gallery-grid').innerHTML = 
+                    '<div class="empty-state">' +
+                        '<div class="empty-state-title">Unable to load gallery</div>' +
+                        '<div class="empty-state-text">Please try again later.</div>' +
+                    '</div>';
+                return;
+            }
+
+            allArtworks = data || [];
+            renderGallery();
+        }
+
+        // Render gallery grid
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            
+            const filtered = currentFilter === 'all' 
+                ? allArtworks 
+                : allArtworks.filter(a => a.medium === currentFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = 
+                    '<div class="empty-state">' +
+                        '<div class="empty-state-icon">' +
+                            '<div style="height: 2.5rem;"></div>' +
+                            '<div style="height: 1.75rem;"></div>' +
+                            '<div style="height: 2.25rem;"></div>' +
+                        '</div>' +
+                        '<div class="empty-state-title">No artworks yet</div>' +
+                        '<div class="empty-state-text">Check back soon — artists are uploading new work every day.</div>' +
+                    '</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+
+            filtered.forEach(function(artwork) {
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+                
+                const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
+                const artistName = artwork.artists ? artwork.artists.artist_name : 'Unknown Artist';
+                const mediumLabel = mediumNames[artwork.medium] || artwork.medium || '';
+
+                card.innerHTML = 
+                    '<div class="gallery-card-image">' +
+                        (hasImage 
+                            ? '<img src="' + artwork.primary_image_url + '" alt="' + artwork.title + '">'
+                            : '<svg class="placeholder-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">' +
+                                '<rect x="4" y="3" width="2" height="18"/>' +
+                                '<rect x="10" y="7" width="2" height="10"/>' +
+                                '<rect x="16" y="5" width="2" height="14"/>' +
+                              '</svg>'
+                        ) +
+                    '</div>' +
+                    '<div class="gallery-card-info">' +
+                        '<div class="gallery-card-title">' + artwork.title + '</div>' +
+                        '<div class="gallery-card-artist">' + artistName + '</div>' +
+                        '<div class="gallery-card-meta">' +
+                            '<div class="gallery-card-price">$' + Number(artwork.price).toLocaleString() + '</div>' +
+                            '<div class="gallery-card-medium">' + mediumLabel + '</div>' +
+                        '</div>' +
+                    '</div>';
+
+                card.addEventListener('click', function() {
+                    openArtworkModal(artwork, artistName);
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Open artwork detail modal
+        function openArtworkModal(artwork, artistName) {
+            const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
+            
+            document.getElementById('modal-image').innerHTML = hasImage
+                ? '<img src="' + artwork.primary_image_url + '" alt="' + artwork.title + '">'
+                : '<svg width="64" height="64" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>';
+
+            document.getElementById('modal-title').textContent = artwork.title;
+            document.getElementById('modal-artist').innerHTML = 'by ' + artistName;
+            document.getElementById('modal-price').textContent = '$' + Number(artwork.price).toLocaleString();
+            document.getElementById('modal-description').textContent = artwork.description || 'No description provided.';
+
+            // Build details
+            const mediumLabel = mediumNames[artwork.medium] || artwork.medium || '—';
+            let detailsHTML = '';
+            detailsHTML += '<div><div class="modal-detail-label">Medium</div><div class="modal-detail-value">' + mediumLabel + '</div></div>';
+            
+            if (artwork.width_cm && artwork.height_cm) {
+                detailsHTML += '<div><div class="modal-detail-label">Dimensions</div><div class="modal-detail-value">' + artwork.width_cm + ' × ' + artwork.height_cm + ' cm</div></div>';
+            }
+
+            detailsHTML += '<div><div class="modal-detail-label">Status</div><div class="modal-detail-value">' + (artwork.status === 'listed' ? 'Available' : 'Coming Soon') + '</div></div>';
+
+            document.getElementById('modal-details').innerHTML = detailsHTML;
+
+            document.getElementById('artwork-modal').classList.add('active');
+        }
+
+        // Close modal
+        document.getElementById('modal-close').addEventListener('click', function() {
+            document.getElementById('artwork-modal').classList.remove('active');
+        });
+
+        document.getElementById('artwork-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // Filters
+        document.getElementById('filters').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderGallery();
+            }
+        });
+
+        // Inquire button
+        document.getElementById('modal-cta').addEventListener('click', function() {
+            window.location.href = 'collector-login.html';
+        });
+
+        // Check if user is logged in, update nav
+        async function checkNav() {
+            const { data: { session } } = await db.auth.getSession();
+            if (session) {
+                const navRight = document.getElementById('nav-right');
+                // Check if artist
+                const { data: artist } = await db.from('artists')
+                    .select('id')
+                    .eq('user_id', session.user.id)
+                    .single();
+
+                if (artist) {
+                    navRight.innerHTML = '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>';
+                } else {
+                    navRight.innerHTML = '<a href="collector-login.html" class="nav-login">My Account</a>';
+                }
+            }
+        }
+
+        // Initialize
+        loadGallery();
+        checkNav();
+    </script>
+
+</body>
+</html>
