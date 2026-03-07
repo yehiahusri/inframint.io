@@ -750,6 +750,11 @@
                 const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
                 const artistName = artwork.artists ? artwork.artists.artist_name : 'Unknown Artist';
                 const mediumLabel = mediumNames[artwork.medium] || artwork.medium || '';
+                const edTotal = artwork.edition_total || 1;
+                const edSold = artwork.edition_sold || 0;
+                const allSold = edSold >= edTotal;
+                const isEdition = edTotal > 1;
+                var statusText = allSold || artwork.status === 'sold' ? 'Sold Out' : (isEdition ? edSold + ' of ' + edTotal + ' sold' : (artwork.status === 'listed' ? 'Available' : ''));
 
                 card.innerHTML = 
                     '<div class="gallery-card-image">' +
@@ -766,9 +771,10 @@
                         '<div class="gallery-card-title">' + artwork.title + '</div>' +
                         '<div class="gallery-card-artist">' + artistName + '</div>' +
                         '<div class="gallery-card-meta">' +
-                            '<div class="gallery-card-price">$' + Number(artwork.price).toLocaleString() + '</div>' +
+                            '<div class="gallery-card-price">' + (allSold || artwork.status === 'sold' ? '<s style="color:#a3a3a3">$' + Number(artwork.price).toLocaleString() + '</s>' : '$' + Number(artwork.price).toLocaleString()) + '</div>' +
                             '<div class="gallery-card-medium">' + mediumLabel + '</div>' +
                         '</div>' +
+                        (statusText ? '<div style="font-size:0.75rem;color:' + (allSold || artwork.status === 'sold' ? '#dc2626' : '#a3a3a3') + ';font-weight:300;margin-top:0.4rem;">' + statusText + '</div>' : '') +
                     '</div>';
 
                 card.addEventListener('click', function() {
@@ -782,6 +788,10 @@
         // Open artwork detail modal
         function openArtworkModal(artwork, artistName) {
             const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
+            const edTotal = artwork.edition_total || 1;
+            const edSold = artwork.edition_sold || 0;
+            const allSold = edSold >= edTotal;
+            const isEdition = edTotal > 1;
             
             document.getElementById('modal-image').innerHTML = hasImage
                 ? '<img src="' + artwork.primary_image_url + '" alt="' + artwork.title + '">'
@@ -801,9 +811,28 @@
                 detailsHTML += '<div><div class="modal-detail-label">Dimensions</div><div class="modal-detail-value">' + artwork.width_cm + ' × ' + artwork.height_cm + ' cm</div></div>';
             }
 
-            detailsHTML += '<div><div class="modal-detail-label">Status</div><div class="modal-detail-value">' + (artwork.status === 'listed' ? 'Available' : 'Coming Soon') + '</div></div>';
+            if (isEdition) {
+                detailsHTML += '<div><div class="modal-detail-label">Edition</div><div class="modal-detail-value">' + edSold + ' of ' + edTotal + ' sold</div></div>';
+            }
+
+            var statusLabel = allSold || artwork.status === 'sold' ? 'Sold Out' : (artwork.status === 'listed' ? 'Available' : 'Coming Soon');
+            detailsHTML += '<div><div class="modal-detail-label">Status</div><div class="modal-detail-value">' + statusLabel + '</div></div>';
 
             document.getElementById('modal-details').innerHTML = detailsHTML;
+
+            // Update CTA button
+            var ctaEl = document.getElementById('modal-cta');
+            if (allSold || artwork.status === 'sold') {
+                ctaEl.textContent = 'Sold Out';
+                ctaEl.style.background = '#d4d4d4';
+                ctaEl.style.color = '#737373';
+                ctaEl.style.cursor = 'default';
+            } else {
+                ctaEl.textContent = 'Inquire About This Work';
+                ctaEl.style.background = '';
+                ctaEl.style.color = '';
+                ctaEl.style.cursor = '';
+            }
 
             document.getElementById('artwork-modal').classList.add('active');
         }

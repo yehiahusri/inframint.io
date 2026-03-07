@@ -970,6 +970,12 @@
                         <input type="number" class="form-input" id="artwork-height" placeholder="0">
                     </div>
                 </div>
+
+                <div class="form-group" id="edition-group" style="display: none;">
+                    <label class="form-label">Number of Copies (Editions)</label>
+                    <input type="number" class="form-input" id="artwork-editions" placeholder="1" min="1" max="100" value="1">
+                    <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">For digital art — how many copies do you want to sell?</div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancel-artwork">Cancel</button>
@@ -1152,20 +1158,26 @@
         // Artwork modal — tracks whether we're adding or editing
         let editingArtworkId = null;
 
+        function toggleEditionField() {
+            var medium = document.getElementById('artwork-medium').value;
+            document.getElementById('edition-group').style.display = (medium === 'digital') ? 'block' : 'none';
+        }
+
         function openAddModal() {
             editingArtworkId = null;
             document.getElementById('modal-title').textContent = 'Add New Artwork';
             document.getElementById('save-artwork').textContent = 'Add Artwork';
-            // Clear form
             document.getElementById('artwork-title').value = '';
             document.getElementById('artwork-description').value = '';
             document.getElementById('artwork-price').value = '';
             document.getElementById('artwork-medium').value = 'oil';
             document.getElementById('artwork-width').value = '';
             document.getElementById('artwork-height').value = '';
+            document.getElementById('artwork-editions').value = '1';
             document.getElementById('artwork-file').value = '';
             document.getElementById('artwork-upload').classList.remove('has-file');
             document.getElementById('artwork-preview-img').src = '';
+            toggleEditionField();
             document.getElementById('artwork-modal').classList.add('active');
         }
 
@@ -1173,15 +1185,14 @@
             editingArtworkId = artwork.id;
             document.getElementById('modal-title').textContent = 'Edit Artwork';
             document.getElementById('save-artwork').textContent = 'Save Changes';
-            // Fill form with existing data
             document.getElementById('artwork-title').value = artwork.title || '';
             document.getElementById('artwork-description').value = artwork.description || '';
             document.getElementById('artwork-price').value = artwork.price || '';
             document.getElementById('artwork-medium').value = artwork.medium || 'oil';
             document.getElementById('artwork-width').value = artwork.width_cm || '';
             document.getElementById('artwork-height').value = artwork.height_cm || '';
+            document.getElementById('artwork-editions').value = artwork.edition_total || 1;
             document.getElementById('artwork-file').value = '';
-            // Show existing image if available
             const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
             if (hasImage) {
                 document.getElementById('artwork-preview-img').src = artwork.primary_image_url;
@@ -1190,12 +1201,16 @@
                 document.getElementById('artwork-preview-img').src = '';
                 document.getElementById('artwork-upload').classList.remove('has-file');
             }
+            toggleEditionField();
             document.getElementById('artwork-modal').classList.add('active');
         }
 
         document.getElementById('add-artwork-btn').addEventListener('click', openAddModal);
         document.getElementById('close-modal').addEventListener('click', closeModal);
         document.getElementById('cancel-artwork').addEventListener('click', closeModal);
+
+        // Show/hide edition field when medium changes
+        document.getElementById('artwork-medium').addEventListener('change', toggleEditionField);
 
         function closeModal() {
             document.getElementById('artwork-modal').classList.remove('active');
@@ -1269,6 +1284,7 @@
                     category: document.getElementById('artwork-medium').value,
                     width_cm: parseInt(document.getElementById('artwork-width').value) || null,
                     height_cm: parseInt(document.getElementById('artwork-height').value) || null,
+                    edition_total: document.getElementById('artwork-medium').value === 'digital' ? (parseInt(document.getElementById('artwork-editions').value) || 1) : 1,
                 };
 
                 if (imageUrl) {
@@ -1327,6 +1343,10 @@
                     const card = document.createElement('div');
                     card.className = 'artwork-card';
                     const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
+                    const edTotal = artwork.edition_total || 1;
+                    const edSold = artwork.edition_sold || 0;
+                    const isEdition = edTotal > 1;
+                    const editionText = isEdition ? ' · ' + edSold + '/' + edTotal + ' sold' : '';
                     card.innerHTML = 
                         '<div class="artwork-image">' +
                             (hasImage 
@@ -1342,7 +1362,7 @@
                             '<div class="artwork-title">' + artwork.title + '</div>' +
                             '<div class="artwork-price">$' + artwork.price + '</div>' +
                             '<div class="artwork-status">' +
-                                '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + '</span>' +
+                                '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + editionText + '</span>' +
                             '</div>' +
                             '<div class="artwork-delete">' +
                                 '<button class="delete-btn">Delete</button>' +

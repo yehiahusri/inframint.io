@@ -99,6 +99,8 @@
         .profile-work-price { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
         .profile-work-price.sold { text-decoration: line-through; color: var(--gray-400); }
         .profile-work-dims { font-size: 0.75rem; color: var(--gray-400); }
+        .profile-work-availability { font-size: 0.75rem; color: var(--gray-400); font-weight: 300; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--gray-200); }
+        .profile-work-availability.sold-out { color: var(--sold); font-weight: 500; }
         .profile-no-works { text-align: center; padding: 4rem 2rem; color: var(--gray-400); font-weight: 300; grid-column: 1 / -1; }
 
         /* Artwork Detail Modal */
@@ -411,11 +413,25 @@
             worksGrid.innerHTML = '';
             artworks.forEach(function(work) {
                 var hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
-                var isSold = work.status === 'sold';
-                var isListed = work.status === 'listed';
-                var statusLabel = isSold ? 'Sold' : (isListed ? 'Available' : 'Coming Soon');
-                var statusClass = isSold ? 'status-sold' : (isListed ? 'status-available' : 'status-pending');
                 var mediumLabel = mediumNames[work.medium] || work.medium || '';
+                var editionTotal = work.edition_total || 1;
+                var editionSold = work.edition_sold || 0;
+                var allSold = editionSold >= editionTotal;
+                var isEdition = editionTotal > 1;
+
+                // Status text for under the card
+                var statusText = '';
+                if (allSold) {
+                    statusText = 'Sold Out';
+                } else if (isEdition) {
+                    statusText = editionSold + ' of ' + editionTotal + ' sold';
+                } else if (work.status === 'sold') {
+                    statusText = 'Sold';
+                } else if (work.status === 'listed') {
+                    statusText = 'Available';
+                } else {
+                    statusText = 'Coming Soon';
+                }
 
                 var card = document.createElement('div');
                 card.className = 'profile-work-card';
@@ -423,15 +439,15 @@
                     '<div class="profile-work-image">' +
                         (hasImage ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
                             : '<svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>') +
-                        '<div class="profile-work-status ' + statusClass + '">' + statusLabel + '</div>' +
                     '</div>' +
                     '<div class="profile-work-info">' +
                         '<div class="profile-work-title">' + work.title + '</div>' +
                         '<div class="profile-work-medium">' + mediumLabel + '</div>' +
                         '<div class="profile-work-meta">' +
-                            '<div class="profile-work-price' + (isSold ? ' sold' : '') + '">$' + Number(work.price).toLocaleString() + '</div>' +
+                            '<div class="profile-work-price' + (allSold || work.status === 'sold' ? ' sold' : '') + '">$' + Number(work.price).toLocaleString() + '</div>' +
                             (work.width_cm && work.height_cm ? '<div class="profile-work-dims">' + work.width_cm + ' x ' + work.height_cm + ' cm</div>' : '') +
                         '</div>' +
+                        '<div class="profile-work-availability' + (allSold || work.status === 'sold' ? ' sold-out' : '') + '">' + statusText + '</div>' +
                     '</div>';
                 card.addEventListener('click', function() { openArtworkModal(work, name); });
                 worksGrid.appendChild(card);
@@ -441,11 +457,24 @@
         // Artwork detail modal
         function openArtworkModal(work, artistName) {
             var hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
-            var isSold = work.status === 'sold';
-            var isListed = work.status === 'listed';
-            var statusLabel = isSold ? 'Sold' : (isListed ? 'Available' : 'Coming Soon');
-            var statusClass = isSold ? 'status-sold' : (isListed ? 'status-available' : 'status-pending');
             var mediumLabel = mediumNames[work.medium] || work.medium || '';
+            var editionTotal = work.edition_total || 1;
+            var editionSold = work.edition_sold || 0;
+            var allSold = editionSold >= editionTotal;
+            var isEdition = editionTotal > 1;
+
+            // Status logic
+            var statusLabel, statusClass;
+            if (allSold || work.status === 'sold') {
+                statusLabel = 'Sold Out';
+                statusClass = 'status-sold';
+            } else if (work.status === 'listed') {
+                statusLabel = isEdition ? editionSold + ' of ' + editionTotal + ' sold' : 'Available';
+                statusClass = 'status-available';
+            } else {
+                statusLabel = 'Coming Soon';
+                statusClass = 'status-pending';
+            }
 
             document.getElementById('art-modal-image').innerHTML = hasImage
                 ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
@@ -456,7 +485,7 @@
 
             var priceEl = document.getElementById('art-modal-price');
             priceEl.textContent = '$' + Number(work.price).toLocaleString();
-            priceEl.className = 'art-modal-price' + (isSold ? ' sold' : '');
+            priceEl.className = 'art-modal-price' + (allSold || work.status === 'sold' ? ' sold' : '');
 
             var badgeEl = document.getElementById('art-modal-badge');
             badgeEl.textContent = statusLabel;
@@ -468,12 +497,15 @@
             if (work.width_cm && work.height_cm) {
                 detailsHTML += '<div><div class="art-modal-detail-label">Dimensions</div><div class="art-modal-detail-value">' + work.width_cm + ' × ' + work.height_cm + ' cm</div></div>';
             }
+            if (isEdition) {
+                detailsHTML += '<div><div class="art-modal-detail-label">Edition</div><div class="art-modal-detail-value">' + editionSold + ' of ' + editionTotal + ' sold</div></div>';
+            }
             detailsHTML += '<div><div class="art-modal-detail-label">Status</div><div class="art-modal-detail-value">' + statusLabel + '</div></div>';
             document.getElementById('art-modal-details').innerHTML = detailsHTML;
 
             var ctaEl = document.getElementById('art-modal-cta');
-            if (isSold) {
-                ctaEl.textContent = 'This Work Has Been Sold';
+            if (allSold || work.status === 'sold') {
+                ctaEl.textContent = 'Sold Out';
                 ctaEl.className = 'art-modal-cta sold-btn';
             } else {
                 ctaEl.textContent = 'Inquire About This Work';
