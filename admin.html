@@ -3,745 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard — InfraMint</title>
+    <title>Gallery Owner — InfraMint Admin</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --black: #000; --white: #fff; --gray-100: #f7f7f7; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-800: #262626; --success: #16a34a; --error: #dc2626; --warning: #f59e0b; }
+        body { font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
+        .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
-        :root {
-            --black: #000000;
-            --white: #ffffff;
-            --gray-100: #f7f7f7;
-            --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-800: #262626;
-            --error: #dc2626;
-            --success: #16a34a;
-            --warning: #f59e0b;
-        }
+        .sidebar { background: var(--black); padding-top: 1.5rem; display: flex; flex-direction: column; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 0 1.5rem 1.5rem; text-decoration: none; border-bottom: 1px solid #222; }
+        .sidebar-logo .bar { width: 2px; height: 1.25rem; background: var(--white); }
+        .sidebar-logo .text { font-size: 1.125rem; font-family: 'Manrope', sans-serif; letter-spacing: -0.01em; }
+        .sidebar-logo .text span:first-child { font-weight: 600; color: var(--white); }
+        .sidebar-logo .text span:last-child { font-weight: 200; color: var(--gray-500); }
+        .sidebar-badge { display: block; font-size: 0.5625rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warning); padding: 0.5rem 1.5rem 0; }
+        .sidebar-section { padding: 0.75rem 0; }
+        .sidebar-label { font-size: 0.5625rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #555; padding: 0.5rem 1.5rem 0.35rem; }
+        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1.5rem; font-size: 0.8125rem; color: #888; cursor: pointer; transition: all 0.15s; text-decoration: none; border-left: 3px solid transparent; }
+        .sidebar-link:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+        .sidebar-link.active { color: var(--white); font-weight: 500; border-left-color: var(--white); background: rgba(255,255,255,0.08); }
+        .sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .sidebar-link .count { margin-left: auto; font-size: 0.6875rem; background: #333; color: #aaa; padding: 0.1rem 0.5rem; border-radius: 10px; }
+        .sidebar-bottom { margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid #222; }
+        #sign-out { font-family: 'Manrope', sans-serif; font-size: 0.8125rem; color: #666; background: none; border: none; cursor: pointer; }
+        #sign-out:hover { color: var(--error); }
 
-        body {
-            font-family: 'Manrope', sans-serif;
-            background: var(--gray-100);
-            color: var(--black);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
-        }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; border-bottom: 1px solid var(--gray-200); background: var(--white); font-size: 0.8125rem; color: var(--gray-500); }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--black);
-            height: 4.5rem;
-        }
+        main { padding: 0; overflow-x: hidden; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .page-header { padding: 1.5rem 2rem 1rem; }
+        .page-title { font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; }
+        .page-subtitle { font-size: 0.8125rem; color: var(--gray-500); font-weight: 300; margin-top: 0.15rem; }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            text-decoration: none;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 0 2rem 1.25rem; }
+        .stat-card { background: var(--white); border: 1px solid var(--gray-200); padding: 1rem; }
+        .stat-value { font-size: 1.75rem; font-weight: 600; }
+        .stat-label { font-size: 0.6875rem; color: var(--gray-500); margin-top: 0.15rem; }
 
-        .logo-bar {
-            width: 3px;
-            height: 1.75rem;
-            background: var(--white);
-        }
+        .card { background: var(--white); border: 1px solid var(--gray-200); margin: 0 2rem 1rem; padding: 1.25rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
+        .card-title { font-size: 0.9375rem; font-weight: 600; }
+        .card-subtitle { font-size: 0.75rem; color: var(--gray-400); }
 
-        .logo-text {
-            font-size: 1.25rem;
-            letter-spacing: -0.01em;
-        }
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+        th { text-align: left; padding: 0.6rem 0.75rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); }
+        td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+        tr:hover td { background: var(--gray-100); }
+        .td-name { font-weight: 500; }
+        .td-email { color: var(--gray-500); font-size: 0.75rem; }
 
-        .logo-text span:first-child {
-            font-weight: 600;
-            color: var(--white);
-        }
+        .badge { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.05em; padding: 0.2rem 0.5rem; display: inline-block; }
+        .badge-pending { background: #fffbeb; color: var(--warning); }
+        .badge-approved { background: #f0fdf4; color: var(--success); }
+        .badge-rejected { background: #fef2f2; color: var(--error); }
+        .badge-active { background: #f0fdf4; color: var(--success); }
 
-        .logo-text span:last-child {
-            font-weight: 200;
-            color: var(--gray-500);
-        }
+        .action-btn { font-family: 'Manrope', sans-serif; font-size: 0.6875rem; font-weight: 500; padding: 0.3rem 0.6rem; cursor: pointer; border: none; transition: all 0.15s; margin-right: 0.25rem; }
+        .btn-approve { background: var(--success); color: var(--white); }
+        .btn-approve:hover { opacity: 0.85; }
+        .btn-reject { background: var(--error); color: var(--white); }
+        .btn-reject:hover { opacity: 0.85; }
+        .btn-view { background: var(--gray-200); color: var(--gray-600); }
+        .btn-view:hover { background: var(--gray-300); }
 
-        .admin-badge {
-            background: var(--error);
-            color: white;
-            font-size: 0.625rem;
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 2px;
-            margin-left: 0.75rem;
-            letter-spacing: 0.05em;
-        }
+        .empty-row td { text-align: center; color: var(--gray-400); padding: 2rem; font-weight: 300; }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
+        /* Login overlay */
+        .login-overlay { position: fixed; inset: 0; background: var(--gray-100); z-index: 999; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--white); padding: 2.5rem; max-width: 380px; width: 100%; text-align: center; }
+        .login-card h2 { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .login-card p { font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+        .login-card .form-input { width: 100%; padding: 0.75rem; font-size: 0.875rem; font-family: 'Manrope', sans-serif; border: 1px solid var(--gray-300); margin-bottom: 0.75rem; }
+        .login-card .form-input:focus { outline: none; border-color: var(--black); }
+        .login-card .btn { width: 100%; padding: 0.75rem; background: var(--black); color: var(--white); border: none; font-family: 'Manrope', sans-serif; font-size: 0.875rem; cursor: pointer; }
+        .login-card .btn:hover { background: var(--gray-800); }
+        .login-card .msg { font-size: 0.8125rem; color: var(--error); margin-bottom: 0.75rem; display: none; }
+        .login-card .msg.show { display: block; }
 
-        .nav-user {
-            font-size: 0.875rem;
-            color: var(--gray-400);
-        }
-
-        .nav-link {
-            font-size: 0.875rem;
-            color: var(--gray-400);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .nav-link:hover {
-            color: var(--white);
-        }
-
-        /* Main */
-        .admin-container {
-            padding: 6rem 2rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .admin-header {
-            margin-bottom: 2rem;
-        }
-
-        .admin-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .admin-subtitle {
-            color: var(--gray-500);
-            font-size: 0.9375rem;
-        }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 1.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 600;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 0;
-            border-bottom: 1px solid var(--gray-200);
-            margin-bottom: 1.5rem;
-            background: var(--white);
-        }
-
-        .tab {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-500);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
-            transition: all 0.2s;
-        }
-
-        .tab:hover {
-            color: var(--gray-800);
-        }
-
-        .tab.active {
-            color: var(--black);
-            border-bottom-color: var(--black);
-        }
-
-        /* Tables */
-        .table-container {
-            background: var(--white);
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-
-        .data-table th {
-            text-align: left;
-            padding: 1rem;
-            font-weight: 500;
-            color: var(--gray-500);
-            border-bottom: 1px solid var(--gray-200);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .data-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--gray-100);
-            vertical-align: middle;
-        }
-
-        .data-table tr:hover {
-            background: var(--gray-100);
-        }
-
-        /* Status badges */
-        .status {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 2px;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-approved {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-rejected {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* Actions */
-        .action-btn {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border: 1px solid var(--gray-300);
-            background: var(--white);
-            cursor: pointer;
-            margin-right: 0.5rem;
-            font-family: 'Manrope', sans-serif;
-        }
-
-        .action-btn:hover {
-            background: var(--gray-100);
-        }
-
-        .action-btn.approve {
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .action-btn.approve:hover {
-            background: #d1fae5;
-        }
-
-        .action-btn.reject {
-            border-color: var(--error);
-            color: var(--error);
-        }
-
-        .action-btn.reject:hover {
-            background: #fee2e2;
-        }
-
-        /* Tab content */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Login gate */
-        .login-gate {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .login-card {
-            background: var(--white);
-            padding: 2.5rem;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .login-card h1 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-card p {
-            color: var(--gray-500);
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            font-size: 0.9375rem;
-            font-family: 'Manrope', sans-serif;
-            border: 1px solid var(--gray-300);
-            background: var(--white);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--black);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.875rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            font-family: 'Manrope', sans-serif;
-            cursor: pointer;
-            border: none;
-            background: var(--black);
-            color: var(--white);
-        }
-
-        .btn:hover {
-            background: var(--gray-800);
-        }
-
-        .error-message {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: var(--error);
-            padding: 0.75rem;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Empty state */
-        .empty-state {
-            padding: 3rem;
-            text-align: center;
-            color: var(--gray-500);
-        }
-
-        @media (max-width: 768px) {
-            nav { padding: 0 1.5rem; }
-            .admin-container { padding: 5rem 1rem 1rem; }
-            .tabs { overflow-x: auto; }
-            .tab { white-space: nowrap; }
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-
-    <!-- Login Gate -->
-    <div class="login-gate" id="login-gate">
+    <!-- Login -->
+    <div class="login-overlay" id="login-overlay">
         <div class="login-card">
-            <h1>Admin Access</h1>
-            <p>Sign in with your admin account</p>
-            
-            <div class="error-message" id="error-msg"></div>
-            
-            <form id="admin-login-form">
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="email" placeholder="admin@inframint.io" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="password" placeholder="Your password" required>
-                </div>
-                <button type="submit" class="btn">Sign In</button>
-            </form>
+            <div style="display:flex;align-items:center;gap:0.5rem;justify-content:center;margin-bottom:1.5rem;">
+                <div style="width:2px;height:1.25rem;background:var(--black);"></div>
+                <div style="font-size:1.125rem;"><span style="font-weight:600;">Infra</span><span style="font-weight:200;color:var(--gray-400);">Mint</span></div>
+            </div>
+            <h2>Gallery Owner</h2>
+            <p>Admin access only</p>
+            <div class="msg" id="login-msg"></div>
+            <input type="email" class="form-input" id="admin-email" placeholder="Email">
+            <input type="password" class="form-input" id="admin-password" placeholder="Password">
+            <button class="btn" id="admin-login-btn">Sign In</button>
         </div>
     </div>
 
-    <!-- Admin Dashboard (hidden until login) -->
-    <div id="admin-dashboard" class="hidden">
-        <nav>
-            <div style="display: flex; align-items: center;">
-                <a href="index.html" class="logo">
-                    <div class="logo-bar"></div>
-                    <div class="logo-text">
-                        <span>Infra</span><span>Mint</span>
-                    </div>
+    <div class="layout" id="dashboard" style="display:none;">
+        <div class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <div class="bar"></div>
+                <div class="text"><span>Infra</span><span>Mint</span></div>
+            </a>
+            <div class="sidebar-badge">Gallery Owner</div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Overview</div>
+                <a class="sidebar-link active" data-section="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Dashboard
                 </a>
-                <span class="admin-badge">ADMIN</span>
             </div>
-            <div class="nav-right">
-                <span class="nav-user" id="admin-email"></span>
-                <a class="nav-link" onclick="signOut()">Sign Out</a>
+            <div class="sidebar-section">
+                <div class="sidebar-label">People</div>
+                <a class="sidebar-link" data-section="artists">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Artists <span class="count" id="nav-artists">0</span>
+                </a>
+                <a class="sidebar-link" data-section="collectors">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Collectors <span class="count" id="nav-collectors">0</span>
+                </a>
+                <a class="sidebar-link" data-section="partners">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                    Partners <span class="count" id="nav-partners">0</span>
+                </a>
             </div>
-        </nav>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Content</div>
+                <a class="sidebar-link" data-section="artworks">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Artworks <span class="count" id="nav-artworks">0</span>
+                </a>
+                <a class="sidebar-link" data-section="orders">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    Orders <span class="count" id="nav-orders">0</span>
+                </a>
+            </div>
+            <div class="sidebar-bottom">
+                <button id="sign-out">Sign Out</button>
+            </div>
+        </div>
 
-        <div class="admin-container">
-            <div class="admin-header">
-                <h1 class="admin-title">Dashboard</h1>
-                <p class="admin-subtitle">Manage artists, collectors, and orders</p>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Artists</div>
-                    <div class="stat-value" id="stat-artists">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Pending Approval</div>
-                    <div class="stat-value" id="stat-pending">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Collectors</div>
-                    <div class="stat-value" id="stat-collectors">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Orders</div>
-                    <div class="stat-value" id="stat-orders">0</div>
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="tabs">
-                <div class="tab active" data-tab="artists">Artists</div>
-                <div class="tab" data-tab="collectors">Collectors</div>
-                <div class="tab" data-tab="orders">Orders</div>
+        <div>
+            <div class="topbar">
+                <span>InfraMint Admin Panel</span>
+                <span id="admin-name">Admin</span>
             </div>
 
-            <!-- Artists Tab -->
-            <div class="tab-content active" id="tab-artists">
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Category</th>
-                                <th>Status</th>
-                                <th>Applied</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="artists-table">
-                            <tr><td colspan="6" class="empty-state">Loading...</td></tr>
-                        </tbody>
-                    </table>
+            <main>
+                <!-- Overview -->
+                <div class="section active" id="section-overview">
+                    <div class="page-header"><h1 class="page-title">Dashboard</h1><p class="page-subtitle">Platform overview</p></div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-value" id="s-artists">-</div><div class="stat-label">Total Artists</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-collectors">-</div><div class="stat-label">Total Collectors</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-partners">-</div><div class="stat-label">Total Partners</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-artworks">-</div><div class="stat-label">Total Artworks</div></div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-value" id="s-pending-artists">-</div><div class="stat-label">Pending Artists</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-pending-partners">-</div><div class="stat-label">Pending Partners</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-orders">-</div><div class="stat-label">Total Orders</div></div>
+                        <div class="stat-card"><div class="stat-value" id="s-revenue">$0</div><div class="stat-label">Total Revenue</div></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Collectors Tab -->
-            <div class="tab-content" id="tab-collectors">
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Location</th>
-                                <th>Joined</th>
-                            </tr>
-                        </thead>
-                        <tbody id="collectors-table">
-                            <tr><td colspan="4" class="empty-state">Loading...</td></tr>
-                        </tbody>
-                    </table>
+                <!-- Artists -->
+                <div class="section" id="section-artists">
+                    <div class="page-header"><h1 class="page-title">Artists</h1><p class="page-subtitle">All registered artists</p></div>
+                    <div class="card"><div class="table-wrap"><table id="artists-table">
+                        <thead><tr><th>Name</th><th>Email</th><th>Category</th><th>Location</th><th>Status</th><th>Works</th><th>Actions</th></tr></thead>
+                        <tbody id="artists-body"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+                    </table></div></div>
                 </div>
-            </div>
 
-            <!-- Orders Tab -->
-            <div class="tab-content" id="tab-orders">
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Artwork</th>
-                                <th>Buyer</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-table">
-                            <tr><td colspan="6" class="empty-state">No orders yet</td></tr>
-                        </tbody>
-                    </table>
+                <!-- Collectors -->
+                <div class="section" id="section-collectors">
+                    <div class="page-header"><h1 class="page-title">Collectors</h1><p class="page-subtitle">All registered collectors</p></div>
+                    <div class="card"><div class="table-wrap"><table>
+                        <thead><tr><th>Name</th><th>Email</th><th>Country</th><th>City</th><th>Joined</th></tr></thead>
+                        <tbody id="collectors-body"><tr class="empty-row"><td colspan="5">Loading...</td></tr></tbody>
+                    </table></div></div>
                 </div>
-            </div>
+
+                <!-- Partners -->
+                <div class="section" id="section-partners">
+                    <div class="page-header"><h1 class="page-title">Partners</h1><p class="page-subtitle">All partner accounts</p></div>
+                    <div class="card"><div class="table-wrap"><table>
+                        <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Status</th><th>Terms</th><th>Artists</th><th>Actions</th></tr></thead>
+                        <tbody id="partners-body"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+                    </table></div></div>
+                </div>
+
+                <!-- Artworks -->
+                <div class="section" id="section-artworks">
+                    <div class="page-header"><h1 class="page-title">Artworks</h1><p class="page-subtitle">All artwork listings</p></div>
+                    <div class="card"><div class="table-wrap"><table>
+                        <thead><tr><th>Image</th><th>Title</th><th>Artist</th><th>Price</th><th>Medium</th><th>Status</th><th>Editions</th><th>Actions</th></tr></thead>
+                        <tbody id="artworks-body"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
+                    </table></div></div>
+                </div>
+
+                <!-- Orders -->
+                <div class="section" id="section-orders">
+                    <div class="page-header"><h1 class="page-title">Orders</h1><p class="page-subtitle">All transactions</p></div>
+                    <div class="card"><div class="table-wrap"><table>
+                        <thead><tr><th>Order</th><th>Artwork</th><th>Buyer</th><th>Artist</th><th>Art Price</th><th>Shipping</th><th>Total</th><th>Status</th></tr></thead>
+                        <tbody id="orders-body"><tr class="empty-row"><td colspan="8">No orders yet</td></tr></tbody>
+                    </table></div></div>
+                </div>
+            </main>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-    (function() {
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Admin email whitelist
-        const ADMIN_EMAILS = ['yehiahusri@gmail.com'];
+        const ADMIN_EMAIL = 'yehiahusri@gmail.com';
+        const countryNames = { AE:'UAE', US:'United States', UK:'United Kingdom', DE:'Germany', FR:'France', LB:'Lebanon', SA:'Saudi Arabia', QA:'Qatar', other:'Other' };
+        const catNames = { painting:'Painting', photography:'Photography', digital:'Digital', sculpture:'Sculpture', mixed:'Mixed Media', illustration:'Illustration', other:'Other' };
 
-        function showError(msg) {
-            const el = document.getElementById('error-msg');
-            el.textContent = msg;
-            el.classList.add('show');
-        }
+        // Login
+        document.getElementById('admin-login-btn').addEventListener('click', async function() {
+            var email = document.getElementById('admin-email').value;
+            var password = document.getElementById('admin-password').value;
+            var msg = document.getElementById('login-msg');
 
-        function isAdmin(email) {
-            return ADMIN_EMAILS.includes(email.toLowerCase());
-        }
+            if (email !== ADMIN_EMAIL) { msg.textContent = 'Not authorized.'; msg.className = 'msg show'; return; }
 
-        // Admin login
-        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const { data, error } = await db.auth.signInWithPassword({ email, password });
+            if (error) { msg.textContent = error.message; msg.className = 'msg show'; return; }
 
-            // Check if admin email
-            if (!isAdmin(email)) {
-                showError('Access denied. Admin accounts only.');
-                return;
-            }
-
-            const { data, error } = await db.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            if (error) {
-                showError(error.message);
-                return;
-            }
-
-            showDashboard(data.user);
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('admin-name').textContent = email;
+            loadAll();
         });
 
-        // Show dashboard
-        function showDashboard(user) {
-            document.getElementById('login-gate').classList.add('hidden');
-            document.getElementById('admin-dashboard').classList.remove('hidden');
-            document.getElementById('admin-email').textContent = user.email;
-            
-            loadData();
-        }
-
-        // Sign out
-        window.signOut = async function() {
-            await db.auth.signOut();
-            window.location.reload();
-        };
-
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
-            });
-        });
-
-        // Load all data
-        async function loadData() {
-            await Promise.all([
-                loadArtists(),
-                loadCollectors(),
-                loadOrders()
-            ]);
-        }
-
-        // Load artists
-        async function loadArtists() {
-            const { data, error } = await db.from('artists').select('*').order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Error loading artists:', error);
-                return;
-            }
-
-            document.getElementById('stat-artists').textContent = data.length;
-            document.getElementById('stat-pending').textContent = data.filter(a => a.status === 'pending').length;
-
-            const tbody = document.getElementById('artists-table');
-            
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No artists yet</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(artist => `
-                <tr>
-                    <td><strong>${artist.first_name || ''} ${artist.last_name || ''}</strong><br><small style="color: var(--gray-500)">${artist.artist_name || ''}</small></td>
-                    <td>${artist.email || ''}</td>
-                    <td>${artist.category || '-'}</td>
-                    <td><span class="status status-${artist.status || 'pending'}">${artist.status || 'pending'}</span></td>
-                    <td>${artist.created_at ? new Date(artist.created_at).toLocaleDateString() : '-'}</td>
-                    <td>
-                        ${artist.status === 'pending' ? `
-                            <button class="action-btn approve" onclick="updateArtistStatus('${artist.id}', 'approved')">Approve</button>
-                            <button class="action-btn reject" onclick="updateArtistStatus('${artist.id}', 'rejected')">Reject</button>
-                        ` : `
-                            <button class="action-btn" onclick="viewArtist('${artist.id}')">View</button>
-                        `}
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Load collectors
-        async function loadCollectors() {
-            const { data, error } = await db.from('collectors').select('*').order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Error loading collectors:', error);
-                return;
-            }
-
-            document.getElementById('stat-collectors').textContent = data.length;
-
-            const tbody = document.getElementById('collectors-table');
-            
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No collectors yet</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(collector => `
-                <tr>
-                    <td><strong>${collector.first_name || ''} ${collector.last_name || ''}</strong></td>
-                    <td>${collector.email || ''}</td>
-                    <td>${collector.shipping_city ? `${collector.shipping_city}, ${collector.shipping_country || ''}` : '-'}</td>
-                    <td>${collector.created_at ? new Date(collector.created_at).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Load orders
-        async function loadOrders() {
-            const { data, error } = await db.from('orders').select('*').order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Error loading orders:', error);
-                document.getElementById('stat-orders').textContent = '0';
-                return;
-            }
-
-            document.getElementById('stat-orders').textContent = data ? data.length : 0;
-
-            const tbody = document.getElementById('orders-table');
-            
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No orders yet</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = data.map(order => `
-                <tr>
-                    <td>#${order.id.slice(0, 8)}</td>
-                    <td>${order.artwork_id || '-'}</td>
-                    <td>${order.buyer_email || '-'}</td>
-                    <td>$${order.total_amount || '0'}</td>
-                    <td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
-                    <td>${order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Update artist status
-        window.updateArtistStatus = async function(artistId, status) {
-            const { error } = await db.from('artists').update({ status: status }).eq('id', artistId);
-            
-            if (error) {
-                alert('Error: ' + error.message);
-                return;
-            }
-
-            loadArtists();
-        };
-
-        // View artist (placeholder)
-        window.viewArtist = function(artistId) {
-            alert('Artist details view coming soon');
-        };
-
-        // Check if already logged in as admin
+        // Check if already logged in
         async function checkAuth() {
             const { data: { session } } = await db.auth.getSession();
-            
-            if (session && isAdmin(session.user.email)) {
-                showDashboard(session.user);
+            if (session && session.user.email === ADMIN_EMAIL) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'grid';
+                document.getElementById('admin-name').textContent = session.user.email;
+                loadAll();
             }
         }
-
         checkAuth();
-    })();
-    </script>
 
+        // Navigation
+        document.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-link').forEach(function(l) { l.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+                document.getElementById('section-' + this.dataset.section).classList.add('active');
+            });
+        });
+
+        document.getElementById('sign-out').addEventListener('click', async function() {
+            await db.auth.signOut();
+            window.location.reload();
+        });
+
+        // Load everything
+        async function loadAll() {
+            loadArtists();
+            loadCollectors();
+            loadPartners();
+            loadArtworks();
+            loadOrders();
+        }
+
+        // ARTISTS
+        async function loadArtists() {
+            const { data } = await db.from('artists').select('*, artworks(id)').order('created_at', { ascending: false });
+            if (!data) return;
+
+            document.getElementById('s-artists').textContent = data.length;
+            document.getElementById('nav-artists').textContent = data.length;
+            document.getElementById('s-pending-artists').textContent = data.filter(a => a.status === 'pending').length;
+
+            var body = document.getElementById('artists-body');
+            if (data.length === 0) { body.innerHTML = '<tr class="empty-row"><td colspan="7">No artists yet</td></tr>'; return; }
+
+            body.innerHTML = '';
+            data.forEach(function(a) {
+                var works = a.artworks ? a.artworks.length : 0;
+                var loc = [a.city, countryNames[a.country] || a.country].filter(Boolean).join(', ');
+                var badgeClass = a.status === 'approved' ? 'badge-approved' : (a.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td class="td-name">' + (a.artist_name || a.first_name || '—') + '</td>' +
+                    '<td class="td-email">' + (a.email || '—') + '</td>' +
+                    '<td>' + (catNames[a.category] || a.category || '—') + '</td>' +
+                    '<td>' + (loc || '—') + '</td>' +
+                    '<td><span class="badge ' + badgeClass + '">' + (a.status || 'pending') + '</span></td>' +
+                    '<td>' + works + '</td>' +
+                    '<td>' +
+                        (a.status !== 'approved' ? '<button class="action-btn btn-approve" data-id="' + a.id + '" data-table="artists">Approve</button>' : '') +
+                        (a.status !== 'rejected' ? '<button class="action-btn btn-reject" data-id="' + a.id + '" data-table="artists">Reject</button>' : '') +
+                    '</td>';
+                body.appendChild(tr);
+            });
+
+            attachStatusHandlers(body);
+        }
+
+        // COLLECTORS
+        async function loadCollectors() {
+            const { data } = await db.from('collectors').select('*').order('created_at', { ascending: false });
+            if (!data) return;
+
+            document.getElementById('s-collectors').textContent = data.length;
+            document.getElementById('nav-collectors').textContent = data.length;
+
+            var body = document.getElementById('collectors-body');
+            if (data.length === 0) { body.innerHTML = '<tr class="empty-row"><td colspan="5">No collectors yet</td></tr>'; return; }
+
+            body.innerHTML = '';
+            data.forEach(function(c) {
+                var joined = c.created_at ? new Date(c.created_at).toLocaleDateString() : '—';
+                body.innerHTML +=
+                    '<tr>' +
+                    '<td class="td-name">' + (c.first_name || '') + ' ' + (c.last_name || '') + '</td>' +
+                    '<td class="td-email">' + (c.email || '—') + '</td>' +
+                    '<td>' + (countryNames[c.country] || c.country || '—') + '</td>' +
+                    '<td>' + (c.city || '—') + '</td>' +
+                    '<td>' + joined + '</td>' +
+                    '</tr>';
+            });
+        }
+
+        // PARTNERS
+        async function loadPartners() {
+            const { data } = await db.from('partners').select('*, partner_artists(id)').order('created_at', { ascending: false });
+            if (!data) return;
+
+            document.getElementById('s-partners').textContent = data.length;
+            document.getElementById('nav-partners').textContent = data.length;
+            document.getElementById('s-pending-partners').textContent = data.filter(p => p.status === 'pending').length;
+
+            var body = document.getElementById('partners-body');
+            if (data.length === 0) { body.innerHTML = '<tr class="empty-row"><td colspan="7">No partners yet</td></tr>'; return; }
+
+            body.innerHTML = '';
+            data.forEach(function(p) {
+                var artistCount = p.partner_artists ? p.partner_artists.length : 0;
+                var badgeClass = p.status === 'approved' ? 'badge-approved' : 'badge-pending';
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td class="td-name">' + (p.first_name || '') + ' ' + (p.last_name || '') + '</td>' +
+                    '<td>' + (p.company_name || '—') + '</td>' +
+                    '<td class="td-email">' + (p.email || '—') + '</td>' +
+                    '<td><span class="badge ' + badgeClass + '">' + (p.status || 'pending') + '</span></td>' +
+                    '<td>' + (p.terms_accepted ? '✓' : '—') + '</td>' +
+                    '<td>' + artistCount + '</td>' +
+                    '<td>' +
+                        (p.status !== 'approved' ? '<button class="action-btn btn-approve" data-id="' + p.id + '" data-table="partners">Approve</button>' : '') +
+                        (p.status !== 'rejected' ? '<button class="action-btn btn-reject" data-id="' + p.id + '" data-table="partners">Reject</button>' : '') +
+                    '</td>';
+                body.appendChild(tr);
+            });
+
+            attachStatusHandlers(body);
+        }
+
+        // ARTWORKS
+        async function loadArtworks() {
+            const { data } = await db.from('artworks').select('*, artists(artist_name)').order('created_at', { ascending: false });
+            if (!data) return;
+
+            document.getElementById('s-artworks').textContent = data.length;
+            document.getElementById('nav-artworks').textContent = data.length;
+
+            var body = document.getElementById('artworks-body');
+            if (data.length === 0) { body.innerHTML = '<tr class="empty-row"><td colspan="8">No artworks yet</td></tr>'; return; }
+
+            body.innerHTML = '';
+            data.forEach(function(a) {
+                var hasImg = a.primary_image_url && !a.primary_image_url.includes('placehold.co');
+                var artist = a.artists || {};
+                var edTotal = a.edition_total || 1;
+                var edSold = a.edition_sold || 0;
+                var badgeClass = a.status === 'listed' ? 'badge-approved' : (a.status === 'sold' ? 'badge-rejected' : 'badge-pending');
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + (hasImg ? '<img src="' + a.primary_image_url + '" style="width:40px;height:40px;object-fit:cover;">' : '—') + '</td>' +
+                    '<td class="td-name">' + (a.title || '—') + '</td>' +
+                    '<td>' + (artist.artist_name || '—') + '</td>' +
+                    '<td>$' + Number(a.price || 0).toLocaleString() + '</td>' +
+                    '<td>' + (a.medium || '—') + '</td>' +
+                    '<td><span class="badge ' + badgeClass + '">' + (a.status || 'pending') + '</span></td>' +
+                    '<td>' + edSold + '/' + edTotal + '</td>' +
+                    '<td>' +
+                        (a.status === 'pending' ? '<button class="action-btn btn-approve" data-id="' + a.id + '" data-table="artworks" data-field="status" data-value="listed">List</button>' : '') +
+                        (a.status === 'listed' ? '<button class="action-btn btn-reject" data-id="' + a.id + '" data-table="artworks" data-field="status" data-value="pending">Unlist</button>' : '') +
+                    '</td>';
+                body.appendChild(tr);
+            });
+
+            // Artwork status handlers
+            body.querySelectorAll('.action-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var id = this.dataset.id;
+                    var table = this.dataset.table;
+                    var field = this.dataset.field || 'status';
+                    var value = this.dataset.value;
+                    await db.from(table).update({ [field]: value }).eq('id', id);
+                    loadArtworks();
+                });
+            });
+        }
+
+        // ORDERS
+        async function loadOrders() {
+            const { data } = await db.from('orders')
+                .select('*, artworks(title, price), collectors(first_name, last_name), artists:artworks(artists(artist_name))')
+                .order('created_at', { ascending: false });
+
+            document.getElementById('s-orders').textContent = data ? data.length : 0;
+            document.getElementById('nav-orders').textContent = data ? data.length : 0;
+
+            var body = document.getElementById('orders-body');
+            if (!data || data.length === 0) {
+                body.innerHTML = '<tr class="empty-row"><td colspan="8">No orders yet</td></tr>';
+                return;
+            }
+
+            var totalRevenue = 0;
+            body.innerHTML = '';
+            data.forEach(function(o, i) {
+                var art = o.artworks || {};
+                var collector = o.collectors || {};
+                var artPrice = Number(o.art_price || art.price || 0);
+                var shipping = Number(o.shipping_cost || 0);
+                var customs = Number(o.customs_cost || 0);
+                var total = artPrice + shipping + customs;
+                totalRevenue += artPrice;
+
+                body.innerHTML +=
+                    '<tr>' +
+                    '<td class="td-name">#' + (i + 1) + '</td>' +
+                    '<td>' + (art.title || '—') + '</td>' +
+                    '<td>' + (collector.first_name || '') + ' ' + (collector.last_name || '') + '</td>' +
+                    '<td>' + '—' + '</td>' +
+                    '<td>$' + artPrice.toLocaleString() + '</td>' +
+                    '<td>$' + shipping.toLocaleString() + '</td>' +
+                    '<td>$' + total.toLocaleString() + '</td>' +
+                    '<td><span class="badge badge-' + (o.status === 'delivered' ? 'approved' : 'pending') + '">' + (o.status || 'processing') + '</span></td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('s-revenue').textContent = '$' + totalRevenue.toLocaleString();
+        }
+
+        // Approve/Reject handlers
+        function attachStatusHandlers(container) {
+            container.querySelectorAll('.btn-approve').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    await db.from(this.dataset.table).update({ status: 'approved' }).eq('id', this.dataset.id);
+                    loadAll();
+                });
+            });
+            container.querySelectorAll('.btn-reject').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    await db.from(this.dataset.table).update({ status: 'rejected' }).eq('id', this.dataset.id);
+                    loadAll();
+                });
+            });
+        }
+    </script>
 </body>
 </html>
