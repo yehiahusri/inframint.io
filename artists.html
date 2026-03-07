@@ -84,14 +84,14 @@
         .profile-works-title { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
         .profile-works-count { font-size: 0.8125rem; color: var(--gray-400); font-weight: 300; }
         .profile-works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .profile-work-card { background: var(--white); transition: box-shadow 0.3s; }
+        .profile-work-card { background: var(--white); transition: box-shadow 0.3s; cursor: pointer; }
         .profile-work-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
         .profile-work-image { aspect-ratio: 4/5; overflow: hidden; background: var(--gray-200); display: flex; align-items: center; justify-content: center; position: relative; }
         .profile-work-image img { width: 100%; height: 100%; object-fit: cover; }
         .profile-work-status { position: absolute; top: 0.75rem; right: 0.75rem; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.6rem; }
         .status-available { background: var(--black); color: var(--white); }
         .status-sold { background: var(--sold); color: var(--white); }
-        .status-pending { background: var(--gray-400); color: var(--white); }
+        .status-pending { background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-300); }
         .profile-work-info { padding: 1rem 1.25rem; }
         .profile-work-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.15rem; letter-spacing: -0.01em; }
         .profile-work-medium { font-size: 0.8125rem; color: var(--gray-500); font-weight: 300; margin-bottom: 0.5rem; }
@@ -100,6 +100,35 @@
         .profile-work-price.sold { text-decoration: line-through; color: var(--gray-400); }
         .profile-work-dims { font-size: 0.75rem; color: var(--gray-400); }
         .profile-no-works { text-align: center; padding: 4rem 2rem; color: var(--gray-400); font-weight: 300; grid-column: 1 / -1; }
+
+        /* Artwork Detail Modal */
+        .art-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 2rem; }
+        .art-modal-overlay.active { display: flex; }
+        .art-modal { background: var(--white); width: 100%; max-width: 920px; max-height: 90vh; overflow-y: auto; display: grid; grid-template-columns: 1.1fr 0.9fr; }
+        .art-modal-image { background: var(--gray-100); display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden; }
+        .art-modal-image img { width: 100%; height: 100%; object-fit: contain; }
+        .art-modal-content { padding: 2.5rem; display: flex; flex-direction: column; }
+        .art-modal-close { align-self: flex-end; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-400); margin-bottom: 0.75rem; transition: color 0.2s; }
+        .art-modal-close:hover { color: var(--black); }
+        .art-modal-title { font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+        .art-modal-artist { font-size: 0.9375rem; color: var(--gray-500); font-weight: 300; margin-bottom: 1.25rem; }
+        .art-modal-status-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+        .art-modal-price { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; }
+        .art-modal-price.sold { text-decoration: line-through; color: var(--gray-400); font-size: 1.25rem; }
+        .art-modal-status-badge { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.75rem; }
+        .art-modal-description { font-size: 0.9375rem; color: var(--gray-600); font-weight: 300; line-height: 1.7; margin-bottom: 2rem; flex: 1; }
+        .art-modal-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1.25rem 0; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); margin-bottom: 1.5rem; }
+        .art-modal-detail-label { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 0.2rem; }
+        .art-modal-detail-value { font-size: 0.875rem; font-weight: 400; }
+        .art-modal-cta { font-family: 'Manrope', sans-serif; font-size: 0.9375rem; font-weight: 500; padding: 1rem; background: var(--black); color: var(--white); border: none; cursor: pointer; transition: background 0.2s; text-align: center; }
+        .art-modal-cta:hover { background: var(--gray-800); }
+        .art-modal-cta.sold-btn { background: var(--gray-300); color: var(--gray-500); cursor: default; }
+
+        @media (max-width: 768px) {
+            .art-modal { grid-template-columns: 1fr; max-width: 500px; }
+            .art-modal-image { min-height: 280px; }
+            .art-modal-content { padding: 1.5rem; }
+        }
 
         .empty-state { text-align: center; padding: 6rem 2rem; grid-column: 1 / -1; }
         .empty-state-title { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; }
@@ -219,6 +248,25 @@
                 <div class="profile-works-count" id="profile-works-count"></div>
             </div>
             <div class="profile-works-grid" id="profile-works-grid"></div>
+        </div>
+    </div>
+
+    <!-- Artwork Detail Modal -->
+    <div class="art-modal-overlay" id="art-modal">
+        <div class="art-modal">
+            <div class="art-modal-image" id="art-modal-image"></div>
+            <div class="art-modal-content">
+                <button class="art-modal-close" id="art-modal-close">&times;</button>
+                <h2 class="art-modal-title" id="art-modal-title"></h2>
+                <div class="art-modal-artist" id="art-modal-artist"></div>
+                <div class="art-modal-status-row">
+                    <div class="art-modal-price" id="art-modal-price"></div>
+                    <div class="art-modal-status-badge" id="art-modal-badge"></div>
+                </div>
+                <div class="art-modal-description" id="art-modal-description"></div>
+                <div class="art-modal-details" id="art-modal-details"></div>
+                <button class="art-modal-cta" id="art-modal-cta">Inquire About This Work</button>
+            </div>
         </div>
     </div>
 
@@ -385,9 +433,69 @@
                             (work.width_cm && work.height_cm ? '<div class="profile-work-dims">' + work.width_cm + ' x ' + work.height_cm + ' cm</div>' : '') +
                         '</div>' +
                     '</div>';
+                card.addEventListener('click', function() { openArtworkModal(work, name); });
                 worksGrid.appendChild(card);
             });
         }
+
+        // Artwork detail modal
+        function openArtworkModal(work, artistName) {
+            var hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
+            var isSold = work.status === 'sold';
+            var isListed = work.status === 'listed';
+            var statusLabel = isSold ? 'Sold' : (isListed ? 'Available' : 'Coming Soon');
+            var statusClass = isSold ? 'status-sold' : (isListed ? 'status-available' : 'status-pending');
+            var mediumLabel = mediumNames[work.medium] || work.medium || '';
+
+            document.getElementById('art-modal-image').innerHTML = hasImage
+                ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
+                : '<svg width="64" height="64" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>';
+
+            document.getElementById('art-modal-title').textContent = work.title;
+            document.getElementById('art-modal-artist').textContent = 'by ' + artistName;
+
+            var priceEl = document.getElementById('art-modal-price');
+            priceEl.textContent = '$' + Number(work.price).toLocaleString();
+            priceEl.className = 'art-modal-price' + (isSold ? ' sold' : '');
+
+            var badgeEl = document.getElementById('art-modal-badge');
+            badgeEl.textContent = statusLabel;
+            badgeEl.className = 'art-modal-status-badge ' + statusClass;
+
+            document.getElementById('art-modal-description').textContent = work.description || 'No description provided.';
+
+            var detailsHTML = '<div><div class="art-modal-detail-label">Medium</div><div class="art-modal-detail-value">' + (mediumLabel || '—') + '</div></div>';
+            if (work.width_cm && work.height_cm) {
+                detailsHTML += '<div><div class="art-modal-detail-label">Dimensions</div><div class="art-modal-detail-value">' + work.width_cm + ' × ' + work.height_cm + ' cm</div></div>';
+            }
+            detailsHTML += '<div><div class="art-modal-detail-label">Status</div><div class="art-modal-detail-value">' + statusLabel + '</div></div>';
+            document.getElementById('art-modal-details').innerHTML = detailsHTML;
+
+            var ctaEl = document.getElementById('art-modal-cta');
+            if (isSold) {
+                ctaEl.textContent = 'This Work Has Been Sold';
+                ctaEl.className = 'art-modal-cta sold-btn';
+            } else {
+                ctaEl.textContent = 'Inquire About This Work';
+                ctaEl.className = 'art-modal-cta';
+            }
+
+            document.getElementById('art-modal').classList.add('active');
+        }
+
+        document.getElementById('art-modal-close').addEventListener('click', function() {
+            document.getElementById('art-modal').classList.remove('active');
+        });
+
+        document.getElementById('art-modal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+
+        document.getElementById('art-modal-cta').addEventListener('click', function() {
+            if (!this.classList.contains('sold-btn')) {
+                window.location.href = 'collector-login.html';
+            }
+        });
 
         document.getElementById('back-btn').addEventListener('click', function() {
             document.getElementById('profile-view').style.display = 'none';
