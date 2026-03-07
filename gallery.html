@@ -595,6 +595,56 @@
                 grid-template-columns: 1fr;
             }
         }
+    
+        /* Hamburger Mobile Menu */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .mobile-dropdown {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .nav-center { display: none !important; }
+            .nav-right { display: none !important; }
+            .hamburger { display: block; }
+            .mobile-dropdown {
+                display: none;
+                position: absolute;
+                top: 4.5rem;
+                left: 0;
+                right: 0;
+                background: var(--black);
+                padding: 1rem 2rem 1.5rem;
+                flex-direction: column;
+                gap: 0;
+                border-top: 1px solid #222;
+            }
+            .mobile-dropdown.open {
+                display: flex;
+            }
+            .mobile-dropdown a {
+                font-size: 0.9375rem;
+                font-weight: 400;
+                color: var(--gray-400);
+                text-decoration: none;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid #1a1a1a;
+                transition: color 0.2s;
+            }
+            .mobile-dropdown a:hover {
+                color: var(--white);
+            }
+            .mobile-dropdown a:last-child {
+                border-bottom: none;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -608,6 +658,18 @@
             </div>
         </a>
         
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="index.html#artists">For Artists</a>
+            <a href="about.html">About</a>
+            <a href="artist-login.html">Artist Login</a>
+            <a href="collector-login.html">Collector Login</a>
+        </div>
         <div class="nav-center">
             <a href="gallery.html" class="active">Gallery</a>
             <a href="artists.html">Artists</a>
