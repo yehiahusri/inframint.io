@@ -168,6 +168,7 @@
                 <div class="sb-lbl">Content</div>
                 <a class="sb-lk" data-s="artworks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>All Artworks <span class="ct" id="n-aw">0</span></a>
                 <a class="sb-lk" data-s="featured"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Featured</a>
+                <a class="sb-lk" data-s="blog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Blog / Journal <span class="ct" id="n-blog">0</span></a>
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Business</div>
@@ -182,6 +183,7 @@
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Settings</div>
+                <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
             <div class="sb-bot"><button id="sign-out">Sign Out</button></div>
@@ -386,6 +388,91 @@
                     <div class="card" id="activity-log"><div style="text-align:center;padding:2rem;color:var(--g400);font-size:.8rem">Loading activity...</div></div>
                 </div>
 
+                <!-- Blog Management -->
+                <div class="sec" id="section-blog">
+                    <div class="ph"><h1>Blog / Journal</h1><p>Create and manage blog posts</p></div>
+                    
+                    <!-- New Post Form -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2" id="blog-form-title">New Post</span></div>
+                        <div class="msg-ok" id="blog-msg"></div>
+                        <input type="hidden" id="blog-edit-id" value="">
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Title</label><input type="text" class="fi" id="blog-title" placeholder="Post title"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Category</label>
+                                <select class="fi" id="blog-category">
+                                    <option value="news">News</option>
+                                    <option value="artist-spotlight">Artist Spotlight</option>
+                                    <option value="behind-the-scenes">Behind the Scenes</option>
+                                    <option value="collecting">Collecting</option>
+                                    <option value="events">Events</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Excerpt (short preview)</label><input type="text" class="fi" id="blog-excerpt" placeholder="One-line summary"></div>
+                        <div style="margin-bottom:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Body</label><textarea class="fta" id="blog-body" placeholder="Write your post here... Use blank lines to separate paragraphs." style="min-height:150px"></textarea></div>
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Layout</label>
+                                <select class="fi" id="blog-layout">
+                                    <option value="standard">Standard (1 image)</option>
+                                    <option value="dual">Dual (2 images side by side)</option>
+                                </select>
+                            </div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Author</label><input type="text" class="fi" id="blog-author" placeholder="InfraMint"></div>
+                        </div>
+                        <div class="form-row2" style="margin-top:.6rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Image 1</label><input type="file" class="fi" id="blog-img1" accept="image/*" style="padding:.4rem"></div>
+                            <div id="blog-img2-wrap"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Image 2 (dual layout)</label><input type="file" class="fi" id="blog-img2" accept="image/*" style="padding:.4rem"></div>
+                        </div>
+                        <div id="blog-img-preview" style="display:flex;gap:.5rem;margin:.6rem 0"></div>
+                        <div style="display:flex;gap:.5rem;margin-top:.75rem">
+                            <button class="fbtn" id="blog-save-draft" style="background:var(--g300);color:var(--g800)">Save as Draft</button>
+                            <button class="fbtn" id="blog-publish">Publish Now</button>
+                            <button class="fbtn" id="blog-cancel" style="background:var(--g200);color:var(--g600);display:none">Cancel Edit</button>
+                        </div>
+                    </div>
+
+                    <!-- Posts list -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">All Posts</span></div>
+                        <div class="tw"><table>
+                            <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody id="tb-blog"></tbody>
+                        </table></div>
+                    </div>
+                </div>
+
+                <!-- Team / Co-Owners -->
+                <div class="sec" id="section-team">
+                    <div class="ph"><h1>Team / Co-Owners</h1><p>Manage who has admin access to the gallery</p></div>
+                    
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Add Team Member</span></div>
+                        <div class="msg-ok" id="team-msg"></div>
+                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Add someone as a co-owner or admin. They'll need a Supabase account (register via any login page first), then add their email here.</p>
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Email</label><input type="email" class="fi" id="team-email" placeholder="email@example.com"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Name</label><input type="text" class="fi" id="team-name" placeholder="Full name"></div>
+                        </div>
+                        <div style="margin-top:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Role</label>
+                            <select class="fi" id="team-role" style="width:auto">
+                                <option value="admin">Admin (full access)</option>
+                                <option value="editor">Editor (content only)</option>
+                                <option value="owner">Co-Owner</option>
+                            </select>
+                        </div>
+                        <button class="fbtn" id="add-team" style="margin-top:.6rem">Add to Team</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Current Team</span></div>
+                        <div class="tw"><table>
+                            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Added</th><th>Actions</th></tr></thead>
+                            <tbody id="tb-team"></tbody>
+                        </table></div>
+                    </div>
+                </div>
+
                 <!-- Settings -->
                 <div class="sec" id="section-settings">
                     <div class="ph"><h1>Settings</h1><p>Platform configuration</p></div>
@@ -412,32 +499,38 @@
     const SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
     const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
     const db=supabase.createClient(SB_URL,SB_KEY);
-    const ADM='yehiahusri@gmail.com';
     const CN={AE:'UAE',US:'US',UK:'UK',DE:'DE',FR:'FR',LB:'LB',SA:'SA',QA:'QA',other:'Other'};
     const CAT={painting:'Painting',photography:'Photography',digital:'Digital',sculpture:'Sculpture',mixed:'Mixed Media',illustration:'Illustration',other:'Other'};
     const MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photo',mixed:'Mixed',other:'Other'};
 
     let allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
 
-    // Login
+    const ADM_LEGACY='yehiahusri@gmail.com';
+
+    // Login — check admin_users table
     document.getElementById('a-login').onclick=async function(){
         var e=document.getElementById('a-email').value,p=document.getElementById('a-pass').value,m=document.getElementById('lm');
-        if(e!==ADM){m.textContent='Not authorized';m.className='lm show';return}
         var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
         if(error){m.textContent=error.message;m.className='lm show';return}
-        showDash();
+        // Check admin_users table OR legacy email
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
+        if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
+        showDash(adm);
     };
 
     async function checkAuth(){
         var{data:{session}}=await db.auth.getSession();
-        if(session&&session.user.email===ADM)showDash();
+        if(session){
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
+            if(adm||session.user.email===ADM_LEGACY)showDash(adm);
+        }
     }
     checkAuth();
 
-    function showDash(){
+    function showDash(adm){
         document.getElementById('lov').style.display='none';
         document.getElementById('dash').style.display='grid';
-        document.getElementById('aname').textContent=ADM;
+        document.getElementById('aname').textContent=adm?adm.name:(ADM_LEGACY);
         loadAll();
     }
 
@@ -518,6 +611,8 @@
         renderCommissions();
         renderFinance('all');
         renderActivity();
+        renderBlog();
+        renderTeam();
     }
 
     // ===== FINANCE =====
@@ -862,6 +957,170 @@
         b.onclick=fn;
         parent.appendChild(b);
     }
+
+    // ===== BLOG MANAGEMENT =====
+    var blogPosts=[];
+
+    async function renderBlog(){
+        var{data}=await db.from('blog_posts').select('*').order('created_at',{ascending:false});
+        blogPosts=data||[];
+        el('n-blog',blogPosts.length);
+
+        var b=document.getElementById('tb-blog');
+        if(!blogPosts.length){b.innerHTML='<tr class="empty"><td colspan="6">No posts yet. Create your first one above.</td></tr>';return}
+        b.innerHTML='';
+        blogPosts.forEach(function(p){
+            var bc=p.published?'b-approved':'b-pending';
+            var tr=document.createElement('tr');
+            tr.innerHTML='<td class="tn">'+trunc(p.title,40)+'</td><td>'+(p.category||'—')+'</td><td>'+(p.author||'—')+'</td><td><span class="badge '+bc+'">'+(p.published?'Published':'Draft')+'</span></td><td>'+dt(p.published_at||p.created_at)+'</td><td></td>';
+            var td=tr.lastChild;
+            mkBtn(td,'Edit','ab-grey',function(){editBlogPost(p)});
+            if(!p.published)mkBtn(td,'Publish','ab-ok',async function(){await db.from('blog_posts').update({published:true,published_at:new Date().toISOString()}).eq('id',p.id);renderBlog()});
+            if(p.published)mkBtn(td,'Unpublish','ab-unlist',async function(){await db.from('blog_posts').update({published:false}).eq('id',p.id);renderBlog()});
+            mkBtn(td,'Delete','ab-no',async function(){if(!confirm('Delete this post?'))return;await db.from('blog_posts').delete().eq('id',p.id);renderBlog()});
+            b.appendChild(tr);
+        });
+    }
+
+    function editBlogPost(p){
+        document.getElementById('blog-edit-id').value=p.id;
+        document.getElementById('blog-form-title').textContent='Edit Post';
+        document.getElementById('blog-title').value=p.title||'';
+        document.getElementById('blog-category').value=p.category||'news';
+        document.getElementById('blog-excerpt').value=p.excerpt||'';
+        document.getElementById('blog-body').value=p.body||'';
+        document.getElementById('blog-layout').value=p.layout||'standard';
+        document.getElementById('blog-author').value=p.author||'';
+        document.getElementById('blog-cancel').style.display='inline-block';
+        // Show existing images
+        var prev=document.getElementById('blog-img-preview');
+        prev.innerHTML='';
+        if(p.image_url)prev.innerHTML+='<img src="'+p.image_url+'" style="height:60px;object-fit:cover">';
+        if(p.image2_url)prev.innerHTML+='<img src="'+p.image2_url+'" style="height:60px;object-fit:cover">';
+        window.scrollTo(0,0);
+    }
+
+    function clearBlogForm(){
+        document.getElementById('blog-edit-id').value='';
+        document.getElementById('blog-form-title').textContent='New Post';
+        document.getElementById('blog-title').value='';
+        document.getElementById('blog-category').value='news';
+        document.getElementById('blog-excerpt').value='';
+        document.getElementById('blog-body').value='';
+        document.getElementById('blog-layout').value='standard';
+        document.getElementById('blog-author').value='';
+        document.getElementById('blog-img1').value='';
+        document.getElementById('blog-img2').value='';
+        document.getElementById('blog-img-preview').innerHTML='';
+        document.getElementById('blog-cancel').style.display='none';
+    }
+
+    document.getElementById('blog-cancel').onclick=clearBlogForm;
+
+    async function uploadBlogImage(file){
+        var fname='blog/'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9.]/g,'');
+        var{error}=await db.storage.from('blog-images').upload(fname,file,{contentType:file.type});
+        if(error)throw new Error(error.message);
+        var{data}=db.storage.from('blog-images').getPublicUrl(fname);
+        return data.publicUrl;
+    }
+
+    async function saveBlogPost(publish){
+        var title=document.getElementById('blog-title').value.trim();
+        if(!title){alert('Please enter a title');return}
+
+        var msgEl=document.getElementById('blog-msg');
+        msgEl.textContent='Saving...';msgEl.className='msg-ok show';
+
+        var postData={
+            title:title,
+            category:document.getElementById('blog-category').value,
+            excerpt:document.getElementById('blog-excerpt').value,
+            body:document.getElementById('blog-body').value,
+            layout:document.getElementById('blog-layout').value,
+            author:document.getElementById('blog-author').value||'InfraMint',
+            slug:title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')
+        };
+        if(publish){postData.published=true;postData.published_at=new Date().toISOString()}
+
+        // Upload images
+        var f1=document.getElementById('blog-img1').files[0];
+        var f2=document.getElementById('blog-img2').files[0];
+        try{
+            if(f1)postData.image_url=await uploadBlogImage(f1);
+            if(f2)postData.image2_url=await uploadBlogImage(f2);
+        }catch(e){msgEl.textContent='Image upload error: '+e.message;msgEl.className='msg-ok show';return}
+
+        var editId=document.getElementById('blog-edit-id').value;
+        var error;
+        if(editId){
+            var r=await db.from('blog_posts').update(postData).eq('id',editId);
+            error=r.error;
+        }else{
+            if(!publish)postData.published=false;
+            var r=await db.from('blog_posts').insert(postData);
+            error=r.error;
+        }
+
+        if(error){msgEl.textContent='Error: '+error.message;return}
+        msgEl.textContent=publish?'Published!':'Draft saved!';
+        clearBlogForm();
+        renderBlog();
+    }
+
+    document.getElementById('blog-save-draft').onclick=function(){saveBlogPost(false)};
+    document.getElementById('blog-publish').onclick=function(){saveBlogPost(true)};
+
+    // ===== TEAM MANAGEMENT =====
+    async function renderTeam(){
+        var{data}=await db.from('admin_users').select('*').order('created_at',{ascending:true});
+        var b=document.getElementById('tb-team');
+        if(!data||!data.length){b.innerHTML='<tr class="empty"><td colspan="5">No team members</td></tr>';return}
+        b.innerHTML='';
+        data.forEach(function(u){
+            var roleLabel=u.role==='owner'?'Owner':(u.role==='editor'?'Editor':'Admin');
+            var bc=u.role==='owner'?'b-approved':(u.role==='editor'?'b-active':'b-approved');
+            var tr=document.createElement('tr');
+            tr.innerHTML='<td class="tn">'+(u.name||'—')+'</td><td class="te">'+u.email+'</td><td><span class="badge '+bc+'">'+roleLabel+'</span></td><td>'+dt(u.created_at)+'</td><td></td>';
+            var td=tr.lastChild;
+            // Don't allow removing the primary owner
+            if(u.email!==ADM_LEGACY){
+                mkBtn(td,'Remove','ab-no',async function(){
+                    if(!confirm('Remove '+u.name+' from the team?'))return;
+                    await db.from('admin_users').delete().eq('id',u.id);
+                    renderTeam();
+                });
+            }else{
+                td.innerHTML='<span style="font-size:.65rem;color:var(--g400)">Primary owner</span>';
+            }
+            b.appendChild(tr);
+        });
+    }
+
+    document.getElementById('add-team').onclick=async function(){
+        var email=document.getElementById('team-email').value.trim();
+        var name=document.getElementById('team-name').value.trim();
+        var role=document.getElementById('team-role').value;
+        var msgEl=document.getElementById('team-msg');
+
+        if(!email||!name){msgEl.textContent='Please enter email and name';msgEl.className='msg-ok show';msgEl.style.color='var(--err)';return}
+
+        var{error}=await db.from('admin_users').insert({email:email,name:name,role:role});
+        if(error){
+            if(error.message.includes('duplicate')||error.message.includes('unique')){
+                msgEl.textContent='This email is already on the team.';
+            }else{
+                msgEl.textContent='Error: '+error.message;
+            }
+            msgEl.className='msg-ok show';msgEl.style.color='var(--err)';
+            return;
+        }
+
+        msgEl.textContent=name+' added to the team as '+role+'!';msgEl.className='msg-ok show';msgEl.style.color='var(--ok)';
+        document.getElementById('team-email').value='';
+        document.getElementById('team-name').value='';
+        renderTeam();
+    };
     </script>
 </body>
 </html>
