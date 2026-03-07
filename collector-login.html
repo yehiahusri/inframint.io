@@ -469,7 +469,7 @@
             }
 
             // Success - redirect to gallery/home
-            window.location.href = 'index.html';
+            window.location.href = 'collector-dashboard.html';
         });
 
         // Register
@@ -485,34 +485,21 @@
                 email: email,
                 password: password,
                 options: {
-                    emailRedirectTo: window.location.origin + '/collector-login.html?verified=true',
-                    data: {
-                        first_name: firstName,
-                        last_name: lastName,
-                        user_type: 'collector'
-                    }
+                    emailRedirectTo: window.location.origin + '/collector-login.html',
+                    data: { first_name: firstName, last_name: lastName, user_type: 'collector' }
                 }
             });
 
-            if (error) {
-                showMessage(error.message, 'error');
-                return;
+            if (error) { showMessage(error.message, 'error'); return; }
+
+            if (data.user) {
+                await saveCollector(data.user, firstName, lastName, email);
             }
 
-            // Store data for after verification
-            localStorage.setItem('inframint_collector_pending', JSON.stringify({
-                first_name: firstName,
-                last_name: lastName,
-                email: email
-            }));
-
-            // Check if email confirmation needed
-            if (data.user && !data.user.confirmed_at && !data.session) {
-                showMessage('Check your email for a verification link!', 'success');
+            if (data.session) {
+                window.location.href = 'collector-dashboard.html';
             } else {
-                // Save to collectors table
-                await saveCollector(data.user, firstName, lastName, email);
-                window.location.href = 'index.html';
+                showMessage('Account created! Check your email for a verification link, then come back and sign in.', 'success');
             }
         });
 
@@ -525,18 +512,15 @@
                 const user = session.user;
                 const meta = user.user_metadata || {};
                 
-                // Get stored data or from metadata
                 const pending = JSON.parse(localStorage.getItem('inframint_collector_pending') || '{}');
                 const names = (meta.full_name || '').split(' ');
                 const firstName = pending.first_name || meta.first_name || names[0] || '';
                 const lastName = pending.last_name || meta.last_name || names.slice(1).join(' ') || '';
 
-                // If returning from auth, save collector
-                if (urlParams.get('auth') === 'google' || urlParams.get('verified') === 'true') {
-                    await saveCollector(user, firstName, lastName, user.email);
-                    localStorage.removeItem('inframint_collector_pending');
-                    window.location.href = 'index.html';
-                }
+                // Always ensure collector profile exists
+                await saveCollector(user, firstName, lastName, user.email);
+                localStorage.removeItem('inframint_collector_pending');
+                window.location.href = 'collector-dashboard.html';
             }
         }
 
