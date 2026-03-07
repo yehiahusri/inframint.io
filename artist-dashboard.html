@@ -767,6 +767,7 @@
                         <div>
                             <button class="btn btn-secondary btn-sm" id="change-photo-btn">Change Photo</button>
                             <input type="file" id="photo-input" accept="image/*" style="display: none;">
+                            <div id="photo-status" style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;"></div>
                         </div>
                     </div>
 
@@ -791,6 +792,21 @@
                     <div class="form-group">
                         <label class="form-label">Biography</label>
                         <textarea class="form-textarea" id="profile-bio" placeholder="Tell collectors about yourself and your art..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Instagram</label>
+                        <input type="text" class="form-input" id="profile-instagram" placeholder="@yourusername">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Website</label>
+                        <input type="url" class="form-input" id="profile-website" placeholder="https://yourwebsite.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Portfolio URL</label>
+                        <input type="url" class="form-input" id="profile-portfolio" placeholder="https://behance.net/you">
                     </div>
 
                     <button class="btn btn-primary" id="save-profile-btn">Save Changes</button>
@@ -1024,11 +1040,19 @@
             document.getElementById('profile-artist-name').value = artistData.artist_name || '';
             document.getElementById('profile-category').value = artistData.category || 'painting';
             document.getElementById('profile-bio').value = artistData.bio || '';
+            document.getElementById('profile-instagram').value = artistData.instagram || '';
+            document.getElementById('profile-website').value = artistData.website || '';
+            document.getElementById('profile-portfolio').value = artistData.portfolio_url || '';
             document.getElementById('profile-first-name').value = artistData.first_name || '';
             document.getElementById('profile-last-name').value = artistData.last_name || '';
             document.getElementById('profile-email').value = artistData.email || '';
             document.getElementById('profile-country').value = artistData.country || 'US';
             document.getElementById('profile-city').value = artistData.city || '';
+
+            // Load profile photo
+            if (artistData.profile_image_url) {
+                document.getElementById('profile-photo').innerHTML = '<img src="' + artistData.profile_image_url + '" alt="Profile">';
+            }
 
             // Payout fields
             document.getElementById('payout-method').value = artistData.payout_method || 'bank';
@@ -1065,8 +1089,16 @@
             const { error } = await db.from('artists').update({
                 artist_name: document.getElementById('profile-artist-name').value,
                 category: document.getElementById('profile-category').value,
-                bio: document.getElementById('profile-bio').value
+                bio: document.getElementById('profile-bio').value,
+                instagram: document.getElementById('profile-instagram').value,
+                website: document.getElementById('profile-website').value,
+                portfolio_url: document.getElementById('profile-portfolio').value
             }).eq('id', artistData.id);
+
+            if (!error) {
+                artistData.artist_name = document.getElementById('profile-artist-name').value;
+                document.getElementById('user-name').textContent = artistData.artist_name || artistData.first_name;
+            }
 
             showMessage('profile-message', error ? 'Error saving: ' + error.message : 'Profile saved!', !error);
         });
@@ -1345,6 +1377,59 @@
         // Profile photo
         document.getElementById('change-photo-btn').addEventListener('click', function() {
             document.getElementById('photo-input').click();
+        });
+
+        document.getElementById('photo-input').addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('photo-status');
+            statusEl.textContent = 'Uploading...';
+            statusEl.style.color = 'var(--gray-500)';
+
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = artistData.id + '/profile.' + fileExt;
+
+                // Delete old photo first (ignore errors)
+                await db.storage.from('artist-profiles').remove([fileName]);
+
+                const { error: uploadError } = await db.storage
+                    .from('artist-profiles')
+                    .upload(fileName, file, { contentType: file.type, upsert: true });
+
+                if (uploadError) {
+                    statusEl.textContent = 'Upload failed: ' + uploadError.message;
+                    statusEl.style.color = '#dc2626';
+                    return;
+                }
+
+                const { data: urlData } = db.storage
+                    .from('artist-profiles')
+                    .getPublicUrl(fileName);
+
+                const imageUrl = urlData.publicUrl + '?t=' + Date.now();
+
+                // Save URL to database
+                const { error: dbError } = await db.from('artists')
+                    .update({ profile_image_url: urlData.publicUrl })
+                    .eq('id', artistData.id);
+
+                if (dbError) {
+                    statusEl.textContent = 'Error saving: ' + dbError.message;
+                    statusEl.style.color = '#dc2626';
+                    return;
+                }
+
+                // Show photo
+                document.getElementById('profile-photo').innerHTML = '<img src="' + imageUrl + '" alt="Profile">';
+                artistData.profile_image_url = urlData.publicUrl;
+                statusEl.textContent = 'Photo updated!';
+                statusEl.style.color = '#16a34a';
+            } catch (err) {
+                statusEl.textContent = 'Error: ' + err.message;
+                statusEl.style.color = '#dc2626';
+            }
         });
 
         // Initialize
