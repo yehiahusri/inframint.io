@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artists — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --gray-900: #171717;
+        }
+
+        html { font-size: 16px; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
+            background: var(--white);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-center a {
+            font-size: 0.9375rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-center a:hover,
+        .nav-center a.active {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-login {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-login:hover {
+            color: var(--white);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 7.5rem 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title strong {
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            font-size: 0.9375rem;
+            color: var(--gray-500);
+            font-weight: 300;
+        }
+
+        /* Artists List View */
+        .artists-section {
+            padding: 2rem 3rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .artist-row {
+            background: var(--white);
+            margin-bottom: 1px;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .artist-row:first-child {
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .artist-row:hover {
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            z-index: 1;
+            position: relative;
+        }
+
+        .artist-summary {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .artist-photo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .artist-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artist-photo-placeholder {
+            color: var(--gray-400);
+        }
+
+        .artist-info {
+            min-width: 0;
+        }
+
+        .artist-name {
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.15rem;
+        }
+
+        .artist-meta {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            font-weight: 300;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .artist-meta-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--gray-300);
+        }
+
+        .artist-arrow {
+            color: var(--gray-300);
+            transition: color 0.2s, transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .artist-row:hover .artist-arrow {
+            color: var(--black);
+        }
+
+        .artist-row.expanded .artist-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Expanded Artist Profile */
+        .artist-expanded {
+            display: none;
+            border-top: 1px solid var(--gray-200);
+            padding: 2rem 1.5rem 2rem 5.5rem;
+        }
+
+        .artist-row.expanded .artist-expanded {
+            display: block;
+        }
+
+        .artist-bio {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .artist-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .artist-link {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            border-bottom: 1px solid var(--gray-300);
+            transition: color 0.2s;
+        }
+
+        .artist-link:hover {
+            color: var(--black);
+        }
+
+        /* Artist's Artworks Row */
+        .artist-works-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+            margin-bottom: 0.75rem;
+        }
+
+        .artist-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .artist-work-card {
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .artist-work-card:hover {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .artist-work-image {
+            aspect-ratio: 1;
+            overflow: hidden;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .artist-work-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artist-work-info {
+            padding: 0.5rem;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-top: none;
+        }
+
+        .artist-work-title {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist-work-price {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .artist-no-works {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            font-size: 0.9375rem;
+            color: var(--gray-500);
+            font-weight: 300;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 6rem 2rem;
+            color: var(--gray-400);
+            font-size: 0.9375rem;
+            font-weight: 300;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--gray-200);
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-bar {
+            width: 2px;
+            height: 1.25rem;
+            background: var(--black);
+        }
+
+        .footer-text {
+            font-size: 1rem;
+        }
+
+        .footer-text span:first-child {
+            font-weight: 600;
+        }
+
+        .footer-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-400);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--black);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 1.5rem;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .page-header {
+                padding: 6.5rem 1.5rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .artists-section {
+                padding: 1.5rem;
+            }
+
+            .artist-summary {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .artist-photo {
+                width: 44px;
+                height: 44px;
+            }
+
+            .artist-expanded {
+                padding: 1.5rem 1rem 1.5rem 1rem;
+            }
+
+            .artist-works-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .artist-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        
+        <div class="nav-center">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html" class="active">Artists</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="about.html">About</a>
+        </div>
+
+        <div class="nav-right" id="nav-right">
+            <a href="artist-login.html" class="nav-login">Artist Login</a>
+            <a href="collector-login.html" class="nav-login">Collector Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Our <strong>Artists</strong></h1>
+        <p class="page-subtitle">Emerging talent from around the world</p>
+    </div>
+
+    <!-- Artists List -->
+    <div class="artists-section" id="artists-list">
+        <div class="loading">Loading artists...</div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            <div class="footer-bar"></div>
+            <div class="footer-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </div>
+        <div class="footer-links">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="index.html#how">How It Works</a>
+            <a href="about.html">About</a>
+        </div>
+        <div class="footer-copy">© 2026 InfraMint</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const mediumNames = {
+            oil: 'Oil on Canvas', acrylic: 'Acrylic', watercolor: 'Watercolor',
+            digital: 'Digital', photography: 'Photography', mixed: 'Mixed Media', other: 'Other'
+        };
+
+        const categoryNames = {
+            painting: 'Painting', photography: 'Photography', digital: 'Digital Art',
+            sculpture: 'Sculpture', mixed: 'Mixed Media', illustration: 'Illustration', other: 'Other'
+        };
+
+        async function loadArtists() {
+            // Load artists with their artworks
+            const { data: artists, error } = await db.from('artists')
+                .select('*, artworks(*)')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading artists:', error);
+                document.getElementById('artists-list').innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-title">Unable to load artists</div><div class="empty-state-text">Please try again later.</div></div>';
+                return;
+            }
+
+            const container = document.getElementById('artists-list');
+
+            if (!artists || artists.length === 0) {
+                container.innerHTML = 
+                    '<div class="empty-state"><div class="empty-state-title">No artists yet</div><div class="empty-state-text">Be the first to join — artists are signing up every day.</div></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            artists.forEach(function(artist) {
+                const row = document.createElement('div');
+                row.className = 'artist-row';
+
+                const hasPhoto = artist.profile_image_url;
+                const artworks = artist.artworks || [];
+                const artworkCount = artworks.length;
+                const categoryLabel = categoryNames[artist.category] || artist.category || '';
+
+                // Summary row
+                let summaryHTML = 
+                    '<div class="artist-summary">' +
+                        '<div class="artist-photo">' +
+                            (hasPhoto
+                                ? '<img src="' + artist.profile_image_url + '" alt="' + (artist.artist_name || '') + '">'
+                                : '<svg class="artist-photo-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="11" y="10" width="2" height="11"/><circle cx="12" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+                            ) +
+                        '</div>' +
+                        '<div class="artist-info">' +
+                            '<div class="artist-name">' + (artist.artist_name || artist.first_name || 'Unnamed Artist') + '</div>' +
+                            '<div class="artist-meta">' +
+                                (categoryLabel ? '<span>' + categoryLabel + '</span>' : '') +
+                                (categoryLabel && artworkCount > 0 ? '<span class="artist-meta-dot"></span>' : '') +
+                                (artworkCount > 0 ? '<span>' + artworkCount + ' work' + (artworkCount > 1 ? 's' : '') + '</span>' : '') +
+                                (artist.city ? '<span class="artist-meta-dot"></span><span>' + artist.city + '</span>' : '') +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="artist-arrow">' +
+                            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
+                        '</div>' +
+                    '</div>';
+
+                // Expanded section
+                let expandedHTML = '<div class="artist-expanded">';
+
+                // Bio
+                if (artist.bio) {
+                    expandedHTML += '<div class="artist-bio">' + artist.bio + '</div>';
+                }
+
+                // Links
+                let hasLinks = artist.instagram || artist.website || artist.portfolio_url;
+                if (hasLinks) {
+                    expandedHTML += '<div class="artist-links">';
+                    if (artist.instagram) {
+                        const handle = artist.instagram.replace('@', '');
+                        expandedHTML += '<a href="https://instagram.com/' + handle + '" target="_blank" class="artist-link">Instagram</a>';
+                    }
+                    if (artist.website) {
+                        expandedHTML += '<a href="' + artist.website + '" target="_blank" class="artist-link">Website</a>';
+                    }
+                    if (artist.portfolio_url) {
+                        expandedHTML += '<a href="' + artist.portfolio_url + '" target="_blank" class="artist-link">Portfolio</a>';
+                    }
+                    expandedHTML += '</div>';
+                }
+
+                // Artworks
+                if (artworks.length > 0) {
+                    expandedHTML += '<div class="artist-works-label">Works</div>';
+                    expandedHTML += '<div class="artist-works-grid">';
+                    artworks.forEach(function(work) {
+                        const hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
+                        expandedHTML +=
+                            '<div class="artist-work-card" data-artwork-id="' + work.id + '">' +
+                                '<div class="artist-work-image">' +
+                                    (hasImage
+                                        ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
+                                        : '<svg width="32" height="32" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>'
+                                    ) +
+                                '</div>' +
+                                '<div class="artist-work-info">' +
+                                    '<div class="artist-work-title">' + work.title + '</div>' +
+                                    '<div class="artist-work-price">$' + Number(work.price).toLocaleString() + '</div>' +
+                                '</div>' +
+                            '</div>';
+                    });
+                    expandedHTML += '</div>';
+                } else {
+                    expandedHTML += '<div class="artist-no-works">No artworks listed yet</div>';
+                }
+
+                expandedHTML += '</div>';
+
+                row.innerHTML = summaryHTML + expandedHTML;
+
+                // Toggle expand on click
+                row.querySelector('.artist-summary').addEventListener('click', function() {
+                    // Close others
+                    document.querySelectorAll('.artist-row.expanded').forEach(function(r) {
+                        if (r !== row) r.classList.remove('expanded');
+                    });
+                    row.classList.toggle('expanded');
+                });
+
+                container.appendChild(row);
+            });
+
+            // Make artwork thumbnails link to gallery
+            document.querySelectorAll('.artist-work-card').forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    window.location.href = 'gallery.html';
+                });
+            });
+        }
+
+        // Initialize
+        loadArtists();
+    </script>
+
+</body>
+</html>
