@@ -9,525 +9,223 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --black: #000000;
-            --white: #ffffff;
-            --gray-100: #f7f7f7;
-            --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-800: #262626;
-            --gray-900: #171717;
+            --black: #000000; --white: #ffffff; --gray-100: #f7f7f7; --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252;
+            --gray-800: #262626; --gray-900: #171717; --success: #16a34a; --sold: #dc2626;
         }
-
         html { font-size: 16px; }
+        body { font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
-        body {
-            font-family: 'Manrope', sans-serif;
-            background: var(--gray-100);
-            color: var(--black);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--black); height: 4.5rem; }
+        .logo { display: flex; align-items: center; gap: 0.875rem; text-decoration: none; }
+        .logo-bar { width: 3px; height: 1.75rem; background: var(--white); }
+        .logo-text { font-size: 1.25rem; letter-spacing: -0.01em; }
+        .logo-text span:first-child { font-weight: 600; color: var(--white); }
+        .logo-text span:last-child { font-weight: 200; color: var(--gray-500); }
+        .nav-center { display: flex; gap: 2.5rem; align-items: center; }
+        .nav-center a { font-size: 0.9375rem; font-weight: 400; color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
+        .nav-center a:hover, .nav-center a.active { color: var(--white); }
+        .nav-right { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-login { font-size: 0.875rem; font-weight: 400; color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
+        .nav-login:hover { color: var(--white); }
+
+        .page-header { padding: 7.5rem 3rem 1.5rem; max-width: 1400px; margin: 0 auto; }
+        .page-title { font-size: 2.5rem; font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+        .page-title strong { font-weight: 600; }
+        .page-subtitle { font-size: 0.9375rem; color: var(--gray-500); font-weight: 300; }
+
+        .filters { padding: 1.5rem 3rem 0.5rem; max-width: 1400px; margin: 0 auto; }
+        .filter-row { display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+        .filter-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .filter-label { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); }
+        .filter-select { font-family: 'Manrope', sans-serif; font-size: 0.8125rem; padding: 0.45rem 2rem 0.45rem 0.75rem; border: 1px solid var(--gray-300); background: var(--white); color: var(--gray-600); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23737373' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; }
+        .filter-select:focus { outline: none; border-color: var(--black); }
+        .filter-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; align-self: flex-end; }
+        .filter-tag { font-family: 'Manrope', sans-serif; font-size: 0.75rem; font-weight: 400; padding: 0.35rem 1rem; border: 1px solid var(--gray-300); background: var(--white); color: var(--gray-600); cursor: pointer; transition: all 0.2s; }
+        .filter-tag:hover { border-color: var(--black); color: var(--black); }
+        .filter-tag.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+        .artists-section { padding: 2rem 3rem 4rem; max-width: 1400px; margin: 0 auto; }
+        .artists-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+        .artist-card { background: var(--white); cursor: pointer; transition: box-shadow 0.3s; }
+        .artist-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .artist-card-photo { aspect-ratio: 1; overflow: hidden; background: var(--gray-200); display: flex; align-items: center; justify-content: center; }
+        .artist-card-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .artist-card:hover .artist-card-photo img { transform: scale(1.03); }
+        .artist-card-info { padding: 1rem 1.25rem; }
+        .artist-card-name { font-size: 1rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 0.15rem; }
+        .artist-card-meta { font-size: 0.8125rem; color: var(--gray-500); font-weight: 300; }
+        .artist-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+        .artist-card-works { font-size: 0.75rem; color: var(--gray-400); }
+        .artist-card-view { font-size: 0.75rem; font-weight: 500; color: var(--gray-500); transition: color 0.2s; }
+        .artist-card:hover .artist-card-view { color: var(--black); }
+
+        #profile-view { display: none; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Manrope', sans-serif; font-size: 0.8125rem; font-weight: 400; color: var(--gray-500); background: none; border: none; cursor: pointer; padding: 7.5rem 3rem 0; max-width: 1400px; margin: 0 auto; display: block; transition: color 0.2s; }
+        .back-btn:hover { color: var(--black); }
+
+        .profile-hero { display: grid; grid-template-columns: 320px 1fr; gap: 3rem; padding: 1.5rem 3rem 0; max-width: 1400px; margin: 0 auto; }
+        .profile-photo-large { width: 100%; aspect-ratio: 1; overflow: hidden; background: var(--gray-200); display: flex; align-items: center; justify-content: center; }
+        .profile-photo-large img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-details { padding: 1rem 0; display: flex; flex-direction: column; }
+        .profile-name { font-size: 2.25rem; font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+        .profile-name strong { font-weight: 600; }
+        .profile-location { font-size: 0.9375rem; color: var(--gray-500); font-weight: 300; margin-bottom: 0.25rem; }
+        .profile-category-tag { display: inline-block; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-500); border: 1px solid var(--gray-300); padding: 0.25rem 0.75rem; margin-bottom: 1.5rem; }
+        .profile-bio { font-size: 1rem; font-weight: 300; color: var(--gray-600); line-height: 1.8; max-width: 560px; flex: 1; }
+        .profile-links { display: flex; gap: 1.25rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-200); }
+        .profile-link { font-size: 0.8125rem; font-weight: 400; color: var(--gray-500); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; transition: color 0.2s; }
+        .profile-link:hover { color: var(--black); }
+
+        .profile-works-section { padding: 3rem 3rem 4rem; max-width: 1400px; margin: 0 auto; }
+        .profile-works-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-200); }
+        .profile-works-title { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); }
+        .profile-works-count { font-size: 0.8125rem; color: var(--gray-400); font-weight: 300; }
+        .profile-works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .profile-work-card { background: var(--white); transition: box-shadow 0.3s; }
+        .profile-work-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .profile-work-image { aspect-ratio: 4/5; overflow: hidden; background: var(--gray-200); display: flex; align-items: center; justify-content: center; position: relative; }
+        .profile-work-image img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-work-status { position: absolute; top: 0.75rem; right: 0.75rem; font-size: 0.625rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.6rem; }
+        .status-available { background: var(--black); color: var(--white); }
+        .status-sold { background: var(--sold); color: var(--white); }
+        .status-pending { background: var(--gray-400); color: var(--white); }
+        .profile-work-info { padding: 1rem 1.25rem; }
+        .profile-work-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.15rem; letter-spacing: -0.01em; }
+        .profile-work-medium { font-size: 0.8125rem; color: var(--gray-500); font-weight: 300; margin-bottom: 0.5rem; }
+        .profile-work-meta { display: flex; justify-content: space-between; align-items: center; }
+        .profile-work-price { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+        .profile-work-price.sold { text-decoration: line-through; color: var(--gray-400); }
+        .profile-work-dims { font-size: 0.75rem; color: var(--gray-400); }
+        .profile-no-works { text-align: center; padding: 4rem 2rem; color: var(--gray-400); font-weight: 300; grid-column: 1 / -1; }
+
+        .empty-state { text-align: center; padding: 6rem 2rem; grid-column: 1 / -1; }
+        .empty-state-title { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .empty-state-text { font-size: 0.9375rem; color: var(--gray-500); font-weight: 300; }
+        .loading { text-align: center; padding: 6rem 2rem; color: var(--gray-400); font-size: 0.9375rem; font-weight: 300; }
+
+        footer { border-top: 1px solid var(--gray-200); padding: 3rem; display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .footer-logo { display: flex; align-items: center; gap: 0.75rem; }
+        .footer-bar { width: 2px; height: 1.25rem; background: var(--black); }
+        .footer-text { font-size: 1rem; }
+        .footer-text span:first-child { font-weight: 600; }
+        .footer-text span:last-child { font-weight: 200; color: var(--gray-400); }
+        .footer-links { display: flex; gap: 2rem; }
+        .footer-links a { font-size: 0.8125rem; color: var(--gray-500); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--black); }
+        .footer-copy { font-size: 0.75rem; color: var(--gray-400); }
+
+        @media (max-width: 1024px) {
+            .artists-grid { grid-template-columns: repeat(3, 1fr); }
+            .profile-hero { grid-template-columns: 240px 1fr; gap: 2rem; }
+            .profile-works-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--black);
-            height: 4.5rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            text-decoration: none;
-        }
-
-        .logo-bar {
-            width: 3px;
-            height: 1.75rem;
-            background: var(--white);
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            letter-spacing: -0.01em;
-        }
-
-        .logo-text span:first-child {
-            font-weight: 600;
-            color: var(--white);
-        }
-
-        .logo-text span:last-child {
-            font-weight: 200;
-            color: var(--gray-500);
-        }
-
-        .nav-center {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-
-        .nav-center a {
-            font-size: 0.9375rem;
-            font-weight: 400;
-            color: var(--gray-400);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .nav-center a:hover,
-        .nav-center a.active {
-            color: var(--white);
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .nav-login {
-            font-size: 0.875rem;
-            font-weight: 400;
-            color: var(--gray-400);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .nav-login:hover {
-            color: var(--white);
-        }
-
-        /* Page Header */
-        .page-header {
-            padding: 7.5rem 3rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-title strong {
-            font-weight: 600;
-        }
-
-        .page-subtitle {
-            font-size: 0.9375rem;
-            color: var(--gray-500);
-            font-weight: 300;
-        }
-
-        /* Artists List View */
-        .artists-section {
-            padding: 2rem 3rem 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .artist-row {
-            background: var(--white);
-            margin-bottom: 1px;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-
-        .artist-row:first-child {
-            border-top: 1px solid var(--gray-200);
-        }
-
-        .artist-row:hover {
-            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-            z-index: 1;
-            position: relative;
-        }
-
-        .artist-summary {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.5rem;
-            align-items: center;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .artist-photo {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--gray-200);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .artist-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .artist-photo-placeholder {
-            color: var(--gray-400);
-        }
-
-        .artist-info {
-            min-width: 0;
-        }
-
-        .artist-name {
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.15rem;
-        }
-
-        .artist-meta {
-            font-size: 0.8125rem;
-            color: var(--gray-500);
-            font-weight: 300;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .artist-meta-dot {
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background: var(--gray-300);
-        }
-
-        .artist-arrow {
-            color: var(--gray-300);
-            transition: color 0.2s, transform 0.3s;
-            flex-shrink: 0;
-        }
-
-        .artist-row:hover .artist-arrow {
-            color: var(--black);
-        }
-
-        .artist-row.expanded .artist-arrow {
-            transform: rotate(90deg);
-        }
-
-        /* Expanded Artist Profile */
-        .artist-expanded {
-            display: none;
-            border-top: 1px solid var(--gray-200);
-            padding: 2rem 1.5rem 2rem 5.5rem;
-        }
-
-        .artist-row.expanded .artist-expanded {
-            display: block;
-        }
-
-        .artist-bio {
-            font-size: 0.9375rem;
-            color: var(--gray-600);
-            font-weight: 300;
-            line-height: 1.7;
-            max-width: 600px;
-            margin-bottom: 1.5rem;
-        }
-
-        .artist-links {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .artist-link {
-            font-size: 0.8125rem;
-            color: var(--gray-500);
-            text-decoration: none;
-            border-bottom: 1px solid var(--gray-300);
-            transition: color 0.2s;
-        }
-
-        .artist-link:hover {
-            color: var(--black);
-        }
-
-        /* Artist's Artworks Row */
-        .artist-works-label {
-            font-size: 0.6875rem;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--gray-400);
-            margin-bottom: 0.75rem;
-        }
-
-        .artist-works-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 0.75rem;
-        }
-
-        .artist-work-card {
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-
-        .artist-work-card:hover {
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .artist-work-image {
-            aspect-ratio: 1;
-            overflow: hidden;
-            background: var(--gray-100);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .artist-work-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .artist-work-info {
-            padding: 0.5rem;
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-top: none;
-        }
-
-        .artist-work-title {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .artist-work-price {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            font-weight: 400;
-        }
-
-        .artist-no-works {
-            font-size: 0.875rem;
-            color: var(--gray-400);
-            font-weight: 300;
-            font-style: italic;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 6rem 2rem;
-        }
-
-        .empty-state-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state-text {
-            font-size: 0.9375rem;
-            color: var(--gray-500);
-            font-weight: 300;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 6rem 2rem;
-            color: var(--gray-400);
-            font-size: 0.9375rem;
-            font-weight: 300;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--gray-200);
-            padding: 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .footer-bar {
-            width: 2px;
-            height: 1.25rem;
-            background: var(--black);
-        }
-
-        .footer-text {
-            font-size: 1rem;
-        }
-
-        .footer-text span:first-child {
-            font-weight: 600;
-        }
-
-        .footer-text span:last-child {
-            font-weight: 200;
-            color: var(--gray-400);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            font-size: 0.8125rem;
-            color: var(--gray-500);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--black);
-        }
-
-        .footer-copy {
-            font-size: 0.75rem;
-            color: var(--gray-400);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            nav {
-                padding: 0 1.5rem;
-            }
-
-            .nav-center {
-                display: none;
-            }
-
-            .page-header {
-                padding: 6.5rem 1.5rem 1.5rem;
-            }
-
-            .page-title {
-                font-size: 1.75rem;
-            }
-
-            .artists-section {
-                padding: 1.5rem;
-            }
-
-            .artist-summary {
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .artist-photo {
-                width: 44px;
-                height: 44px;
-            }
-
-            .artist-expanded {
-                padding: 1.5rem 1rem 1.5rem 1rem;
-            }
-
-            .artist-works-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-
-            .artist-links {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            footer {
-                flex-direction: column;
-                gap: 1.5rem;
-                padding: 2rem 1.5rem;
-                text-align: center;
-            }
-
-            .footer-links {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-            }
+            nav { padding: 0 1.5rem; }
+            .nav-center { display: none; }
+            .page-header { padding: 6.5rem 1.5rem 1.5rem; }
+            .page-title { font-size: 1.75rem; }
+            .filters { padding: 1rem 1.5rem; }
+            .artists-section { padding: 1.5rem; }
+            .artists-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .artist-card-info { padding: 0.75rem; }
+            .back-btn { padding: 6.5rem 1.5rem 0; }
+            .profile-hero { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.5rem; }
+            .profile-photo-large { max-width: 280px; }
+            .profile-name { font-size: 1.75rem; }
+            .profile-works-section { padding: 2rem 1.5rem 3rem; }
+            .profile-works-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            footer { flex-direction: column; gap: 1.5rem; padding: 2rem 1.5rem; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .artists-grid { grid-template-columns: 1fr 1fr; }
+            .profile-works-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Navigation -->
     <nav>
         <a href="index.html" class="logo">
             <div class="logo-bar"></div>
-            <div class="logo-text">
-                <span>Infra</span><span>Mint</span>
-            </div>
+            <div class="logo-text"><span>Infra</span><span>Mint</span></div>
         </a>
-        
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html" class="active">Artists</a>
             <a href="index.html#how">How It Works</a>
             <a href="about.html">About</a>
         </div>
-
         <div class="nav-right" id="nav-right">
             <a href="artist-login.html" class="nav-login">Artist Login</a>
             <a href="collector-login.html" class="nav-login">Collector Login</a>
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="page-title">Our <strong>Artists</strong></h1>
-        <p class="page-subtitle">Emerging talent from around the world</p>
+    <div id="list-view">
+        <div class="page-header">
+            <h1 class="page-title">Our <strong>Artists</strong></h1>
+            <p class="page-subtitle">Emerging talent from around the world</p>
+        </div>
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <span class="filter-label">Country</span>
+                    <select class="filter-select" id="filter-country">
+                        <option value="all">All Countries</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Category</span>
+                    <div class="filter-tags" id="filter-category">
+                        <button class="filter-tag active" data-cat="all">All</button>
+                        <button class="filter-tag" data-cat="painting">Painting</button>
+                        <button class="filter-tag" data-cat="photography">Photography</button>
+                        <button class="filter-tag" data-cat="digital">Digital</button>
+                        <button class="filter-tag" data-cat="sculpture">Sculpture</button>
+                        <button class="filter-tag" data-cat="mixed">Mixed Media</button>
+                        <button class="filter-tag" data-cat="illustration">Illustration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="artists-section">
+            <div class="artists-grid" id="artists-grid">
+                <div class="loading">Loading artists...</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Artists List -->
-    <div class="artists-section" id="artists-list">
-        <div class="loading">Loading artists...</div>
+    <div id="profile-view">
+        <button class="back-btn" id="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            All Artists
+        </button>
+        <div class="profile-hero">
+            <div class="profile-photo-large" id="profile-photo"></div>
+            <div class="profile-details">
+                <h1 class="profile-name" id="profile-name"></h1>
+                <div class="profile-location" id="profile-location"></div>
+                <div class="profile-category-tag" id="profile-category"></div>
+                <div class="profile-bio" id="profile-bio"></div>
+                <div class="profile-links" id="profile-links"></div>
+            </div>
+        </div>
+        <div class="profile-works-section">
+            <div class="profile-works-header">
+                <div class="profile-works-title">Artworks</div>
+                <div class="profile-works-count" id="profile-works-count"></div>
+            </div>
+            <div class="profile-works-grid" id="profile-works-grid"></div>
+        </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-logo">
             <div class="footer-bar"></div>
-            <div class="footer-text">
-                <span>Infra</span><span>Mint</span>
-            </div>
+            <div class="footer-text"><span>Infra</span><span>Mint</span></div>
         </div>
         <div class="footer-links">
             <a href="gallery.html">Gallery</a>
@@ -544,149 +242,174 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const mediumNames = {
-            oil: 'Oil on Canvas', acrylic: 'Acrylic', watercolor: 'Watercolor',
-            digital: 'Digital', photography: 'Photography', mixed: 'Mixed Media', other: 'Other'
-        };
+        let allArtists = [];
+        let currentCategory = 'all';
+        let currentCountry = 'all';
 
-        const categoryNames = {
-            painting: 'Painting', photography: 'Photography', digital: 'Digital Art',
-            sculpture: 'Sculpture', mixed: 'Mixed Media', illustration: 'Illustration', other: 'Other'
-        };
+        const categoryNames = { painting: 'Painting', photography: 'Photography', digital: 'Digital Art', sculpture: 'Sculpture', mixed: 'Mixed Media', illustration: 'Illustration', other: 'Other' };
+        const mediumNames = { oil: 'Oil on Canvas', acrylic: 'Acrylic', watercolor: 'Watercolor', digital: 'Digital', photography: 'Photography', mixed: 'Mixed Media', other: 'Other' };
+        const countryNames = { AE: 'UAE', US: 'United States', UK: 'United Kingdom', DE: 'Germany', FR: 'France', ES: 'Spain', IT: 'Italy', NL: 'Netherlands', SE: 'Sweden', CZ: 'Czech Republic', JP: 'Japan', KR: 'South Korea', CN: 'China', AU: 'Australia', CA: 'Canada', BR: 'Brazil', IN: 'India', LB: 'Lebanon', other: 'Other' };
 
         async function loadArtists() {
-            // Load artists with their artworks
-            const { data: artists, error } = await db.from('artists')
+            const { data, error } = await db.from('artists')
                 .select('*, artworks(*)')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error('Error loading artists:', error);
-                document.getElementById('artists-list').innerHTML = 
-                    '<div class="empty-state"><div class="empty-state-title">Unable to load artists</div><div class="empty-state-text">Please try again later.</div></div>';
+                document.getElementById('artists-grid').innerHTML = '<div class="empty-state"><div class="empty-state-title">Unable to load artists</div></div>';
                 return;
             }
+            allArtists = data || [];
+            buildCountryFilter();
+            renderArtistGrid();
+        }
 
-            const container = document.getElementById('artists-list');
-
-            if (!artists || artists.length === 0) {
-                container.innerHTML = 
-                    '<div class="empty-state"><div class="empty-state-title">No artists yet</div><div class="empty-state-text">Be the first to join — artists are signing up every day.</div></div>';
-                return;
-            }
-
-            container.innerHTML = '';
-
-            artists.forEach(function(artist) {
-                const row = document.createElement('div');
-                row.className = 'artist-row';
-
-                const hasPhoto = artist.profile_image_url;
-                const artworks = artist.artworks || [];
-                const artworkCount = artworks.length;
-                const categoryLabel = categoryNames[artist.category] || artist.category || '';
-
-                // Summary row
-                let summaryHTML = 
-                    '<div class="artist-summary">' +
-                        '<div class="artist-photo">' +
-                            (hasPhoto
-                                ? '<img src="' + artist.profile_image_url + '" alt="' + (artist.artist_name || '') + '">'
-                                : '<svg class="artist-photo-placeholder" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="11" y="10" width="2" height="11"/><circle cx="12" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
-                            ) +
-                        '</div>' +
-                        '<div class="artist-info">' +
-                            '<div class="artist-name">' + (artist.artist_name || artist.first_name || 'Unnamed Artist') + '</div>' +
-                            '<div class="artist-meta">' +
-                                (categoryLabel ? '<span>' + categoryLabel + '</span>' : '') +
-                                (categoryLabel && artworkCount > 0 ? '<span class="artist-meta-dot"></span>' : '') +
-                                (artworkCount > 0 ? '<span>' + artworkCount + ' work' + (artworkCount > 1 ? 's' : '') + '</span>' : '') +
-                                (artist.city ? '<span class="artist-meta-dot"></span><span>' + artist.city + '</span>' : '') +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="artist-arrow">' +
-                            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
-                        '</div>' +
-                    '</div>';
-
-                // Expanded section
-                let expandedHTML = '<div class="artist-expanded">';
-
-                // Bio
-                if (artist.bio) {
-                    expandedHTML += '<div class="artist-bio">' + artist.bio + '</div>';
-                }
-
-                // Links
-                let hasLinks = artist.instagram || artist.website || artist.portfolio_url;
-                if (hasLinks) {
-                    expandedHTML += '<div class="artist-links">';
-                    if (artist.instagram) {
-                        const handle = artist.instagram.replace('@', '');
-                        expandedHTML += '<a href="https://instagram.com/' + handle + '" target="_blank" class="artist-link">Instagram</a>';
-                    }
-                    if (artist.website) {
-                        expandedHTML += '<a href="' + artist.website + '" target="_blank" class="artist-link">Website</a>';
-                    }
-                    if (artist.portfolio_url) {
-                        expandedHTML += '<a href="' + artist.portfolio_url + '" target="_blank" class="artist-link">Portfolio</a>';
-                    }
-                    expandedHTML += '</div>';
-                }
-
-                // Artworks
-                if (artworks.length > 0) {
-                    expandedHTML += '<div class="artist-works-label">Works</div>';
-                    expandedHTML += '<div class="artist-works-grid">';
-                    artworks.forEach(function(work) {
-                        const hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
-                        expandedHTML +=
-                            '<div class="artist-work-card" data-artwork-id="' + work.id + '">' +
-                                '<div class="artist-work-image">' +
-                                    (hasImage
-                                        ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
-                                        : '<svg width="32" height="32" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>'
-                                    ) +
-                                '</div>' +
-                                '<div class="artist-work-info">' +
-                                    '<div class="artist-work-title">' + work.title + '</div>' +
-                                    '<div class="artist-work-price">$' + Number(work.price).toLocaleString() + '</div>' +
-                                '</div>' +
-                            '</div>';
-                    });
-                    expandedHTML += '</div>';
-                } else {
-                    expandedHTML += '<div class="artist-no-works">No artworks listed yet</div>';
-                }
-
-                expandedHTML += '</div>';
-
-                row.innerHTML = summaryHTML + expandedHTML;
-
-                // Toggle expand on click
-                row.querySelector('.artist-summary').addEventListener('click', function() {
-                    // Close others
-                    document.querySelectorAll('.artist-row.expanded').forEach(function(r) {
-                        if (r !== row) r.classList.remove('expanded');
-                    });
-                    row.classList.toggle('expanded');
-                });
-
-                container.appendChild(row);
-            });
-
-            // Make artwork thumbnails link to gallery
-            document.querySelectorAll('.artist-work-card').forEach(function(card) {
-                card.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    window.location.href = 'gallery.html';
-                });
+        function buildCountryFilter() {
+            const countries = new Set();
+            allArtists.forEach(function(a) { if (a.country) countries.add(a.country); });
+            const select = document.getElementById('filter-country');
+            select.innerHTML = '<option value="all">All Countries</option>';
+            Array.from(countries).sort().forEach(function(code) {
+                select.innerHTML += '<option value="' + code + '">' + (countryNames[code] || code) + '</option>';
             });
         }
 
-        // Initialize
+        function renderArtistGrid() {
+            const grid = document.getElementById('artists-grid');
+            const filtered = allArtists.filter(function(a) {
+                return (currentCategory === 'all' || a.category === currentCategory) &&
+                       (currentCountry === 'all' || a.country === currentCountry);
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-title">No artists found</div><div class="empty-state-text">Try adjusting your filters.</div></div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.forEach(function(artist) {
+                const card = document.createElement('div');
+                card.className = 'artist-card';
+                const hasPhoto = artist.profile_image_url;
+                const artworkCount = (artist.artworks || []).length;
+                const location = [artist.city, countryNames[artist.country] || artist.country].filter(Boolean).join(', ');
+
+                card.innerHTML =
+                    '<div class="artist-card-photo">' +
+                        (hasPhoto ? '<img src="' + artist.profile_image_url + '" alt="' + (artist.artist_name || '') + '">'
+                            : '<svg width="40" height="40" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="11" y="10" width="2" height="11"/><circle cx="12" cy="6" r="3" fill="none" stroke="#d4d4d4" stroke-width="2"/></svg>') +
+                    '</div>' +
+                    '<div class="artist-card-info">' +
+                        '<div class="artist-card-name">' + (artist.artist_name || artist.first_name || 'Unnamed') + '</div>' +
+                        '<div class="artist-card-meta">' + (location || (categoryNames[artist.category] || '')) + '</div>' +
+                        '<div class="artist-card-bottom">' +
+                            '<span class="artist-card-works">' + artworkCount + ' work' + (artworkCount !== 1 ? 's' : '') + '</span>' +
+                            '<span class="artist-card-view">View &#8594;</span>' +
+                        '</div>' +
+                    '</div>';
+
+                card.addEventListener('click', function() { showProfile(artist); });
+                grid.appendChild(card);
+            });
+        }
+
+        function showProfile(artist) {
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('profile-view').style.display = 'block';
+            window.scrollTo(0, 0);
+
+            var photoEl = document.getElementById('profile-photo');
+            photoEl.innerHTML = artist.profile_image_url
+                ? '<img src="' + artist.profile_image_url + '" alt="' + (artist.artist_name || '') + '">'
+                : '<svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="11" y="10" width="2" height="11"/><circle cx="12" cy="6" r="3" fill="none" stroke="#d4d4d4" stroke-width="2"/></svg>';
+
+            var name = artist.artist_name || artist.first_name || 'Unnamed Artist';
+            document.getElementById('profile-name').innerHTML = '<strong>' + name + '</strong>';
+
+            var location = [artist.city, countryNames[artist.country] || artist.country].filter(Boolean).join(', ');
+            document.getElementById('profile-location').textContent = location || '';
+
+            var catEl = document.getElementById('profile-category');
+            var catLabel = categoryNames[artist.category] || artist.category || '';
+            if (catLabel) { catEl.textContent = catLabel; catEl.style.display = 'inline-block'; }
+            else { catEl.style.display = 'none'; }
+
+            document.getElementById('profile-bio').textContent = artist.bio || 'This artist hasn\'t added a bio yet.';
+
+            var linksEl = document.getElementById('profile-links');
+            var linksHTML = '';
+            if (artist.instagram) {
+                var handle = artist.instagram.replace('@', '');
+                linksHTML += '<a href="https://instagram.com/' + handle + '" target="_blank" class="profile-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> @' + handle + '</a>';
+            }
+            if (artist.website) {
+                linksHTML += '<a href="' + artist.website + '" target="_blank" class="profile-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Website</a>';
+            }
+            if (artist.portfolio_url) {
+                linksHTML += '<a href="' + artist.portfolio_url + '" target="_blank" class="profile-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Portfolio</a>';
+            }
+            linksEl.innerHTML = linksHTML;
+            linksEl.style.display = linksHTML ? 'flex' : 'none';
+
+            var artworks = artist.artworks || [];
+            document.getElementById('profile-works-count').textContent = artworks.length + ' work' + (artworks.length !== 1 ? 's' : '');
+
+            var worksGrid = document.getElementById('profile-works-grid');
+            if (artworks.length === 0) {
+                worksGrid.innerHTML = '<div class="profile-no-works">No artworks listed yet</div>';
+                return;
+            }
+
+            worksGrid.innerHTML = '';
+            artworks.forEach(function(work) {
+                var hasImage = work.primary_image_url && !work.primary_image_url.includes('placehold.co');
+                var isSold = work.status === 'sold';
+                var isListed = work.status === 'listed';
+                var statusLabel = isSold ? 'Sold' : (isListed ? 'Available' : 'Coming Soon');
+                var statusClass = isSold ? 'status-sold' : (isListed ? 'status-available' : 'status-pending');
+                var mediumLabel = mediumNames[work.medium] || work.medium || '';
+
+                var card = document.createElement('div');
+                card.className = 'profile-work-card';
+                card.innerHTML =
+                    '<div class="profile-work-image">' +
+                        (hasImage ? '<img src="' + work.primary_image_url + '" alt="' + work.title + '">'
+                            : '<svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg>') +
+                        '<div class="profile-work-status ' + statusClass + '">' + statusLabel + '</div>' +
+                    '</div>' +
+                    '<div class="profile-work-info">' +
+                        '<div class="profile-work-title">' + work.title + '</div>' +
+                        '<div class="profile-work-medium">' + mediumLabel + '</div>' +
+                        '<div class="profile-work-meta">' +
+                            '<div class="profile-work-price' + (isSold ? ' sold' : '') + '">$' + Number(work.price).toLocaleString() + '</div>' +
+                            (work.width_cm && work.height_cm ? '<div class="profile-work-dims">' + work.width_cm + ' x ' + work.height_cm + ' cm</div>' : '') +
+                        '</div>' +
+                    '</div>';
+                worksGrid.appendChild(card);
+            });
+        }
+
+        document.getElementById('back-btn').addEventListener('click', function() {
+            document.getElementById('profile-view').style.display = 'none';
+            document.getElementById('list-view').style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+
+        document.getElementById('filter-category').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-tag')) {
+                document.querySelectorAll('.filter-tag').forEach(function(b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.cat;
+                renderArtistGrid();
+            }
+        });
+
+        document.getElementById('filter-country').addEventListener('change', function() {
+            currentCountry = this.value;
+            renderArtistGrid();
+        });
+
         loadArtists();
     </script>
-
 </body>
 </html>
