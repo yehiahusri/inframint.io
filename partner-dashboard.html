@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Dashboard — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --black: #000; --white: #fff; --gray-100: #f7f7f7; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-800: #262626; --success: #16a34a; --error: #dc2626; --warning: #f59e0b; }
+        body { font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
+
+        /* Layout */
+        .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { background: var(--white); border-right: 1px solid var(--gray-200); padding-top: 1.5rem; display: flex; flex-direction: column; }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; padding: 0 1.5rem 1.5rem; text-decoration: none; border-bottom: 1px solid var(--gray-200); }
+        .sidebar-logo .bar { width: 2px; height: 1.25rem; background: var(--black); }
+        .sidebar-logo .text { font-size: 1rem; }
+        .sidebar-logo .text span:first-child { font-weight: 600; }
+        .sidebar-logo .text span:last-child { font-weight: 200; color: var(--gray-400); }
+        .sidebar-section { padding: 1rem 0; }
+        .sidebar-label { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-400); padding: 0 1.5rem; margin-bottom: 0.5rem; }
+        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1.5rem; font-size: 0.875rem; color: var(--gray-500); cursor: pointer; transition: all 0.15s; text-decoration: none; border-left: 3px solid transparent; }
+        .sidebar-link:hover { color: var(--black); background: var(--gray-100); }
+        .sidebar-link.active { color: var(--black); font-weight: 500; border-left-color: var(--black); background: var(--gray-100); }
+        .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .sidebar-bottom { margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid var(--gray-200); }
+        #sign-out { font-family: 'Manrope', sans-serif; font-size: 0.8125rem; color: var(--gray-500); background: none; border: none; cursor: pointer; }
+        #sign-out:hover { color: var(--error); }
+
+        /* Top bar */
+        .topbar { display: flex; justify-content: flex-end; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--gray-200); background: var(--white); font-size: 0.875rem; color: var(--gray-600); }
+
+        /* Main content */
+        main { padding: 0; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .page-header { padding: 2rem 2rem 1rem; }
+        .page-title { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em; }
+        .page-subtitle { font-size: 0.875rem; color: var(--gray-500); font-weight: 300; margin-top: 0.25rem; }
+
+        /* Cards */
+        .card { background: var(--white); border: 1px solid var(--gray-200); margin: 0 2rem 1.5rem; padding: 1.5rem; }
+        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 0 2rem 1.5rem; }
+        .stat-card { background: var(--white); border: 1px solid var(--gray-200); padding: 1.25rem; }
+        .stat-value { font-size: 2rem; font-weight: 600; }
+        .stat-label { font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-label { display: block; font-size: 0.8125rem; font-weight: 500; margin-bottom: 0.4rem; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem; font-size: 0.875rem; font-family: 'Manrope', sans-serif; border: 1px solid var(--gray-300); background: var(--white); }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--black); }
+        .form-textarea { min-height: 80px; resize: vertical; }
+        .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; font-weight: 500; font-family: 'Manrope', sans-serif; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-primary { background: var(--black); color: var(--white); }
+        .btn-primary:hover { background: var(--gray-800); }
+        .btn-secondary { background: var(--white); color: var(--gray-600); border: 1px solid var(--gray-300); }
+        .btn-secondary:hover { border-color: var(--black); color: var(--black); }
+
+        /* Message */
+        .message { padding: 0.75rem 1rem; font-size: 0.8125rem; margin-bottom: 1rem; display: none; }
+        .message.show { display: block; }
+        .message.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
+        .message.error { background: #fef2f2; border: 1px solid #fecaca; color: var(--error); }
+
+        /* Artist list */
+        .artist-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--gray-200); }
+        .artist-row:last-child { border-bottom: none; }
+        .artist-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gray-200); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .artist-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .artist-row-name { font-size: 0.9375rem; font-weight: 500; }
+        .artist-row-meta { font-size: 0.75rem; color: var(--gray-500); }
+        .commission-badge { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em; padding: 0.25rem 0.6rem; }
+        .commission-active { background: #f0fdf4; color: var(--success); }
+        .commission-inactive { background: #fef2f2; color: var(--error); }
+        .artist-row-sales { font-size: 0.8125rem; color: var(--gray-600); text-align: right; }
+
+        /* Notifications */
+        .notif-item { padding: 1rem 0; border-bottom: 1px solid var(--gray-200); }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-date { font-size: 0.6875rem; color: var(--gray-400); margin-bottom: 0.25rem; }
+        .notif-text { font-size: 0.875rem; color: var(--gray-600); line-height: 1.5; }
+
+        /* Terms */
+        .terms-box { background: var(--gray-100); padding: 1.25rem; font-size: 0.8125rem; color: var(--gray-600); line-height: 1.8; max-height: 300px; overflow-y: auto; margin-bottom: 1rem; border: 1px solid var(--gray-200); }
+        .terms-check { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.8125rem; color: var(--gray-600); margin-bottom: 1rem; }
+        .terms-check input { margin-top: 0.2rem; }
+
+        /* Recommend form */
+        .recommend-card { background: var(--gray-100); padding: 1.25rem; margin-bottom: 1rem; }
+
+        /* Empty */
+        .empty-text { text-align: center; padding: 3rem 1rem; color: var(--gray-400); font-size: 0.9375rem; font-weight: 300; }
+
+        .status-badge { font-size: 0.6875rem; font-weight: 600; padding: 0.2rem 0.6rem; letter-spacing: 0.05em; }
+        .status-approved { background: #f0fdf4; color: var(--success); }
+        .status-pending { background: #fffbeb; color: var(--warning); }
+
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .artist-row { grid-template-columns: auto 1fr auto; }
+            .artist-row-sales { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <div class="bar"></div>
+                <div class="text"><span>Infra</span><span>Mint</span></div>
+            </a>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Dashboard</div>
+                <a class="sidebar-link active" data-section="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Overview
+                </a>
+                <a class="sidebar-link" data-section="artists">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    My Artists
+                </a>
+                <a class="sidebar-link" data-section="recommend">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Recommend Artist
+                </a>
+                <a class="sidebar-link" data-section="notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    Notifications
+                </a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Settings</div>
+                <a class="sidebar-link" data-section="profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profile
+                </a>
+                <a class="sidebar-link" data-section="payouts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    Payouts
+                </a>
+                <a class="sidebar-link" data-section="terms">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Terms
+                </a>
+            </div>
+            <div class="sidebar-bottom">
+                <button id="sign-out">Sign Out</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="topbar">
+                <span id="user-name">Partner</span>&nbsp;&nbsp;
+                <span class="status-badge status-pending" id="account-status">Pending</span>
+            </div>
+
+            <main>
+                <!-- Overview -->
+                <div class="section active" id="section-overview">
+                    <div class="page-header"><h1 class="page-title">Overview</h1><p class="page-subtitle">Your partner program summary</p></div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-value" id="stat-artists">0</div><div class="stat-label">Artists Recruited</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Active Commissions</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-earned">$0</div><div class="stat-label">Total Earned</div></div>
+                    </div>
+                </div>
+
+                <!-- My Artists -->
+                <div class="section" id="section-artists">
+                    <div class="page-header"><h1 class="page-title">My Artists</h1><p class="page-subtitle">Artists you've recruited and their commission status</p></div>
+                    <div class="card" id="artists-list">
+                        <div class="empty-text">No artists recruited yet. Use the Recommend Artist page to invite one.</div>
+                    </div>
+                </div>
+
+                <!-- Recommend Artist -->
+                <div class="section" id="section-recommend">
+                    <div class="page-header"><h1 class="page-title">Recommend an Artist</h1><p class="page-subtitle">Send an invitation to an artist to join InfraMint</p></div>
+                    <div class="card">
+                        <div class="message" id="recommend-message"></div>
+                        <div class="form-group">
+                            <label class="form-label">Artist's Email</label>
+                            <input type="email" class="form-input" id="rec-email" placeholder="artist@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Artist's Name</label>
+                            <input type="text" class="form-input" id="rec-name" placeholder="Full name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Your Recommendation Message</label>
+                            <textarea class="form-textarea" id="rec-message" placeholder="Why do you recommend this artist? Tell us about their work..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="send-recommendation">Send Recommendation</button>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="section" id="section-notifications">
+                    <div class="page-header"><h1 class="page-title">Notifications</h1><p class="page-subtitle">Updates on your artists and commissions</p></div>
+                    <div class="card" id="notif-list">
+                        <div class="empty-text">No notifications yet.</div>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div class="section" id="section-profile">
+                    <div class="page-header"><h1 class="page-title">Profile</h1><p class="page-subtitle">Your partner information</p></div>
+                    <div class="card">
+                        <div class="message" id="profile-message"></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="p-firstname"></div>
+                            <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="p-lastname"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Company / Organization</label><input type="text" class="form-input" id="p-company"></div>
+                        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="p-email" disabled></div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Country</label>
+                                <select class="form-select" id="p-country">
+                                    <option value="AE">UAE</option><option value="US">United States</option><option value="UK">United Kingdom</option>
+                                    <option value="DE">Germany</option><option value="FR">France</option><option value="LB">Lebanon</option><option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="p-city"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="p-phone"></div>
+                        <div class="form-group"><label class="form-label">Website</label><input type="url" class="form-input" id="p-website" placeholder="https://"></div>
+                        <div class="form-group"><label class="form-label">Bio</label><textarea class="form-textarea" id="p-bio" placeholder="Tell us about yourself and how you connect with artists..."></textarea></div>
+                        <button class="btn btn-primary" id="save-profile">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Payouts -->
+                <div class="section" id="section-payouts">
+                    <div class="page-header"><h1 class="page-title">Payouts</h1><p class="page-subtitle">How you receive your commissions</p></div>
+                    <div class="card">
+                        <div class="message" id="payout-message"></div>
+                        <div class="form-group">
+                            <label class="form-label">Payout Method</label>
+                            <select class="form-select" id="pay-method">
+                                <option value="bank">Bank Transfer</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+                        <div id="pay-bank-fields">
+                            <div class="form-group"><label class="form-label">Account Holder Name</label><input type="text" class="form-input" id="pay-bank-name"></div>
+                            <div class="form-group"><label class="form-label">IBAN</label><input type="text" class="form-input" id="pay-iban"></div>
+                            <div class="form-group"><label class="form-label">BIC/SWIFT</label><input type="text" class="form-input" id="pay-bic"></div>
+                        </div>
+                        <div id="pay-paypal-fields" style="display:none;">
+                            <div class="form-group"><label class="form-label">PayPal Email</label><input type="email" class="form-input" id="pay-paypal-email"></div>
+                        </div>
+                        <button class="btn btn-primary" id="save-payout">Save Payout Details</button>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="section" id="section-terms">
+                    <div class="page-header"><h1 class="page-title">Terms & Conditions</h1><p class="page-subtitle">Partner program agreement</p></div>
+                    <div class="card">
+                        <div class="terms-box">
+                            <strong>InfraMint Partner Program Agreement</strong><br><br>
+                            1. <strong>Commission Structure:</strong> Partners earn 5% commission on sales made by artists they have recruited to InfraMint. The gallery retains 30% of each sale, the partner receives 5%, and the artist receives the remaining 65%.<br><br>
+                            2. <strong>Automatic Commission:</strong> Commission is automatically applied to the first 3 sales of each recruited artist. After the 3rd sale, the artist has the option to continue or discontinue the partner commission.<br><br>
+                            3. <strong>Artist's Choice:</strong> If an artist chooses to remove the partner commission after the 3rd sale, the partner will be notified. The commission split will then revert to 30% gallery / 70% artist for future sales.<br><br>
+                            4. <strong>Recruitment:</strong> Partners may recommend artists to join InfraMint. All artists must pass the platform's verification process independently. Partner recommendations do not guarantee acceptance.<br><br>
+                            5. <strong>Payment:</strong> Commissions are paid out to the partner's designated bank account or PayPal after each completed sale and confirmed delivery.<br><br>
+                            6. <strong>Transparency:</strong> Commission details are visible to the partner, the artist, and InfraMint administration. No hidden fees or charges apply.<br><br>
+                            7. <strong>Termination:</strong> InfraMint reserves the right to terminate a partner's account for violations of platform policies, fraudulent activity, or misrepresentation.<br><br>
+                            8. <strong>Modifications:</strong> InfraMint may update these terms with 30 days' notice to active partners.
+                        </div>
+                        <div class="terms-check">
+                            <input type="checkbox" id="terms-checkbox">
+                            <label for="terms-checkbox">I have read and agree to the InfraMint Partner Program Terms & Conditions</label>
+                        </div>
+                        <div class="message" id="terms-message"></div>
+                        <button class="btn btn-primary" id="accept-terms">Accept Terms</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let partnerData = null;
+
+        function showMsg(id, text, ok) {
+            var el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'message show ' + (ok ? 'success' : 'error');
+        }
+
+        // Auth
+        async function checkAuth() {
+            const { data: { session } } = await db.auth.getSession();
+            if (!session) { window.location.href = 'partner-login.html'; return; }
+            currentUser = session.user;
+
+            const { data, error } = await db.from('partners').select('*').eq('user_id', currentUser.id).single();
+            if (error || !data) { window.location.href = 'partner-login.html'; return; }
+            partnerData = data;
+            populateDashboard();
+        }
+
+        function populateDashboard() {
+            document.getElementById('user-name').textContent = partnerData.first_name || 'Partner';
+            var statusEl = document.getElementById('account-status');
+            statusEl.textContent = partnerData.status === 'approved' ? 'Approved' : 'Pending Review';
+            statusEl.className = 'status-badge status-' + (partnerData.status === 'approved' ? 'approved' : 'pending');
+
+            // Profile
+            document.getElementById('p-firstname').value = partnerData.first_name || '';
+            document.getElementById('p-lastname').value = partnerData.last_name || '';
+            document.getElementById('p-company').value = partnerData.company_name || '';
+            document.getElementById('p-email').value = partnerData.email || '';
+            document.getElementById('p-country').value = partnerData.country || 'AE';
+            document.getElementById('p-city').value = partnerData.city || '';
+            document.getElementById('p-phone').value = partnerData.phone || '';
+            document.getElementById('p-website').value = partnerData.website || '';
+            document.getElementById('p-bio').value = partnerData.bio || '';
+
+            // Payouts
+            document.getElementById('pay-method').value = partnerData.payout_method || 'bank';
+            document.getElementById('pay-bank-name').value = partnerData.bank_account_name || '';
+            document.getElementById('pay-iban').value = partnerData.bank_iban || '';
+            document.getElementById('pay-bic').value = partnerData.bank_bic || '';
+            document.getElementById('pay-paypal-email').value = partnerData.paypal_email || '';
+            togglePayoutFields();
+
+            // Terms
+            if (partnerData.terms_accepted) {
+                document.getElementById('terms-checkbox').checked = true;
+                document.getElementById('accept-terms').textContent = 'Terms Accepted ✓';
+                document.getElementById('accept-terms').disabled = true;
+                document.getElementById('accept-terms').style.background = '#d4d4d4';
+            }
+
+            loadMyArtists();
+        }
+
+        // Load partner's artists
+        async function loadMyArtists() {
+            const { data, error } = await db.from('partner_artists')
+                .select('*, artists(artist_name, profile_image_url, email, city, country)')
+                .eq('partner_id', partnerData.id)
+                .order('created_at', { ascending: false });
+
+            var container = document.getElementById('artists-list');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="empty-text">No artists recruited yet. Use the Recommend Artist page to invite one.</div>';
+                document.getElementById('stat-artists').textContent = '0';
+                document.getElementById('stat-active').textContent = '0';
+                return;
+            }
+
+            document.getElementById('stat-artists').textContent = data.length;
+            var activeCount = data.filter(function(r) { return r.commission_active; }).length;
+            document.getElementById('stat-active').textContent = activeCount;
+
+            var html = '';
+            data.forEach(function(rel) {
+                var artist = rel.artists || {};
+                var hasPhoto = artist.profile_image_url;
+                var commLabel = rel.commission_active ? '5% Active' : 'Removed';
+                var commClass = rel.commission_active ? 'commission-active' : 'commission-inactive';
+
+                html +=
+                    '<div class="artist-row">' +
+                        '<div class="artist-avatar">' +
+                            (hasPhoto ? '<img src="' + artist.profile_image_url + '">' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="#a3a3a3"><rect x="11" y="10" width="2" height="11"/><circle cx="12" cy="6" r="3" fill="none" stroke="#a3a3a3" stroke-width="2"/></svg>') +
+                        '</div>' +
+                        '<div>' +
+                            '<div class="artist-row-name">' + (artist.artist_name || artist.email || 'Pending') + '</div>' +
+                            '<div class="artist-row-meta">' + (artist.city || '') + (artist.city && artist.country ? ', ' : '') + (artist.country || '') + '</div>' +
+                        '</div>' +
+                        '<div class="commission-badge ' + commClass + '">' + commLabel + '</div>' +
+                        '<div class="artist-row-sales">' + (rel.sales_count || 0) + ' sales</div>' +
+                    '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Navigation
+        document.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                var section = this.dataset.section;
+                document.querySelectorAll('.sidebar-link').forEach(function(l) { l.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+                document.getElementById('section-' + section).classList.add('active');
+            });
+        });
+
+        // Sign out
+        document.getElementById('sign-out').addEventListener('click', async function() {
+            await db.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        // Save profile
+        document.getElementById('save-profile').addEventListener('click', async function() {
+            const { error } = await db.from('partners').update({
+                first_name: document.getElementById('p-firstname').value,
+                last_name: document.getElementById('p-lastname').value,
+                company_name: document.getElementById('p-company').value,
+                country: document.getElementById('p-country').value,
+                city: document.getElementById('p-city').value,
+                phone: document.getElementById('p-phone').value,
+                website: document.getElementById('p-website').value,
+                bio: document.getElementById('p-bio').value
+            }).eq('id', partnerData.id);
+            showMsg('profile-message', error ? 'Error: ' + error.message : 'Profile saved!', !error);
+        });
+
+        // Payout method toggle
+        function togglePayoutFields() {
+            var method = document.getElementById('pay-method').value;
+            document.getElementById('pay-bank-fields').style.display = method === 'bank' ? 'block' : 'none';
+            document.getElementById('pay-paypal-fields').style.display = method === 'paypal' ? 'block' : 'none';
+        }
+        document.getElementById('pay-method').addEventListener('change', togglePayoutFields);
+
+        // Save payout
+        document.getElementById('save-payout').addEventListener('click', async function() {
+            var method = document.getElementById('pay-method').value;
+            var updateData = { payout_method: method };
+            if (method === 'bank') {
+                updateData.bank_account_name = document.getElementById('pay-bank-name').value;
+                updateData.bank_iban = document.getElementById('pay-iban').value;
+                updateData.bank_bic = document.getElementById('pay-bic').value;
+            } else {
+                updateData.paypal_email = document.getElementById('pay-paypal-email').value;
+            }
+            const { error } = await db.from('partners').update(updateData).eq('id', partnerData.id);
+            showMsg('payout-message', error ? 'Error: ' + error.message : 'Payout details saved!', !error);
+        });
+
+        // Accept terms
+        document.getElementById('accept-terms').addEventListener('click', async function() {
+            if (!document.getElementById('terms-checkbox').checked) {
+                showMsg('terms-message', 'Please check the box to accept the terms.', false);
+                return;
+            }
+            const { error } = await db.from('partners').update({
+                terms_accepted: true,
+                terms_accepted_at: new Date().toISOString()
+            }).eq('id', partnerData.id);
+
+            if (error) { showMsg('terms-message', 'Error: ' + error.message, false); return; }
+            showMsg('terms-message', 'Terms accepted! Thank you.', true);
+            this.textContent = 'Terms Accepted ✓';
+            this.disabled = true;
+            this.style.background = '#d4d4d4';
+        });
+
+        // Send recommendation
+        document.getElementById('send-recommendation').addEventListener('click', async function() {
+            var email = document.getElementById('rec-email').value.trim();
+            var name = document.getElementById('rec-name').value.trim();
+            var message = document.getElementById('rec-message').value.trim();
+
+            if (!email || !name) {
+                showMsg('recommend-message', 'Please fill in the artist\'s name and email.', false);
+                return;
+            }
+
+            // Check if artist already exists
+            const { data: existingArtist } = await db.from('artists').select('id').eq('email', email).single();
+
+            if (existingArtist) {
+                // Artist exists — link them
+                const { error } = await db.from('partner_artists').insert({
+                    partner_id: partnerData.id,
+                    artist_id: existingArtist.id,
+                    recommendation_message: message,
+                    commission_active: true,
+                    sales_count: 0
+                });
+
+                if (error) {
+                    if (error.message.includes('duplicate') || error.message.includes('unique')) {
+                        showMsg('recommend-message', 'You\'ve already recommended this artist.', false);
+                    } else {
+                        showMsg('recommend-message', 'Error: ' + error.message, false);
+                    }
+                    return;
+                }
+
+                // Update artist's referred_by_partner
+                await db.from('artists').update({ referred_by_partner: partnerData.id }).eq('id', existingArtist.id);
+
+                showMsg('recommend-message', 'Artist linked! They\'re already on InfraMint.', true);
+            } else {
+                // Artist doesn't exist — store recommendation for when they sign up
+                showMsg('recommend-message', 'Recommendation sent! When ' + name + ' signs up with ' + email + ', they\'ll be linked to your account.', true);
+            }
+
+            document.getElementById('rec-email').value = '';
+            document.getElementById('rec-name').value = '';
+            document.getElementById('rec-message').value = '';
+            loadMyArtists();
+        });
+
+        // Init
+        checkAuth();
+    </script>
+</body>
+</html>
