@@ -193,10 +193,18 @@
             const { data, error } = await db.auth.signInWithPassword({ email, password });
             if (error) { showMessage(error.message, 'error'); return; }
 
+            // Check if partner profile exists
             const { data: partner } = await db.from('partners').select('*').eq('user_id', data.user.id).single();
             if (!partner) {
-                showMessage('No partner account found. Please apply first.', 'error');
-                return;
+                // Create one from user metadata
+                const meta = data.user.user_metadata || {};
+                await db.from('partners').insert({
+                    user_id: data.user.id,
+                    first_name: meta.first_name || '',
+                    last_name: meta.last_name || '',
+                    email: data.user.email,
+                    status: 'pending'
+                });
             }
             window.location.href = 'partner-dashboard.html';
         });
@@ -220,8 +228,8 @@
 
             if (error) { showMessage(error.message, 'error'); return; }
 
-            if (data.user && data.session) {
-                // Create partner profile
+            // Create partner profile right away if we have a user id
+            if (data.user) {
                 const { error: profileError } = await db.from('partners').insert({
                     user_id: data.user.id,
                     first_name: firstName,
@@ -230,20 +238,44 @@
                     email: email,
                     status: 'pending'
                 });
-                if (profileError) { showMessage('Error creating profile: ' + profileError.message, 'error'); return; }
+
+                if (profileError && !profileError.message.includes('duplicate')) {
+                    showMessage('Error creating profile: ' + profileError.message, 'error');
+                    return;
+                }
+            }
+
+            if (data.session) {
+                // Logged in immediately — go to dashboard
                 window.location.href = 'partner-dashboard.html';
             } else {
-                showMessage('Check your email for a verification link!', 'success');
+                showMessage('Account created! Check your email for a verification link, then come back and sign in.', 'success');
             }
         });
 
-        // Check auth on load
+        // Check auth on load (handles Google redirect + returning verified users)
         async function checkAuth() {
             const { data: { session } } = await db.auth.getSession();
             if (session) {
+                // Check if partner profile exists
                 const { data: partner } = await db.from('partners').select('*').eq('user_id', session.user.id).single();
+                
                 if (partner) {
                     window.location.href = 'partner-dashboard.html';
+                } else {
+                    // User is logged in but no partner profile — create one (Google OAuth case)
+                    const meta = session.user.user_metadata || {};
+                    const { error } = await db.from('partners').insert({
+                        user_id: session.user.id,
+                        first_name: meta.first_name || meta.full_name || '',
+                        last_name: meta.last_name || '',
+                        email: session.user.email,
+                        status: 'pending'
+                    });
+
+                    if (!error || error.message.includes('duplicate')) {
+                        window.location.href = 'partner-dashboard.html';
+                    }
                 }
             }
         }
