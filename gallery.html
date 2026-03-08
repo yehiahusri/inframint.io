@@ -893,11 +893,13 @@
                 ctaEl.style.background = '#d4d4d4';
                 ctaEl.style.color = '#737373';
                 ctaEl.style.cursor = 'default';
+                ctaEl.onclick = null;
             } else {
-                ctaEl.textContent = 'Inquire About This Work';
+                ctaEl.textContent = 'Buy Now — $' + Number(artwork.price).toLocaleString();
                 ctaEl.style.background = '';
                 ctaEl.style.color = '';
                 ctaEl.style.cursor = '';
+                ctaEl.onclick = function() { window.location.href = 'checkout.html?artwork=' + artwork.id; };
             }
 
             document.getElementById('artwork-modal').classList.add('active');
@@ -922,11 +924,6 @@
                 currentFilter = e.target.dataset.filter;
                 renderGallery();
             }
-        });
-
-        // Inquire button
-        document.getElementById('modal-cta').addEventListener('click', function() {
-            window.location.href = 'collector-login.html';
         });
 
         // Check if user is logged in, update nav

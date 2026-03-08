@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626}
+        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+
+        nav{padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
+        .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+        .logo-bar{width:3px;height:1.75rem;background:var(--white)}
+        .logo-text{font-size:1.25rem;letter-spacing:-.01em}
+        .logo-text span:first-child{font-weight:600;color:var(--white)}
+        .logo-text span:last-child{font-weight:200;color:var(--g500)}
+        .nav-link{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
+        .nav-link:hover{color:var(--white)}
+
+        .checkout-layout{flex:1;display:grid;grid-template-columns:1.1fr .9fr;max-width:1100px;margin:2rem auto;padding:0 2rem;gap:2rem;width:100%}
+
+        /* Left — order summary */
+        .order-summary{background:var(--white);padding:2rem;border:1px solid var(--g200)}
+        .os-title{font-size:1.25rem;font-weight:600;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--g200)}
+        .os-item{display:grid;grid-template-columns:100px 1fr;gap:1.25rem;margin-bottom:1.5rem}
+        .os-img{width:100px;height:100px;object-fit:cover;background:var(--g200)}
+        .os-info{}
+        .os-art-title{font-size:1.1rem;font-weight:600;margin-bottom:.2rem}
+        .os-artist{font-size:.85rem;color:var(--g500);margin-bottom:.5rem}
+        .os-medium{font-size:.75rem;color:var(--g400);margin-bottom:.25rem}
+        .os-dims{font-size:.75rem;color:var(--g400)}
+
+        .os-divider{border:none;border-top:1px solid var(--g200);margin:1.25rem 0}
+
+        .os-line{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:.5rem}
+        .os-line.total{font-size:1.15rem;font-weight:700;margin-top:.75rem;padding-top:.75rem;border-top:2px solid var(--black)}
+        .os-line .label{color:var(--g500)}
+        .os-line.total .label{color:var(--black)}
+        .os-note{font-size:.7rem;color:var(--g400);margin-top:1rem;line-height:1.6}
+
+        /* Right — payment form */
+        .payment-section{background:var(--white);padding:2rem;border:1px solid var(--g200);align-self:flex-start}
+        .ps-title{font-size:1.25rem;font-weight:600;margin-bottom:.25rem}
+        .ps-sub{font-size:.8rem;color:var(--g500);margin-bottom:1.5rem}
+
+        .form-group{margin-bottom:1rem}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+        .form-label{display:block;font-size:.75rem;font-weight:600;margin-bottom:.35rem;color:var(--g600)}
+        .form-input,.form-select{width:100%;padding:.75rem;font-size:.875rem;font-family:'Manrope',sans-serif;border:1px solid var(--g300);background:var(--white)}
+        .form-input:focus,.form-select:focus{outline:none;border-color:var(--black)}
+
+        .shipping-card{background:var(--g100);padding:1rem;margin-bottom:1rem;font-size:.8rem;color:var(--g600);line-height:1.6}
+        .shipping-card strong{color:var(--black)}
+
+        .pay-btn{width:100%;padding:1rem;font-size:1rem;font-weight:600;font-family:'Manrope',sans-serif;cursor:pointer;border:none;background:var(--black);color:var(--white);margin-top:.5rem;transition:background .2s}
+        .pay-btn:hover{background:var(--g800)}
+        .pay-btn:disabled{background:var(--g300);color:var(--g500);cursor:not-allowed}
+
+        .secure-note{display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--g400);margin-top:1rem;justify-content:center}
+
+        .msg{padding:.75rem;font-size:.8rem;margin-bottom:1rem;display:none}
+        .msg.show{display:block}
+        .msg.error{background:#fef2f2;border:1px solid #fecaca;color:var(--err)}
+        .msg.success{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--ok)}
+
+        /* Success page */
+        .success-page{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}
+        .success-card{background:var(--white);padding:3rem;max-width:500px;border:1px solid var(--g200)}
+        .success-icon{width:64px;height:64px;border-radius:50%;background:#f0fdf4;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+        .success-title{font-size:1.5rem;font-weight:600;margin-bottom:.5rem}
+        .success-text{font-size:.9rem;color:var(--g500);line-height:1.7;margin-bottom:1.5rem}
+        .success-order{font-size:.8rem;color:var(--g400);margin-bottom:1.5rem}
+        .success-btn{display:inline-block;padding:.75rem 2rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.875rem;font-weight:500;transition:background .2s}
+        .success-btn:hover{background:var(--g800)}
+
+        /* Login prompt */
+        .login-prompt{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center}
+        .login-card{background:var(--white);padding:2.5rem;max-width:400px;border:1px solid var(--g200)}
+        .login-card h2{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}
+        .login-card p{font-size:.85rem;color:var(--g500);margin-bottom:1.5rem}
+        .login-card a{display:inline-block;padding:.75rem 2rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.875rem;font-weight:500}
+
+        @media(max-width:768px){
+            nav{padding:0 1.5rem}
+            .checkout-layout{grid-template-columns:1fr;padding:0 1rem;margin:1rem auto}
+            .form-row{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
+        <a href="gallery.html" class="nav-link">← Back to Gallery</a>
+    </nav>
+
+    <!-- Login required -->
+    <div class="login-prompt" id="login-prompt" style="display:none">
+        <div class="login-card">
+            <h2>Sign in to Purchase</h2>
+            <p>You need a collector account to buy artwork on InfraMint.</p>
+            <a href="collector-login.html">Sign In / Register →</a>
+        </div>
+    </div>
+
+    <!-- Checkout -->
+    <div class="checkout-layout" id="checkout" style="display:none">
+        <div class="order-summary">
+            <div class="os-title">Order Summary</div>
+            <div class="os-item">
+                <img class="os-img" id="os-img" src="">
+                <div class="os-info">
+                    <div class="os-art-title" id="os-title">—</div>
+                    <div class="os-artist" id="os-artist">—</div>
+                    <div class="os-medium" id="os-medium"></div>
+                    <div class="os-dims" id="os-dims"></div>
+                </div>
+            </div>
+            <hr class="os-divider">
+            <div class="os-line"><span class="label">Artwork Price</span><span id="os-price">$0</span></div>
+            <div class="os-line"><span class="label">Shipping (estimated)</span><span id="os-ship">TBD</span></div>
+            <div class="os-line"><span class="label">Customs & Import Duties</span><span id="os-customs">TBD</span></div>
+            <div class="os-line total"><span class="label">Total</span><span id="os-total">$0</span></div>
+            <div class="os-note">
+                Shipping costs will be confirmed by the artist with a real postal quote after your order is placed. Payment is held in escrow until delivery is confirmed. The final total may adjust based on actual shipping costs.
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <div class="ps-title">Checkout</div>
+            <div class="ps-sub">Complete your purchase securely</div>
+
+            <div class="msg" id="checkout-msg"></div>
+
+            <!-- Shipping address -->
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.75rem">Shipping Address</div>
+
+            <div id="saved-address" style="display:none">
+                <div class="shipping-card" id="saved-address-text"></div>
+                <button style="font-size:.75rem;color:var(--g500);background:none;border:none;cursor:pointer;margin-bottom:1rem;font-family:'Manrope',sans-serif;text-decoration:underline" id="change-address">Use a different address</button>
+            </div>
+
+            <div id="address-form">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="sh-first"></div>
+                    <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="sh-last"></div>
+                </div>
+                <div class="form-group"><label class="form-label">Address Line 1</label><input type="text" class="form-input" id="sh-addr1" placeholder="Street address"></div>
+                <div class="form-group"><label class="form-label">Address Line 2</label><input type="text" class="form-input" id="sh-addr2" placeholder="Apt, suite (optional)"></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="sh-city"></div>
+                    <div class="form-group"><label class="form-label">Postal Code</label><input type="text" class="form-input" id="sh-postal"></div>
+                </div>
+                <div class="form-group"><label class="form-label">Country</label>
+                    <select class="form-select" id="sh-country">
+                        <option value="">Select country</option>
+                        <option value="AE">UAE</option><option value="US">United States</option><option value="UK">United Kingdom</option>
+                        <option value="DE">Germany</option><option value="FR">France</option><option value="LB">Lebanon</option>
+                        <option value="SA">Saudi Arabia</option><option value="QA">Qatar</option><option value="KW">Kuwait</option>
+                        <option value="BH">Bahrain</option><option value="OM">Oman</option><option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="os-divider">
+
+            <!-- Commission breakdown (visible info) -->
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem;margin-top:.5rem">How your payment is split</div>
+            <div style="font-size:.75rem;color:var(--g500);line-height:1.8;margin-bottom:1rem">
+                <div style="display:flex;justify-content:space-between"><span>Artist receives</span><span style="font-weight:600;color:var(--black)" id="split-artist">65%</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Gallery (InfraMint)</span><span>30%</span></div>
+                <div style="display:flex;justify-content:space-between"><span>Partner commission</span><span id="split-partner">5%</span></div>
+            </div>
+
+            <button class="pay-btn" id="pay-btn">Place Order — Pay Now</button>
+
+            <div class="secure-note">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Payments secured by Stripe. Funds held in escrow until delivery.
+            </div>
+        </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-page" id="success-page" style="display:none">
+        <div class="success-card">
+            <div class="success-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="success-title">Order Placed!</div>
+            <div class="success-text">
+                Your order has been submitted. The artist will confirm shipping costs with a real postal quote. Once confirmed, your payment will be processed and the artwork will be shipped.
+            </div>
+            <div class="success-order" id="success-order-id"></div>
+            <a href="collector-dashboard.html" class="success-btn">View My Orders →</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
+
+    var artworkId=new URLSearchParams(window.location.search).get('artwork');
+    var artwork=null,artist=null,collector=null,currentUser=null;
+    var medNames={oil:'Oil on Canvas',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',other:'Other'};
+    var countryNames={AE:'UAE',US:'United States',UK:'United Kingdom',DE:'Germany',FR:'France',LB:'Lebanon',SA:'Saudi Arabia',QA:'Qatar',KW:'Kuwait',BH:'Bahrain',OM:'Oman',other:'Other'};
+
+    async function init(){
+        if(!artworkId){window.location.href='gallery.html';return}
+
+        // Check auth
+        var{data:{session}}=await db.auth.getSession();
+        if(!session){
+            document.getElementById('login-prompt').style.display='flex';
+            return;
+        }
+        currentUser=session.user;
+
+        // Load collector
+        var{data:col}=await db.from('collectors').select('*').eq('user_id',currentUser.id).single();
+        if(!col){
+            document.getElementById('login-prompt').style.display='flex';
+            return;
+        }
+        collector=col;
+
+        // Load artwork + artist
+        var{data:aw}=await db.from('artworks').select('*,artists(*)').eq('id',artworkId).single();
+        if(!aw){window.location.href='gallery.html';return}
+        artwork=aw;
+        artist=aw.artists||{};
+
+        // Show checkout
+        document.getElementById('checkout').style.display='grid';
+        populateCheckout();
+    }
+
+    function populateCheckout(){
+        var hasImg=artwork.primary_image_url&&!artwork.primary_image_url.includes('placehold');
+        if(hasImg)document.getElementById('os-img').src=artwork.primary_image_url;
+        document.getElementById('os-title').textContent=artwork.title;
+        document.getElementById('os-artist').textContent='by '+(artist.artist_name||artist.first_name||'Unknown');
+        document.getElementById('os-medium').textContent=medNames[artwork.medium]||artwork.medium||'';
+        if(artwork.width_cm&&artwork.height_cm)document.getElementById('os-dims').textContent=artwork.width_cm+' × '+artwork.height_cm+' cm';
+
+        var price=Number(artwork.price||0);
+        document.getElementById('os-price').textContent='$'+price.toLocaleString();
+        document.getElementById('os-total').textContent='$'+price.toLocaleString()+' + shipping';
+
+        // Check if artist has a partner (changes split display)
+        if(artist.referred_by_partner){
+            document.getElementById('split-artist').textContent='65%';
+            document.getElementById('split-partner').textContent='5%';
+        }else{
+            document.getElementById('split-artist').textContent='70%';
+            document.getElementById('split-partner').textContent='0% (no partner)';
+        }
+
+        // Pre-fill shipping if collector has address
+        if(collector.address_line1){
+            var addr=collector.first_name+' '+collector.last_name+'<br>'+
+                collector.address_line1+(collector.address_line2?', '+collector.address_line2:'')+'<br>'+
+                (collector.city||'')+' '+(collector.postal_code||'')+'<br>'+
+                (countryNames[collector.country]||collector.country||'');
+            document.getElementById('saved-address-text').innerHTML='<strong>Ship to:</strong><br>'+addr;
+            document.getElementById('saved-address').style.display='block';
+            document.getElementById('address-form').style.display='none';
+        }
+
+        // Pre-fill form anyway
+        document.getElementById('sh-first').value=collector.first_name||'';
+        document.getElementById('sh-last').value=collector.last_name||'';
+        document.getElementById('sh-addr1').value=collector.address_line1||'';
+        document.getElementById('sh-addr2').value=collector.address_line2||'';
+        document.getElementById('sh-city').value=collector.city||'';
+        document.getElementById('sh-postal').value=collector.postal_code||'';
+        document.getElementById('sh-country').value=collector.country||'';
+    }
+
+    // Change address
+    document.getElementById('change-address').onclick=function(){
+        document.getElementById('saved-address').style.display='none';
+        document.getElementById('address-form').style.display='block';
+    };
+
+    // Place order
+    document.getElementById('pay-btn').onclick=async function(){
+        var btn=this;
+        var msgEl=document.getElementById('checkout-msg');
+
+        // Get shipping address
+        var firstName=document.getElementById('sh-first').value.trim();
+        var lastName=document.getElementById('sh-last').value.trim();
+        var addr1=document.getElementById('sh-addr1').value.trim();
+        var city=document.getElementById('sh-city').value.trim();
+        var country=document.getElementById('sh-country').value;
+
+        // If using saved address
+        if(document.getElementById('saved-address').style.display!=='none'){
+            firstName=collector.first_name;
+            lastName=collector.last_name;
+            addr1=collector.address_line1;
+            city=collector.city;
+            country=collector.country;
+        }
+
+        if(!firstName||!addr1||!city||!country){
+            msgEl.textContent='Please fill in your shipping address.';
+            msgEl.className='msg show error';
+            return;
+        }
+
+        btn.textContent='Placing order...';
+        btn.disabled=true;
+
+        var shippingAddress=firstName+' '+lastName+'\n'+
+            addr1+(document.getElementById('sh-addr2').value?'\n'+document.getElementById('sh-addr2').value:'')+'\n'+
+            city+' '+(document.getElementById('sh-postal').value||'')+'\n'+
+            (countryNames[country]||country);
+
+        // Save address to collector profile
+        await db.from('collectors').update({
+            address_line1:document.getElementById('sh-addr1').value||collector.address_line1,
+            address_line2:document.getElementById('sh-addr2').value||collector.address_line2,
+            city:document.getElementById('sh-city').value||collector.city,
+            postal_code:document.getElementById('sh-postal').value||collector.postal_code,
+            country:document.getElementById('sh-country').value||collector.country
+        }).eq('id',collector.id);
+
+        // Create order
+        var{data:order,error}=await db.from('orders').insert({
+            artwork_id:artwork.id,
+            artist_id:artist.id,
+            collector_id:collector.id,
+            art_price:Number(artwork.price),
+            shipping_cost:0,
+            customs_cost:0,
+            status:'pending_shipping_quote',
+            payment_status:'awaiting_shipping',
+            collector_email:currentUser.email,
+            collector_name:firstName+' '+lastName,
+            shipping_address:shippingAddress,
+            artwork_title:artwork.title
+        }).select().single();
+
+        if(error){
+            msgEl.textContent='Error creating order: '+error.message;
+            msgEl.className='msg show error';
+            btn.textContent='Place Order — Pay Now';
+            btn.disabled=false;
+            return;
+        }
+
+        // Update artwork edition_sold if applicable
+        var edTotal=artwork.edition_total||1;
+        var edSold=(artwork.edition_sold||0)+1;
+        if(edSold>=edTotal){
+            await db.from('artworks').update({edition_sold:edSold,status:'sold'}).eq('id',artwork.id);
+        }else{
+            await db.from('artworks').update({edition_sold:edSold}).eq('id',artwork.id);
+        }
+
+        // Show success
+        document.getElementById('checkout').style.display='none';
+        document.getElementById('success-page').style.display='flex';
+        document.getElementById('success-order-id').textContent='Order #'+order.id.slice(0,8).toUpperCase();
+    };
+
+    init();
+    </script>
+</body>
+</html>

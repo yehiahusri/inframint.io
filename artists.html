@@ -572,9 +572,11 @@
             if (allSold || work.status === 'sold') {
                 ctaEl.textContent = 'Sold Out';
                 ctaEl.className = 'art-modal-cta sold-btn';
+                ctaEl.onclick = null;
             } else {
-                ctaEl.textContent = 'Inquire About This Work';
+                ctaEl.textContent = 'Buy Now — $' + Number(work.price).toLocaleString();
                 ctaEl.className = 'art-modal-cta';
+                ctaEl.onclick = function() { window.location.href = 'checkout.html?artwork=' + work.id; };
             }
 
             document.getElementById('art-modal').classList.add('active');
@@ -586,12 +588,6 @@
 
         document.getElementById('art-modal').addEventListener('click', function(e) {
             if (e.target === this) this.classList.remove('active');
-        });
-
-        document.getElementById('art-modal-cta').addEventListener('click', function() {
-            if (!this.classList.contains('sold-btn')) {
-                window.location.href = 'collector-login.html';
-            }
         });
 
         document.getElementById('back-btn').addEventListener('click', function() {
