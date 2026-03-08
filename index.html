@@ -753,14 +753,14 @@
                 </a>
             </div>
         </div>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1482160549825-59d1b23cb208?w=1200&q=80" alt="Urban Art">
+        <div class="hero-image" id="hero-image">
+            <img src="https://images.unsplash.com/photo-1482160549825-59d1b23cb208?w=1200&q=80" alt="Featured Art" id="hero-img">
             <div class="hero-image-overlay">
                 <div>
-                    <div class="hero-image-title">Urban Layers</div>
-                    <div class="hero-image-artist">Featured Artwork</div>
+                    <div class="hero-image-title" id="hero-title">Featured Artwork</div>
+                    <div class="hero-image-artist" id="hero-artist"></div>
                 </div>
-                <div class="hero-image-price">Coming Soon</div>
+                <div class="hero-image-price" id="hero-price"></div>
             </div>
         </div>
     </section>
@@ -771,62 +771,27 @@
             <div class="featured-title">Featured Works</div>
             <a href="gallery.html" class="featured-link">View all →</a>
         </div>
-        <div class="featured-grid">
-            <a href="#" class="artwork-card">
-                <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80" alt="Artwork">
-                </div>
-                <div class="artwork-info">
-                    <div class="artwork-title">Abstract Study #12</div>
-                    <div class="artwork-artist">Coming Soon</div>
-                </div>
-            </a>
-            <a href="#" class="artwork-card">
-                <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=600&q=80" alt="Artwork">
-                </div>
-                <div class="artwork-info">
-                    <div class="artwork-title">Fluid Motion</div>
-                    <div class="artwork-artist">Coming Soon</div>
-                </div>
-            </a>
-            <a href="#" class="artwork-card">
-                <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=600&q=80" alt="Artwork">
-                </div>
-                <div class="artwork-info">
-                    <div class="artwork-title">Texture Play</div>
-                    <div class="artwork-artist">Coming Soon</div>
-                </div>
-            </a>
-            <a href="#" class="artwork-card">
-                <div class="artwork-image">
-                    <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=600&q=80" alt="Artwork">
-                </div>
-                <div class="artwork-info">
-                    <div class="artwork-title">Neon Dreams</div>
-                    <div class="artwork-artist">Coming Soon</div>
-                </div>
-            </a>
+        <div class="featured-grid" id="featured-grid">
+            <!-- Filled dynamically -->
         </div>
     </section>
 
     <!-- Stats -->
     <section class="stats">
         <div class="stat">
-            <div class="stat-number">—</div>
+            <div class="stat-number" id="home-stat-artists">—</div>
             <div class="stat-label">Artists</div>
         </div>
         <div class="stat">
-            <div class="stat-number">—</div>
+            <div class="stat-number" id="home-stat-artworks">—</div>
             <div class="stat-label">Artworks</div>
         </div>
         <div class="stat">
-            <div class="stat-number">—</div>
+            <div class="stat-number" id="home-stat-countries">—</div>
             <div class="stat-label">Countries</div>
         </div>
         <div class="stat">
-            <div class="stat-number">—</div>
+            <div class="stat-number" id="home-stat-sold">—</div>
             <div class="stat-label">Sold</div>
         </div>
     </section>
@@ -914,44 +879,88 @@
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
             const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+            // ===== AUTH CHECK =====
             try {
                 const { data: { session } } = await db.auth.getSession();
-                
                 if (session) {
-                    // Check if user is an artist
-                    const { data: artist, error } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
-                    
-                    if (artist && !error) {
-                        // Show dashboard link for artists
+                    const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
+                    if (artist) {
                         document.getElementById('nav-right').innerHTML = 
                             '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>' +
                             '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
-                        
-                        document.getElementById('sign-out-btn').addEventListener('click', async function(e) {
-                            e.preventDefault();
-                            await db.auth.signOut();
-                            window.location.reload();
-                        });
                     } else {
-                        // Check if user is a collector
                         const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
-                        
                         if (collector) {
                             document.getElementById('nav-right').innerHTML = 
-                                '<a href="#" class="nav-login">My Account</a>' +
+                                '<a href="collector-dashboard.html" class="nav-login">My Account</a>' +
                                 '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
-                            
-                            document.getElementById('sign-out-btn').addEventListener('click', async function(e) {
-                                e.preventDefault();
-                                await db.auth.signOut();
-                                window.location.reload();
-                            });
                         }
                     }
+                    var sob = document.getElementById('sign-out-btn');
+                    if (sob) sob.addEventListener('click', async function(e) { e.preventDefault(); await db.auth.signOut(); window.location.reload(); });
                 }
-            } catch (err) {
-                console.error('Auth check error:', err);
+            } catch (err) { console.error('Auth check error:', err); }
+
+            // ===== LOAD LIVE DATA =====
+            // Artworks for hero + featured
+            var { data: artworks } = await db.from('artworks')
+                .select('*, artists(artist_name)')
+                .order('created_at', { ascending: false });
+
+            artworks = artworks || [];
+            var hasReal = artworks.filter(function(a) { return a.primary_image_url && !a.primary_image_url.includes('placehold'); });
+
+            // Hero — first artwork with an image
+            if (hasReal.length > 0) {
+                var hero = hasReal[0];
+                document.getElementById('hero-img').src = hero.primary_image_url;
+                document.getElementById('hero-title').textContent = hero.title;
+                document.getElementById('hero-artist').textContent = hero.artists ? hero.artists.artist_name : '';
+                document.getElementById('hero-price').textContent = hero.status === 'sold' ? 'Sold' : '$' + Number(hero.price).toLocaleString();
+                document.getElementById('hero-image').style.cursor = 'pointer';
+                document.getElementById('hero-image').onclick = function() { window.location.href = 'gallery.html'; };
             }
+
+            // Featured grid — up to 4 artworks
+            var grid = document.getElementById('featured-grid');
+            var featured = hasReal.length > 1 ? hasReal.slice(1, 5) : hasReal.slice(0, 4);
+
+            if (featured.length === 0) {
+                // Fallback if no artworks yet
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray-400);font-size:.9rem">Artworks coming soon. <a href="artist-signup.html" style="color:var(--black);font-weight:500;">Be the first to list.</a></div>';
+            } else {
+                grid.innerHTML = '';
+                featured.forEach(function(aw) {
+                    var artist = aw.artists || {};
+                    var card = document.createElement('a');
+                    card.href = 'gallery.html';
+                    card.className = 'artwork-card';
+                    card.innerHTML =
+                        '<div class="artwork-image">' +
+                            '<img src="' + aw.primary_image_url + '" alt="' + aw.title + '">' +
+                        '</div>' +
+                        '<div class="artwork-info">' +
+                            '<div class="artwork-title">' + aw.title + '</div>' +
+                            '<div class="artwork-artist">' + (artist.artist_name || '') + ' · $' + Number(aw.price).toLocaleString() + '</div>' +
+                        '</div>';
+                    grid.appendChild(card);
+                });
+            }
+
+            // ===== LIVE STATS =====
+            var { data: allArtists } = await db.from('artists').select('country');
+            var { data: allArtworks } = await db.from('artworks').select('status');
+
+            var artistCount = allArtists ? allArtists.length : 0;
+            var artworkCount = allArtworks ? allArtworks.length : 0;
+            var countries = new Set();
+            if (allArtists) allArtists.forEach(function(a) { if (a.country) countries.add(a.country); });
+            var soldCount = allArtworks ? allArtworks.filter(function(a) { return a.status === 'sold'; }).length : 0;
+
+            document.getElementById('home-stat-artists').textContent = artistCount;
+            document.getElementById('home-stat-artworks').textContent = artworkCount;
+            document.getElementById('home-stat-countries').textContent = countries.size;
+            document.getElementById('home-stat-sold').textContent = soldCount;
         })();
     </script>
 
