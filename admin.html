@@ -218,7 +218,7 @@
                 <!-- Pending Artists -->
                 <div class="sec" id="section-pending-artists">
                     <div class="ph"><h1>Pending Artists</h1><p>Approve or reject artist applications</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Category</th><th>Location</th><th>Bio</th><th>Actions</th></tr></thead><tbody id="tb-pa"></tbody></table></div></div>
+                    <div class="card"><div class="tw"><table><thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Category</th><th>Verification</th><th>Studio</th><th>Statement</th><th>Actions</th></tr></thead><tbody id="tb-pa"></tbody></table></div></div>
                 </div>
 
                 <!-- Pending Partners -->
@@ -774,14 +774,23 @@
     // ===== PENDING ARTISTS =====
     function renderPendingArtists(list){
         var b=document.getElementById('tb-pa');
-        if(!list.length){b.innerHTML='<tr class="empty"><td colspan="7">No pending artists</td></tr>';return}
+        if(!list.length){b.innerHTML='<tr class="empty"><td colspan="8">No pending artists</td></tr>';return}
         b.innerHTML='';
         list.forEach(function(a){
+            var vStatus=a.verification_status||'unverified';
+            var vBadge=vStatus==='pending'?'<span class="badge b-pending">Submitted</span>':(vStatus==='verified'?'<span class="badge b-approved">Verified</span>':'<span class="badge b-rejected">Not submitted</span>');
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'</td><td class="te">'+(a.email||'—')+'</td><td>'+(CAT[a.category]||'—')+'</td><td>'+(a.city||'')+(a.country?' '+a.country:'')+'</td><td>'+trunc(a.bio,60)+'</td><td></td>';
+            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'<br><span class="te">'+(a.email||'')+'</span></td><td class="te">'+(CAT[a.category]||'—')+'</td><td>'+vBadge+'<br>'+img(a.verification_photo_url)+'</td><td>'+img(a.studio_photo_url)+'</td><td>'+trunc(a.artist_statement,80)+'</td><td></td>';
             var td=tr.lastChild;
-            mkBtn(td,'Approve','ab-ok',function(){setStatus('artists',a.id,'approved')});
-            mkBtn(td,'Reject','ab-no',function(){setStatus('artists',a.id,'rejected')});
+            mkBtn(td,'Approve','ab-ok',async function(){
+                await db.from('artists').update({status:'approved',verification_status:'verified'}).eq('id',a.id);
+                loadAll();
+            });
+            mkBtn(td,'Reject','ab-no',async function(){
+                var reason=prompt('Rejection reason (optional):');
+                await db.from('artists').update({status:'rejected',verification_status:'rejected',verification_notes:reason||''}).eq('id',a.id);
+                loadAll();
+            });
             b.appendChild(tr);
         });
     }

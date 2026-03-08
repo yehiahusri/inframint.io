@@ -653,6 +653,13 @@
                     </svg>
                     Orders
                 </a>
+                <a class="sidebar-link" data-section="verification">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="11" y="2" width="2" height="20"/>
+                        <path d="M7 12 L11 16 L17 8" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                    </svg>
+                    Verification
+                </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-label">Settings</div>
@@ -739,6 +746,110 @@
                             </svg>
                         </div>
                         <p>No orders yet. Once someone purchases your art, it will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Section -->
+            <div class="section" id="section-verification">
+                <div class="page-header">
+                    <h1 class="page-title">Artist Verification</h1>
+                    <p class="page-subtitle">Prove you're a real artist — required before you can list artwork for sale</p>
+                </div>
+
+                <div class="message" id="verify-message"></div>
+
+                <!-- Status card -->
+                <div class="card" id="verify-status-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Verification Status</h2>
+                        <span class="status-badge" id="verify-status-badge">Not Submitted</span>
+                    </div>
+                    <p style="color:var(--gray-500);font-size:.9rem" id="verify-status-text">
+                        Complete the steps below to verify your identity as an artist. This protects our community from mass-produced prints and ensures every piece on InfraMint is authentic.
+                    </p>
+                </div>
+
+                <!-- Verification form -->
+                <div id="verify-form-area">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Step 1 — Artwork + Handwritten Note</h2>
+                        </div>
+                        <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:1rem;line-height:1.7">
+                            Take a photo of <strong>one of your artworks</strong> with a handwritten note placed next to it. The note must show:<br>
+                            <strong>• Your full name</strong><br>
+                            <strong>• "InfraMint"</strong><br>
+                            <strong>• Today's date</strong><br>
+                            This proves you physically have the artwork and it's yours.
+                        </p>
+                        <div style="border:2px dashed var(--gray-300);padding:1.5rem;text-align:center;cursor:pointer;background:var(--gray-100);transition:all .2s;position:relative" id="v-photo-zone">
+                            <input type="file" id="v-photo-file" accept="image/*" style="display:none">
+                            <div id="v-photo-placeholder">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <div style="margin-top:.5rem;font-size:.8rem;color:var(--gray-500)">Click to upload artwork + handwritten note photo</div>
+                            </div>
+                            <div id="v-photo-preview" style="display:none">
+                                <img id="v-photo-img" style="max-height:200px;max-width:100%;object-fit:contain">
+                                <div style="margin-top:.5rem;font-size:.75rem;color:var(--success)">Photo selected ✓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Step 2 — Your Studio / Workspace</h2>
+                        </div>
+                        <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:1rem;line-height:1.7">
+                            Show us where you create. A photo of your studio, desk, easel, or workspace. This doesn't need to be fancy — a kitchen table with paint supplies counts. It just needs to be <strong>a real creative space, not a warehouse or print shop</strong>.
+                        </p>
+                        <div style="border:2px dashed var(--gray-300);padding:1.5rem;text-align:center;cursor:pointer;background:var(--gray-100);transition:all .2s" id="v-studio-zone">
+                            <input type="file" id="v-studio-file" accept="image/*" style="display:none">
+                            <div id="v-studio-placeholder">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                <div style="margin-top:.5rem;font-size:.8rem;color:var(--gray-500)">Click to upload studio / workspace photo</div>
+                            </div>
+                            <div id="v-studio-preview" style="display:none">
+                                <img id="v-studio-img" style="max-height:200px;max-width:100%;object-fit:contain">
+                                <div style="margin-top:.5rem;font-size:.75rem;color:var(--success)">Photo selected ✓</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Step 3 — Artist Statement</h2>
+                        </div>
+                        <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:1rem;line-height:1.7">
+                            Tell us in your own words: <strong>Why do you create? What inspires you? What makes your work original?</strong> This helps us understand you as an artist. Minimum 50 words.
+                        </p>
+                        <textarea class="form-textarea" id="v-statement" placeholder="I create because..." style="min-height:120px"></textarea>
+                        <div style="font-size:.7rem;color:var(--gray-400);margin-top:.25rem" id="v-word-count">0 words</div>
+                    </div>
+
+                    <div class="card" style="text-align:center;padding:2rem">
+                        <button class="btn btn-primary" id="submit-verification" style="padding:.875rem 3rem;font-size:1rem">Submit for Verification</button>
+                        <p style="font-size:.75rem;color:var(--gray-400);margin-top:.75rem">Our team will review your submission within 48 hours</p>
+                    </div>
+                </div>
+
+                <!-- Already submitted view -->
+                <div id="verify-submitted-area" style="display:none">
+                    <div class="card">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                            <div>
+                                <div style="font-size:.7rem;font-weight:600;color:var(--gray-400);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Artwork + Note</div>
+                                <img id="v-submitted-photo" style="width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--gray-200)">
+                            </div>
+                            <div>
+                                <div style="font-size:.7rem;font-weight:600;color:var(--gray-400);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Studio / Workspace</div>
+                                <img id="v-submitted-studio" style="width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--gray-200)">
+                            </div>
+                        </div>
+                        <div style="margin-top:1.25rem">
+                            <div style="font-size:.7rem;font-weight:600;color:var(--gray-400);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Your Artist Statement</div>
+                            <p style="font-size:.9rem;color:var(--gray-600);line-height:1.7" id="v-submitted-statement"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1069,6 +1180,7 @@
 
             togglePayoutFields();
             loadArtworks();
+            loadVerificationStatus();
         }
 
         // Navigation
@@ -1449,6 +1561,163 @@
             } catch (err) {
                 statusEl.textContent = 'Error: ' + err.message;
                 statusEl.style.color = '#dc2626';
+            }
+        });
+
+        // ===== VERIFICATION =====
+        // Upload zones
+        document.getElementById('v-photo-zone').addEventListener('click', function() {
+            document.getElementById('v-photo-file').click();
+        });
+        document.getElementById('v-studio-zone').addEventListener('click', function() {
+            document.getElementById('v-studio-file').click();
+        });
+
+        document.getElementById('v-photo-file').addEventListener('change', function() {
+            if (this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('v-photo-img').src = e.target.result;
+                    document.getElementById('v-photo-placeholder').style.display = 'none';
+                    document.getElementById('v-photo-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        document.getElementById('v-studio-file').addEventListener('change', function() {
+            if (this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('v-studio-img').src = e.target.result;
+                    document.getElementById('v-studio-placeholder').style.display = 'none';
+                    document.getElementById('v-studio-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // Word count
+        document.getElementById('v-statement').addEventListener('input', function() {
+            var words = this.value.trim().split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+            document.getElementById('v-word-count').textContent = words + ' words' + (words < 50 ? ' (minimum 50)' : ' ✓');
+            document.getElementById('v-word-count').style.color = words >= 50 ? 'var(--success)' : 'var(--gray-400)';
+        });
+
+        // Load verification status
+        function loadVerificationStatus() {
+            var status = artistData.verification_status || 'unverified';
+            var badge = document.getElementById('verify-status-badge');
+            var text = document.getElementById('verify-status-text');
+
+            if (status === 'verified') {
+                badge.textContent = 'Verified ✓';
+                badge.className = 'status-badge status-approved';
+                text.textContent = 'You are verified! You can list and sell artwork on InfraMint.';
+                document.getElementById('verify-form-area').style.display = 'none';
+                if (artistData.verification_photo_url) {
+                    document.getElementById('verify-submitted-area').style.display = 'block';
+                    document.getElementById('v-submitted-photo').src = artistData.verification_photo_url;
+                    document.getElementById('v-submitted-studio').src = artistData.studio_photo_url || '';
+                    document.getElementById('v-submitted-statement').textContent = artistData.artist_statement || '';
+                }
+            } else if (status === 'pending') {
+                badge.textContent = 'Under Review';
+                badge.className = 'status-badge status-pending';
+                text.textContent = 'Your verification is being reviewed. We\'ll get back to you within 48 hours.';
+                document.getElementById('verify-form-area').style.display = 'none';
+                document.getElementById('verify-submitted-area').style.display = 'block';
+                document.getElementById('v-submitted-photo').src = artistData.verification_photo_url || '';
+                document.getElementById('v-submitted-studio').src = artistData.studio_photo_url || '';
+                document.getElementById('v-submitted-statement').textContent = artistData.artist_statement || '';
+            } else if (status === 'rejected') {
+                badge.textContent = 'Not Approved';
+                badge.className = 'status-badge status-rejected';
+                text.innerHTML = 'Your verification was not approved. ' + (artistData.verification_notes ? '<strong>Reason: </strong>' + artistData.verification_notes : '') + ' Please resubmit with updated materials.';
+                document.getElementById('verify-form-area').style.display = 'block';
+                document.getElementById('verify-submitted-area').style.display = 'none';
+            } else {
+                badge.textContent = 'Not Submitted';
+                badge.className = 'status-badge status-pending';
+                text.textContent = 'Complete the steps below to verify your identity as an artist. This protects our community from mass-produced prints and ensures every piece on InfraMint is authentic.';
+                document.getElementById('verify-form-area').style.display = 'block';
+                document.getElementById('verify-submitted-area').style.display = 'none';
+            }
+
+            // Pre-fill statement if exists
+            if (artistData.artist_statement) {
+                document.getElementById('v-statement').value = artistData.artist_statement;
+                document.getElementById('v-statement').dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Submit verification
+        document.getElementById('submit-verification').addEventListener('click', async function() {
+            var photoFile = document.getElementById('v-photo-file').files[0];
+            var studioFile = document.getElementById('v-studio-file').files[0];
+            var statement = document.getElementById('v-statement').value.trim();
+            var words = statement.split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+
+            // Validate — need photo if not already submitted
+            if (!photoFile && !artistData.verification_photo_url) {
+                showMessage('verify-message', 'Please upload a photo of your artwork with a handwritten note.', false);
+                return;
+            }
+            if (!studioFile && !artistData.studio_photo_url) {
+                showMessage('verify-message', 'Please upload a photo of your studio or workspace.', false);
+                return;
+            }
+            if (words < 50) {
+                showMessage('verify-message', 'Your artist statement must be at least 50 words. Currently: ' + words, false);
+                return;
+            }
+
+            var btn = this;
+            btn.textContent = 'Uploading...';
+            btn.disabled = true;
+
+            try {
+                var updateData = {
+                    artist_statement: statement,
+                    verification_status: 'pending',
+                    verification_submitted_at: new Date().toISOString()
+                };
+
+                // Upload verification photo
+                if (photoFile) {
+                    var ext1 = photoFile.name.split('.').pop();
+                    var fname1 = artistData.id + '/verification.' + ext1;
+                    await db.storage.from('verification-docs').upload(fname1, photoFile, { contentType: photoFile.type, upsert: true });
+                    var url1 = db.storage.from('verification-docs').getPublicUrl(fname1);
+                    updateData.verification_photo_url = url1.data.publicUrl;
+                }
+
+                // Upload studio photo
+                if (studioFile) {
+                    var ext2 = studioFile.name.split('.').pop();
+                    var fname2 = artistData.id + '/studio.' + ext2;
+                    await db.storage.from('verification-docs').upload(fname2, studioFile, { contentType: studioFile.type, upsert: true });
+                    var url2 = db.storage.from('verification-docs').getPublicUrl(fname2);
+                    updateData.studio_photo_url = url2.data.publicUrl;
+                }
+
+                var { error } = await db.from('artists').update(updateData).eq('id', artistData.id);
+
+                if (error) {
+                    showMessage('verify-message', 'Error: ' + error.message, false);
+                    return;
+                }
+
+                // Update local data
+                Object.assign(artistData, updateData);
+                showMessage('verify-message', 'Verification submitted! We\'ll review within 48 hours.', true);
+                loadVerificationStatus();
+
+            } catch (err) {
+                showMessage('verify-message', 'Upload error: ' + err.message, false);
+            } finally {
+                btn.textContent = 'Submit for Verification';
+                btn.disabled = false;
             }
         });
 
