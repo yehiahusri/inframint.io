@@ -332,7 +332,9 @@
         }).eq('id',collector.id);
 
         // Create order
+        var orderNum='IM-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).substring(2,5).toUpperCase();
         var{data:order,error}=await db.from('orders').insert({
+            order_number:orderNum,
             artwork_id:artwork.id,
             artist_id:artist.id,
             collector_id:collector.id,
@@ -367,7 +369,7 @@
         // Show success
         document.getElementById('checkout').style.display='none';
         document.getElementById('success-page').style.display='flex';
-        document.getElementById('success-order-id').textContent='Order #'+order.id.slice(0,8).toUpperCase();
+        document.getElementById('success-order-id').textContent='Order ' + (order.order_number || '#'+order.id.slice(0,8).toUpperCase());
     };
 
     init();
