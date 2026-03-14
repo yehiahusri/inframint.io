@@ -208,6 +208,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .gallery-card-image img {
@@ -502,10 +503,6 @@
 
         .heart-btn.saved {
             color: #dc2626;
-        }
-
-        .gallery-card-image {
-            position: relative;
         }
 
         /* Footer */
@@ -891,7 +888,7 @@
                                 '<rect x="16" y="5" width="2" height="14"/>' +
                               '</svg>'
                         ) +
-                        (collectorId ? '<button class="heart-btn' + (wishlistIds.indexOf(artwork.id) >= 0 ? ' saved' : '') + '" data-aid="' + artwork.id + '">' + (wishlistIds.indexOf(artwork.id) >= 0 ? '♥' : '♡') + '</button>' : '') +
+                        (collectorId ? '<button class="heart-btn' + (wishlistIds.indexOf(artwork.id) >= 0 ? ' saved' : '') + '" data-aid="' + artwork.id + '">' + (wishlistIds.indexOf(artwork.id) >= 0 ? '♥' : '♡') + '</button>' : '<button class="heart-btn" data-aid="' + artwork.id + '">♡</button>') +
                     '</div>' +
                     '<div class="gallery-card-info">' +
                         '<div class="gallery-card-title">' + artwork.title + '</div>' +
@@ -989,14 +986,10 @@
 
             // Wishlist button in modal
             var wishBtn = document.getElementById('modal-wish');
-            if (collectorId) {
-                wishBtn.style.display = 'block';
-                var inWish = wishlistIds.indexOf(artwork.id) >= 0;
-                wishBtn.textContent = inWish ? '♥ Saved to Wishlist' : '♡ Save to Wishlist';
-                wishBtn.className = 'modal-wish' + (inWish ? ' saved' : '');
-            } else {
-                wishBtn.style.display = 'none';
-            }
+            wishBtn.style.display = 'block';
+            var inWish = collectorId && wishlistIds.indexOf(artwork.id) >= 0;
+            wishBtn.textContent = inWish ? '♥ Saved to Wishlist' : '♡ Save to Wishlist';
+            wishBtn.className = 'modal-wish' + (inWish ? ' saved' : '');
         }
 
         // Close modal
