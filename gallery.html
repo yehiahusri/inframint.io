@@ -738,6 +738,14 @@
         <p class="page-subtitle">Original works from emerging artists worldwide</p>
     </div>
 
+    <!-- Search -->
+    <div style="padding:0 3rem;max-width:1400px;margin:0 auto">
+        <div style="position:relative;margin-bottom:1rem">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="2" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="search-input" placeholder="Search by title, artist, or medium..." style="width:100%;padding:.85rem 1rem .85rem 2.75rem;font-size:.9rem;font-family:'Manrope',sans-serif;border:1px solid var(--gray-200);background:var(--white);outline:none" onfocus="this.style.borderColor='var(--black)'" onblur="this.style.borderColor='var(--gray-200)'">
+        </div>
+    </div>
+
     <!-- Filters -->
     <div class="filters" id="filters">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -798,6 +806,7 @@
 
         let allArtworks = [];
         let currentFilter = 'all';
+        let searchTerm = '';
         let collectorId = null;
         let wishlistIds = [];
         let currentModalArtwork = null;
@@ -837,9 +846,21 @@
         function renderGallery() {
             const grid = document.getElementById('gallery-grid');
             
-            const filtered = currentFilter === 'all' 
+            var filtered = currentFilter === 'all' 
                 ? allArtworks 
                 : allArtworks.filter(a => a.medium === currentFilter);
+
+            // Search filter
+            if (searchTerm) {
+                var s = searchTerm.toLowerCase();
+                filtered = filtered.filter(function(a) {
+                    var artistName = a.artists ? (a.artists.artist_name || '').toLowerCase() : '';
+                    return (a.title || '').toLowerCase().indexOf(s) >= 0 ||
+                           artistName.indexOf(s) >= 0 ||
+                           (a.medium || '').toLowerCase().indexOf(s) >= 0 ||
+                           (a.description || '').toLowerCase().indexOf(s) >= 0;
+                });
+            }
 
             if (filtered.length === 0) {
                 grid.innerHTML = 
@@ -1081,6 +1102,12 @@
                 renderGallery();
             }
         }
+
+        // Search
+        document.getElementById('search-input').addEventListener('input', function() {
+            searchTerm = this.value.trim();
+            renderGallery();
+        });
 
         // Initialize
         loadGallery();
