@@ -213,6 +213,12 @@
                         <div class="sc"><div class="sv" id="s-part">$0</div><div class="sl">Partner Payouts (5%)</div></div>
                         <div class="sc"><div class="sv" id="s-art">$0</div><div class="sl">Artist Payouts (65%)</div></div>
                     </div>
+
+                    <!-- Notifications -->
+                    <div class="card" style="margin-top:1rem">
+                        <div class="ch"><span class="ct2">Recent Notifications</span><span style="font-size:.65rem;color:var(--g400)" id="notif-count"></span></div>
+                        <div id="notif-list" style="max-height:300px;overflow-y:auto"><div style="text-align:center;padding:1rem;color:var(--g400);font-size:.8rem">Loading...</div></div>
+                    </div>
                 </div>
 
                 <!-- Pending Artists -->
@@ -613,6 +619,7 @@
         renderActivity();
         renderBlog();
         renderTeam();
+        renderNotifications();
     }
 
     // ===== FINANCE =====
@@ -965,6 +972,61 @@
         b.textContent=label;
         b.onclick=fn;
         parent.appendChild(b);
+    }
+
+    // ===== NOTIFICATIONS =====
+    async function renderNotifications() {
+        var notifs = [];
+
+        // Recent artists (last 7 days)
+        var week = new Date(Date.now() - 7 * 86400000).toISOString();
+        var { data: newArtists } = await db.from('artists').select('artist_name, status, created_at, verification_status').gte('created_at', week).order('created_at', { ascending: false });
+        if (newArtists) newArtists.forEach(function(a) {
+            var icon = a.status === 'pending' ? '🟡' : (a.status === 'approved' ? '✅' : '🔴');
+            var vStatus = a.verification_status === 'pending' ? ' — verification submitted' : '';
+            notifs.push({ time: a.created_at, html: icon + ' New artist: <strong>' + (a.artist_name || 'Unknown') + '</strong> (' + a.status + ')' + vStatus });
+        });
+
+        // Recent orders (last 7 days)
+        var { data: newOrders } = await db.from('orders').select('order_number, artwork_title, collector_name, status, artwork_price, created_at').gte('created_at', week).order('created_at', { ascending: false });
+        if (newOrders) newOrders.forEach(function(o) {
+            var icon = o.status === 'delivered' ? '✅' : (o.status === 'shipped' ? '📦' : (o.status === 'paid' ? '💰' : '🛒'));
+            notifs.push({ time: o.created_at, html: icon + ' Order <strong>' + (o.order_number || '') + '</strong>: "' + (o.artwork_title || '') + '" by ' + (o.collector_name || 'Unknown') + ' — <strong>' + o.status + '</strong> ($' + Number(o.artwork_price || 0).toLocaleString() + ')' });
+        });
+
+        // Recent partners (last 7 days)
+        var { data: newPartners } = await db.from('partners').select('first_name, last_name, company_name, status, created_at').gte('created_at', week).order('created_at', { ascending: false });
+        if (newPartners) newPartners.forEach(function(p) {
+            notifs.push({ time: p.created_at, html: '🤝 New partner: <strong>' + (p.first_name || '') + ' ' + (p.last_name || '') + '</strong>' + (p.company_name ? ' (' + p.company_name + ')' : '') + ' — ' + (p.status || 'pending') });
+        });
+
+        // Recent artworks (last 7 days)
+        var { data: newArtworks } = await db.from('artworks').select('title, status, created_at, artists(artist_name)').gte('created_at', week).order('created_at', { ascending: false });
+        if (newArtworks) newArtworks.forEach(function(w) {
+            var a = w.artists || {};
+            notifs.push({ time: w.created_at, html: '🖼️ New artwork: <strong>"' + (w.title || '') + '"</strong> by ' + (a.artist_name || 'Unknown') + ' — ' + (w.status || 'pending') });
+        });
+
+        // Sort by time, newest first
+        notifs.sort(function(a, b) { return new Date(b.time) - new Date(a.time); });
+
+        var list = document.getElementById('notif-list');
+        document.getElementById('notif-count').textContent = notifs.length + ' this week';
+
+        if (!notifs.length) {
+            list.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:.8rem">No new activity this week.</div>';
+            return;
+        }
+
+        list.innerHTML = '';
+        notifs.forEach(function(n) {
+            var d = new Date(n.time);
+            var timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            var row = document.createElement('div');
+            row.style.cssText = 'padding:.6rem 0;border-bottom:1px solid var(--g200);font-size:.8rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem';
+            row.innerHTML = '<div>' + n.html + '</div><div style="flex-shrink:0;font-size:.65rem;color:var(--g400)">' + timeStr + '</div>';
+            list.appendChild(row);
+        });
     }
 
     // ===== BLOG MANAGEMENT =====

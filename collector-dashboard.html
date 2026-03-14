@@ -93,6 +93,32 @@
 
         .empty-text { text-align: center; padding: 3rem 1rem; color: var(--gray-400); font-size: 0.9375rem; font-weight: 300; }
 
+        .co-card{background:var(--white);border:1px solid var(--gray-200);padding:1.25rem;margin-bottom:1rem}
+        .co-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--gray-200)}
+        .co-id{font-size:.8rem;font-weight:600}
+        .co-badge{font-size:.675rem;font-weight:600;padding:.2rem .6rem}
+        .co-pending{background:#fffbeb;color:#f59e0b}
+        .co-confirmed{background:#fef3c7;color:#d97706}
+        .co-paid{background:#dbeafe;color:#2563eb}
+        .co-shipped{background:#eff6ff;color:#2563eb}
+        .co-delivered{background:#f0fdf4;color:#16a34a}
+        .co-steps{display:flex;gap:0;margin-bottom:1rem}
+        .co-step{flex:1;text-align:center;padding:.4rem 0;font-size:.55rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+        .co-body{display:grid;grid-template-columns:80px 1fr;gap:1rem;margin-bottom:1rem}
+        .co-thumb{width:80px;height:80px;object-fit:cover;background:var(--gray-200)}
+        .co-title{font-weight:500;margin-bottom:.15rem}
+        .co-artist{font-size:.8rem;color:var(--gray-500)}
+        .co-prices{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:.75rem;background:var(--gray-100);margin-bottom:.75rem}
+        .co-pv{text-align:center}
+        .co-pv-val{font-size:.95rem;font-weight:600}
+        .co-pv-lbl{font-size:.55rem;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em}
+        .co-action{padding:1rem;margin-top:.5rem}
+        .co-btn{padding:.65rem 1.5rem;font-size:.85rem;font-weight:500;font-family:'Manrope',sans-serif;cursor:pointer;border:none;background:var(--black);color:var(--white)}
+        .co-btn:hover{background:var(--gray-800)}
+        .co-btn-outline{background:none;border:1px solid var(--gray-300);color:var(--gray-600)}
+        .co-tracking{background:#eff6ff;padding:1rem;margin-top:.5rem;font-size:.8rem;color:#1e40af}
+        .co-tracking a{color:#2563eb;font-weight:600}
+
         @media (max-width: 768px) {
             .layout { grid-template-columns: 1fr; }
             .sidebar { display: none; }
@@ -159,8 +185,9 @@
 
                 <!-- Purchases -->
                 <div class="section" id="section-purchases">
-                    <div class="page-header"><h1 class="page-title">My Purchases</h1><p class="page-subtitle">Artworks you've purchased</p></div>
-                    <div class="card" id="purchases-list">
+                    <div class="page-header"><h1 class="page-title">My Purchases</h1><p class="page-subtitle">Track your orders and confirm deliveries</p></div>
+                    <div class="message" id="purchase-message"></div>
+                    <div id="purchases-list">
                         <div class="empty-text">No purchases yet. Visit the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> to discover art.</div>
                     </div>
                 </div>
@@ -286,48 +313,146 @@
 
             var container = document.getElementById('purchases-list');
             if (!orders || orders.length === 0) {
-                container.innerHTML = '<div class="empty-text">No purchases yet. Visit the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> to discover art.</div>';
+                container.innerHTML = '<div class="card"><div class="empty-text">No purchases yet. Visit the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> to discover art.</div></div>';
                 document.getElementById('stat-purchased').textContent = '0';
                 document.getElementById('stat-spent').textContent = '$0';
                 return;
             }
 
             document.getElementById('stat-purchased').textContent = orders.length;
-            var total = 0;
-            var html = '';
+            var totalSpent = 0;
+            container.innerHTML = '';
 
             orders.forEach(function(order) {
                 var art = order.artworks || {};
                 var artist = art.artists || {};
-                var hasImage = art.primary_image_url && !art.primary_image_url.includes('placehold.co');
-                var artPrice = Number(order.art_price || art.price || 0);
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var artPrice = Number(order.artwork_price || art.price || 0);
                 var shipping = Number(order.shipping_cost || 0);
                 var customs = Number(order.customs_cost || 0);
                 var orderTotal = artPrice + shipping + customs;
-                total += orderTotal;
+                totalSpent += artPrice;
 
-                html +=
-                    '<div class="order-row">' +
-                        '<div class="order-thumb">' +
-                            (hasImage ? '<img src="' + art.primary_image_url + '">' : '') +
-                        '</div>' +
+                var statusMap = {
+                    pending: { label: 'Artist Quoting Shipping', cls: 'co-pending', step: 1 },
+                    confirmed: { label: 'Approve & Pay', cls: 'co-confirmed', step: 2 },
+                    paid: { label: 'Artist Shipping', cls: 'co-paid', step: 3 },
+                    shipped: { label: 'In Transit', cls: 'co-shipped', step: 4 },
+                    delivered: { label: 'Delivered ✓', cls: 'co-delivered', step: 5 }
+                };
+                var st = statusMap[order.status] || { label: order.status, cls: 'co-pending', step: 0 };
+
+                // Step bar
+                var steps = ['Quote', 'Pay', 'Shipped', 'Delivered'];
+                var stepHTML = '<div class="co-steps">';
+                steps.forEach(function(s, i) {
+                    var done = st.step > (i + 1);
+                    var active = st.step === (i + 1);
+                    stepHTML += '<div class="co-step" style="background:' + (done ? 'var(--black)' : (active ? '#f59e0b' : 'var(--gray-200)')) + ';color:' + (done ? 'var(--white)' : (active ? 'var(--white)' : 'var(--gray-400)')) + '">' + s + '</div>';
+                });
+                stepHTML += '</div>';
+
+                // Actions
+                var actionHTML = '';
+                if (order.status === 'pending') {
+                    actionHTML = '<div class="co-action" style="background:#fffbeb;font-size:.8rem;color:#92400e">The artist is getting a shipping quote from their post office. You\'ll be notified when it\'s ready.</div>';
+                } else if (order.status === 'confirmed') {
+                    actionHTML = '<div class="co-action" style="background:#fef3c7">' +
+                        '<div style="font-size:.8rem;font-weight:600;color:#92400e;margin-bottom:.5rem">Shipping Quote Ready</div>' +
+                        '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">The artist quoted <strong>$' + shipping.toLocaleString() + '</strong> for shipping. Total to pay: <strong>$' + (artPrice + shipping).toLocaleString() + '</strong></div>' +
+                        '<div style="display:flex;gap:.5rem">' +
+                            '<button class="co-btn approve-btn" data-oid="' + order.id + '">Approve & Pay</button>' +
+                            '<button class="co-btn co-btn-outline cancel-btn" data-oid="' + order.id + '">Cancel Order</button>' +
+                        '</div></div>';
+                } else if (order.status === 'paid') {
+                    actionHTML = '<div class="co-action" style="background:#dbeafe;font-size:.8rem;color:#1e40af">Payment received. The artist is preparing your artwork for shipping.</div>';
+                } else if (order.status === 'shipped') {
+                    actionHTML = '<div class="co-tracking">' +
+                        '<div style="font-weight:600;margin-bottom:.35rem">Your artwork is on its way!</div>' +
+                        'Tracking number: <strong>' + (order.tracking_number || 'N/A') + '</strong>' +
+                        (order.tracking_number ? '<br><a href="https://www.google.com/search?q=track+package+' + order.tracking_number + '" target="_blank">Track your package →</a>' : '') +
+                        '<div style="margin-top:.75rem"><button class="co-btn confirm-btn" data-oid="' + order.id + '">I Received My Artwork</button></div>' +
+                        '</div>';
+                } else if (order.status === 'delivered') {
+                    actionHTML = '<div class="co-action" style="background:#f0fdf4;font-size:.8rem;color:#16a34a">✓ Delivered and confirmed. Enjoy your artwork!</div>';
+                }
+
+                var card = document.createElement('div');
+                card.className = 'co-card';
+                card.innerHTML =
+                    '<div class="co-header">' +
+                        '<span class="co-id">' + (order.order_number || '#' + order.id.slice(0, 8)) + '</span>' +
+                        '<span class="co-badge ' + st.cls + '">' + st.label + '</span>' +
+                    '</div>' +
+                    stepHTML +
+                    '<div class="co-body">' +
+                        (hasImg ? '<img class="co-thumb" src="' + art.primary_image_url + '">' : '<div class="co-thumb"></div>') +
                         '<div>' +
-                            '<div class="order-title">' + (art.title || 'Artwork') + '</div>' +
-                            '<div class="order-detail">by ' + (artist.artist_name || 'Unknown') + '</div>' +
-                            '<div class="order-detail">' + (order.status || 'processing') + '</div>' +
+                            '<div class="co-title">' + (art.title || 'Artwork') + '</div>' +
+                            '<div class="co-artist">by ' + (artist.artist_name || 'Unknown Artist') + '</div>' +
                         '</div>' +
-                        '<div class="order-amounts">' +
-                            '<div class="order-price">$' + orderTotal.toLocaleString() + '</div>' +
-                            '<div class="order-breakdown">Art $' + artPrice.toLocaleString() +
-                                (shipping > 0 ? ' + Ship $' + shipping.toLocaleString() : '') +
-                                (customs > 0 ? ' + Customs $' + customs.toLocaleString() : '') +
-                            '</div>' +
-                        '</div>' +
-                    '</div>';
+                    '</div>' +
+                    '<div class="co-prices">' +
+                        '<div class="co-pv"><div class="co-pv-val">$' + artPrice.toLocaleString() + '</div><div class="co-pv-lbl">Artwork</div></div>' +
+                        '<div class="co-pv"><div class="co-pv-val">$' + shipping.toLocaleString() + '</div><div class="co-pv-lbl">Shipping</div></div>' +
+                        '<div class="co-pv"><div class="co-pv-val">$' + customs.toLocaleString() + '</div><div class="co-pv-lbl">Customs</div></div>' +
+                        '<div class="co-pv"><div class="co-pv-val">$' + (artPrice + shipping + customs).toLocaleString() + '</div><div class="co-pv-lbl">Total</div></div>' +
+                    '</div>' +
+                    actionHTML;
+
+                container.appendChild(card);
             });
 
-            container.innerHTML = html;
-            document.getElementById('stat-spent').textContent = '$' + total.toLocaleString();
+            document.getElementById('stat-spent').textContent = '$' + totalSpent.toLocaleString();
+
+            // Approve & Pay handlers
+            container.querySelectorAll('.approve-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var oid = this.dataset.oid;
+                    if (!confirm('Approve shipping cost and pay for this order?')) return;
+                    this.textContent = 'Processing...'; this.disabled = true;
+                    var { error } = await db.from('orders').update({ status: 'paid', payment_status: 'paid' }).eq('id', oid);
+                    if (error) { alert('Error: ' + error.message); this.textContent = 'Approve & Pay'; this.disabled = false; return; }
+                    showMsg('purchase-message', 'Payment confirmed! The artist will ship your artwork soon.', true);
+                    loadPurchases();
+                });
+            });
+
+            // Cancel handlers
+            container.querySelectorAll('.cancel-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var oid = this.dataset.oid;
+                    if (!confirm('Cancel this order? This cannot be undone.')) return;
+                    await db.from('orders').update({ status: 'cancelled', payment_status: 'refunded' }).eq('id', oid);
+                    loadPurchases();
+                });
+            });
+
+            // Confirm delivery handlers
+            container.querySelectorAll('.confirm-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var oid = this.dataset.oid;
+                    if (!confirm('Confirm you received the artwork? This releases payment to the artist.')) return;
+                    this.textContent = 'Confirming...'; this.disabled = true;
+                    var { error } = await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString() }).eq('id', oid);
+                    if (error) { alert('Error: ' + error.message); this.textContent = 'I Received My Artwork'; this.disabled = false; return; }
+                    showMsg('purchase-message', 'Delivery confirmed! Thank you for your purchase.', true);
+                    loadPurchases();
+                });
+            });
+        }
+
+        function showMsg(id, text, ok) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = text;
+            el.style.display = 'block';
+            el.style.padding = '.75rem';
+            el.style.fontSize = '.85rem';
+            el.style.background = ok ? '#f0fdf4' : '#fef2f2';
+            el.style.color = ok ? '#16a34a' : '#dc2626';
+            el.style.border = '1px solid ' + (ok ? '#bbf7d0' : '#fecaca');
+        }
         }
 
         // Load wishlist
