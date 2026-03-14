@@ -911,34 +911,33 @@
 
         async function toggleWishlist(artworkId, btnEl) {
             if (!collectorId) {
-                alert('No collector ID found. Creating one...');
-                // Try to create collector now
+                // Last resort — try to find/create collector right now
                 var { data: { session } } = await db.auth.getSession();
-                if (!session) { window.location.href = 'collector-login.html'; return; }
-                var meta = session.user.user_metadata || {};
-                var { data: existing } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
-                if (existing) {
-                    collectorId = existing.id;
+                if (!session) { alert('Please sign in first'); window.location.href = 'collector-login.html'; return; }
+                
+                var { data: col } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                if (col) {
+                    collectorId = col.id;
                 } else {
-                    var { data: newCol, error: colErr } = await db.from('collectors').insert({
+                    var { data: nc, error: ncErr } = await db.from('collectors').insert({
                         user_id: session.user.id,
                         email: session.user.email,
-                        first_name: meta.first_name || meta.full_name || '',
-                        last_name: meta.last_name || ''
+                        first_name: ''
                     }).select().single();
-                    if (colErr) { alert('Error creating collector: ' + colErr.message); return; }
-                    if (newCol) collectorId = newCol.id;
+                    if (ncErr) { alert('Cannot create collector profile: ' + ncErr.message); return; }
+                    if (nc) collectorId = nc.id;
                 }
-                if (!collectorId) { alert('Still no collector ID'); return; }
+                if (!collectorId) { alert('Could not set up wishlist. Please try logging in as a collector.'); return; }
             }
+
             var idx = wishlistIds.indexOf(artworkId);
             if (idx >= 0) {
                 var { error } = await db.from('wishlists').delete().eq('collector_id', collectorId).eq('artwork_id', artworkId);
-                if (error) { alert('Remove error: ' + error.message); return; }
+                if (error) { alert('Error removing from wishlist: ' + error.message); return; }
                 wishlistIds.splice(idx, 1);
             } else {
                 var { error } = await db.from('wishlists').insert({ collector_id: collectorId, artwork_id: artworkId });
-                if (error) { alert('Save error: ' + error.message); return; }
+                if (error) { alert('Error saving to wishlist: ' + error.message); return; }
                 wishlistIds.push(artworkId);
             }
             renderGallery();
@@ -1040,39 +1039,46 @@
         // Check if user is logged in, update nav, load wishlist
         async function checkNav() {
             const { data: { session } } = await db.auth.getSession();
-            if (session) {
-                const navRight = document.getElementById('nav-right');
-                const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
+            if (!session) return;
+
+            const navRight = document.getElementById('nav-right');
+            const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
+            
+            if (artist) {
+                navRight.innerHTML = '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>';
+            }
+
+            // Try to find collector profile
+            var { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+            
+            if (!collector) {
+                // Try to create one
+                var meta = session.user.user_metadata || {};
+                var { data: newCol } = await db.from('collectors').insert({
+                    user_id: session.user.id,
+                    email: session.user.email,
+                    first_name: meta.first_name || meta.full_name || '',
+                    last_name: meta.last_name || ''
+                }).select().single();
                 
-                if (artist) {
-                    navRight.innerHTML = '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>';
-                }
-
-                // Always check for collector profile (user can be both artist and collector)
-                const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
-                if (collector) {
-                    collectorId = collector.id;
-                    if (!artist) {
-                        navRight.innerHTML = '<a href="collector-dashboard.html" class="nav-login">My Account</a>';
-                    }
+                if (newCol) {
+                    collector = newCol;
                 } else {
-                    // Auto-create collector profile so wishlist works for everyone
-                    const meta = session.user.user_metadata || {};
-                    const { data: newCol } = await db.from('collectors').insert({
-                        user_id: session.user.id,
-                        email: session.user.email,
-                        first_name: meta.first_name || meta.full_name || '',
-                        last_name: meta.last_name || ''
-                    }).select().single();
-                    if (newCol) collectorId = newCol.id;
+                    // Insert failed, try select again (might have been created by another page)
+                    var { data: retry } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                    if (retry) collector = retry;
                 }
+            }
 
-                // Load wishlist
-                if (collectorId) {
-                    var { data: wishes } = await db.from('wishlists').select('artwork_id').eq('collector_id', collectorId);
-                    wishlistIds = (wishes || []).map(function(w) { return w.artwork_id; });
-                    renderGallery();
+            if (collector) {
+                collectorId = collector.id;
+                if (!artist) {
+                    navRight.innerHTML = '<a href="collector-dashboard.html" class="nav-login">My Account</a>';
                 }
+                // Load wishlist
+                var { data: wishes } = await db.from('wishlists').select('artwork_id').eq('collector_id', collectorId);
+                wishlistIds = (wishes || []).map(function(w) { return w.artwork_id; });
+                renderGallery();
             }
         }
 
