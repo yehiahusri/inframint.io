@@ -910,15 +910,35 @@
         }
 
         async function toggleWishlist(artworkId, btnEl) {
-            if (!collectorId) { window.location.href = 'collector-login.html'; return; }
+            if (!collectorId) {
+                alert('No collector ID found. Creating one...');
+                // Try to create collector now
+                var { data: { session } } = await db.auth.getSession();
+                if (!session) { window.location.href = 'collector-login.html'; return; }
+                var meta = session.user.user_metadata || {};
+                var { data: existing } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                if (existing) {
+                    collectorId = existing.id;
+                } else {
+                    var { data: newCol, error: colErr } = await db.from('collectors').insert({
+                        user_id: session.user.id,
+                        email: session.user.email,
+                        first_name: meta.first_name || meta.full_name || '',
+                        last_name: meta.last_name || ''
+                    }).select().single();
+                    if (colErr) { alert('Error creating collector: ' + colErr.message); return; }
+                    if (newCol) collectorId = newCol.id;
+                }
+                if (!collectorId) { alert('Still no collector ID'); return; }
+            }
             var idx = wishlistIds.indexOf(artworkId);
             if (idx >= 0) {
                 var { error } = await db.from('wishlists').delete().eq('collector_id', collectorId).eq('artwork_id', artworkId);
-                if (error) { console.error('Wishlist remove error:', error); return; }
+                if (error) { alert('Remove error: ' + error.message); return; }
                 wishlistIds.splice(idx, 1);
             } else {
                 var { error } = await db.from('wishlists').insert({ collector_id: collectorId, artwork_id: artworkId });
-                if (error) { console.error('Wishlist add error:', error); return; }
+                if (error) { alert('Save error: ' + error.message); return; }
                 wishlistIds.push(artworkId);
             }
             renderGallery();
