@@ -598,6 +598,27 @@
         }
 
         /* Mobile */
+        .order-card { background: var(--white); border: 1px solid var(--gray-200); padding: 1.25rem; margin: 0 0 1rem; }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 1px solid var(--gray-200); }
+        .order-id { font-size: .8125rem; font-weight: 600; }
+        .order-date { font-size: .75rem; color: var(--gray-400); }
+        .order-body { display: grid; grid-template-columns: 70px 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .order-thumb { width: 70px; height: 70px; object-fit: cover; background: var(--gray-200); }
+        .order-info-title { font-weight: 500; margin-bottom: .15rem; }
+        .order-info-buyer { font-size: .8rem; color: var(--gray-500); }
+        .order-info-addr { font-size: .75rem; color: var(--gray-400); margin-top: .25rem; white-space: pre-line; }
+        .order-prices { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1rem; padding: .75rem; background: var(--gray-100); }
+        .order-price-item { text-align: center; }
+        .order-price-val { font-size: 1rem; font-weight: 600; }
+        .order-price-lbl { font-size: .6rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: .05em; }
+        .order-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+        .order-actions .form-input { flex: 1; min-width: 150px; padding: .5rem; font-size: .8rem; }
+        .order-actions .btn { padding: .5rem 1rem; font-size: .8rem; }
+        .order-status-badge { font-size: .6875rem; font-weight: 600; padding: .2rem .6rem; }
+        .os-pending { background: #fffbeb; color: #f59e0b; }
+        .os-shipped { background: #eff6ff; color: #2563eb; }
+        .os-delivered { background: #f0fdf4; color: var(--success); }
+
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .main { margin-left: 0; }
@@ -677,6 +698,13 @@
                     </svg>
                     Payouts
                 </a>
+                <a class="sidebar-link" data-section="partner-info">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
+                        <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+                    </svg>
+                    Partner
+                </a>
             </div>
         </aside>
 
@@ -734,19 +762,12 @@
             <div class="section" id="section-orders">
                 <div class="page-header">
                     <h1 class="page-title">Orders</h1>
-                    <p class="page-subtitle">Track your sales and shipments</p>
+                    <p class="page-subtitle">Track your sales, upload shipping invoices, and manage deliveries</p>
                 </div>
 
-                <div class="card">
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="#d4d4d4">
-                                <rect x="6" y="4" width="2" height="16"/>
-                                <rect x="6" y="11" width="12" height="2"/>
-                            </svg>
-                        </div>
-                        <p>No orders yet. Once someone purchases your art, it will appear here.</p>
-                    </div>
+                <div class="message" id="orders-message"></div>
+                <div id="orders-container">
+                    <div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">Loading orders...</div>
                 </div>
             </div>
 
@@ -1016,6 +1037,20 @@
         </main>
     </div>
 
+    <!-- Partner Info Section -->
+            <div class="section" id="section-partner-info">
+                <div class="page-header">
+                    <h1 class="page-title">Partner</h1>
+                    <p class="page-subtitle">The partner who referred you to InfraMint</p>
+                </div>
+
+                <div class="message" id="partner-message"></div>
+
+                <div class="card" id="partner-info-card">
+                    <p style="color:var(--gray-400);text-align:center;padding:1rem">Loading...</p>
+                </div>
+            </div>
+
     <!-- Artwork Modal (Add / Edit) -->
     <div class="modal-overlay" id="artwork-modal">
         <div class="modal">
@@ -1181,6 +1216,8 @@
             togglePayoutFields();
             loadArtworks();
             loadVerificationStatus();
+            loadOrders();
+            loadPartnerInfo();
         }
 
         // Navigation
@@ -1563,6 +1600,173 @@
                 statusEl.style.color = '#dc2626';
             }
         });
+
+        // ===== ORDERS / SHIPPING =====
+        async function loadOrders() {
+            var { data: orders } = await db.from('orders')
+                .select('*, artworks(title, primary_image_url)')
+                .eq('artist_id', artistData.id)
+                .order('created_at', { ascending: false });
+
+            var container = document.getElementById('orders-container');
+
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No orders yet. Once someone purchases your art, it will appear here.</div>';
+                document.getElementById('stat-sales').textContent = '$0';
+                return;
+            }
+
+            var totalSales = 0;
+            container.innerHTML = '';
+
+            orders.forEach(function(order) {
+                var art = order.artworks || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var price = Number(order.artwork_price || 0);
+                var shipping = Number(order.shipping_cost || 0);
+                var artistEarning = Math.round(price * 0.65);
+                totalSales += price;
+
+                var statusClass = order.status === 'delivered' ? 'os-delivered' : (order.status === 'shipped' ? 'os-shipped' : 'os-pending');
+                var statusLabel = order.status === 'delivered' ? 'Delivered' : (order.status === 'shipped' ? 'Shipped' : 'Pending');
+
+                var card = document.createElement('div');
+                card.className = 'order-card';
+                card.style.margin = '0 0 1rem';
+
+                var actionsHTML = '';
+                if (order.status === 'pending') {
+                    actionsHTML = '<div class="order-actions">' +
+                        '<input type="number" class="form-input" placeholder="Shipping cost ($)" id="ship-cost-' + order.id + '" step="0.01" min="0">' +
+                        '<input type="text" class="form-input" placeholder="Tracking number" id="ship-track-' + order.id + '">' +
+                        '<button class="btn btn-primary ship-btn" data-oid="' + order.id + '">Confirm Shipping</button>' +
+                        '</div>';
+                } else if (order.status === 'shipped') {
+                    actionsHTML = '<div style="font-size:.8rem;color:var(--gray-500)">Tracking: ' + (order.tracking_number || 'N/A') + ' — Waiting for buyer to confirm delivery</div>';
+                } else {
+                    actionsHTML = '<div style="font-size:.8rem;color:var(--success)">✓ Delivered and confirmed. Your payout: $' + artistEarning.toLocaleString() + '</div>';
+                }
+
+                card.innerHTML =
+                    '<div class="order-header">' +
+                        '<span class="order-id">' + (order.order_number || '#' + order.id.slice(0, 8)) + '</span>' +
+                        '<span class="order-status-badge ' + statusClass + '">' + statusLabel + '</span>' +
+                    '</div>' +
+                    '<div class="order-body">' +
+                        (hasImg ? '<img class="order-thumb" src="' + art.primary_image_url + '">' : '<div class="order-thumb"></div>') +
+                        '<div>' +
+                            '<div class="order-info-title">' + (art.title || 'Artwork') + '</div>' +
+                            '<div class="order-info-buyer">Buyer: ' + (order.collector_name || '—') + '</div>' +
+                            '<div class="order-info-addr">' + (order.shipping_address || '') + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="order-prices">' +
+                        '<div class="order-price-item"><div class="order-price-val">$' + price.toLocaleString() + '</div><div class="order-price-lbl">Art Price</div></div>' +
+                        '<div class="order-price-item"><div class="order-price-val">$' + shipping.toLocaleString() + '</div><div class="order-price-lbl">Shipping</div></div>' +
+                        '<div class="order-price-item"><div class="order-price-val">$' + artistEarning.toLocaleString() + '</div><div class="order-price-lbl">Your Earnings</div></div>' +
+                    '</div>' +
+                    actionsHTML;
+
+                container.appendChild(card);
+            });
+
+            document.getElementById('stat-sales').textContent = '$' + totalSales.toLocaleString();
+
+            // Attach ship button handlers
+            container.querySelectorAll('.ship-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var oid = this.dataset.oid;
+                    var cost = parseFloat(document.getElementById('ship-cost-' + oid).value) || 0;
+                    var track = document.getElementById('ship-track-' + oid).value.trim();
+
+                    if (!cost) { showMessage('orders-message', 'Please enter the shipping cost from your postal quote.', false); return; }
+
+                    this.textContent = 'Saving...';
+                    this.disabled = true;
+
+                    var { error } = await db.from('orders').update({
+                        shipping_cost: cost,
+                        tracking_number: track,
+                        status: 'shipped'
+                    }).eq('id', oid);
+
+                    if (error) {
+                        showMessage('orders-message', 'Error: ' + error.message, false);
+                        this.textContent = 'Confirm Shipping';
+                        this.disabled = false;
+                        return;
+                    }
+
+                    showMessage('orders-message', 'Shipping confirmed! The buyer has been notified.', true);
+                    loadOrders();
+                });
+            });
+        }
+
+        // ===== PARTNER INFO =====
+        async function loadPartnerInfo() {
+            var card = document.getElementById('partner-info-card');
+
+            if (!artistData.referred_by_partner) {
+                card.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)"><p style="margin-bottom:.5rem">No partner referral</p><p style="font-size:.8rem">You signed up directly. No commission is shared with any partner.</p></div>';
+                return;
+            }
+
+            var { data: rel } = await db.from('partner_artists')
+                .select('*, partners(first_name, last_name, company_name, email)')
+                .eq('artist_id', artistData.id)
+                .single();
+
+            if (!rel || !rel.partners) {
+                card.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)">Partner information not available.</div>';
+                return;
+            }
+
+            var p = rel.partners;
+            var name = (p.first_name || '') + ' ' + (p.last_name || '');
+            var active = rel.commission_active;
+            var sales = rel.sales_count || 0;
+
+            var html =
+                '<div style="margin-bottom:1rem">' +
+                    '<div style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.5rem">Referred by</div>' +
+                    '<div style="font-size:1.1rem;font-weight:500">' + name + '</div>' +
+                    (p.company_name ? '<div style="font-size:.85rem;color:var(--gray-500)">' + p.company_name + '</div>' : '') +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;padding:1rem;background:var(--gray-100)">' +
+                    '<div style="text-align:center"><div style="font-size:1.25rem;font-weight:600">' + (active ? '5%' : '0%') + '</div><div style="font-size:.65rem;color:var(--gray-500);text-transform:uppercase">Commission</div></div>' +
+                    '<div style="text-align:center"><div style="font-size:1.25rem;font-weight:600">' + sales + '</div><div style="font-size:.65rem;color:var(--gray-500);text-transform:uppercase">Sales Together</div></div>' +
+                    '<div style="text-align:center"><div style="font-size:1.25rem;font-weight:600">' + (active ? '<span style="color:var(--success)">Active</span>' : '<span style="color:var(--error)">Removed</span>') + '</div><div style="font-size:.65rem;color:var(--gray-500);text-transform:uppercase">Status</div></div>' +
+                '</div>' +
+                '<div style="font-size:.8rem;color:var(--gray-600);line-height:1.7;margin-bottom:1.25rem">' +
+                    'This partner referred you to InfraMint. For the first 3 sales, they automatically receive a 5% commission (gallery gets 30%, you get 65%). After 3 sales, you can choose to continue or remove the partnership.' +
+                '</div>';
+
+            if (active && sales >= 3) {
+                html += '<button class="btn btn-secondary" id="remove-partner-btn" style="border-color:var(--error);color:var(--error)">Remove Partner Commission</button>' +
+                    '<p style="font-size:.7rem;color:var(--gray-400);margin-top:.5rem">Removing means your future sales split becomes 30% gallery / 70% you. The partner will be notified.</p>';
+            } else if (active && sales < 3) {
+                html += '<p style="font-size:.8rem;color:var(--gray-400)">Partner commission is locked for the first 3 sales (' + sales + '/3 completed). You can remove it after.</p>';
+            } else {
+                html += '<p style="font-size:.8rem;color:var(--gray-400)">Partner commission has been removed. Your split is 30% gallery / 70% you.</p>';
+            }
+
+            card.innerHTML = html;
+
+            // Remove partner handler
+            var removeBtn = document.getElementById('remove-partner-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', async function() {
+                    if (!confirm('Remove partner commission? They will be notified and won\'t receive commission on your future sales.')) return;
+                    await db.from('partner_artists').update({
+                        commission_active: false,
+                        artist_removed_at: new Date().toISOString()
+                    }).eq('artist_id', artistData.id);
+                    showMessage('partner-message', 'Partner commission removed.', true);
+                    loadPartnerInfo();
+                });
+            }
+        }
 
         // ===== VERIFICATION =====
         // Upload zones

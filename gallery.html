@@ -453,6 +453,61 @@
             background: var(--gray-800);
         }
 
+        .modal-wish {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8125rem;
+            padding: 0.75rem;
+            background: none;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .modal-wish:hover {
+            border-color: var(--gray-800);
+            color: var(--gray-800);
+        }
+
+        .modal-wish.saved {
+            background: #fef2f2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        .heart-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--gray-400);
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        .heart-btn:hover {
+            color: #dc2626;
+        }
+
+        .heart-btn.saved {
+            color: #dc2626;
+        }
+
+        .gallery-card-image {
+            position: relative;
+        }
+
         /* Footer */
         footer {
             border-top: 1px solid var(--gray-200);
@@ -723,7 +778,8 @@
                 <div class="modal-price" id="modal-price"></div>
                 <div class="modal-description" id="modal-description"></div>
                 <div class="modal-details" id="modal-details"></div>
-                <button class="modal-cta" id="modal-cta">Inquire About This Work</button>
+                <button class="modal-cta" id="modal-cta">Buy Now</button>
+                <button class="modal-wish" id="modal-wish">♡ Save to Wishlist</button>
             </div>
         </div>
     </div>
@@ -753,6 +809,9 @@
 
         let allArtworks = [];
         let currentFilter = 'all';
+        let collectorId = null;
+        let wishlistIds = [];
+        let currentModalArtwork = null;
 
         // Medium display names
         const mediumNames = {
@@ -832,6 +891,7 @@
                                 '<rect x="16" y="5" width="2" height="14"/>' +
                               '</svg>'
                         ) +
+                        (collectorId ? '<button class="heart-btn' + (wishlistIds.indexOf(artwork.id) >= 0 ? ' saved' : '') + '" data-aid="' + artwork.id + '">' + (wishlistIds.indexOf(artwork.id) >= 0 ? '♥' : '♡') + '</button>' : '') +
                     '</div>' +
                     '<div class="gallery-card-info">' +
                         '<div class="gallery-card-title">' + artwork.title + '</div>' +
@@ -849,10 +909,33 @@
 
                 grid.appendChild(card);
             });
+
+            // Heart button handlers
+            grid.querySelectorAll('.heart-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleWishlist(this.dataset.aid, this);
+                });
+            });
+        }
+
+        async function toggleWishlist(artworkId, btnEl) {
+            if (!collectorId) { window.location.href = 'collector-login.html'; return; }
+            var idx = wishlistIds.indexOf(artworkId);
+            if (idx >= 0) {
+                await db.from('wishlists').delete().eq('collector_id', collectorId).eq('artwork_id', artworkId);
+                wishlistIds.splice(idx, 1);
+                if (btnEl) { btnEl.textContent = '♡'; btnEl.classList.remove('saved'); }
+            } else {
+                await db.from('wishlists').insert({ collector_id: collectorId, artwork_id: artworkId });
+                wishlistIds.push(artworkId);
+                if (btnEl) { btnEl.textContent = '♥'; btnEl.classList.add('saved'); }
+            }
         }
 
         // Open artwork detail modal
         function openArtworkModal(artwork, artistName) {
+            currentModalArtwork = artwork;
             const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
             const edTotal = artwork.edition_total || 1;
             const edSold = artwork.edition_sold || 0;
@@ -903,6 +986,17 @@
             }
 
             document.getElementById('artwork-modal').classList.add('active');
+
+            // Wishlist button in modal
+            var wishBtn = document.getElementById('modal-wish');
+            if (collectorId) {
+                wishBtn.style.display = 'block';
+                var inWish = wishlistIds.indexOf(artwork.id) >= 0;
+                wishBtn.textContent = inWish ? '♥ Saved to Wishlist' : '♡ Save to Wishlist';
+                wishBtn.className = 'modal-wish' + (inWish ? ' saved' : '');
+            } else {
+                wishBtn.style.display = 'none';
+            }
         }
 
         // Close modal
@@ -926,21 +1020,35 @@
             }
         });
 
-        // Check if user is logged in, update nav
+        // Modal wishlist button
+        document.getElementById('modal-wish').addEventListener('click', async function() {
+            if (!collectorId) { window.location.href = 'collector-login.html'; return; }
+            if (!currentModalArtwork) return;
+            await toggleWishlist(currentModalArtwork.id, null);
+            var inWish = wishlistIds.indexOf(currentModalArtwork.id) >= 0;
+            this.textContent = inWish ? '♥ Saved to Wishlist' : '♡ Save to Wishlist';
+            this.className = 'modal-wish' + (inWish ? ' saved' : '');
+            renderGallery(); // refresh hearts on cards
+        });
+
+        // Check if user is logged in, update nav, load wishlist
         async function checkNav() {
             const { data: { session } } = await db.auth.getSession();
             if (session) {
                 const navRight = document.getElementById('nav-right');
-                // Check if artist
-                const { data: artist } = await db.from('artists')
-                    .select('id')
-                    .eq('user_id', session.user.id)
-                    .single();
-
+                const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
                 if (artist) {
                     navRight.innerHTML = '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>';
                 } else {
-                    navRight.innerHTML = '<a href="collector-login.html" class="nav-login">My Account</a>';
+                    const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                    if (collector) {
+                        collectorId = collector.id;
+                        navRight.innerHTML = '<a href="collector-dashboard.html" class="nav-login">My Account</a>';
+                        // Load wishlist
+                        var { data: wishes } = await db.from('wishlists').select('artwork_id').eq('collector_id', collectorId);
+                        wishlistIds = (wishes || []).map(function(w) { return w.artwork_id; });
+                        renderGallery(); // re-render with hearts
+                    }
                 }
             }
         }
