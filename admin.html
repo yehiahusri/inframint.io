@@ -273,15 +273,27 @@
                 <div class="sec" id="section-orders">
                     <div class="ph"><h1>Orders</h1><p>All transactions — monitor delivery grace periods</p></div>
                     
-                    <!-- Shipped orders needing attention -->
-                    <div class="card" id="grace-period-card" style="display:none">
-                        <div class="ch"><span class="ct2" style="color:var(--warn)">⚠ Shipped — Awaiting Delivery Confirmation</span></div>
-                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">These orders have been shipped but the collector hasn't confirmed delivery. After 7 days, you can release payment to the artist.</p>
-                        <div id="grace-orders"></div>
+                    <!-- Order list view -->
+                    <div id="orders-list-view">
+                        <!-- Shipped orders needing attention -->
+                        <div class="card" id="grace-period-card" style="display:none">
+                            <div class="ch"><span class="ct2" style="color:var(--warn)">⚠ Shipped — Awaiting Delivery Confirmation</span></div>
+                            <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">These orders have been shipped but the collector hasn't confirmed delivery. After 7 days, you can release payment to the artist.</p>
+                            <div id="grace-orders"></div>
+                        </div>
+
+                        <!-- All orders table -->
+                        <div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Buyer</th><th>Artist</th><th>Art $</th><th>Ship $</th><th>Total</th><th>Status</th><th>Timer</th><th>Actions</th></tr></thead><tbody id="tb-o"></tbody></table></div></div>
                     </div>
 
-                    <!-- All orders table -->
-                    <div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Buyer</th><th>Artist</th><th>Art $</th><th>Ship $</th><th>Total</th><th>Status</th><th>Timer</th><th>Actions</th></tr></thead><tbody id="tb-o"></tbody></table></div></div>
+                    <!-- Order detail view -->
+                    <div id="order-detail-view" style="display:none">
+                        <button style="background:none;border:none;font-family:'Manrope',sans-serif;font-size:.8rem;color:var(--g500);cursor:pointer;padding:.5rem 0;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem" id="order-back-btn">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                            Back to all orders
+                        </button>
+                        <div id="order-detail-content"></div>
+                    </div>
                 </div>
 
                 <!-- Finance -->
@@ -591,7 +603,7 @@
             db.from('collectors').select('*').order('created_at',{ascending:false}),
             db.from('partners').select('*,partner_artists(id)').order('created_at',{ascending:false}),
             db.from('artworks').select('*,artists(artist_name)').order('created_at',{ascending:false}),
-            db.from('orders').select('*,artworks(title,price),collectors(first_name,last_name)').order('created_at',{ascending:false}),
+            db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email)').order('created_at',{ascending:false}),
             db.from('partner_artists').select('*,partners(first_name,last_name),artists(artist_name)').order('created_at',{ascending:false})
         ]);
         allArtists=a.data||[];allCollectors=c.data||[];allPartners=p.data||[];allArtworks=aw.data||[];allOrders=o.data||[];allPArtists=pa.data||[];
@@ -971,9 +983,10 @@
             tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>—</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+(o.status||'pending')+'</span></td><td>'+timerHTML+'</td><td></td>';
             var td=tr.lastChild;
 
-            if(o.status==='pending')mkBtn(td,'View','ab-grey',function(){});
-            if(o.status==='confirmed')mkBtn(td,'View','ab-grey',function(){});
-            if(o.status==='paid')mkBtn(td,'Mark Shipped','ab-list',async function(){await db.from('orders').update({status:'shipped'}).eq('id',o.id);loadAll()});
+            // View button for every order
+            mkBtn(td,'View','ab-grey',function(){openOrderDetail(o,art,col)});
+
+            if(o.status==='paid')mkBtn(td,'Mark Shipped','ab-list',async function(){await db.from('orders').update({status:'shipped',updated_at:new Date().toISOString()}).eq('id',o.id);loadAll()});
             if(o.status==='shipped'){
                 mkBtn(td,'Confirm Delivery','ab-ok',async function(){
                     if(!confirm('Confirm delivery and release payment to artist?'))return;
@@ -1045,6 +1058,167 @@
             graceCard.style.display='none';
         }
     }
+
+    // ===== ORDER DETAIL VIEW =====
+    function openOrderDetail(o, art, col) {
+        document.getElementById('orders-list-view').style.display = 'none';
+        document.getElementById('order-detail-view').style.display = 'block';
+
+        var ap = Number(o.artwork_price || o.art_price || art.price || 0);
+        var sh = Number(o.shipping_cost || 0);
+        var cu = Number(o.customs_cost || 0);
+        var total = ap + sh + cu;
+        var galleryPct = 0.30, partnerPct = 0.05;
+        var galleryEarning = Math.round(ap * galleryPct);
+        var partnerEarning = Math.round(ap * partnerPct);
+        var artistEarning = ap - galleryEarning - partnerEarning;
+        var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+
+        var statusColors = { pending: '#f59e0b', confirmed: '#d97706', paid: '#2563eb', shipped: '#3b82f6', delivered: '#16a34a', cancelled: '#dc2626' };
+        var statusLabels = { pending: 'Pending — Awaiting Artist Quote', confirmed: 'Confirmed — Awaiting Buyer Payment', paid: 'Paid — Ready to Ship', shipped: 'Shipped — In Transit', delivered: 'Delivered ✓', cancelled: 'Cancelled' };
+        var sc = statusColors[o.status] || '#737373';
+        var sl = statusLabels[o.status] || o.status;
+
+        // Steps
+        var steps = ['Ordered', 'Quoted', 'Paid', 'Shipped', 'Delivered'];
+        var stepMap = { pending: 1, confirmed: 2, paid: 3, shipped: 4, delivered: 5, cancelled: 0 };
+        var curStep = stepMap[o.status] || 0;
+        var stepsHTML = '<div style="display:flex;gap:0;margin-bottom:1.5rem">';
+        steps.forEach(function(s, i) {
+            var done = curStep > (i + 1);
+            var active = curStep === (i + 1);
+            stepsHTML += '<div style="flex:1;text-align:center;padding:.5rem 0;font-size:.6rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;background:' + (done ? 'var(--black)' : (active ? sc : 'var(--g200)')) + ';color:' + (done || active ? 'var(--white)' : 'var(--g400)') + '">' + s + '</div>';
+        });
+        stepsHTML += '</div>';
+
+        // Timeline
+        var timelineHTML = '<div style="font-size:.75rem;color:var(--g500);line-height:2">';
+        if (o.created_at) timelineHTML += '<div>📋 Order placed: <strong>' + new Date(o.created_at).toLocaleString() + '</strong></div>';
+        if (o.status !== 'pending' && o.shipping_cost > 0) timelineHTML += '<div>💰 Shipping quoted: <strong>$' + sh.toLocaleString() + '</strong></div>';
+        if (o.payment_status === 'paid') timelineHTML += '<div>✅ Payment received</div>';
+        if (o.tracking_number) timelineHTML += '<div>📦 Tracking: <strong>' + o.tracking_number + '</strong></div>';
+        if (o.updated_at && o.status === 'shipped') timelineHTML += '<div>🚚 Shipped: <strong>' + new Date(o.updated_at).toLocaleString() + '</strong></div>';
+        if (o.buyer_confirmed_at) timelineHTML += '<div>✓ Delivery confirmed: <strong>' + new Date(o.buyer_confirmed_at).toLocaleString() + '</strong></div>';
+        if (o.artist_paid_at) timelineHTML += '<div>💸 Artist paid: <strong>' + new Date(o.artist_paid_at).toLocaleString() + '</strong></div>';
+        timelineHTML += '</div>';
+
+        var content = document.getElementById('order-detail-content');
+        content.innerHTML =
+            // Status banner
+            '<div style="background:' + sc + ';color:white;padding:1rem;margin-bottom:1rem;font-size:.9rem;font-weight:600">' + sl + '</div>' +
+
+            stepsHTML +
+
+            // Two-column layout
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
+
+                // Left — artwork + buyer
+                '<div class="card">' +
+                    '<div class="ch"><span class="ct2">Artwork & Buyer</span></div>' +
+                    '<div style="display:flex;gap:1rem;margin-bottom:1rem">' +
+                        (hasImg ? '<img src="' + art.primary_image_url + '" style="width:100px;height:100px;object-fit:cover">' : '<div style="width:100px;height:100px;background:var(--g200)"></div>') +
+                        '<div>' +
+                            '<div style="font-weight:600;margin-bottom:.2rem">' + (art.title || 'Artwork') + '</div>' +
+                            '<div style="font-size:.8rem;color:var(--g500)">' + (art.medium || '') + '</div>' +
+                            (art.width_cm ? '<div style="font-size:.75rem;color:var(--g400)">' + art.width_cm + ' × ' + art.height_cm + ' cm</div>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="border-top:1px solid var(--g200);padding-top:.75rem">' +
+                        '<div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Buyer</div>' +
+                        '<div style="font-size:.9rem;font-weight:500">' + (o.collector_name || (col.first_name || '') + ' ' + (col.last_name || '') || '—') + '</div>' +
+                        '<div style="font-size:.8rem;color:var(--g500)">' + (o.collector_email || col.email || '—') + '</div>' +
+                    '</div>' +
+                    '<div style="border-top:1px solid var(--g200);padding-top:.75rem;margin-top:.75rem">' +
+                        '<div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Shipping Address</div>' +
+                        '<div style="font-size:.85rem;color:var(--g600);white-space:pre-line;line-height:1.6">' + (o.shipping_address || 'No address provided').replace(/\n/g, '<br>') + '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                // Right — financials
+                '<div>' +
+                    '<div class="card">' +
+                        '<div class="ch"><span class="ct2">Financial Breakdown</span></div>' +
+                        '<div style="font-size:.85rem;line-height:2.2">' +
+                            '<div style="display:flex;justify-content:space-between"><span>Artwork price</span><strong>$' + ap.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Shipping</span><strong>$' + sh.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Customs/duties</span><strong>$' + cu.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between;border-top:2px solid var(--black);padding-top:.5rem;margin-top:.5rem;font-size:1rem"><span>Total</span><strong>$' + total.toLocaleString() + '</strong></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="card">' +
+                        '<div class="ch"><span class="ct2">Commission Split</span></div>' +
+                        '<div style="font-size:.85rem;line-height:2.2">' +
+                            '<div style="display:flex;justify-content:space-between"><span>Artist (65%)</span><strong>$' + artistEarning.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Gallery (30%)</span><strong>$' + galleryEarning.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Partner (5%)</span><strong>$' + partnerEarning.toLocaleString() + '</strong></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+            '</div>' +
+
+            // Timeline
+            '<div class="card" style="margin-top:1rem">' +
+                '<div class="ch"><span class="ct2">Order Timeline</span></div>' +
+                timelineHTML +
+            '</div>' +
+
+            // Actions
+            '<div class="card" style="margin-top:1rem">' +
+                '<div class="ch"><span class="ct2">Actions</span></div>' +
+                '<div id="order-detail-actions" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>' +
+            '</div>';
+
+        // Add action buttons
+        var actDiv = document.getElementById('order-detail-actions');
+        if (o.status === 'paid') {
+            mkBtn(actDiv, 'Mark as Shipped', 'ab-list', async function() {
+                await db.from('orders').update({ status: 'shipped', updated_at: new Date().toISOString() }).eq('id', o.id);
+                document.getElementById('order-detail-view').style.display = 'none';
+                document.getElementById('orders-list-view').style.display = 'block';
+                loadAll();
+            });
+        }
+        if (o.status === 'shipped') {
+            mkBtn(actDiv, 'Confirm Delivery', 'ab-ok', async function() {
+                if (!confirm('Confirm delivery and release payment?')) return;
+                await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString() }).eq('id', o.id);
+                document.getElementById('order-detail-view').style.display = 'none';
+                document.getElementById('orders-list-view').style.display = 'block';
+                loadAll();
+            });
+            mkBtn(actDiv, 'Release Payment (Override)', 'ab-feat', async function() {
+                if (!confirm('Release payment to the artist now? This cannot be undone.')) return;
+                await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString(), artist_paid_at: new Date().toISOString() }).eq('id', o.id);
+                document.getElementById('order-detail-view').style.display = 'none';
+                document.getElementById('orders-list-view').style.display = 'block';
+                loadAll();
+            });
+        }
+        if (o.status !== 'cancelled' && o.status !== 'delivered') {
+            mkBtn(actDiv, 'Cancel Order', 'ab-no', async function() {
+                if (!confirm('Cancel this order?')) return;
+                await db.from('orders').update({ status: 'cancelled', payment_status: 'refunded' }).eq('id', o.id);
+                document.getElementById('order-detail-view').style.display = 'none';
+                document.getElementById('orders-list-view').style.display = 'block';
+                loadAll();
+            });
+        }
+        if (o.collector_email) {
+            mkBtn(actDiv, 'Email Buyer', 'ab-grey', function() {
+                window.open('mailto:' + o.collector_email + '?subject=InfraMint Order ' + (o.order_number || '') + '&body=Hi ' + (o.collector_name || '') + ',%0A%0ARegarding your order ' + (o.order_number || '') + '...%0A%0AInfraMint Team', '_blank');
+            });
+        }
+        if (!actDiv.children.length) {
+            actDiv.innerHTML = '<span style="font-size:.8rem;color:var(--g400)">No actions available — order is complete.</span>';
+        }
+    }
+
+    // Back button
+    document.getElementById('order-back-btn').addEventListener('click', function() {
+        document.getElementById('order-detail-view').style.display = 'none';
+        document.getElementById('orders-list-view').style.display = 'block';
+    });
 
     // ===== COMMISSIONS =====
     function renderCommissions(){
