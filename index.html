@@ -743,7 +743,7 @@
                 Where emerging artists <strong>find their collectors</strong>
             </h1>
             <p class="hero-description">
-                A platform for art students and independent artists to sell work directly. No gallery fees. Real shipping. Fair commissions.
+                A platform where independent artists sell their work directly to collectors. Original art, transparent commissions, and worldwide shipping.
             </p>
             <div class="hero-ctas">
                 <a href="gallery.html" class="hero-cta-primary">Browse Gallery</a>
@@ -837,7 +837,7 @@
                 Ready to sell<br><strong>your work?</strong>
             </h2>
             <p class="cta-description">
-                Join artists from Prague to Dubai. No upfront fees. You only pay when you sell.
+                Join artists from anywhere. No upfront fees. You only pay when you sell.
             </p>
             <a href="artist-signup.html" class="cta-button cta-button-light">Create Artist Account</a>
         </div>
@@ -910,9 +910,12 @@
             artworks = artworks || [];
             var hasReal = artworks.filter(function(a) { return a.primary_image_url && !a.primary_image_url.includes('placehold'); });
 
-            // Hero — first artwork with an image
+            // Hero — random artwork each visit
+            var heroId = null;
             if (hasReal.length > 0) {
-                var hero = hasReal[0];
+                var heroIdx = Math.floor(Math.random() * hasReal.length);
+                var hero = hasReal[heroIdx];
+                heroId = hero.id;
                 document.getElementById('hero-img').src = hero.primary_image_url;
                 document.getElementById('hero-title').textContent = hero.title;
                 document.getElementById('hero-artist').textContent = hero.artists ? hero.artists.artist_name : '';
@@ -921,9 +924,10 @@
                 document.getElementById('hero-image').onclick = function() { window.location.href = 'gallery.html'; };
             }
 
-            // Featured grid — up to 4 artworks
+            // Featured grid — up to 4 artworks, excluding hero
             var grid = document.getElementById('featured-grid');
-            var featured = hasReal.length > 1 ? hasReal.slice(1, 5) : hasReal.slice(0, 4);
+            var featured = hasReal.filter(function(a) { return a.id !== heroId; }).slice(0, 4);
+            if (!featured.length && hasReal.length) featured = hasReal.slice(0, 4);
 
             if (featured.length === 0) {
                 // Fallback if no artworks yet
