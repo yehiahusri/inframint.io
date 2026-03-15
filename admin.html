@@ -225,6 +225,20 @@
                 <!-- Pending Artists -->
                 <div class="sec" id="section-pending-artists">
                     <div class="ph"><h1>Pending Artists</h1><p>Approve or reject artist applications</p></div>
+                    
+                    <div class="card" style="border-left:3px solid var(--warn);margin-bottom:1rem">
+                        <div class="ch"><span class="ct2">🔍 Verification Checklist</span></div>
+                        <div style="font-size:.75rem;color:var(--g600);line-height:1.8">
+                            <strong>Before approving, check for AI-generated images:</strong><br>
+                            ✓ Does the handwritten note look real? (AI can't fake specific handwriting)<br>
+                            ✓ Does the photo have natural lighting and shadows?<br>
+                            ✓ Check hands/fingers in the photo (AI often gets these wrong)<br>
+                            ✓ Is there readable text in the background? (AI mangles text)<br>
+                            ✓ Right-click image → save → upload to <a href="https://illuminarty.ai" target="_blank" style="color:var(--black);font-weight:600">illuminarty.ai</a> for free AI detection<br>
+                            ✓ Check image metadata: <a href="https://exifdata.com" target="_blank" style="color:var(--black);font-weight:600">exifdata.com</a> — real photos have camera data, AI images don't
+                        </div>
+                    </div>
+                    
                     <div class="card"><div class="tw"><table><thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Category</th><th>Verification</th><th>Studio</th><th>Statement</th><th>Actions</th></tr></thead><tbody id="tb-pa"></tbody></table></div></div>
                 </div>
 
@@ -839,6 +853,7 @@
 
     function el(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
     function img(url){return url&&!url.includes('placehold')?'<img src="'+url+'" class="thumb">':'—'}
+    function imgClick(url){return url&&!url.includes('placehold')?'<a href="'+url+'" target="_blank" title="Click to open full size"><img src="'+url+'" class="thumb" style="cursor:zoom-in;border:1px solid var(--g200)"></a>':'—'}
     function trunc(s,n){return s&&s.length>n?s.substring(0,n)+'...':s||'—'}
     function dt(d){return d?new Date(d).toLocaleDateString():'—'}
 
@@ -854,7 +869,7 @@
             var vStatus=a.verification_status||'unverified';
             var vBadge=vStatus==='pending'?'<span class="badge b-pending">Submitted</span>':(vStatus==='verified'?'<span class="badge b-approved">Verified</span>':'<span class="badge b-rejected">Not submitted</span>');
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'<br><span class="te">'+(a.email||'')+'</span></td><td class="te">'+(CAT[a.category]||'—')+'</td><td>'+vBadge+'<br>'+img(a.verification_photo_url)+'</td><td>'+img(a.studio_photo_url)+'</td><td>'+trunc(a.artist_statement,80)+'</td><td></td>';
+            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'<br><span class="te">'+(a.email||'')+'</span></td><td class="te">'+(CAT[a.category]||'—')+'</td><td>'+vBadge+'<br>'+imgClick(a.verification_photo_url)+'</td><td>'+imgClick(a.studio_photo_url)+'</td><td>'+trunc(a.artist_statement,80)+'</td><td></td>';
             var td=tr.lastChild;
             mkBtn(td,'Approve','ab-ok',async function(){
                 await db.from('artists').update({status:'approved',verification_status:'verified'}).eq('id',a.id);

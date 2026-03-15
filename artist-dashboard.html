@@ -727,6 +727,17 @@
                     </p>
                 </div>
 
+                <!-- Verification banner -->
+                <div id="verify-banner" style="display:none;padding:1rem;margin-bottom:1rem;border:2px solid #f59e0b;background:#fffbeb">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <div style="font-weight:600;font-size:.9rem;color:#92400e" id="vb-title">Complete Verification</div>
+                            <div style="font-size:.8rem;color:#a16207;margin-top:.25rem" id="vb-text">You must verify your identity before listing artwork for sale.</div>
+                        </div>
+                        <button class="btn btn-primary" id="vb-btn" style="padding:.5rem 1.25rem;font-size:.8rem;white-space:nowrap">Go to Verification</button>
+                    </div>
+                </div>
+
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
                     <div class="card" style="text-align: center;">
                         <div style="font-size: 2rem; font-weight: 600;" id="stat-artworks">0</div>
@@ -1188,6 +1199,43 @@
                 statusMessage.textContent = 'Your application is being reviewed. We\'ll notify you by email once approved.';
             }
 
+            // Verification banner
+            var vBanner = document.getElementById('verify-banner');
+            var vStatus = artistData.verification_status || 'unverified';
+            if (vStatus === 'verified') {
+                vBanner.style.display = 'none';
+            } else if (vStatus === 'pending') {
+                vBanner.style.display = 'block';
+                vBanner.style.borderColor = '#3b82f6';
+                vBanner.style.background = '#eff6ff';
+                document.getElementById('vb-title').textContent = 'Verification Under Review';
+                document.getElementById('vb-title').style.color = '#1e40af';
+                document.getElementById('vb-text').textContent = 'Your verification is being reviewed. You\'ll be able to list artwork once approved (usually within 48 hours).';
+                document.getElementById('vb-text').style.color = '#2563eb';
+                document.getElementById('vb-btn').textContent = 'View Status';
+            } else if (vStatus === 'rejected') {
+                vBanner.style.display = 'block';
+                vBanner.style.borderColor = '#dc2626';
+                vBanner.style.background = '#fef2f2';
+                document.getElementById('vb-title').textContent = 'Verification Not Approved';
+                document.getElementById('vb-title').style.color = '#991b1b';
+                document.getElementById('vb-text').textContent = 'Please resubmit your verification materials.' + (artistData.verification_notes ? ' Reason: ' + artistData.verification_notes : '');
+                document.getElementById('vb-text').style.color = '#dc2626';
+                document.getElementById('vb-btn').textContent = 'Resubmit';
+            } else {
+                vBanner.style.display = 'block';
+                document.getElementById('vb-title').textContent = 'Complete Verification to Start Selling';
+                document.getElementById('vb-text').textContent = 'You must verify your identity as an artist before listing artwork. It takes 5 minutes.';
+                document.getElementById('vb-btn').textContent = 'Start Verification';
+            }
+
+            document.getElementById('vb-btn').onclick = function() {
+                document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});
+                document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+                document.querySelector('[data-section="verification"]').classList.add('active');
+                document.getElementById('section-verification').classList.add('active');
+            };
+
             // Profile fields
             document.getElementById('profile-artist-name').value = artistData.artist_name || '';
             document.getElementById('profile-category').value = artistData.category || 'painting';
@@ -1313,6 +1361,19 @@
         }
 
         function openAddModal() {
+            // Block if not verified
+            if (artistData.verification_status !== 'verified') {
+                var vMsg = artistData.verification_status === 'pending' 
+                    ? 'Your verification is under review. You can list artwork once approved (usually within 48 hours).'
+                    : 'You must complete artist verification before listing artwork for sale. Go to the Verification tab to get started.';
+                alert(vMsg);
+                // Switch to verification section
+                document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});
+                document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+                document.querySelector('[data-section="verification"]').classList.add('active');
+                document.getElementById('section-verification').classList.add('active');
+                return;
+            }
             editingArtworkId = null;
             document.getElementById('modal-title').textContent = 'Add New Artwork';
             document.getElementById('save-artwork').textContent = 'Add Artwork';
