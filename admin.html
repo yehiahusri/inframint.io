@@ -178,6 +178,7 @@
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Communication</div>
+                <a class="sb-lk" data-s="reminders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Delivery Reminders</a>
                 <a class="sb-lk" data-s="messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</a>
                 <a class="sb-lk" data-s="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Activity Log</a>
             </div>
@@ -390,7 +391,30 @@
                 <!-- Commissions -->
                 <div class="sec" id="section-commissions">
                     <div class="ph"><h1>Partner Commissions</h1><p>Partner-artist relationships and commission tracking</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>Partner</th><th>Artist</th><th>Sales</th><th>Commission</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-comm"></tbody></table></div></div>
+                    <div class="card"><div class="tw"><table><thead><tr><th>Partner</th><th>Artist</th><th>Sales</th><th>Rate</th><th>Total Sales</th><th>Partner Earned</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-comm"></tbody></table></div></div>
+                </div>
+
+                <!-- Delivery Reminders -->
+                <div class="sec" id="section-reminders">
+                    <div class="ph"><h1>Delivery Reminders</h1><p>Track shipped orders and send automated reminders to collectors</p></div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">How It Works</span></div>
+                        <p style="font-size:.8rem;color:var(--g500);line-height:1.8">
+                            When an order is shipped, the collector has <strong>7 days</strong> to confirm delivery. This page shows all shipped orders and lets you send reminder emails. After 7 days, you can release payment to the artist.<br><br>
+                            <strong>Daily routine:</strong> Open this page once a day, click "Send All Pending Reminders" to email every collector who hasn't confirmed yet.
+                        </p>
+                    </div>
+
+                    <div class="card" id="reminder-list">
+                        <div class="ch"><span class="ct2">Orders Awaiting Delivery Confirmation</span><button class="fbtn" id="send-all-reminders" style="padding:.3rem .8rem;font-size:.7rem">📧 Send All Pending Reminders</button></div>
+                        <div id="reminder-orders"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Reminder Log</span></div>
+                        <div id="reminder-log" style="max-height:250px;overflow-y:auto"><div style="text-align:center;padding:1rem;color:var(--g400);font-size:.8rem">No reminders sent yet.</div></div>
+                    </div>
                 </div>
 
                 <!-- Messages -->
@@ -641,6 +665,7 @@
         renderBlog();
         renderTeam();
         renderNotifications();
+        renderReminders();
     }
 
     // ===== FINANCE =====
@@ -1271,16 +1296,48 @@
     // ===== COMMISSIONS =====
     function renderCommissions(){
         var b=document.getElementById('tb-comm');
-        if(!allPArtists.length){b.innerHTML='<tr class="empty"><td colspan="6">No partner-artist relationships</td></tr>';return}
+        
+        // Build commission data from orders + partner_artists
+        var commData=[];
+        
+        // From partner_artists relationships
+        if(allPArtists.length){
+            allPArtists.forEach(function(r){
+                var partner=r.partners||{};var artist=r.artists||{};
+                // Calculate actual earnings from orders
+                var partnerOrders=allOrders.filter(function(o){return o.artist_id===r.artist_id});
+                var totalSales=0,partnerEarned=0;
+                partnerOrders.forEach(function(o){
+                    var ap=Number(o.artwork_price||0);
+                    totalSales+=ap;
+                    if(r.commission_active)partnerEarned+=Math.round(ap*0.05);
+                });
+                commData.push({
+                    partnerName:(partner.first_name||'')+' '+(partner.last_name||''),
+                    artistName:artist.artist_name||'—',
+                    salesCount:r.sales_count||0,
+                    rate:r.commission_rate||5,
+                    active:r.commission_active,
+                    totalSales:totalSales,
+                    earned:partnerEarned,
+                    id:r.id
+                });
+            });
+        }
+        
+        if(!commData.length){
+            b.innerHTML='<tr class="empty"><td colspan="8">No partner-artist commission data yet. Commissions are created when a partner refers an artist.</td></tr>';
+            return;
+        }
+        
         b.innerHTML='';
-        allPArtists.forEach(function(r){
-            var partner=r.partners||{};var artist=r.artists||{};
-            var bc=r.commission_active?'b-active':'b-rejected';
+        commData.forEach(function(c){
+            var bc=c.active?'b-active':'b-rejected';
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">'+(partner.first_name||'')+' '+(partner.last_name||'')+'</td><td>'+(artist.artist_name||'—')+'</td><td>'+(r.sales_count||0)+'</td><td>'+r.commission_rate+'%</td><td><span class="badge '+bc+'">'+(r.commission_active?'Active':'Removed')+'</span></td><td></td>';
+            tr.innerHTML='<td class="tn">'+c.partnerName+'</td><td>'+c.artistName+'</td><td>'+c.salesCount+'</td><td>'+c.rate+'%</td><td>$'+c.totalSales.toLocaleString()+'</td><td>$'+c.earned.toLocaleString()+'</td><td><span class="badge '+bc+'">'+(c.active?'Active':'Removed')+'</span></td><td></td>';
             var td=tr.lastChild;
-            if(r.commission_active)mkBtn(td,'Deactivate','ab-no',async function(){await db.from('partner_artists').update({commission_active:false}).eq('id',r.id);loadAll()});
-            else mkBtn(td,'Reactivate','ab-ok',async function(){await db.from('partner_artists').update({commission_active:true}).eq('id',r.id);loadAll()});
+            if(c.active)mkBtn(td,'Deactivate','ab-no',async function(){await db.from('partner_artists').update({commission_active:false}).eq('id',c.id);loadAll()});
+            else mkBtn(td,'Reactivate','ab-ok',async function(){await db.from('partner_artists').update({commission_active:true}).eq('id',c.id);loadAll()});
             b.appendChild(tr);
         });
     }
@@ -1304,6 +1361,147 @@
         b.textContent=label;
         b.onclick=fn;
         parent.appendChild(b);
+    }
+
+    // ===== DELIVERY REMINDERS =====
+    async function renderReminders() {
+        var container = document.getElementById('reminder-orders');
+        var now = Date.now();
+        var DAY = 86400000;
+
+        // Get shipped orders
+        var shipped = allOrders.filter(function(o) { return o.status === 'shipped'; });
+
+        if (!shipped.length) {
+            container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:.85rem">No shipped orders awaiting confirmation. All clear!</div>';
+            document.getElementById('send-all-reminders').style.display = 'none';
+            loadReminderLog();
+            return;
+        }
+
+        document.getElementById('send-all-reminders').style.display = 'inline-block';
+        container.innerHTML = '';
+
+        shipped.forEach(function(o) {
+            var art = o.artworks || {};
+            var shippedDate = o.updated_at || o.created_at;
+            var days = shippedDate ? Math.floor((now - new Date(shippedDate).getTime()) / DAY) : 0;
+            var overdue = days >= 7;
+            var barPct = Math.min(100, Math.round((days / 7) * 100));
+            var barColor = overdue ? 'var(--err)' : (days >= 5 ? 'var(--warn)' : 'var(--ok)');
+
+            var row = document.createElement('div');
+            row.style.cssText = 'padding:.75rem;border:1px solid var(--g200);margin-bottom:.5rem;background:' + (overdue ? '#fef2f2' : 'var(--g100)');
+            row.innerHTML =
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">' +
+                    '<div style="font-size:.8rem"><strong>' + (o.order_number || '') + '</strong> — ' + (art.title || o.artwork_title || 'Artwork') + '</div>' +
+                    '<div style="font-size:.7rem;font-weight:600;color:' + (overdue ? 'var(--err)' : 'var(--g600)') + '">Day ' + days + ' of 7' + (overdue ? ' — OVERDUE' : '') + '</div>' +
+                '</div>' +
+                '<div style="height:4px;background:var(--g200);margin-bottom:.5rem"><div style="height:100%;width:' + barPct + '%;background:' + barColor + '"></div></div>' +
+                '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                    '<div style="font-size:.75rem;color:var(--g500)">' +
+                        'Collector: <strong>' + (o.collector_name || '—') + '</strong> · ' + (o.collector_email || 'no email') +
+                        (o.tracking_number ? ' · Track: ' + o.tracking_number : '') +
+                    '</div>' +
+                    '<div style="display:flex;gap:.3rem">' +
+                        '<button class="ab ab-grey single-remind" data-email="' + (o.collector_email || '') + '" data-name="' + (o.collector_name || '') + '" data-order="' + (o.order_number || '') + '" data-track="' + (o.tracking_number || '') + '">📧 Remind</button>' +
+                        (overdue ? '<button class="ab ab-feat release-remind" data-oid="' + o.id + '">Release Payment</button>' : '') +
+                    '</div>' +
+                '</div>';
+            container.appendChild(row);
+        });
+
+        // Single remind buttons
+        container.querySelectorAll('.single-remind').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                var email = this.dataset.email;
+                var name = this.dataset.name;
+                var order = this.dataset.order;
+                var track = this.dataset.track;
+                if (!email) { alert('No email on file'); return; }
+                
+                var subject = 'InfraMint — Please confirm your artwork delivery (' + order + ')';
+                var body = 'Hi ' + name + ',\n\n' +
+                    'Your artwork order ' + order + ' has been shipped and should have arrived by now.\n\n' +
+                    (track ? 'Tracking number: ' + track + '\n\n' : '') +
+                    'Please log into your InfraMint account and click "I Received My Artwork" in your purchases to confirm delivery.\n\n' +
+                    'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
+                    'If you have any issues with your order, please reply to this email.\n\n' +
+                    'Thank you,\nInfraMint Team\nhello@inframint.io';
+                
+                window.open('mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+                
+                // Log it
+                await db.from('admin_log').insert({ action: 'reminder_sent', details: 'Delivery reminder sent to ' + name + ' (' + email + ') for order ' + order });
+                this.textContent = '✓ Sent';
+                this.disabled = true;
+                loadReminderLog();
+            });
+        });
+
+        // Release buttons
+        container.querySelectorAll('.release-remind').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                if (!confirm('Release payment to the artist? This marks the order as delivered.')) return;
+                await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString(), artist_paid_at: new Date().toISOString() }).eq('id', this.dataset.oid);
+                await db.from('admin_log').insert({ action: 'payment_released', details: 'Admin released payment (grace period override) for order ' + this.dataset.oid.slice(0, 8) });
+                loadAll();
+            });
+        });
+
+        loadReminderLog();
+    }
+
+    // Send All Reminders
+    document.getElementById('send-all-reminders').addEventListener('click', async function() {
+        var shipped = allOrders.filter(function(o) { return o.status === 'shipped' && o.collector_email; });
+        if (!shipped.length) { alert('No orders need reminders.'); return; }
+
+        var emails = [];
+        var names = [];
+        shipped.forEach(function(o) {
+            if (emails.indexOf(o.collector_email) < 0) {
+                emails.push(o.collector_email);
+                names.push(o.collector_name || 'Collector');
+            }
+        });
+
+        var subject = 'InfraMint — Please confirm your artwork delivery';
+        var body = 'Hi,\n\n' +
+            'You have artwork orders on InfraMint that have been shipped but not yet confirmed as delivered.\n\n' +
+            'Please log into your InfraMint account at inframint.io/collector-dashboard.html and click "I Received My Artwork" for each delivered order.\n\n' +
+            'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
+            'If you have any issues, reply to this email.\n\n' +
+            'Thank you,\nInfraMint Team\nhello@inframint.io';
+
+        window.open('mailto:' + emails.join(',') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+
+        // Log all
+        for (var i = 0; i < emails.length; i++) {
+            await db.from('admin_log').insert({ action: 'reminder_sent', details: 'Batch delivery reminder sent to ' + names[i] + ' (' + emails[i] + ')' });
+        }
+
+        this.textContent = '✓ Opened for ' + emails.length + ' collector' + (emails.length !== 1 ? 's' : '');
+        this.disabled = true;
+        loadReminderLog();
+    });
+
+    // Load reminder log
+    async function loadReminderLog() {
+        var { data } = await db.from('admin_log').select('*').in('action', ['reminder_sent', 'payment_released']).order('created_at', { ascending: false }).limit(20);
+        var logEl = document.getElementById('reminder-log');
+        if (!data || !data.length) {
+            logEl.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--g400);font-size:.8rem">No reminders sent yet. Use the buttons above to send delivery reminders.</div>';
+            return;
+        }
+        logEl.innerHTML = '';
+        data.forEach(function(l) {
+            var icon = l.action === 'payment_released' ? '💰' : '📧';
+            var div = document.createElement('div');
+            div.style.cssText = 'padding:.5rem 0;border-bottom:1px solid var(--g200);font-size:.75rem;display:flex;justify-content:space-between';
+            div.innerHTML = '<div>' + icon + ' ' + (l.details || '') + '</div><div style="color:var(--g400);flex-shrink:0;margin-left:1rem">' + dt(l.created_at) + '</div>';
+            logEl.appendChild(div);
+        });
     }
 
     // ===== NOTIFICATIONS =====
