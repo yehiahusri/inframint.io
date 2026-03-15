@@ -243,19 +243,40 @@
                 <!-- All Artists -->
                 <div class="sec" id="section-artists">
                     <div class="ph"><h1>All Artists</h1><p>Every registered artist</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Category</th><th>Location</th><th>Status</th><th>Works</th><th>Partner</th><th>Actions</th></tr></thead><tbody id="tb-a"></tbody></table></div></div>
+                    <div id="artists-list-view">
+                        <div class="card"><div class="tw"><table><thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Category</th><th>Location</th><th>Status</th><th>Works</th><th>Actions</th></tr></thead><tbody id="tb-a"></tbody></table></div></div>
+                    </div>
+                    <div id="artist-detail-view" style="display:none">
+                        <button style="background:none;border:none;font-family:'Manrope',sans-serif;font-size:.8rem;color:var(--g500);cursor:pointer;padding:.5rem 0;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem" onclick="document.getElementById('artist-detail-view').style.display='none';document.getElementById('artists-list-view').style.display='block'">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back to all artists</button>
+                        <div id="artist-detail-content"></div>
+                    </div>
                 </div>
 
                 <!-- All Collectors -->
                 <div class="sec" id="section-collectors">
                     <div class="ph"><h1>All Collectors</h1><p>Every registered collector</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Country</th><th>City</th><th>Phone</th><th>Joined</th></tr></thead><tbody id="tb-c"></tbody></table></div></div>
+                    <div id="collectors-list-view">
+                        <div class="card"><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Country</th><th>City</th><th>Orders</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="tb-c"></tbody></table></div></div>
+                    </div>
+                    <div id="collector-detail-view" style="display:none">
+                        <button style="background:none;border:none;font-family:'Manrope',sans-serif;font-size:.8rem;color:var(--g500);cursor:pointer;padding:.5rem 0;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem" onclick="document.getElementById('collector-detail-view').style.display='none';document.getElementById('collectors-list-view').style.display='block'">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back to all collectors</button>
+                        <div id="collector-detail-content"></div>
+                    </div>
                 </div>
 
                 <!-- All Partners -->
                 <div class="sec" id="section-partners">
                     <div class="ph"><h1>All Partners</h1><p>Every partner account</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Country</th><th>Status</th><th>Terms</th><th>Artists</th><th>Payout</th><th>Actions</th></tr></thead><tbody id="tb-p"></tbody></table></div></div>
+                    <div id="partners-list-view">
+                        <div class="card"><div class="tw"><table><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Country</th><th>Status</th><th>Artists</th><th>Earned</th><th>Actions</th></tr></thead><tbody id="tb-p"></tbody></table></div></div>
+                    </div>
+                    <div id="partner-detail-view" style="display:none">
+                        <button style="background:none;border:none;font-family:'Manrope',sans-serif;font-size:.8rem;color:var(--g500);cursor:pointer;padding:.5rem 0;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem" onclick="document.getElementById('partner-detail-view').style.display='none';document.getElementById('partners-list-view').style.display='block'">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back to all partners</button>
+                        <div id="partner-detail-content"></div>
+                    </div>
                 </div>
 
                 <!-- All Artworks -->
@@ -625,10 +646,10 @@
         var[a,c,p,aw,o,pa]=await Promise.all([
             db.from('artists').select('*,artworks(id)').order('created_at',{ascending:false}),
             db.from('collectors').select('*').order('created_at',{ascending:false}),
-            db.from('partners').select('*,partner_artists(id)').order('created_at',{ascending:false}),
+            db.from('partners').select('*,partner_artists(id,artist_id,commission_active)').order('created_at',{ascending:false}),
             db.from('artworks').select('*,artists(artist_name)').order('created_at',{ascending:false}),
             db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email)').order('created_at',{ascending:false}),
-            db.from('partner_artists').select('*,partners(first_name,last_name),artists(artist_name)').order('created_at',{ascending:false})
+            db.from('partner_artists').select('*,partners(first_name,last_name),artists(artist_name,id)').order('created_at',{ascending:false})
         ]);
         allArtists=a.data||[];allCollectors=c.data||[];allPartners=p.data||[];allArtworks=aw.data||[];allOrders=o.data||[];allPArtists=pa.data||[];
 
@@ -882,19 +903,19 @@
     // ===== ALL ARTISTS =====
     function renderAllArtists(){
         var b=document.getElementById('tb-a');
-        if(!allArtists.length){b.innerHTML='<tr class="empty"><td colspan="9">No artists</td></tr>';return}
+        if(!allArtists.length){b.innerHTML='<tr class="empty"><td colspan="8">No artists</td></tr>';return}
         b.innerHTML='';
         allArtists.forEach(function(a){
             var works=a.artworks?a.artworks.length:0;
             var bc=a.status==='approved'?'b-approved':(a.status==='rejected'?'b-rejected':'b-pending');
-            var partner=a.referred_by_partner?allPartners.find(function(p){return p.id===a.referred_by_partner}):null;
-            var pname=partner?(partner.first_name||'')+' '+(partner.last_name||''):'—';
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'</td><td class="te">'+(a.email||'—')+'</td><td>'+(CAT[a.category]||'—')+'</td><td>'+(a.city||'')+'</td><td><span class="badge '+bc+'">'+(a.status||'pending')+'</span></td><td>'+works+'</td><td class="te">'+pname+'</td><td></td>';
+            tr.style.cursor='pointer';
+            tr.innerHTML='<td>'+img(a.profile_image_url)+'</td><td class="tn">'+(a.artist_name||a.first_name||'—')+'</td><td class="te">'+(a.email||'—')+'</td><td>'+(CAT[a.category]||'—')+'</td><td>'+(a.city||'')+'</td><td><span class="badge '+bc+'">'+(a.status||'pending')+'</span></td><td>'+works+'</td><td></td>';
             var td=tr.lastChild;
-            if(a.status!=='approved')mkBtn(td,'Approve','ab-ok',function(){setStatus('artists',a.id,'approved')});
-            if(a.status!=='rejected')mkBtn(td,'Reject','ab-no',function(){setStatus('artists',a.id,'rejected')});
-            if(a.status==='rejected')mkBtn(td,'Restore','ab-grey',function(){setStatus('artists',a.id,'pending')});
+            mkBtn(td,'View','ab-grey',function(e){e.stopPropagation();openArtistDetail(a)});
+            if(a.status!=='approved')mkBtn(td,'Approve','ab-ok',function(e){e.stopPropagation();setStatus('artists',a.id,'approved')});
+            if(a.status!=='rejected')mkBtn(td,'Reject','ab-no',function(e){e.stopPropagation();setStatus('artists',a.id,'rejected')});
+            tr.addEventListener('click',function(){openArtistDetail(a)});
             b.appendChild(tr);
         });
     }
@@ -902,29 +923,269 @@
     // ===== COLLECTORS =====
     function renderCollectors(){
         var b=document.getElementById('tb-c');
-        if(!allCollectors.length){b.innerHTML='<tr class="empty"><td colspan="6">No collectors</td></tr>';return}
+        if(!allCollectors.length){b.innerHTML='<tr class="empty"><td colspan="7">No collectors</td></tr>';return}
         b.innerHTML='';
         allCollectors.forEach(function(c){
-            b.innerHTML+='<tr><td class="tn">'+(c.first_name||'')+' '+(c.last_name||'')+'</td><td class="te">'+(c.email||'—')+'</td><td>'+(CN[c.country]||c.country||'—')+'</td><td>'+(c.city||'—')+'</td><td>'+(c.phone||'—')+'</td><td>'+dt(c.created_at)+'</td></tr>';
+            var orderCount=allOrders.filter(function(o){return o.collector_id===c.id}).length;
+            var tr=document.createElement('tr');
+            tr.style.cursor='pointer';
+            tr.innerHTML='<td class="tn">'+(c.first_name||'')+' '+(c.last_name||'')+'</td><td class="te">'+(c.email||'—')+'</td><td>'+(CN[c.country]||c.country||'—')+'</td><td>'+(c.city||'—')+'</td><td>'+orderCount+'</td><td>'+dt(c.created_at)+'</td><td></td>';
+            var td=tr.lastChild;
+            mkBtn(td,'View','ab-grey',function(e){e.stopPropagation();openCollectorDetail(c)});
+            tr.addEventListener('click',function(){openCollectorDetail(c)});
+            b.appendChild(tr);
         });
     }
 
     // ===== PARTNERS =====
     function renderPartners(){
         var b=document.getElementById('tb-p');
-        if(!allPartners.length){b.innerHTML='<tr class="empty"><td colspan="9">No partners</td></tr>';return}
+        if(!allPartners.length){b.innerHTML='<tr class="empty"><td colspan="8">No partners</td></tr>';return}
         b.innerHTML='';
         allPartners.forEach(function(p){
             var ac=p.partner_artists?p.partner_artists.length:0;
             var bc=p.status==='approved'?'b-approved':'b-pending';
-            var pay=p.payout_method==='paypal'?'PayPal':(p.bank_iban?'Bank ****'+p.bank_iban.slice(-4):'Not set');
+            // Calculate earned
+            var earned=0;
+            if(p.partner_artists)p.partner_artists.forEach(function(pa){
+                allOrders.forEach(function(o){if(o.artist_id===pa.artist_id&&pa.commission_active)earned+=Math.round(Number(o.artwork_price||0)*0.05)});
+            });
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">'+(p.first_name||'')+' '+(p.last_name||'')+'</td><td>'+(p.company_name||'—')+'</td><td class="te">'+(p.email||'—')+'</td><td>'+(CN[p.country]||'—')+'</td><td><span class="badge '+bc+'">'+(p.status||'pending')+'</span></td><td>'+(p.terms_accepted?'✓':'—')+'</td><td>'+ac+'</td><td class="te">'+pay+'</td><td></td>';
+            tr.style.cursor='pointer';
+            tr.innerHTML='<td class="tn">'+(p.first_name||'')+' '+(p.last_name||'')+'</td><td>'+(p.company_name||'—')+'</td><td class="te">'+(p.email||'—')+'</td><td>'+(CN[p.country]||'—')+'</td><td><span class="badge '+bc+'">'+(p.status||'pending')+'</span></td><td>'+ac+'</td><td>$'+earned.toLocaleString()+'</td><td></td>';
             var td=tr.lastChild;
-            if(p.status!=='approved')mkBtn(td,'Approve','ab-ok',function(){setStatus('partners',p.id,'approved')});
-            if(p.status!=='rejected')mkBtn(td,'Reject','ab-no',function(){setStatus('partners',p.id,'rejected')});
+            mkBtn(td,'View','ab-grey',function(e){e.stopPropagation();openPartnerDetail(p)});
+            if(p.status!=='approved')mkBtn(td,'Approve','ab-ok',function(e){e.stopPropagation();setStatus('partners',p.id,'approved')});
+            if(p.status!=='rejected')mkBtn(td,'Reject','ab-no',function(e){e.stopPropagation();setStatus('partners',p.id,'rejected')});
+            tr.addEventListener('click',function(){openPartnerDetail(p)});
             b.appendChild(tr);
         });
+    }
+
+    // ===== ARTIST DETAIL =====
+    function openArtistDetail(a) {
+        document.getElementById('artists-list-view').style.display='none';
+        document.getElementById('artist-detail-view').style.display='block';
+
+        var works=allArtworks.filter(function(w){return w.artist_id===a.id});
+        var orders=allOrders.filter(function(o){return o.artist_id===a.id});
+        var totalSales=0,totalEarnings=0;
+        orders.forEach(function(o){var p=Number(o.artwork_price||0);totalSales+=p;totalEarnings+=Math.round(p*0.65)});
+        var partner=a.referred_by_partner?allPartners.find(function(p){return p.id===a.referred_by_partner}):null;
+        var vStatus=a.verification_status||'unverified';
+        var vColors={verified:'var(--ok)',pending:'var(--warn)',rejected:'var(--err)',unverified:'var(--g400)'};
+
+        var c=document.getElementById('artist-detail-content');
+        c.innerHTML=
+            // Header
+            '<div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem">' +
+                (a.profile_image_url?'<img src="'+a.profile_image_url+'" style="width:80px;height:80px;object-fit:cover">':'<div style="width:80px;height:80px;background:var(--g200)"></div>') +
+                '<div>' +
+                    '<div style="font-size:1.25rem;font-weight:600">'+(a.artist_name||a.first_name||'—')+'</div>' +
+                    '<div style="font-size:.85rem;color:var(--g500)">'+(a.email||'')+'</div>' +
+                    '<div style="display:flex;gap:.5rem;margin-top:.5rem">' +
+                        '<span class="badge '+(a.status==='approved'?'b-approved':(a.status==='rejected'?'b-rejected':'b-pending'))+'">'+(a.status||'pending')+'</span>' +
+                        '<span style="font-size:.65rem;padding:.2rem .5rem;background:'+vColors[vStatus]+';color:white">Verification: '+vStatus+'</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
+                // Left — Profile info
+                '<div class="card"><div class="ch"><span class="ct2">Profile</span></div>' +
+                    '<div style="font-size:.8rem;line-height:2.2;color:var(--g600)">' +
+                        '<div><strong>Category:</strong> '+(CAT[a.category]||'—')+'</div>' +
+                        '<div><strong>City:</strong> '+(a.city||'—')+', '+(a.country||'')+'</div>' +
+                        '<div><strong>Instagram:</strong> '+(a.instagram||'—')+'</div>' +
+                        '<div><strong>Website:</strong> '+(a.website||'—')+'</div>' +
+                        '<div><strong>Portfolio:</strong> '+(a.portfolio_url||'—')+'</div>' +
+                        '<div><strong>Partner:</strong> '+(partner?(partner.first_name||'')+' '+(partner.last_name||''):'None')+'</div>' +
+                        '<div><strong>Joined:</strong> '+dt(a.created_at)+'</div>' +
+                    '</div>' +
+                    (a.bio?'<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--g200)"><strong style="font-size:.7rem;color:var(--g400);text-transform:uppercase">Bio</strong><p style="font-size:.8rem;color:var(--g600);line-height:1.7;margin-top:.3rem">'+a.bio+'</p></div>':'') +
+                '</div>' +
+
+                // Right — Stats
+                '<div>' +
+                    '<div class="card"><div class="ch"><span class="ct2">Sales Summary</span></div>' +
+                        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center">' +
+                            '<div><div style="font-size:1.25rem;font-weight:600">'+works.length+'</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Artworks</div></div>' +
+                            '<div><div style="font-size:1.25rem;font-weight:600">'+orders.length+'</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Orders</div></div>' +
+                            '<div><div style="font-size:1.25rem;font-weight:600">$'+totalSales.toLocaleString()+'</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Total Sales</div></div>' +
+                        '</div>' +
+                    '</div>' +
+                    // Verification
+                    (a.verification_photo_url||a.studio_photo_url||a.artist_statement?
+                        '<div class="card"><div class="ch"><span class="ct2">Verification Materials</span></div>' +
+                            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">' +
+                                (a.verification_photo_url?'<div><div style="font-size:.65rem;color:var(--g400);margin-bottom:.3rem">ARTWORK + NOTE</div><img src="'+a.verification_photo_url+'" style="width:100%;aspect-ratio:4/3;object-fit:cover"></div>':'') +
+                                (a.studio_photo_url?'<div><div style="font-size:.65rem;color:var(--g400);margin-bottom:.3rem">STUDIO</div><img src="'+a.studio_photo_url+'" style="width:100%;aspect-ratio:4/3;object-fit:cover"></div>':'') +
+                            '</div>' +
+                            (a.artist_statement?'<div style="margin-top:.75rem"><div style="font-size:.65rem;color:var(--g400);margin-bottom:.3rem">ARTIST STATEMENT</div><p style="font-size:.8rem;color:var(--g600);line-height:1.6">'+a.artist_statement+'</p></div>':'') +
+                        '</div>'
+                    :'') +
+                '</div>' +
+            '</div>' +
+
+            // Artworks
+            '<div class="card" style="margin-top:1rem"><div class="ch"><span class="ct2">Artworks ('+works.length+')</span></div>' +
+                (works.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.5rem">'+works.map(function(w){return '<div><img src="'+(w.primary_image_url||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;background:var(--g200)"><div style="font-size:.7rem;font-weight:500;margin-top:.3rem">'+w.title+'</div><div style="font-size:.65rem;color:var(--g400)">$'+Number(w.price||0).toLocaleString()+' · '+w.status+'</div></div>'}).join('')+'</div>':'<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No artworks listed yet.</div>') +
+            '</div>' +
+
+            // Orders
+            '<div class="card" style="margin-top:1rem"><div class="ch"><span class="ct2">Order History ('+orders.length+')</span></div>' +
+                (orders.length?'<div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Price</th><th>Shipping</th><th>Status</th><th>Date</th></tr></thead><tbody>'+
+                orders.map(function(o){var art=o.artworks||{};return '<tr><td>'+(o.order_number||'—')+'</td><td>'+trunc(o.artwork_title||art.title||'—',25)+'</td><td>$'+Number(o.artwork_price||0).toLocaleString()+'</td><td>$'+Number(o.shipping_cost||0).toLocaleString()+'</td><td><span class="badge b-'+(o.status==='delivered'?'approved':(o.status==='shipped'?'shipped':'pending'))+'">'+(o.status||'—')+'</span></td><td>'+dt(o.created_at)+'</td></tr>'}).join('')+
+                '</tbody></table></div>':'<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No orders yet.</div>') +
+            '</div>';
+    }
+
+    // ===== COLLECTOR DETAIL =====
+    function openCollectorDetail(c) {
+        document.getElementById('collectors-list-view').style.display='none';
+        document.getElementById('collector-detail-view').style.display='block';
+
+        var orders=allOrders.filter(function(o){return o.collector_id===c.id});
+        var totalSpent=0;
+        orders.forEach(function(o){totalSpent+=Number(o.artwork_price||0)+Number(o.shipping_cost||0)+Number(o.customs_cost||0)});
+
+        var d=document.getElementById('collector-detail-content');
+        d.innerHTML=
+            '<div style="margin-bottom:1.5rem">' +
+                '<div style="font-size:1.25rem;font-weight:600">'+(c.first_name||'')+' '+(c.last_name||'')+'</div>' +
+                '<div style="font-size:.85rem;color:var(--g500)">'+(c.email||'')+'</div>' +
+                '<div style="font-size:.8rem;color:var(--g400);margin-top:.25rem">Joined '+dt(c.created_at)+'</div>' +
+            '</div>' +
+
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
+                '<div class="card"><div class="ch"><span class="ct2">Profile</span></div>' +
+                    '<div style="font-size:.8rem;line-height:2.2;color:var(--g600)">' +
+                        '<div><strong>Phone:</strong> '+(c.phone||'—')+'</div>' +
+                        '<div><strong>City:</strong> '+(c.city||'—')+'</div>' +
+                        '<div><strong>Country:</strong> '+(CN[c.country]||c.country||'—')+'</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="card"><div class="ch"><span class="ct2">Shipping Address</span></div>' +
+                    '<div style="font-size:.8rem;line-height:1.8;color:var(--g600)">' +
+                        (c.address_line1||'No address on file')+'<br>' +
+                        (c.address_line2?c.address_line2+'<br>':'') +
+                        (c.city||'')+' '+(c.postal_code||'')+'<br>' +
+                        (CN[c.country]||c.country||'') +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">' +
+                '<div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:600">'+orders.length+'</div><div style="font-size:.65rem;color:var(--g400);text-transform:uppercase">Orders</div></div>' +
+                '<div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:600">$'+totalSpent.toLocaleString()+'</div><div style="font-size:.65rem;color:var(--g400);text-transform:uppercase">Total Spent</div></div>' +
+                '<div class="card" style="text-align:center"><div style="font-size:1.5rem;font-weight:600">'+orders.filter(function(o){return o.status==='delivered'}).length+'</div><div style="font-size:.65rem;color:var(--g400);text-transform:uppercase">Delivered</div></div>' +
+            '</div>' +
+
+            '<div class="card" style="margin-top:1rem"><div class="ch"><span class="ct2">Order History ('+orders.length+')</span></div>' +
+                (orders.length?'<div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Art $</th><th>Ship $</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>'+
+                orders.map(function(o){var ap=Number(o.artwork_price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);return '<tr><td>'+(o.order_number||'—')+'</td><td>'+trunc(o.artwork_title||'—',25)+'</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge b-'+(o.status==='delivered'?'approved':(o.status==='shipped'?'shipped':'pending'))+'">'+(o.status||'—')+'</span></td><td>'+dt(o.created_at)+'</td></tr>'}).join('')+
+                '</tbody></table></div>':'<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No purchases yet.</div>') +
+            '</div>' +
+
+            '<div style="margin-top:1rem"><button class="ab ab-grey" onclick="window.open(\'mailto:'+(c.email||'')+'\')">📧 Email this collector</button></div>';
+    }
+
+    // ===== PARTNER DETAIL =====
+    function openPartnerDetail(p) {
+        document.getElementById('partners-list-view').style.display='none';
+        document.getElementById('partner-detail-view').style.display='block';
+
+        // Get referred artists
+        var referredArtists=allArtists.filter(function(a){return a.referred_by_partner===p.id});
+        var paRelations=allPArtists.filter(function(r){return r.partner_id===p.id});
+
+        // Calculate per-artist earnings
+        var artistEarnings=[];
+        referredArtists.forEach(function(a){
+            var rel=paRelations.find(function(r){return r.artist_id===a.id});
+            var artistOrders=allOrders.filter(function(o){return o.artist_id===a.id});
+            var totalSales=0,partnerEarned=0;
+            var orderDetails=[];
+            artistOrders.forEach(function(o){
+                var ap=Number(o.artwork_price||0);
+                totalSales+=ap;
+                var comm=rel&&rel.commission_active?Math.round(ap*0.05):0;
+                partnerEarned+=comm;
+                orderDetails.push({order:o,artPrice:ap,commission:comm});
+            });
+            artistEarnings.push({artist:a,rel:rel,totalSales:totalSales,earned:partnerEarned,orders:orderDetails});
+        });
+
+        var totalEarned=0;
+        artistEarnings.forEach(function(ae){totalEarned+=ae.earned});
+        var pay=p.payout_method==='paypal'?'PayPal: '+(p.paypal_email||'—'):(p.bank_iban?'Bank IBAN: ****'+p.bank_iban.slice(-4):'Not set');
+
+        var d=document.getElementById('partner-detail-content');
+        d.innerHTML=
+            '<div style="margin-bottom:1.5rem">' +
+                '<div style="font-size:1.25rem;font-weight:600">'+(p.first_name||'')+' '+(p.last_name||'')+'</div>' +
+                (p.company_name?'<div style="font-size:.9rem;color:var(--g600)">'+p.company_name+'</div>':'') +
+                '<div style="font-size:.85rem;color:var(--g500)">'+(p.email||'')+'</div>' +
+                '<div style="display:flex;gap:.5rem;margin-top:.5rem">' +
+                    '<span class="badge '+(p.status==='approved'?'b-approved':'b-pending')+'">'+(p.status||'pending')+'</span>' +
+                    (p.terms_accepted?'<span class="badge b-active">Terms Accepted</span>':'<span class="badge b-rejected">Terms Not Accepted</span>') +
+                '</div>' +
+            '</div>' +
+
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">' +
+                '<div class="card"><div class="ch"><span class="ct2">Profile</span></div>' +
+                    '<div style="font-size:.8rem;line-height:2.2;color:var(--g600)">' +
+                        '<div><strong>Country:</strong> '+(CN[p.country]||p.country||'—')+'</div>' +
+                        '<div><strong>Phone:</strong> '+(p.phone||'—')+'</div>' +
+                        '<div><strong>Payout:</strong> '+pay+'</div>' +
+                        '<div><strong>Joined:</strong> '+dt(p.created_at)+'</div>' +
+                    '</div>' +
+                    (p.bio?'<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--g200);font-size:.8rem;color:var(--g600);line-height:1.6">'+p.bio+'</div>':'') +
+                '</div>' +
+                '<div class="card" style="text-align:center"><div class="ch"><span class="ct2">Earnings Summary</span></div>' +
+                    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem">' +
+                        '<div><div style="font-size:1.5rem;font-weight:600">'+referredArtists.length+'</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Artists</div></div>' +
+                        '<div><div style="font-size:1.5rem;font-weight:600;color:var(--ok)">$'+totalEarned.toLocaleString()+'</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Total Earned</div></div>' +
+                        '<div><div style="font-size:1.5rem;font-weight:600">5%</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">Rate</div></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // Per-artist breakdown
+            '<div class="card" style="margin-top:1rem"><div class="ch"><span class="ct2">Commission by Artist</span></div>';
+
+        if(!artistEarnings.length){
+            d.innerHTML+='<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No referred artists yet.</div></div>';
+        }else{
+            var aeHTML='';
+            artistEarnings.forEach(function(ae){
+                var a=ae.artist;
+                var active=ae.rel?ae.rel.commission_active:false;
+                aeHTML+='<div style="padding:.75rem;border:1px solid var(--g200);margin-bottom:.5rem">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">' +
+                        '<div style="font-size:.85rem;font-weight:500">'+(a.artist_name||a.first_name||'—')+'</div>' +
+                        '<div style="display:flex;gap:.5rem;align-items:center">' +
+                            '<span class="badge '+(active?'b-active':'b-rejected')+'">'+(active?'Active':'Removed')+'</span>' +
+                            '<span style="font-size:.85rem;font-weight:600;color:var(--ok)">$'+ae.earned.toLocaleString()+'</span>' +
+                        '</div>' +
+                    '</div>';
+
+                if(ae.orders.length){
+                    aeHTML+='<div class="tw"><table style="font-size:.75rem"><thead><tr><th>Order</th><th>Artwork</th><th>Sale Price</th><th>Partner 5%</th><th>Status</th><th>Date</th></tr></thead><tbody>';
+                    ae.orders.forEach(function(od){
+                        var o=od.order;
+                        aeHTML+='<tr><td>'+(o.order_number||'—')+'</td><td>'+trunc(o.artwork_title||'—',20)+'</td><td>$'+od.artPrice.toLocaleString()+'</td><td style="color:var(--ok);font-weight:600">$'+od.commission.toLocaleString()+'</td><td>'+(o.status||'—')+'</td><td>'+dt(o.created_at)+'</td></tr>';
+                    });
+                    aeHTML+='</tbody></table></div>';
+                }else{
+                    aeHTML+='<div style="font-size:.75rem;color:var(--g400)">No orders yet for this artist.</div>';
+                }
+                aeHTML+='</div>';
+            });
+            d.innerHTML+=aeHTML+'</div>';
+        }
+
+        d.innerHTML+='<div style="margin-top:1rem"><button class="ab ab-grey" onclick="window.open(\'mailto:'+(p.email||'')+'\')">📧 Email this partner</button></div>';
     }
 
     // ===== ALL ARTWORKS =====
@@ -1296,15 +1557,12 @@
     // ===== COMMISSIONS =====
     function renderCommissions(){
         var b=document.getElementById('tb-comm');
-        
-        // Build commission data from orders + partner_artists
         var commData=[];
         
-        // From partner_artists relationships
+        // From partner_artists table
         if(allPArtists.length){
             allPArtists.forEach(function(r){
                 var partner=r.partners||{};var artist=r.artists||{};
-                // Calculate actual earnings from orders
                 var partnerOrders=allOrders.filter(function(o){return o.artist_id===r.artist_id});
                 var totalSales=0,partnerEarned=0;
                 partnerOrders.forEach(function(o){
@@ -1312,36 +1570,37 @@
                     totalSales+=ap;
                     if(r.commission_active)partnerEarned+=Math.round(ap*0.05);
                 });
-                commData.push({
-                    partnerName:(partner.first_name||'')+' '+(partner.last_name||''),
-                    artistName:artist.artist_name||'—',
-                    salesCount:r.sales_count||0,
-                    rate:r.commission_rate||5,
-                    active:r.commission_active,
-                    totalSales:totalSales,
-                    earned:partnerEarned,
-                    id:r.id
-                });
+                commData.push({partnerName:(partner.first_name||'')+' '+(partner.last_name||''),partnerId:r.partner_id,artistName:artist.artist_name||'—',artistId:r.artist_id,salesCount:partnerOrders.length,rate:r.commission_rate||5,active:r.commission_active,totalSales:totalSales,earned:partnerEarned,id:r.id});
             });
         }
         
-        if(!commData.length){
-            b.innerHTML='<tr class="empty"><td colspan="8">No partner-artist commission data yet. Commissions are created when a partner refers an artist.</td></tr>';
-            return;
-        }
+        // Also from artists with referred_by_partner
+        allArtists.forEach(function(a){
+            if(!a.referred_by_partner)return;
+            var already=commData.find(function(c){return c.artistId===a.id});
+            if(already)return;
+            var partner=allPartners.find(function(p){return p.id===a.referred_by_partner});
+            if(!partner)return;
+            var artistOrders=allOrders.filter(function(o){return o.artist_id===a.id});
+            var totalSales=0,partnerEarned=0;
+            artistOrders.forEach(function(o){var ap=Number(o.artwork_price||0);totalSales+=ap;partnerEarned+=Math.round(ap*0.05)});
+            commData.push({partnerName:(partner.first_name||'')+' '+(partner.last_name||''),partnerId:partner.id,artistName:a.artist_name||a.first_name||'—',artistId:a.id,salesCount:artistOrders.length,rate:5,active:true,totalSales:totalSales,earned:partnerEarned,id:null});
+        });
         
+        if(!commData.length){b.innerHTML='<tr class="empty"><td colspan="8">No commission data. Commissions appear when a partner refers an artist who makes sales.</td></tr>';return}
         b.innerHTML='';
         commData.forEach(function(c){
             var bc=c.active?'b-active':'b-rejected';
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">'+c.partnerName+'</td><td>'+c.artistName+'</td><td>'+c.salesCount+'</td><td>'+c.rate+'%</td><td>$'+c.totalSales.toLocaleString()+'</td><td>$'+c.earned.toLocaleString()+'</td><td><span class="badge '+bc+'">'+(c.active?'Active':'Removed')+'</span></td><td></td>';
+            tr.style.cursor='pointer';
+            tr.innerHTML='<td class="tn">'+c.partnerName+'</td><td>'+c.artistName+'</td><td>'+c.salesCount+'</td><td>'+c.rate+'%</td><td>$'+c.totalSales.toLocaleString()+'</td><td style="color:var(--ok);font-weight:600">$'+c.earned.toLocaleString()+'</td><td><span class="badge '+bc+'">'+(c.active?'Active':'Removed')+'</span></td><td></td>';
             var td=tr.lastChild;
-            if(c.active)mkBtn(td,'Deactivate','ab-no',async function(){await db.from('partner_artists').update({commission_active:false}).eq('id',c.id);loadAll()});
-            else mkBtn(td,'Reactivate','ab-ok',async function(){await db.from('partner_artists').update({commission_active:true}).eq('id',c.id);loadAll()});
+            mkBtn(td,'View','ab-grey',function(e){e.stopPropagation();var p=allPartners.find(function(pp){return pp.id===c.partnerId});if(p){document.querySelectorAll('.sb-lk').forEach(function(l){l.classList.remove('active')});document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelector('[data-s="partners"]').classList.add('active');document.getElementById('section-partners').classList.add('active');openPartnerDetail(p)}});
+            if(c.id&&c.active)mkBtn(td,'Deactivate','ab-no',async function(e){e.stopPropagation();await db.from('partner_artists').update({commission_active:false}).eq('id',c.id);loadAll()});
+            if(c.id&&!c.active)mkBtn(td,'Reactivate','ab-ok',async function(e){e.stopPropagation();await db.from('partner_artists').update({commission_active:true}).eq('id',c.id);loadAll()});
             b.appendChild(tr);
         });
     }
-
     // ===== ACTIVITY LOG =====
     async function renderActivity(){
         var{data}=await db.from('admin_log').select('*').order('created_at',{ascending:false}).limit(50);
