@@ -993,7 +993,7 @@
         var c=document.getElementById('artist-detail-content');
         c.innerHTML=
             // Header
-            '<div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem">' +
+            '<div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;padding:0 .75rem">' +
                 (a.profile_image_url?'<img src="'+a.profile_image_url+'" style="width:80px;height:80px;object-fit:cover">':'<div style="width:80px;height:80px;background:var(--g200)"></div>') +
                 '<div>' +
                     '<div style="font-size:1.25rem;font-weight:600">'+(a.artist_name||a.first_name||'—')+'</div>' +
@@ -1066,7 +1066,7 @@
 
         var d=document.getElementById('collector-detail-content');
         d.innerHTML=
-            '<div style="margin-bottom:1.5rem">' +
+            '<div style="margin-bottom:1.5rem;padding:0 .75rem">' +
                 '<div style="font-size:1.25rem;font-weight:600">'+(c.first_name||'')+' '+(c.last_name||'')+'</div>' +
                 '<div style="font-size:.85rem;color:var(--g500)">'+(c.email||'')+'</div>' +
                 '<div style="font-size:.8rem;color:var(--g400);margin-top:.25rem">Joined '+dt(c.created_at)+'</div>' +
@@ -1137,7 +1137,7 @@
 
         var d=document.getElementById('partner-detail-content');
         d.innerHTML=
-            '<div style="margin-bottom:1.5rem">' +
+            '<div style="margin-bottom:1.5rem;padding:0 .75rem">' +
                 '<div style="font-size:1.25rem;font-weight:600">'+(p.first_name||'')+' '+(p.last_name||'')+'</div>' +
                 (p.company_name?'<div style="font-size:.9rem;color:var(--g600)">'+p.company_name+'</div>':'') +
                 '<div style="font-size:.85rem;color:var(--g500)">'+(p.email||'')+'</div>' +
