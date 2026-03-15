@@ -271,8 +271,17 @@
 
                 <!-- Orders -->
                 <div class="sec" id="section-orders">
-                    <div class="ph"><h1>Orders</h1><p>All transactions</p></div>
-                    <div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Buyer</th><th>Artist</th><th>Art $</th><th>Ship $</th><th>Customs $</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-o"></tbody></table></div></div>
+                    <div class="ph"><h1>Orders</h1><p>All transactions — monitor delivery grace periods</p></div>
+                    
+                    <!-- Shipped orders needing attention -->
+                    <div class="card" id="grace-period-card" style="display:none">
+                        <div class="ch"><span class="ct2" style="color:var(--warn)">⚠ Shipped — Awaiting Delivery Confirmation</span></div>
+                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">These orders have been shipped but the collector hasn't confirmed delivery. After 7 days, you can release payment to the artist.</p>
+                        <div id="grace-orders"></div>
+                    </div>
+
+                    <!-- All orders table -->
+                    <div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Artwork</th><th>Buyer</th><th>Artist</th><th>Art $</th><th>Ship $</th><th>Total</th><th>Status</th><th>Timer</th><th>Actions</th></tr></thead><tbody id="tb-o"></tbody></table></div></div>
                 </div>
 
                 <!-- Finance -->
@@ -921,19 +930,120 @@
     // ===== ORDERS =====
     function renderOrders(){
         var b=document.getElementById('tb-o');
-        if(!allOrders.length){b.innerHTML='<tr class="empty"><td colspan="10">No orders yet</td></tr>';return}
+        if(!allOrders.length){b.innerHTML='<tr class="empty"><td colspan="10">No orders yet</td></tr>';document.getElementById('grace-period-card').style.display='none';return}
         b.innerHTML='';
+
+        var graceOrders=[];
+        var now=Date.now();
+        var DAY=86400000;
+        var GRACE_DAYS=7;
+
         allOrders.forEach(function(o,i){
             var art=o.artworks||{};var col=o.collectors||{};
-            var ap=Number(o.art_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
-            var bc=o.status==='delivered'?'b-delivered':(o.status==='shipped'?'b-shipped':'b-processing');
+            var ap=Number(o.artwork_price||o.art_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
+
+            // Calculate days since shipped
+            var daysSinceShipped='—';
+            var graceExpired=false;
+            if(o.status==='shipped'&&o.updated_at){
+                var shipped=new Date(o.updated_at).getTime();
+                var diff=Math.floor((now-shipped)/DAY);
+                daysSinceShipped=diff+' day'+(diff!==1?'s':'');
+                if(diff>=GRACE_DAYS)graceExpired=true;
+                graceOrders.push({order:o,art:art,col:col,days:diff,expired:graceExpired,price:ap});
+            }
+
+            var statusColors={pending:'b-pending',confirmed:'b-pending',paid:'b-active',shipped:'b-shipped',delivered:'b-approved',cancelled:'b-rejected'};
+            var bc=statusColors[o.status]||'b-pending';
+            var timerHTML='—';
+            if(o.status==='shipped'){
+                if(graceExpired){
+                    timerHTML='<span style="color:var(--err);font-weight:600;font-size:.7rem">'+daysSinceShipped+' — OVERDUE</span>';
+                }else{
+                    var remaining=GRACE_DAYS-Math.floor((now-new Date(o.updated_at).getTime())/DAY);
+                    timerHTML='<span style="color:var(--warn);font-size:.7rem">'+remaining+' day'+(remaining!==1?'s':'')+' left</span>';
+                }
+            }else if(o.status==='delivered'){
+                timerHTML='<span style="color:var(--ok);font-size:.7rem">✓ Done</span>';
+            }
+
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">#'+(i+1)+'</td><td>'+(art.title||'—')+'</td><td>'+(col.first_name||'')+' '+(col.last_name||'')+'</td><td>—</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+cu.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+(o.status||'processing')+'</span></td><td></td>';
+            tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>—</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+(o.status||'pending')+'</span></td><td>'+timerHTML+'</td><td></td>';
             var td=tr.lastChild;
-            if(o.status!=='shipped')mkBtn(td,'Shipped','ab-list',async function(){await db.from('orders').update({status:'shipped'}).eq('id',o.id);loadAll()});
-            if(o.status!=='delivered')mkBtn(td,'Delivered','ab-ok',async function(){await db.from('orders').update({status:'delivered'}).eq('id',o.id);loadAll()});
+
+            if(o.status==='pending')mkBtn(td,'View','ab-grey',function(){});
+            if(o.status==='confirmed')mkBtn(td,'View','ab-grey',function(){});
+            if(o.status==='paid')mkBtn(td,'Mark Shipped','ab-list',async function(){await db.from('orders').update({status:'shipped'}).eq('id',o.id);loadAll()});
+            if(o.status==='shipped'){
+                mkBtn(td,'Confirm Delivery','ab-ok',async function(){
+                    if(!confirm('Confirm delivery and release payment to artist?'))return;
+                    await db.from('orders').update({status:'delivered',buyer_confirmed_receipt:true,buyer_confirmed_at:new Date().toISOString()}).eq('id',o.id);
+                    loadAll();
+                });
+                if(graceExpired){
+                    mkBtn(td,'Release Payment','ab-feat',async function(){
+                        if(!confirm('Grace period expired. Release payment to the artist? This cannot be undone.'))return;
+                        await db.from('orders').update({status:'delivered',buyer_confirmed_receipt:true,buyer_confirmed_at:new Date().toISOString(),artist_paid_at:new Date().toISOString()}).eq('id',o.id);
+                        loadAll();
+                    });
+                }
+            }
+            if(o.status!=='cancelled'&&o.status!=='delivered')mkBtn(td,'Cancel','ab-no',async function(){
+                if(!confirm('Cancel this order?'))return;
+                await db.from('orders').update({status:'cancelled',payment_status:'refunded'}).eq('id',o.id);
+                loadAll();
+            });
             b.appendChild(tr);
         });
+
+        // Grace period alert cards
+        var graceCard=document.getElementById('grace-period-card');
+        var graceContainer=document.getElementById('grace-orders');
+        if(graceOrders.length){
+            graceCard.style.display='block';
+            graceContainer.innerHTML='';
+            graceOrders.forEach(function(g){
+                var o=g.order;var barPct=Math.min(100,Math.round((g.days/GRACE_DAYS)*100));
+                var barColor=g.expired?'var(--err)':(g.days>=5?'var(--warn)':'var(--ok)');
+                var div=document.createElement('div');
+                div.style.cssText='padding:.75rem;border:1px solid var(--g200);margin-bottom:.5rem;background:var(--g100)';
+                div.innerHTML=
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">' +
+                        '<div><strong style="font-size:.8rem">'+(o.order_number||'')+'</strong> — '+(g.art.title||'Artwork')+' → '+(o.collector_name||'Unknown')+'</div>' +
+                        '<div style="font-size:.75rem;font-weight:600;color:'+(g.expired?'var(--err)':'var(--g600)')+'">Day '+g.days+' of '+GRACE_DAYS+'</div>' +
+                    '</div>' +
+                    '<div style="height:6px;background:var(--g200);margin-bottom:.5rem"><div style="height:100%;width:'+barPct+'%;background:'+barColor+';transition:width .3s"></div></div>' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                        '<div style="font-size:.7rem;color:var(--g500)">Collector: '+(o.collector_email||'—')+' · Art: $'+g.price.toLocaleString()+'</div>' +
+                        '<div style="display:flex;gap:.3rem">' +
+                            (g.expired?'<button class="ab ab-feat release-btn" data-oid="'+o.id+'">Release Payment</button>':'') +
+                            '<button class="ab ab-grey remind-btn" data-email="'+(o.collector_email||'')+'">Send Reminder</button>' +
+                        '</div>' +
+                    '</div>';
+                graceContainer.appendChild(div);
+            });
+
+            // Release payment handlers
+            graceContainer.querySelectorAll('.release-btn').forEach(function(btn){
+                btn.addEventListener('click',async function(){
+                    if(!confirm('Release payment to the artist? This marks the order as delivered.'))return;
+                    await db.from('orders').update({status:'delivered',buyer_confirmed_receipt:true,buyer_confirmed_at:new Date().toISOString(),artist_paid_at:new Date().toISOString()}).eq('id',this.dataset.oid);
+                    loadAll();
+                });
+            });
+
+            // Reminder handlers
+            graceContainer.querySelectorAll('.remind-btn').forEach(function(btn){
+                btn.addEventListener('click',function(){
+                    var email=this.dataset.email;
+                    if(!email){alert('No email on file for this collector');return}
+                    window.open('mailto:'+email+'?subject=InfraMint — Please confirm your artwork delivery&body=Hi,%0A%0AWe noticed your artwork order has been delivered but hasn\'t been confirmed yet.%0A%0APlease log into your InfraMint account and click "I Received My Artwork" in your purchases.%0A%0AIf you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.%0A%0AThank you,%0AInfraMint Team','_blank');
+                    this.textContent='✓ Opened';this.disabled=true;
+                });
+            });
+        }else{
+            graceCard.style.display='none';
+        }
     }
 
     // ===== COMMISSIONS =====

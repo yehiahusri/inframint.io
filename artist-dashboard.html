@@ -1730,7 +1730,7 @@
                     var track = document.getElementById('ship-track-' + oid).value.trim();
                     if (!track) { showMessage('orders-message', 'Please enter a tracking number.', false); return; }
                     this.textContent = 'Saving...'; this.disabled = true;
-                    var { error } = await db.from('orders').update({ tracking_number: track, status: 'shipped' }).eq('id', oid);
+                    var { error } = await db.from('orders').update({ tracking_number: track, status: 'shipped', updated_at: new Date().toISOString() }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Mark as Shipped'; this.disabled = false; return; }
                     showMessage('orders-message', 'Marked as shipped! Buyer will see tracking info.', true);
                     loadOrders();
