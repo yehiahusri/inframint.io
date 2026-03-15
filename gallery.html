@@ -978,7 +978,28 @@
                 if (error) { alert('Error: ' + error.message); return; }
                 wishlistIds.push(artworkId);
             }
-            renderGallery();
+
+            // Update just the clicked heart button instead of re-rendering entire gallery
+            var inWish = wishlistIds.indexOf(artworkId) >= 0;
+            if (btnEl) {
+                btnEl.className = 'wish-heart' + (inWish ? ' saved' : '');
+                var svg = btnEl.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('fill', inWish ? '#dc2626' : 'none');
+                    svg.setAttribute('stroke', inWish ? '#dc2626' : '#d4d4d4');
+                }
+            }
+            // Also update any other heart buttons for the same artwork (e.g. duplicates)
+            document.querySelectorAll('.wish-heart[data-aid="' + artworkId + '"]').forEach(function(otherBtn) {
+                if (otherBtn !== btnEl) {
+                    otherBtn.className = 'wish-heart' + (inWish ? ' saved' : '');
+                    var svg2 = otherBtn.querySelector('svg');
+                    if (svg2) {
+                        svg2.setAttribute('fill', inWish ? '#dc2626' : 'none');
+                        svg2.setAttribute('stroke', inWish ? '#dc2626' : '#d4d4d4');
+                    }
+                }
+            });
         }
 
         // Open artwork detail modal

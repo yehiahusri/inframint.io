@@ -176,7 +176,7 @@
                 <div style="display:flex;justify-content:space-between"><span>Partner commission</span><span id="split-partner">5%</span></div>
             </div>
 
-            <button class="pay-btn" id="pay-btn">Place Order — Pay Now</button>
+            <button class="pay-btn" id="pay-btn">Place Order</button>
 
             <div class="secure-note">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -206,6 +206,7 @@
 
     var artworkId=new URLSearchParams(window.location.search).get('artwork');
     var artwork=null,artist=null,collector=null,currentUser=null;
+    var EDGE_FN='https://vyibnkztkacifahhlxof.supabase.co/functions/v1/send-notification';
     var medNames={oil:'Oil on Canvas',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',other:'Other'};
     var countryNames={AE:'UAE',US:'United States',UK:'United Kingdom',DE:'Germany',FR:'France',LB:'Lebanon',SA:'Saudi Arabia',QA:'Qatar',KW:'Kuwait',BH:'Bahrain',OM:'Oman',other:'Other'};
 
@@ -353,7 +354,7 @@
         if(error){
             msgEl.textContent='Error creating order: '+error.message;
             msgEl.className='msg show error';
-            btn.textContent='Place Order — Pay Now';
+            btn.textContent='Place Order';
             btn.disabled=false;
             return;
         }
@@ -366,6 +367,20 @@
         }else{
             await db.from('artworks').update({edition_sold:edSold}).eq('id',artwork.id);
         }
+
+        // Send email notification to artist
+        try{
+            var{data:{session:sess}}=await db.auth.getSession();
+            fetch(EDGE_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(sess?sess.access_token:'')},
+                body:JSON.stringify({event:'order_placed',data:{
+                    order_number:order.order_number,artwork_title:artwork.title,
+                    artwork_price:Number(artwork.price),collector_name:firstName+' '+lastName,
+                    collector_email:currentUser.email,artist_email:artist.email||'',
+                    artist_name:artist.artist_name||artist.first_name||'',
+                    shipping_address:shippingAddress
+                }})
+            }).catch(function(e){console.log('Email send skipped:',e)});
+        }catch(e){console.log('Email error:',e)}
 
         // Show success
         document.getElementById('checkout').style.display='none';
