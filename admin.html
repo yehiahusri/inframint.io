@@ -1209,8 +1209,56 @@
                 window.open('mailto:' + o.collector_email + '?subject=InfraMint Order ' + (o.order_number || '') + '&body=Hi ' + (o.collector_name || '') + ',%0A%0ARegarding your order ' + (o.order_number || '') + '...%0A%0AInfraMint Team', '_blank');
             });
         }
-        if (!actDiv.children.length) {
-            actDiv.innerHTML = '<span style="font-size:.8rem;color:var(--g400)">No actions available — order is complete.</span>';
+
+        // Delivered — show release payment + days since delivery
+        if (o.status === 'delivered') {
+            var daysSinceDelivered = '—';
+            var deliveredDate = o.buyer_confirmed_at || o.updated_at;
+            if (deliveredDate) {
+                var diff = Math.floor((Date.now() - new Date(deliveredDate).getTime()) / 86400000);
+                daysSinceDelivered = diff;
+            }
+
+            var releaseHTML = '<div style="margin-top:1rem;padding:1.25rem;border:2px solid ' + (o.artist_paid_at ? 'var(--ok)' : 'var(--warn)') + ';background:' + (o.artist_paid_at ? '#f0fdf4' : '#fffbeb') + '">';
+
+            if (o.artist_paid_at) {
+                releaseHTML += '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                    '<div><span style="font-size:1.25rem">✅</span> <strong style="font-size:.9rem">Payment Released to Artist</strong></div>' +
+                    '<div style="font-size:.75rem;color:var(--g500)">' + daysSinceDelivered + ' day' + (daysSinceDelivered !== 1 ? 's' : '') + ' since delivery</div>' +
+                '</div>' +
+                '<div style="font-size:.8rem;color:var(--g500);margin-top:.5rem">Released on: ' + new Date(o.artist_paid_at).toLocaleString() + '</div>';
+            } else {
+                releaseHTML += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">' +
+                    '<div><span style="font-size:1.25rem">⚠️</span> <strong style="font-size:.9rem">Payment Not Yet Released</strong></div>' +
+                    '<div style="font-size:.75rem;color:var(--g500)">' + daysSinceDelivered + ' day' + (daysSinceDelivered !== 1 ? 's' : '') + ' since delivery</div>' +
+                '</div>' +
+                '<p style="font-size:.8rem;color:var(--g600);margin-bottom:.75rem">Delivery is confirmed. Review the order and release payment to the artist when ready.</p>' +
+                '<div id="release-pay-area"></div>';
+            }
+            releaseHTML += '</div>';
+
+            actDiv.insertAdjacentHTML('afterend', releaseHTML);
+
+            if (!o.artist_paid_at) {
+                var rpArea = document.getElementById('release-pay-area');
+                var rpBtn = document.createElement('button');
+                rpBtn.className = 'ab ab-ok';
+                rpBtn.style.cssText = 'padding:.6rem 1.5rem;font-size:.85rem;font-weight:600';
+                rpBtn.textContent = '💰 Release Payment to Artist — $' + artistEarning.toLocaleString();
+                rpBtn.addEventListener('click', async function() {
+                    if (!confirm('Release $' + artistEarning.toLocaleString() + ' to the artist? This cannot be undone.')) return;
+                    rpBtn.textContent = 'Processing...'; rpBtn.disabled = true;
+                    await db.from('orders').update({ artist_paid_at: new Date().toISOString(), artist_payout_amount: artistEarning }).eq('id', o.id);
+                    document.getElementById('order-detail-view').style.display = 'none';
+                    document.getElementById('orders-list-view').style.display = 'block';
+                    loadAll();
+                });
+                rpArea.appendChild(rpBtn);
+            }
+        }
+
+        if (!actDiv.children.length && o.status !== 'delivered') {
+            actDiv.innerHTML = '<span style="font-size:.8rem;color:var(--g400)">No actions available.</span>';
         }
     }
 

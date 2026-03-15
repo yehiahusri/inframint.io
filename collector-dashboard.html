@@ -383,11 +383,13 @@
                 if (order.status === 'pending') {
                     actionHTML = '<div class="co-action" style="background:#fffbeb;font-size:.8rem;color:#92400e">The artist is getting a shipping quote from their post office. You\'ll be notified when it\'s ready.</div>';
                 } else if (order.status === 'confirmed') {
+                    var quoteDetails = 'Shipping: <strong>$' + shipping.toLocaleString() + '</strong>';
+                    if (customs > 0) quoteDetails += ' + Customs/duties: <strong>$' + customs.toLocaleString() + '</strong>';
                     actionHTML = '<div class="co-action" style="background:#fef3c7">' +
                         '<div style="font-size:.8rem;font-weight:600;color:#92400e;margin-bottom:.5rem">Shipping Quote Ready</div>' +
-                        '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">The artist quoted <strong>$' + shipping.toLocaleString() + '</strong> for shipping. Total to pay: <strong>$' + (artPrice + shipping).toLocaleString() + '</strong></div>' +
+                        '<div style="font-size:.85rem;color:#78350f;margin-bottom:.75rem">' + quoteDetails + '<br>Total to pay: <strong>$' + (artPrice + shipping + customs).toLocaleString() + '</strong></div>' +
                         '<div style="display:flex;gap:.5rem">' +
-                            '<button class="co-btn approve-btn" data-oid="' + order.id + '">Approve & Pay</button>' +
+                            '<button class="co-btn approve-btn" data-oid="' + order.id + '">Approve & Pay — $' + (artPrice + shipping + customs).toLocaleString() + '</button>' +
                             '<button class="co-btn co-btn-outline cancel-btn" data-oid="' + order.id + '">Cancel Order</button>' +
                         '</div></div>';
                 } else if (order.status === 'paid') {

@@ -607,7 +607,7 @@
         .order-info-title { font-weight: 500; margin-bottom: .15rem; }
         .order-info-buyer { font-size: .8rem; color: var(--gray-500); }
         .order-info-addr { font-size: .75rem; color: var(--gray-400); margin-top: .25rem; white-space: pre-line; }
-        .order-prices { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-bottom: 1rem; padding: .75rem; background: var(--gray-100); }
+        .order-prices { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1rem; padding: .75rem; background: var(--gray-100); }
         .order-price-item { text-align: center; }
         .order-price-val { font-size: 1rem; font-weight: 600; }
         .order-price-lbl { font-size: .6rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: .05em; }
@@ -1624,7 +1624,8 @@
                 var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
                 var price = Number(order.artwork_price || 0);
                 var shipping = Number(order.shipping_cost || 0);
-                var total = price + shipping;
+                var customs = Number(order.customs_cost || 0);
+                var total = price + shipping + customs;
                 var artistPct = artistData.referred_by_partner ? 0.65 : 0.70;
                 var artistEarning = Math.round(price * artistPct);
                 if (order.status === 'delivered' || order.status === 'paid' || order.status === 'shipped') totalSales += price;
@@ -1657,15 +1658,16 @@
                 var actionsHTML = '';
                 if (order.status === 'pending') {
                     actionsHTML = '<div style="background:var(--gray-100);padding:1rem;margin-top:.75rem">' +
-                        '<div style="font-size:.75rem;font-weight:600;margin-bottom:.5rem">Step 1: Enter Shipping Quote</div>' +
-                        '<p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem">Go to your post office with the artwork dimensions and weight, get a real shipping quote to the buyer\'s address, and enter the cost below.</p>' +
+                        '<div style="font-size:.75rem;font-weight:600;margin-bottom:.5rem">Step 1: Enter Shipping & Customs Quote</div>' +
+                        '<p style="font-size:.75rem;color:var(--gray-500);margin-bottom:.75rem">Go to your post office with the artwork dimensions and weight, get a real shipping quote to the buyer\'s address. If applicable, estimate customs/import duties for the destination country.</p>' +
                         '<div class="order-actions">' +
                             '<input type="number" class="form-input" placeholder="Shipping cost ($)" id="ship-cost-' + order.id + '" step="0.01" min="0">' +
+                            '<input type="number" class="form-input" placeholder="Customs/duties ($)" id="ship-customs-' + order.id + '" step="0.01" min="0" value="0">' +
                             '<button class="btn btn-primary quote-btn" data-oid="' + order.id + '">Submit Quote</button>' +
                         '</div></div>';
                 } else if (order.status === 'confirmed') {
                     actionsHTML = '<div style="background:#fffbeb;padding:1rem;margin-top:.75rem;font-size:.8rem;color:#92400e">' +
-                        'Shipping quote of <strong>$' + shipping.toLocaleString() + '</strong> sent to buyer. Waiting for them to approve and pay.' +
+                        'Shipping: <strong>$' + shipping.toLocaleString() + '</strong>' + (customs > 0 ? ' + Customs: <strong>$' + customs.toLocaleString() + '</strong>' : '') + ' sent to buyer. Waiting for them to approve and pay.' +
                         '</div>';
                 } else if (order.status === 'paid') {
                     actionsHTML = '<div style="background:#f0fdf4;padding:1rem;margin-top:.75rem">' +
@@ -1700,6 +1702,7 @@
                     '<div class="order-prices">' +
                         '<div class="order-price-item"><div class="order-price-val">$' + price.toLocaleString() + '</div><div class="order-price-lbl">Art Price</div></div>' +
                         '<div class="order-price-item"><div class="order-price-val">$' + shipping.toLocaleString() + '</div><div class="order-price-lbl">Shipping</div></div>' +
+                        '<div class="order-price-item"><div class="order-price-val">$' + customs.toLocaleString() + '</div><div class="order-price-lbl">Customs</div></div>' +
                         '<div class="order-price-item"><div class="order-price-val">$' + artistEarning.toLocaleString() + '</div><div class="order-price-lbl">Your Earnings (' + Math.round(artistPct * 100) + '%)</div></div>' +
                     '</div>' +
                     actionsHTML;
@@ -1714,9 +1717,10 @@
                 btn.addEventListener('click', async function() {
                     var oid = this.dataset.oid;
                     var cost = parseFloat(document.getElementById('ship-cost-' + oid).value) || 0;
+                    var customs = parseFloat(document.getElementById('ship-customs-' + oid).value) || 0;
                     if (!cost) { showMessage('orders-message', 'Please enter the shipping cost from your postal quote.', false); return; }
                     this.textContent = 'Saving...'; this.disabled = true;
-                    var { error } = await db.from('orders').update({ shipping_cost: cost, status: 'confirmed' }).eq('id', oid);
+                    var { error } = await db.from('orders').update({ shipping_cost: cost, customs_cost: customs, status: 'confirmed' }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Submit Quote'; this.disabled = false; return; }
                     showMessage('orders-message', 'Shipping quote submitted! Buyer will be notified to approve and pay.', true);
                     loadOrders();
