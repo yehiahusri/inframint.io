@@ -26,7 +26,7 @@
             --warning: #f59e0b;
         }
 
-        body {
+        body { overflow-x: hidden;
             font-family: 'Manrope', sans-serif;
             background: var(--gray-100);
             color: var(--black);
@@ -504,7 +504,7 @@
             color: var(--gray-400);
         }
 
-        .modal-body {
+        .modal-body { overflow-x: hidden;
             padding: 1.5rem;
         }
 
@@ -602,7 +602,7 @@
         .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 1px solid var(--gray-200); }
         .order-id { font-size: .8125rem; font-weight: 600; }
         .order-date { font-size: .75rem; color: var(--gray-400); }
-        .order-body { display: grid; grid-template-columns: 70px 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .order-body { overflow-x: hidden; display: grid; grid-template-columns: 70px 1fr; gap: 1rem; margin-bottom: 1rem; }
         .order-thumb { width: 70px; height: 70px; object-fit: cover; background: var(--gray-200); }
         .order-info-title { font-weight: 500; margin-bottom: .15rem; }
         .order-info-buyer { font-size: .8rem; color: var(--gray-500); }
@@ -624,6 +624,44 @@
             .main { margin-left: 0; }
             .form-row { grid-template-columns: 1fr; }
             nav { padding: 0 1rem; }
+            .mobile-dash-nav { display: flex; }
+            .order-body { overflow-x: hidden; grid-template-columns: 1fr; }
+            .order-prices { grid-template-columns: repeat(2, 1fr); }
+            .order-actions { flex-direction: column; }
+            .page-title { font-size: 1.25rem; }
+        }
+
+        .mobile-dash-nav {
+            display: none;
+            overflow-x: auto;
+            gap: .25rem;
+            padding: .5rem 1rem;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 4rem;
+            z-index: 10;
+        }
+        .mobile-dash-nav button {
+            font-family: 'Manrope', sans-serif;
+            font-size: .7rem;
+            font-weight: 500;
+            padding: .4rem .75rem;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-500);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .mobile-dash-nav button.active {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+        @media (max-width: 480px) {
+            .page-title { font-size: 1.15rem; }
+            .card { padding: .75rem; }
+            .order-prices { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -642,6 +680,17 @@
             <a class="nav-link" id="sign-out">Sign Out</a>
         </div>
     </nav>
+
+    <!-- Mobile Dashboard Nav -->
+    <div class="mobile-dash-nav" id="mobile-dash-nav">
+        <button class="active" data-ms="overview">Overview</button>
+        <button data-ms="artworks">Artworks</button>
+        <button data-ms="orders">Orders</button>
+        <button data-ms="verification">Verify</button>
+        <button data-ms="profile">Profile</button>
+        <button data-ms="payouts">Payouts</button>
+        <button data-ms="partner-info">Partner</button>
+    </div>
 
     <div class="layout">
         <!-- Sidebar -->
@@ -1401,6 +1450,21 @@
                 this.classList.add('active');
                 
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + section).classList.add('active');
+
+                // Sync mobile nav
+                document.querySelectorAll('#mobile-dash-nav button').forEach(function(b){ b.classList.remove('active'); if(b.dataset.ms===section) b.classList.add('active'); });
+            });
+        });
+
+        // Mobile dashboard nav
+        document.querySelectorAll('#mobile-dash-nav button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var section = this.dataset.ms;
+                document.querySelectorAll('#mobile-dash-nav button').forEach(function(b){ b.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); if(l.dataset.section===section) l.classList.add('active'); });
+                document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
                 document.getElementById('section-' + section).classList.add('active');
             });
         });

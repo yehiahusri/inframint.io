@@ -11,7 +11,7 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--black:#0a0a0a;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--accent:#c8ff00}
-        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased}
+        body{overflow-x:hidden;font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased}
         .mono{font-family:'Space Mono',monospace}
 
         nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
@@ -62,7 +62,7 @@
         .feat-img{overflow:hidden;background:var(--g200);position:relative}
         .feat-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
         .feat-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.4))}
-        .feat-body{background:var(--black);padding:2.5rem;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
+        .feat-body{overflow-x:hidden;background:var(--black);padding:2.5rem;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
         .feat-body::before{content:'01';position:absolute;top:1.5rem;right:1.5rem;font-family:'Space Mono',monospace;font-size:5rem;font-weight:700;color:rgba(255,255,255,.05);line-height:1}
         .feat-cat{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
         .feat-title{font-size:1.75rem;font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.03em;margin-bottom:.75rem}
@@ -83,7 +83,7 @@
         .pcard:hover .pcard-img img{transform:scale(1.05)}
         .pcard-cat{position:absolute;top:0;left:0;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;padding:.4rem .75rem;background:var(--black);color:var(--accent);z-index:1}
         .pcard-num{position:absolute;bottom:.5rem;right:.75rem;font-family:'Space Mono',monospace;font-size:2.5rem;font-weight:700;color:rgba(255,255,255,.15);line-height:1}
-        .pcard-body{padding:1.25rem}
+        .pcard-body{overflow-x:hidden;padding:1.25rem}
         .pcard-title{font-size:1.05rem;font-weight:600;line-height:1.25;letter-spacing:-.01em;margin-bottom:.5rem}
         .pcard-excerpt{font-size:.78rem;color:var(--g500);font-weight:300;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:1rem}
         .pcard-foot{display:flex;justify-content:space-between;align-items:center;padding-top:.75rem;border-top:1px solid var(--g200)}
@@ -106,7 +106,7 @@
         .art-cat{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);background:var(--black);display:inline-block;padding:.3rem .75rem;margin-bottom:1rem}
         .art-title{font-size:2.75rem;font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:.75rem}
         .art-meta{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--g400);margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid var(--black);display:flex;gap:2rem}
-        .art-body{font-size:1.05rem;color:var(--g600);font-weight:300;line-height:2}
+        .art-body{overflow-x:hidden;font-size:1.05rem;color:var(--g600);font-weight:300;line-height:2}
         .art-body p{margin-bottom:1.75rem}
         .art-body p:first-child::first-letter{font-size:3.5rem;font-weight:800;float:left;line-height:.8;margin-right:.5rem;margin-top:.35rem;color:var(--black)}
 
@@ -134,7 +134,7 @@
             .feat-wrap{padding:0 1.5rem}
             .feat{grid-template-columns:1fr;min-height:auto}
             .feat-img{aspect-ratio:16/10}
-            .feat-body{padding:1.5rem}
+            .feat-body{overflow-x:hidden;padding:1.5rem}
             .feat-title{font-size:1.25rem}
             .posts-sec{padding:1.5rem}
             .posts-grid{grid-template-columns:1fr}
@@ -146,6 +146,14 @@
             .footer-links{flex-wrap:wrap;justify-content:center;gap:1rem}
         }
         @media(max-width:600px){nav{padding:0 1.5rem}}
+        @media(max-width:480px){
+            .drip-title{font-size:2.25rem}
+            .feat{grid-template-columns:1fr;min-height:auto}
+            .feat-img{aspect-ratio:16/10}
+            .feat-body{overflow-x:hidden;padding:1.25rem}
+            .feat-title{font-size:1.15rem}
+            .art-title{font-size:1.5rem}
+        }
     </style>
 
     <meta name="description" content="Raw stories, fresh drops, and the pulse of emerging art. News, artist spotlights, and behind-the-scenes from InfraMint.">

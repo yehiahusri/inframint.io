@@ -11,7 +11,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --black: #000; --white: #fff; --gray-100: #f7f7f7; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-800: #262626; --success: #16a34a; --error: #dc2626; --warning: #f59e0b; }
-        body { font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
+        body { overflow-x: hidden; font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
 
         /* Layout */
         .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
@@ -113,10 +113,51 @@
             .form-row { grid-template-columns: 1fr; }
             .artist-row { grid-template-columns: auto 1fr auto; }
             .artist-row-sales { display: none; }
+            .mobile-dash-nav { display: flex; }
+            nav { padding: 0 1rem; }
+        }
+
+        .mobile-dash-nav {
+            display: none;
+            overflow-x: auto;
+            gap: .25rem;
+            padding: .5rem 1rem;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 4rem;
+            z-index: 10;
+        }
+        .mobile-dash-nav button {
+            font-family: 'Manrope', sans-serif;
+            font-size: .7rem;
+            font-weight: 500;
+            padding: .4rem .75rem;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            color: var(--gray-500);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .mobile-dash-nav button.active {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Dashboard Nav -->
+    <div class="mobile-dash-nav" id="mobile-dash-nav">
+        <button class="active" data-ms="overview">Overview</button>
+        <button data-ms="artists">Artists</button>
+        <button data-ms="recommend">Recruit</button>
+        <button data-ms="notifications">Alerts</button>
+        <button data-ms="profile">Profile</button>
+        <button data-ms="payouts">Payouts</button>
+        <button data-ms="terms">Terms</button>
+    </div>
+
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -409,6 +450,19 @@
                 document.querySelectorAll('.sidebar-link').forEach(function(l) { l.classList.remove('active'); });
                 this.classList.add('active');
                 document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+                document.getElementById('section-' + section).classList.add('active');
+                document.querySelectorAll('#mobile-dash-nav button').forEach(function(b){ b.classList.remove('active'); if(b.dataset.ms===section) b.classList.add('active'); });
+            });
+        });
+
+        // Mobile dashboard nav
+        document.querySelectorAll('#mobile-dash-nav button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var section = this.dataset.ms;
+                document.querySelectorAll('#mobile-dash-nav button').forEach(function(b){ b.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); if(l.dataset.section===section) l.classList.add('active'); });
+                document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
                 document.getElementById('section-' + section).classList.add('active');
             });
         });
