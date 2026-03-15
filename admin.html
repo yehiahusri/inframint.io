@@ -569,7 +569,7 @@
         document.getElementById('section-'+this.dataset.s).classList.add('active');
     })});
 
-    document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();location.reload()};
+    document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};
 
     // Settings
     document.getElementById('set-gallery').oninput=function(){
@@ -620,7 +620,7 @@
 
         // Revenue
         var rev=0,ship=0,cust=0;
-        allOrders.forEach(function(o){rev+=Number(o.art_price||0);ship+=Number(o.shipping_cost||0);cust+=Number(o.customs_cost||0)});
+        allOrders.forEach(function(o){rev+=Number(o.artwork_price||0);ship+=Number(o.shipping_cost||0);cust+=Number(o.customs_cost||0)});
         el('s-rev','$'+rev.toLocaleString());
         el('s-gal','$'+Math.round(rev*.3).toLocaleString());
         el('s-part','$'+Math.round(rev*.05).toLocaleString());
@@ -663,7 +663,7 @@
 
         var rev=0,ship=0,cust=0,paid=0,pending=0,escrow=0;
         orders.forEach(function(o) {
-            var ap=Number(o.art_price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
+            var ap=Number(o.artwork_price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
             rev+=ap; ship+=sh; cust+=cu;
             if (o.status==='delivered') paid+=ap;
             else if (o.status==='shipped') pending+=ap;
@@ -698,7 +698,7 @@
             });
             var qRev=0,qShip=0,qPaid=0,qPend=0;
             qOrders.forEach(function(o) {
-                var ap=Number(o.art_price||0);
+                var ap=Number(o.artwork_price||0);
                 qRev+=ap; qShip+=Number(o.shipping_cost||0)+Number(o.customs_cost||0);
                 if (o.status==='delivered') qPaid+=ap; else qPend+=ap;
             });
@@ -707,7 +707,7 @@
         // Year total row
         var yOrders=allOrders.filter(function(o){return o.created_at&&new Date(o.created_at).getFullYear()===yr});
         var yRev=0,yShip=0,yPaid=0,yPend=0;
-        yOrders.forEach(function(o){var ap=Number(o.art_price||0);yRev+=ap;yShip+=Number(o.shipping_cost||0)+Number(o.customs_cost||0);if(o.status==='delivered')yPaid+=ap;else yPend+=ap});
+        yOrders.forEach(function(o){var ap=Number(o.artwork_price||0);yRev+=ap;yShip+=Number(o.shipping_cost||0)+Number(o.customs_cost||0);if(o.status==='delivered')yPaid+=ap;else yPend+=ap});
         qb.innerHTML+='<tr style="font-weight:600;border-top:2px solid var(--g300)"><td>'+yr+' Total</td><td>'+yOrders.length+'</td><td>$'+yRev.toLocaleString()+'</td><td>$'+yShip.toLocaleString()+'</td><td>$'+Math.round(yRev*.3).toLocaleString()+'</td><td>$'+Math.round(yRev*.65).toLocaleString()+'</td><td>$'+Math.round(yRev*.05).toLocaleString()+'</td><td style="color:var(--ok)">$'+yPaid.toLocaleString()+'</td><td style="color:var(--warn)">$'+yPend.toLocaleString()+'</td></tr>';
 
         // Artist payouts
@@ -718,7 +718,7 @@
             var aId=o.artist_id;
             if (!aId) return;
             if (!artistSales[aId]) artistSales[aId]={total:0,paid:0,pending:0};
-            var ap=Number(o.art_price||0);
+            var ap=Number(o.artwork_price||0);
             artistSales[aId].total+=ap;
             if (o.status==='delivered') artistSales[aId].paid+=ap;
             else artistSales[aId].pending+=ap;
@@ -748,7 +748,7 @@
                 var artistIds=pArtists.map(function(r){return r.artist_id});
                 var pOrders=allOrders.filter(function(o){return artistIds.indexOf(o.artist_id)>=0});
                 var pRev=0,pPaid=0,pPend=0;
-                pOrders.forEach(function(o){var ap=Number(o.art_price||0);pRev+=ap;if(o.status==='delivered')pPaid+=ap;else pPend+=ap});
+                pOrders.forEach(function(o){var ap=Number(o.artwork_price||0);pRev+=ap;if(o.status==='delivered')pPaid+=ap;else pPend+=ap});
                 var comm=Math.round(pRev*.05);
                 var commPaid=Math.round(pPaid*.05);
                 var commPend=Math.round(pPend*.05);
@@ -771,7 +771,7 @@
             allOrders.forEach(function(o){
                 if(!o.created_at)return;
                 var d=new Date(o.created_at);
-                if(d.getFullYear()===mo.y&&d.getMonth()===mo.m)mRev+=Number(o.art_price||0);
+                if(d.getFullYear()===mo.y&&d.getMonth()===mo.m)mRev+=Number(o.artwork_price||0);
             });
             return mRev;
         });
@@ -791,7 +791,7 @@
     // Period filter
     document.getElementById('fin-period').addEventListener('change',function(){renderFinance(this.value)});
 
-    function el(id,v){document.getElementById(id).textContent=v}
+    function el(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
     function img(url){return url&&!url.includes('placehold')?'<img src="'+url+'" class="thumb">':'—'}
     function trunc(s,n){return s&&s.length>n?s.substring(0,n)+'...':s||'—'}
     function dt(d){return d?new Date(d).toLocaleDateString():'—'}
@@ -952,7 +952,7 @@
 
         allOrders.forEach(function(o,i){
             var art=o.artworks||{};var col=o.collectors||{};
-            var ap=Number(o.artwork_price||o.art_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
+            var ap=Number(o.artwork_price||o.artwork_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
 
             // Calculate days since shipped
             var daysSinceShipped='—';
@@ -1064,7 +1064,7 @@
         document.getElementById('orders-list-view').style.display = 'none';
         document.getElementById('order-detail-view').style.display = 'block';
 
-        var ap = Number(o.artwork_price || o.art_price || art.price || 0);
+        var ap = Number(o.artwork_price || o.artwork_price || art.price || 0);
         var sh = Number(o.shipping_cost || 0);
         var cu = Number(o.customs_cost || 0);
         var total = ap + sh + cu;
