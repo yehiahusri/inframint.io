@@ -198,13 +198,13 @@
             if (!partner) {
                 // Create one from user metadata
                 const meta = data.user.user_metadata || {};
-                await db.from('partners').insert({
+                await db.from('partners').upsert({
                     user_id: data.user.id,
                     first_name: meta.first_name || '',
                     last_name: meta.last_name || '',
                     email: data.user.email,
                     status: 'pending'
-                });
+                }, { onConflict: 'user_id' });
             }
             window.location.href = 'partner-dashboard.html';
         });
@@ -230,14 +230,14 @@
 
             // Create partner profile right away if we have a user id
             if (data.user) {
-                const { error: profileError } = await db.from('partners').insert({
+                const { error: profileError } = await db.from('partners').upsert({
                     user_id: data.user.id,
                     first_name: firstName,
                     last_name: lastName,
                     company_name: company,
                     email: email,
                     status: 'pending'
-                });
+                }, { onConflict: 'user_id' });
 
                 if (profileError && !profileError.message.includes('duplicate')) {
                     showMessage('Error creating profile: ' + profileError.message, 'error');
@@ -265,13 +265,13 @@
                 } else {
                     // User is logged in but no partner profile — create one (Google OAuth case)
                     const meta = session.user.user_metadata || {};
-                    const { error } = await db.from('partners').insert({
+                    const { error } = await db.from('partners').upsert({
                         user_id: session.user.id,
                         first_name: meta.first_name || meta.full_name || '',
                         last_name: meta.last_name || '',
                         email: session.user.email,
                         status: 'pending'
-                    });
+                    }, { onConflict: 'user_id' });
 
                     if (!error || error.message.includes('duplicate')) {
                         window.location.href = 'partner-dashboard.html';
