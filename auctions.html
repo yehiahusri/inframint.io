@@ -182,7 +182,7 @@ async function init(){
 }
 
 async function loadAuctions(){
-    var{data:auctions}=await db.from('auctions').select('*,artworks(title,primary_image_url,description,medium),artists(artist_name,first_name,last_name,profile_image_url,bio,city,country,avg_rating,review_count)').eq('visible',true).order('created_at',{ascending:false});
+    var{data:auctions}=await db.from('auctions').select('*,artists(artist_name,first_name,last_name,profile_image_url,bio,city,country,avg_rating,review_count)').eq('visible',true).order('created_at',{ascending:false});
     if(!auctions||auctions.length===0){document.getElementById('no-auctions').style.display='block';return;}
     var now=new Date();
     var live=auctions.filter(function(a){return a.status==='live'&&new Date(a.end_time)>now;});
@@ -193,9 +193,9 @@ async function loadAuctions(){
 }
 
 function renderLive(a){
-    var art=a.artworks||{},artist=a.artists||{};
-    var hasImg=art.primary_image_url&&!art.primary_image_url.includes('placehold');
-    var artistName=artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
+    var artist=a.artists||{};
+    var hasImg=a.image_url&&!a.image_url.includes('placehold');
+    var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
     var cb=Number(a.current_bid||a.starting_price||0),hf=Math.round(cb*(a.house_fee_pct/100)),tot=cb+hf;
     var r=Math.round(artist.avg_rating||0),stars='';for(var i=0;i<5;i++)stars+=i<r?'\u2605':'\u2606';
 
@@ -218,7 +218,7 @@ function renderLive(a){
         }else{
             bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(a.total_bids||0)+' bids</div></div><div class="login-prompt"><a href="collector-login.html">Sign in</a> to place a bid</div>'+bhHTML+'</div>';
         }
-        document.getElementById('live-container').innerHTML='<div class="live-card"><div class="live-image">'+(hasImg?'<img src="'+art.primary_image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'<div class="live-number">'+a.auction_number+'</div><div class="live-badge"><div class="live-dot"></div> Live</div></div><div class="live-content"><div class="live-artist-row">'+(artist.profile_image_url?'<img class="live-artist-img" src="'+artist.profile_image_url+'">':'<div class="live-artist-img"></div>')+'<div><div class="live-artist-name">'+artistName+'</div><div class="live-artist-stars">'+stars+' '+(artist.avg_rating?Number(artist.avg_rating).toFixed(1):'\u2014')+'</div><div class="live-artist-meta">'+[artist.city,artist.country].filter(Boolean).join(', ')+'</div></div></div><div class="live-title">'+a.title+'</div><div class="live-desc">'+(a.description||art.description||'')+'</div>'+(a.admin_message?'<div class="live-message">'+a.admin_message+'</div>':'')+
+        document.getElementById('live-container').innerHTML='<div class="live-card"><div class="live-image">'+(hasImg?'<img src="'+a.image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'<div class="live-number">'+a.auction_number+'</div><div class="live-badge"><div class="live-dot"></div> Live</div></div><div class="live-content"><div class="live-artist-row">'+(artist.profile_image_url?'<img class="live-artist-img" src="'+artist.profile_image_url+'">':'<div class="live-artist-img"></div>')+'<div><div class="live-artist-name">'+artistName+'</div><div class="live-artist-stars">'+stars+' '+(artist.avg_rating?Number(artist.avg_rating).toFixed(1):'\u2014')+'</div><div class="live-artist-meta">'+[artist.city,artist.country].filter(Boolean).join(', ')+'</div></div></div><div class="live-title">'+a.title+'</div><div class="live-desc">'+(a.description||a.description||'')+'</div>'+(a.admin_message?'<div class="live-message">'+a.admin_message+'</div>':'')+
         '<div class="timer"><div class="timer-label">Time Remaining</div><div class="timer-digits" id="timer-live-'+a.id+'"></div></div>'+bidHTML+'</div></div>';
         startTimer('live-'+a.id,a.end_time);
         bindBid(a.id);
@@ -228,27 +228,27 @@ function renderLive(a){
 function renderPast(auctions){
     var grid=document.getElementById('past-grid');grid.innerHTML='';
     auctions.forEach(function(a,idx){
-        var art=a.artworks||{},artist=a.artists||{};
-        var hasImg=art.primary_image_url&&!art.primary_image_url.includes('placehold');
-        var artistName=artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
+        artist=a.artists||{};
+        var hasImg=a.image_url&&!a.image_url.includes('placehold');
+        var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
         var num=a.auction_number||('A-'+String(idx+1).padStart(3,'0'));
         var numDigits=num.replace(/[^0-9]/g,'')||String(idx+1);
         var isSold=a.status==='sold';
         var card=document.createElement('div');card.className='past-card';
-        card.innerHTML='<div class="past-bg-num">'+numDigits+'</div>'+(isSold?'<div class="past-status past-sold">Sold</div>':'<div class="past-status past-unsold">'+a.status+'</div>')+'<div class="past-inner"><div class="past-num">'+num+'</div>'+(hasImg?'<img class="past-img" src="'+art.primary_image_url+'">':'<div class="past-img"></div>')+'<div class="past-card-title">'+a.title+'</div><div class="past-artist">by '+artistName+'</div><div class="past-stats"><div><div class="past-stat-val">'+(a.total_bids||0)+'</div><div class="past-stat-lbl">Bids</div></div><div><div class="past-stat-val">$'+Number(a.winning_bid||a.current_bid||0).toLocaleString()+'</div><div class="past-stat-lbl">'+(isSold?'Sold For':'Final Bid')+'</div></div></div></div>';
+        card.innerHTML='<div class="past-bg-num">'+numDigits+'</div>'+(isSold?'<div class="past-status past-sold">Sold</div>':'<div class="past-status past-unsold">'+a.status+'</div>')+'<div class="past-inner"><div class="past-num">'+num+'</div>'+(hasImg?'<img class="past-img" src="'+a.image_url+'">':'<div class="past-img"></div>')+'<div class="past-card-title">'+a.title+'</div><div class="past-artist">by '+artistName+'</div><div class="past-stats"><div><div class="past-stat-val">'+(a.total_bids||0)+'</div><div class="past-stat-lbl">Bids</div></div><div><div class="past-stat-val">$'+Number(a.winning_bid||a.current_bid||0).toLocaleString()+'</div><div class="past-stat-lbl">'+(isSold?'Sold For':'Final Bid')+'</div></div></div></div>';
         card.addEventListener('click',function(){openDetail(a);});
         grid.appendChild(card);
     });
 }
 
 function openDetail(a){
-    var art=a.artworks||{},artist=a.artists||{};
-    var hasImg=art.primary_image_url&&!art.primary_image_url.includes('placehold');
-    var artistName=artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
+    artist=a.artists||{};
+    var hasImg=a.image_url&&!a.image_url.includes('placehold');
+    var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
     var cb=Number(a.current_bid||a.starting_price||0),hf=Math.round(cb*(a.house_fee_pct/100));
     var isSold=a.status==='sold';
     var c=document.getElementById('detail-container');
-    c.innerHTML='<div class="detail-panel"><button class="dp-close" onclick="this.parentElement.remove()">&times;</button><div class="dp-layout"><div class="dp-image">'+(hasImg?'<img src="'+art.primary_image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'</div><div class="dp-content"><div class="dp-number">'+(a.auction_number||'')+'</div><div class="dp-title">'+a.title+'</div><div class="dp-artist">by '+artistName+'</div><div class="dp-desc">'+(a.description||art.description||'')+'</div>'+(a.admin_message?'<div class="live-message" style="margin-bottom:1rem">'+a.admin_message+'</div>':'')+'<div class="dp-stats"><div class="dp-stat"><div class="dp-stat-val">'+(a.total_bids||0)+'</div><div class="dp-stat-lbl">Total Bids</div></div><div class="dp-stat"><div class="dp-stat-val">$'+Number(a.winning_bid||cb).toLocaleString()+'</div><div class="dp-stat-lbl">'+(isSold?'Winning Bid':'Final Bid')+'</div></div><div class="dp-stat"><div class="dp-stat-val">$'+(Number(a.winning_bid||cb)+hf).toLocaleString()+'</div><div class="dp-stat-lbl">Total w/ Fee</div></div></div></div></div></div>';
+    c.innerHTML='<div class="detail-panel"><button class="dp-close" onclick="this.parentElement.remove()">&times;</button><div class="dp-layout"><div class="dp-image">'+(hasImg?'<img src="'+a.image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'</div><div class="dp-content"><div class="dp-number">'+(a.auction_number||'')+'</div><div class="dp-title">'+a.title+'</div><div class="dp-artist">by '+artistName+'</div><div class="dp-desc">'+(a.description||a.description||'')+'</div>'+(a.admin_message?'<div class="live-message" style="margin-bottom:1rem">'+a.admin_message+'</div>':'')+'<div class="dp-stats"><div class="dp-stat"><div class="dp-stat-val">'+(a.total_bids||0)+'</div><div class="dp-stat-lbl">Total Bids</div></div><div class="dp-stat"><div class="dp-stat-val">$'+Number(a.winning_bid||cb).toLocaleString()+'</div><div class="dp-stat-lbl">'+(isSold?'Winning Bid':'Final Bid')+'</div></div><div class="dp-stat"><div class="dp-stat-val">$'+(Number(a.winning_bid||cb)+hf).toLocaleString()+'</div><div class="dp-stat-lbl">Total w/ Fee</div></div></div></div></div></div>';
     c.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
