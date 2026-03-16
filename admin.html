@@ -573,14 +573,29 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong>yehiahusri@gmail.com</strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c4bda1acada5acb1b7b6ad84a3a9a5ada8eaa7aba9">[email&#160;protected]</a></strong></p>
+                    </div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Feature Toggles</span></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--g200)">
+                            <div>
+                                <div style="font-size:.85rem;font-weight:600">Auctions</div>
+                                <div style="font-size:.7rem;color:var(--g500)">Show live auction page to visitors</div>
+                            </div>
+                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                                <input type="checkbox" id="toggle-auctions" style="opacity:0;width:0;height:0">
+                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s;border-radius:0" id="toggle-track"></span>
+                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-thumb"></span>
+                            </label>
+                        </div>
+                        <div id="toggle-status" style="font-size:.7rem;color:var(--g400);margin-top:.5rem"></div>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
     const SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
     const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
@@ -618,6 +633,7 @@
         document.getElementById('dash').style.display='grid';
         document.getElementById('aname').textContent=adm?adm.name:(ADM_LEGACY);
         loadAll();
+        loadAuctionSetting();
     }
 
     // Nav
@@ -654,6 +670,39 @@
         document.getElementById('msg-subject').value='';
         document.getElementById('msg-body').value='';
     };
+
+    // ===== AUCTION TOGGLE =====
+    var auctionToggle = document.getElementById('toggle-auctions');
+    var toggleTrack = document.getElementById('toggle-track');
+    var toggleThumb = document.getElementById('toggle-thumb');
+    var toggleStatus = document.getElementById('toggle-status');
+
+    async function loadAuctionSetting() {
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
+        var isOn = data && data.value === 'true';
+        auctionToggle.checked = isOn;
+        updateToggleUI(isOn);
+    }
+
+    function updateToggleUI(isOn) {
+        toggleTrack.style.background = isOn ? 'var(--black)' : 'var(--g300)';
+        toggleThumb.style.transform = isOn ? 'translateX(20px)' : 'translateX(0)';
+        toggleStatus.textContent = isOn ? 'Auctions page is live — visitors can see and bid' : 'Auctions page shows "Coming Soon" to visitors';
+    }
+
+    auctionToggle.addEventListener('change', async function() {
+        var isOn = this.checked;
+        updateToggleUI(isOn);
+        toggleStatus.textContent = 'Saving...';
+        var { error } = await db.from('site_settings').upsert({ key: 'auctions_enabled', value: isOn ? 'true' : 'false', updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        if (error) {
+            toggleStatus.textContent = 'Error: ' + error.message;
+            this.checked = !isOn;
+            updateToggleUI(!isOn);
+        } else {
+            updateToggleUI(isOn);
+        }
+    });
 
     // ===== LOAD ALL =====
     async function loadAll(){
@@ -1991,11 +2040,4 @@
             return;
         }
 
-        msgEl.textContent=name+' added to the team as '+role+'!';msgEl.className='msg-ok show';msgEl.style.color='var(--ok)';
-        document.getElementById('team-email').value='';
-        document.getElementById('team-name').value='';
-        renderTeam();
-    };
-    </script>
-</body>
-</html>
+        msgEl.textContent=name+' added to the team as '+role+'!';
