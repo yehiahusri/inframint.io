@@ -175,6 +175,7 @@
                 <a class="sb-lk" data-s="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Orders <span class="ct" id="n-o">0</span></a>
                 <a class="sb-lk" data-s="finance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
                 <a class="sb-lk" data-s="commissions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Commissions</a>
+                <a class="sb-lk" data-s="auctions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>Auctions <span class="ct" id="n-auctions">0</span></a>
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Communication</div>
@@ -559,6 +560,60 @@
                     </div>
                 </div>
 
+                <!-- Auctions -->
+                <div class="sec" id="section-auctions">
+                    <div class="ph"><h1>Auctions</h1><p>Create and manage live auctions</p></div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Create New Auction</span></div>
+                        <div id="auction-msg" style="padding:.5rem;font-size:.8rem;margin-bottom:.75rem;display:none"></div>
+                        <div class="form-row2" style="margin-bottom:.75rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Auction Number</label><input type="text" class="fi" id="auc-number" placeholder="e.g. A-001"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Title</label><input type="text" class="fi" id="auc-title" placeholder="Auction title"></div>
+                        </div>
+                        <div style="margin-bottom:.75rem">
+                            <label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Select Artist (4+ star rating)</label>
+                            <select class="fi" id="auc-artist"><option value="">— Select artist —</option></select>
+                        </div>
+                        <div style="margin-bottom:.75rem">
+                            <label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Select Artwork</label>
+                            <select class="fi" id="auc-artwork"><option value="">— Select artist first —</option></select>
+                        </div>
+                        <div class="form-row2" style="margin-bottom:.75rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Reserve Price ($)</label><input type="number" class="fi" id="auc-reserve" placeholder="Minimum to sell" min="1"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Starting Price ($)</label><input type="number" class="fi" id="auc-start" placeholder="Bidding starts at" min="1"></div>
+                        </div>
+                        <div class="form-row2" style="margin-bottom:.75rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Start Time</label><input type="datetime-local" class="fi" id="auc-start-time"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">End Time</label><input type="datetime-local" class="fi" id="auc-end-time"></div>
+                        </div>
+                        <div style="margin-bottom:.75rem">
+                            <label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Description</label>
+                            <textarea class="fi" id="auc-desc" rows="3" placeholder="About this auction..." style="resize:vertical"></textarea>
+                        </div>
+                        <div style="margin-bottom:.75rem">
+                            <label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Admin Message (shown on auction page)</label>
+                            <textarea class="fi" id="auc-message" rows="2" placeholder="Optional message to bidders..." style="resize:vertical"></textarea>
+                        </div>
+                        <button class="fbtn" id="create-auction">Create Auction</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">All Auctions</span></div>
+                        <div class="tw"><table><thead><tr><th>Number</th><th>Title</th><th>Artist</th><th>Status</th><th>Bids</th><th>Current</th><th>Reserve</th><th>Ends</th><th>Visible</th><th>Actions</th></tr></thead><tbody id="tb-auctions"></tbody></table></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Auction Finance</span></div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem">
+                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-total-sold">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Total Sold</div></div>
+                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-house-fees">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">House Fees (30%)</div></div>
+                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-artist-payouts">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Artist Payouts</div></div>
+                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-total-auctions">0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Total Auctions</div></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Settings -->
                 <div class="sec" id="section-settings">
                     <div class="ph"><h1>Settings</h1><p>Platform configuration</p></div>
@@ -750,6 +805,8 @@
         renderTeam();
         renderNotifications();
         renderReminders();
+        populateAuctionArtists();
+        loadAuctions();
     }
 
     // ===== FINANCE =====
@@ -2044,6 +2101,182 @@
         document.getElementById('team-name').value='';
         renderTeam();
     };
+
+    // ===== AUCTIONS MANAGEMENT =====
+    var allAuctionsList = [];
+
+    async function loadAuctions() {
+        var { data } = await db.from('auctions').select('*, artworks(title, primary_image_url), artists(artist_name, avg_rating)').order('created_at', { ascending: false });
+        allAuctionsList = data || [];
+        document.getElementById('n-auctions').textContent = allAuctionsList.length;
+        renderAuctionsTable();
+        renderAuctionFinance();
+    }
+
+    function renderAuctionsTable() {
+        var b = document.getElementById('tb-auctions');
+        if (!allAuctionsList.length) { b.innerHTML = '<tr class="empty"><td colspan="10">No auctions created yet</td></tr>'; return; }
+        b.innerHTML = '';
+        allAuctionsList.forEach(function(a) {
+            var art = a.artworks || {};
+            var artist = a.artists || {};
+            var now = new Date();
+            var isLive = a.status === 'live' && new Date(a.end_time) > now;
+            var isEnded = a.end_time && new Date(a.end_time) <= now && a.status === 'live';
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="font-weight:600">' + (a.auction_number || '—') + '</td>' +
+                '<td>' + (a.title || '—') + '</td>' +
+                '<td>' + (artist.artist_name || '—') + '</td>' +
+                '<td><span class="badge b-' + (a.status === 'live' ? 'approved' : a.status === 'sold' ? 'shipped' : 'pending') + '">' + a.status + '</span></td>' +
+                '<td>' + (a.total_bids || 0) + '</td>' +
+                '<td style="font-weight:600">$' + Number(a.current_bid || 0).toLocaleString() + '</td>' +
+                '<td>$' + Number(a.reserve_price || 0).toLocaleString() + '</td>' +
+                '<td style="font-size:.7rem">' + (a.end_time ? new Date(a.end_time).toLocaleDateString() + ' ' + new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—') + '</td>' +
+                '<td>' + (a.visible ? '✓' : '—') + '</td>' +
+                '<td id="auc-actions-' + a.id + '"></td>';
+            b.appendChild(tr);
+
+            var td = document.getElementById('auc-actions-' + a.id);
+
+            if (a.status === 'draft') {
+                mkBtn(td, 'Go Live', 'ab-list', function() { updateAuction(a.id, { status: 'live', visible: true }); });
+                mkBtn(td, 'Delete', 'ab-no', async function() {
+                    if (!confirm('Delete auction ' + a.auction_number + '?')) return;
+                    await db.from('auctions').delete().eq('id', a.id);
+                    loadAuctions();
+                });
+            } else if (a.status === 'live') {
+                if (!a.visible) mkBtn(td, 'Show', 'ab-list', function() { updateAuction(a.id, { visible: true }); });
+                if (a.visible) mkBtn(td, 'Hide', 'ab-unlist', function() { updateAuction(a.id, { visible: false }); });
+                mkBtn(td, 'End Now', 'ab-no', function() {
+                    if (!confirm('End this auction now?')) return;
+                    var cb = Number(a.current_bid || 0);
+                    var rp = Number(a.reserve_price || 0);
+                    if (cb >= rp) {
+                        updateAuction(a.id, { status: 'sold', winning_bid: cb, end_time: new Date().toISOString() });
+                    } else {
+                        updateAuction(a.id, { status: 'unsold', end_time: new Date().toISOString() });
+                    }
+                });
+            } else if (a.status === 'ended' || isEnded) {
+                var cb = Number(a.current_bid || 0);
+                var rp = Number(a.reserve_price || 0);
+                if (cb >= rp) {
+                    mkBtn(td, 'Mark Sold', 'ab-list', function() { updateAuction(a.id, { status: 'sold', winning_bid: cb }); });
+                }
+                mkBtn(td, 'Mark Unsold', 'ab-unlist', function() { updateAuction(a.id, { status: 'unsold' }); });
+            } else if (a.status === 'sold') {
+                td.innerHTML = '<span style="font-size:.7rem;color:var(--ok)">Sold — $' + Number(a.winning_bid || 0).toLocaleString() + '</span>';
+            } else {
+                td.innerHTML = '<span style="font-size:.7rem;color:var(--g400)">' + a.status + '</span>';
+            }
+        });
+    }
+
+    async function updateAuction(id, data) {
+        data.updated_at = new Date().toISOString();
+        await db.from('auctions').update(data).eq('id', id);
+        loadAuctions();
+    }
+
+    function renderAuctionFinance() {
+        var sold = allAuctionsList.filter(function(a) { return a.status === 'sold'; });
+        var totalSold = 0, houseFees = 0;
+        sold.forEach(function(a) {
+            var wb = Number(a.winning_bid || 0);
+            totalSold += wb;
+            houseFees += Math.round(wb * (Number(a.house_fee_pct || 30) / 100));
+        });
+        document.getElementById('af-total-sold').textContent = '$' + totalSold.toLocaleString();
+        document.getElementById('af-house-fees').textContent = '$' + houseFees.toLocaleString();
+        document.getElementById('af-artist-payouts').textContent = '$' + (totalSold - houseFees).toLocaleString();
+        document.getElementById('af-total-auctions').textContent = allAuctionsList.length;
+    }
+
+    // Populate artist dropdown (4+ stars only)
+    function populateAuctionArtists() {
+        var sel = document.getElementById('auc-artist');
+        sel.innerHTML = '<option value="">— Select artist (4+ stars) —</option>';
+        var eligible = allArtists.filter(function(a) { return Number(a.avg_rating || 0) >= 4; });
+        if (eligible.length === 0) {
+            // Also show all approved artists if none have 4+ rating yet
+            eligible = allArtists.filter(function(a) { return a.status === 'approved'; });
+            sel.innerHTML = '<option value="">— Select artist (all approved) —</option>';
+        }
+        eligible.forEach(function(a) {
+            var name = a.artist_name || ((a.first_name || '') + ' ' + (a.last_name || '')).trim();
+            var rating = Number(a.avg_rating || 0).toFixed(1);
+            sel.innerHTML += '<option value="' + a.id + '">' + name + ' (' + rating + '★)</option>';
+        });
+    }
+
+    // When artist is selected, load their artworks
+    document.getElementById('auc-artist').addEventListener('change', function() {
+        var artistId = this.value;
+        var sel = document.getElementById('auc-artwork');
+        sel.innerHTML = '<option value="">— Loading artworks... —</option>';
+        if (!artistId) { sel.innerHTML = '<option value="">— Select artist first —</option>'; return; }
+        var works = allArtworks.filter(function(w) { return w.artist_id === artistId && w.status !== 'sold'; });
+        sel.innerHTML = '<option value="">— Select artwork —</option>';
+        works.forEach(function(w) {
+            sel.innerHTML += '<option value="' + w.id + '">' + w.title + ' ($' + Number(w.price || 0).toLocaleString() + ')</option>';
+        });
+    });
+
+    // Create auction
+    document.getElementById('create-auction').addEventListener('click', async function() {
+        var msg = document.getElementById('auction-msg');
+        var number = document.getElementById('auc-number').value.trim();
+        var title = document.getElementById('auc-title').value.trim();
+        var artistId = document.getElementById('auc-artist').value;
+        var artworkId = document.getElementById('auc-artwork').value;
+        var reserve = parseFloat(document.getElementById('auc-reserve').value);
+        var start = parseFloat(document.getElementById('auc-start').value);
+        var startTime = document.getElementById('auc-start-time').value;
+        var endTime = document.getElementById('auc-end-time').value;
+        var desc = document.getElementById('auc-desc').value.trim();
+        var adminMsg = document.getElementById('auc-message').value.trim();
+
+        if (!number || !title || !artistId || !artworkId || !reserve || !start || !startTime || !endTime) {
+            msg.textContent = 'Please fill in all required fields.';
+            msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626';
+            return;
+        }
+
+        this.textContent = 'Creating...'; this.disabled = true;
+
+        var { error } = await db.from('auctions').insert({
+            auction_number: number,
+            title: title,
+            artist_id: artistId,
+            artwork_id: artworkId,
+            reserve_price: reserve,
+            starting_price: start,
+            current_bid: 0,
+            house_fee_pct: 30,
+            status: 'draft',
+            start_time: new Date(startTime).toISOString(),
+            end_time: new Date(endTime).toISOString(),
+            description: desc,
+            admin_message: adminMsg,
+            visible: false
+        });
+
+        if (error) {
+            msg.textContent = 'Error: ' + error.message;
+            msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626';
+        } else {
+            msg.textContent = 'Auction created! Set it to Live when ready.';
+            msg.style.display = 'block'; msg.style.background = '#f0fdf4'; msg.style.color = '#16a34a';
+            document.getElementById('auc-number').value = '';
+            document.getElementById('auc-title').value = '';
+            document.getElementById('auc-desc').value = '';
+            document.getElementById('auc-message').value = '';
+            loadAuctions();
+        }
+        this.textContent = 'Create Auction'; this.disabled = false;
+    });
 
     </script>
 </body>
