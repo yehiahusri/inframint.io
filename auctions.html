@@ -9,277 +9,370 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626}
-        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh}
+        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased}
         nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
         .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
         .logo-bar{width:3px;height:1.75rem;background:var(--white)}
         .logo-text{font-size:1.25rem;letter-spacing:-.01em}
         .logo-text span:first-child{font-weight:600;color:var(--white)}
         .logo-text span:last-child{font-weight:200;color:var(--g500)}
-        .nav-links{display:flex;gap:2rem;align-items:center}
-        .nav-link{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
-        .nav-link:hover{color:var(--white)}
-        .nav-active{color:var(--white);font-weight:600}
+        .nav-center{display:flex;gap:2rem}
+        .nav-center a{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
+        .nav-center a:hover{color:var(--white)}
+        .nav-center a.active{color:var(--white);font-weight:600}
+        .nav-right{display:flex;gap:1rem;align-items:center}
+        .nav-login{font-size:.8rem;color:var(--g400);text-decoration:none;transition:color .2s}
+        .nav-login:hover{color:var(--white)}
         .page{padding-top:4.5rem}
-        .auction-hero{background:var(--black);padding:4rem 3rem 3rem;color:var(--white)}
-        .hero-eyebrow{font-size:.65rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:.75rem}
-        .hero-title{font-size:2.5rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem}
-        .hero-title strong{font-weight:700}
-        .hero-sub{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7}
-        .live-section{background:var(--white);border-bottom:1px solid var(--g200)}
-        .live-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);padding:2rem 3rem .75rem}
-        .live-card{display:grid;grid-template-columns:1fr 1fr;min-height:500px}
-        .live-image{position:relative;overflow:hidden;background:var(--g200)}
-        .live-image img{width:100%;height:100%;object-fit:cover}
-        .live-number{position:absolute;bottom:1.5rem;left:1.5rem;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.4rem .8rem}
-        .live-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.35rem .75rem;display:flex;align-items:center;gap:.4rem}
-        .live-dot{width:6px;height:6px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
+
+        /* Hero */
+        .hero{background:var(--black);padding:4rem 3rem 3rem;color:var(--white)}
+        .hero-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g500);margin-bottom:.75rem}
+        .hero-t{font-size:2.5rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem}
+        .hero-t strong{font-weight:700}
+        .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7}
+
+        /* Live auction event banner */
+        .event-banner{background:var(--white);border-bottom:1px solid var(--g200);padding:2rem 3rem}
+        .event-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+        .event-info{}
+        .event-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:.25rem}
+        .event-title{font-size:1.5rem;font-weight:600;margin-bottom:.25rem}
+        .event-msg{font-size:.8rem;color:var(--g500);line-height:1.6;max-width:500px;border-left:3px solid var(--black);padding-left:.75rem;margin-top:.5rem}
+        .event-live{display:flex;align-items:center;gap:.4rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.4rem .8rem}
+        .event-dot{width:6px;height:6px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-        .live-content{padding:2.5rem;display:flex;flex-direction:column}
-        .live-artist-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
-        .live-artist-img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--g200)}
-        .live-artist-name{font-size:.8rem;font-weight:600}
-        .live-artist-meta{font-size:.7rem;color:var(--g400)}
-        .live-artist-stars{font-size:.7rem;color:var(--black)}
-        .live-title{font-size:1.75rem;font-weight:300;letter-spacing:-.02em;margin-bottom:.35rem}
-        .live-desc{font-size:.8rem;color:var(--g500);line-height:1.7;margin-bottom:1.25rem;flex:1}
-        .live-message{font-size:.75rem;color:var(--g600);padding:.75rem;background:var(--g100);margin-bottom:1.25rem;line-height:1.6;border-left:3px solid var(--black)}
-        .timer{text-align:center;margin-bottom:1.25rem}
-        .timer-label{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
-        .timer-digits{display:flex;gap:.5rem;justify-content:center}
-        .timer-unit{background:var(--g100);padding:.6rem .75rem;min-width:56px;text-align:center}
-        .timer-num{font-size:1.5rem;font-weight:700;color:var(--black)}
-        .timer-lbl{font-size:.45rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400)}
-        .bid-section{border-top:1px solid var(--g200);padding-top:1.25rem}
+        .event-timer{display:flex;gap:.5rem}
+        .t-unit{background:var(--g100);padding:.5rem .6rem;min-width:50px;text-align:center}
+        .t-num{font-size:1.25rem;font-weight:700}
+        .t-lbl{font-size:.4rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400)}
+        .event-stats{display:flex;gap:2rem;margin-top:1rem;font-size:.75rem;color:var(--g500)}
+        .event-stats strong{color:var(--black)}
+
+        /* Lots grid */
+        .lots-section{max-width:1200px;margin:0 auto;padding:2rem}
+        .lots-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
+        .lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+        .lot-card{background:var(--white);border:1px solid var(--g200);cursor:pointer;transition:border-color .2s;overflow:hidden}
+        .lot-card:hover{border-color:var(--black)}
+        .lot-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--g200);display:block}
+        .lot-body{padding:1rem}
+        .lot-num{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);margin-bottom:.2rem}
+        .lot-title{font-size:1rem;font-weight:600;margin-bottom:.15rem}
+        .lot-artist{font-size:.75rem;color:var(--g500);margin-bottom:.5rem}
+        .lot-meta{display:flex;gap:1rem;font-size:.7rem;color:var(--g400);margin-bottom:.5rem}
+        .lot-meta span{display:flex;align-items:center;gap:.25rem}
+        .lot-prices{display:flex;justify-content:space-between;align-items:baseline}
+        .lot-start{font-size:.7rem;color:var(--g400)}
+        .lot-current{font-size:1.1rem;font-weight:700}
+        .lot-like-btn{position:absolute;top:.75rem;right:.75rem;background:rgba(255,255,255,.9);border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .2s}
+        .lot-like-btn.liked{background:var(--black);color:var(--white)}
+        .lot-img-wrap{position:relative}
+
+        /* Lot detail overlay */
+        .lot-detail{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:1rem}
+        .lot-detail.open{display:flex}
+        .ld-card{background:var(--white);max-width:900px;width:100%;max-height:90vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr}
+        .ld-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--g400);z-index:5}
+        .ld-close:hover{color:var(--black)}
+        .ld-img{width:100%;height:100%;min-height:400px;object-fit:cover;background:var(--g200)}
+        .ld-content{padding:2rem;position:relative}
+        .ld-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+        .ld-title{font-size:1.5rem;font-weight:300;margin-bottom:.25rem}
+        .ld-artist{font-size:.85rem;color:var(--g500);margin-bottom:.75rem}
+        .ld-desc{font-size:.8rem;color:var(--g500);line-height:1.7;margin-bottom:1.25rem}
+        .ld-meta{display:flex;gap:1.5rem;font-size:.75rem;color:var(--g400);margin-bottom:1.25rem}
+
+        .bid-section{border-top:1px solid var(--g200);padding-top:1rem}
         .bid-current{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem}
         .bid-label{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400)}
-        .bid-amount{font-size:2rem;font-weight:700}
+        .bid-amount{font-size:1.75rem;font-weight:700}
         .bid-count{font-size:.7rem;color:var(--g400)}
         .fee-row{display:flex;justify-content:space-between;font-size:.75rem;color:var(--g500);margin-bottom:.2rem}
-        .fee-total{display:flex;justify-content:space-between;font-size:.9rem;font-weight:600;padding-top:.5rem;border-top:1px solid var(--g200);margin-bottom:1rem}
-        .bid-btns{display:flex;gap:.35rem;margin-bottom:.75rem;flex-wrap:wrap}
-        .bid-btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:600;padding:.5rem .75rem;background:var(--white);color:var(--black);border:1px solid var(--g300);cursor:pointer;transition:all .2s}
+        .fee-total{display:flex;justify-content:space-between;font-size:.9rem;font-weight:600;padding-top:.5rem;border-top:1px solid var(--g200);margin-bottom:.75rem}
+        .bid-btns{display:flex;gap:.3rem;margin-bottom:.6rem;flex-wrap:wrap}
+        .bid-btn{font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:600;padding:.45rem .65rem;background:var(--white);color:var(--black);border:1px solid var(--g300);cursor:pointer;transition:all .15s}
         .bid-btn:hover{border-color:var(--black)}
         .bid-btn.active{background:var(--black);color:var(--white);border-color:var(--black)}
-        .bid-custom{display:flex;gap:.5rem;margin-bottom:.75rem}
-        .bid-input{flex:1;padding:.6rem;font-family:'Manrope',sans-serif;font-size:.85rem;border:1px solid var(--g300);background:var(--white)}
+        .bid-custom{display:flex;gap:.4rem;margin-bottom:.6rem}
+        .bid-input{flex:1;padding:.5rem;font-family:'Manrope',sans-serif;font-size:.8rem;border:1px solid var(--g300)}
         .bid-input:focus{outline:none;border-color:var(--black)}
-        .place-bid{width:100%;padding:.875rem;font-family:'Manrope',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--black);color:var(--white);border:none;cursor:pointer;transition:background .2s}
+        .place-bid{width:100%;padding:.75rem;font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--black);color:var(--white);border:none;cursor:pointer}
         .place-bid:hover{background:var(--g800)}
         .place-bid:disabled{background:var(--g300);color:var(--g500);cursor:not-allowed}
-        .bid-msg{padding:.5rem;font-size:.8rem;margin-bottom:.75rem;display:none}
-        .login-prompt{text-align:center;padding:1rem;font-size:.8rem;color:var(--g500)}
+        .bid-msg{padding:.4rem;font-size:.75rem;margin-bottom:.5rem;display:none}
+        .login-prompt{text-align:center;padding:.75rem;font-size:.8rem;color:var(--g500)}
         .login-prompt a{color:var(--black);font-weight:600}
-        .bid-history{margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--g200)}
-        .bh-title{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
-        .bh-item{display:flex;justify-content:space-between;font-size:.75rem;padding:.3rem 0;border-bottom:1px solid var(--g100)}
-        .bh-bidder{color:var(--g400)}
-        .bh-amount{font-weight:600}
-        .bh-time{color:var(--g400);font-size:.65rem}
-        .past-section{max-width:1200px;margin:0 auto;padding:3rem 2rem 4rem}
-        .past-title{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:1.5rem}
-        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+
+        /* Past auctions */
+        .past-section{max-width:1200px;margin:0 auto;padding:2rem 2rem 4rem}
+        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
         .past-card{background:var(--white);border:1px solid var(--g200);position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s}
         .past-card:hover{border-color:var(--black)}
-        .past-bg-num{position:absolute;right:-10px;bottom:-20px;font-size:10rem;font-weight:800;color:var(--g100);line-height:1;pointer-events:none;user-select:none;z-index:0}
-        .past-inner{position:relative;z-index:1;padding:1.75rem}
-        .past-num{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.75rem}
-        .past-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--g200);margin-bottom:1rem}
-        .past-card-title{font-size:1.1rem;font-weight:300;letter-spacing:-.01em;margin-bottom:.25rem}
-        .past-artist{font-size:.75rem;color:var(--g500);margin-bottom:.75rem}
-        .past-stats{display:flex;gap:1.5rem}
-        .past-stat-val{font-size:1.1rem;font-weight:700}
-        .past-stat-lbl{font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
-        .past-status{position:absolute;top:1.75rem;right:1.75rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;z-index:2}
-        .past-sold{background:var(--black);color:var(--white)}
-        .past-unsold{background:var(--g200);color:var(--g500)}
-        .detail-panel{background:var(--white);border:1px solid var(--g200);margin-bottom:1.5rem;animation:slideDown .3s ease}
-        @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-        .dp-close{float:right;background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--g400);padding:1rem}
-        .dp-close:hover{color:var(--black)}
-        .dp-layout{display:grid;grid-template-columns:1fr 1fr;min-height:350px}
-        .dp-image{overflow:hidden;background:var(--g200)}
-        .dp-image img{width:100%;height:100%;object-fit:cover}
-        .dp-content{padding:2rem}
-        .dp-number{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
-        .dp-title{font-size:1.5rem;font-weight:300;margin-bottom:.25rem}
-        .dp-artist{font-size:.8rem;color:var(--g500);margin-bottom:1rem}
-        .dp-desc{font-size:.8rem;color:var(--g500);line-height:1.7;margin-bottom:1rem}
-        .dp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
-        .dp-stat{background:var(--g100);padding:.75rem;text-align:center}
-        .dp-stat-val{font-size:1.25rem;font-weight:700}
-        .dp-stat-lbl{font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
-        .no-auctions{text-align:center;padding:6rem 2rem;color:var(--g400)}
-        .no-auctions h3{font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--g500)}
-        .coming-soon{display:none;text-align:center;padding:8rem 2rem;background:var(--white)}
-        .cs-label{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
-        .cs-title{font-size:2.5rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.75rem}
-        .cs-title strong{font-weight:700}
-        .cs-text{font-size:.9rem;color:var(--g500);max-width:400px;margin:0 auto;line-height:1.7}
+        .past-bg{position:absolute;right:-10px;bottom:-20px;font-size:10rem;font-weight:800;color:var(--g100);line-height:1;pointer-events:none;user-select:none}
+        .past-inner{position:relative;z-index:1;padding:1.5rem}
+        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+        .past-title{font-size:1.1rem;font-weight:300;margin-bottom:.5rem}
+        .past-stats{display:flex;gap:1.5rem;font-size:.75rem}
+        .past-stat strong{display:block;font-size:1rem}
+        .past-stat span{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
+        .past-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;z-index:2;background:var(--black);color:var(--white)}
+
+        .coming-soon{text-align:center;padding:8rem 2rem;background:var(--white)}
+        .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
+        .cs-t{font-size:2.5rem;font-weight:300;margin-bottom:.75rem}
+        .cs-t strong{font-weight:700}
+        .cs-s{font-size:.9rem;color:var(--g500);max-width:400px;margin:0 auto;line-height:1.7}
+        .no-auctions{text-align:center;padding:4rem 2rem;color:var(--g400)}
+
         footer{border-top:1px solid var(--g200);padding:2rem;text-align:center}
         footer a{color:var(--g500);text-decoration:none;margin:0 .75rem;font-size:.75rem}
         footer a:hover{color:var(--black)}
         .footer-copy{font-size:.7rem;color:var(--g400);margin-top:1rem}
-        @media(max-width:768px){nav{padding:0 1.5rem}.auction-hero{padding:2.5rem 1.5rem 2rem}.hero-title{font-size:1.75rem}.live-card,.dp-layout{grid-template-columns:1fr}.live-image{aspect-ratio:4/3}.past-grid{grid-template-columns:1fr}.dp-image{aspect-ratio:4/3}.dp-stats{grid-template-columns:1fr}}
+
+        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:2.5rem 1.5rem 2rem}.hero-t{font-size:1.75rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-grid{grid-template-columns:1fr}}
+        @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
     </style>
 </head>
 <body>
 <div class="page">
     <nav>
         <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <div class="nav-links">
-            <a href="gallery.html" class="nav-link">Gallery</a>
-            <a href="artists.html" class="nav-link">Artists</a>
-            <a href="blog.html" class="nav-link">The Drip</a>
-            <a href="auctions.html" class="nav-link nav-active">Auctions</a>
+        <div class="nav-center">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html" class="active">Auctions</a>
+            <a href="about.html">About</a>
+        </div>
+        <div class="nav-right" id="nav-right">
+            <a href="collector-login.html" class="nav-login">Sign In</a>
         </div>
     </nav>
-    <div class="auction-hero">
-        <div class="hero-eyebrow">InfraMint Auctions</div>
-        <div class="hero-title">Where <strong>Masterpieces</strong> Find Their Collector</div>
-        <div class="hero-sub">Curated auctions for top-rated emerging artists. Anonymous bidding. 30% house fee on top of winning bid.</div>
+
+    <div class="hero">
+        <div class="hero-ey">InfraMint Auctions</div>
+        <div class="hero-t">Where <strong>Masterpieces</strong> Find Their Collector</div>
+        <div class="hero-s">Curated auctions for top-rated emerging artists. Anonymous bidding. 30% house fee on top of winning bid.</div>
     </div>
-    <div class="live-section" id="live-section" style="display:none">
-        <div class="live-label">Live Now</div>
-        <div id="live-container"></div>
+
+    <!-- Coming soon (shown when auctions disabled) -->
+    <div id="coming-soon" style="display:none">
+        <div class="coming-soon">
+            <div class="cs-ey">Auctions</div>
+            <div class="cs-t">Coming <strong>Soon</strong></div>
+            <div class="cs-s">Curated auctions featuring top-rated emerging artists. Anonymous bidding on masterpieces, selected by InfraMint.</div>
+        </div>
     </div>
-    <div class="past-section">
-        <div class="past-title" id="past-label">Previous Auctions</div>
-        <div id="detail-container"></div>
+
+    <!-- Live event banner -->
+    <div id="event-section" style="display:none">
+        <div class="event-banner" id="event-banner"></div>
+    </div>
+
+    <!-- Lots grid -->
+    <div class="lots-section" id="lots-section" style="display:none">
+        <div class="lots-label" id="lots-label">Masterpieces</div>
+        <div class="lots-grid" id="lots-grid"></div>
+    </div>
+
+    <!-- Past auctions -->
+    <div class="past-section" id="past-section" style="display:none">
+        <div class="lots-label">Previous Auctions</div>
         <div class="past-grid" id="past-grid"></div>
     </div>
-    <div class="no-auctions" id="no-auctions" style="display:none">
-        <h3>No auctions yet</h3>
-        <p>Curated auctions featuring top-rated emerging artists will appear here.</p>
+
+    <div class="no-auctions" id="no-auctions" style="display:none"><p>No auctions yet. Check back soon.</p></div>
+
+    <!-- Lot detail modal -->
+    <div class="lot-detail" id="lot-modal">
+        <div class="ld-card" id="lot-modal-content"></div>
     </div>
-    <div class="coming-soon" id="coming-soon">
-        <div class="cs-label">Auctions</div>
-        <div class="cs-title">Coming <strong>Soon</strong></div>
-        <div class="cs-text">Curated auctions featuring top-rated emerging artists. Anonymous bidding on masterpieces, selected by InfraMint.</div>
-    </div>
+
     <footer>
         <a href="index.html">Home</a><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
         <div class="footer-copy">&copy; 2026 InfraMint. All rights reserved.</div>
     </footer>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
-var currentUser=null,collectorId=null;
+var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
-    // Check if auctions are enabled
     var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').single();
     if(!setting||setting.value!=='true'){
         document.getElementById('coming-soon').style.display='block';
-        document.querySelector('.auction-hero').style.display='none';
-        document.querySelector('.past-section').style.display='none';
+        document.querySelector('.hero').style.display='none';
         return;
     }
     var{data:{session}}=await db.auth.getSession();
-    if(session){currentUser=session.user;var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();if(col)collectorId=col.id;}
+    if(session){
+        currentUser=session.user;
+        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();
+        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';}
+        // Load likes
+        if(collectorId){
+            var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);
+            likedLots=(likes||[]).map(function(l){return l.lot_id;});
+        }
+    }
     loadAuctions();
 }
 
 async function loadAuctions(){
-    var{data:auctions}=await db.from('auctions').select('*,artists(artist_name,first_name,last_name,profile_image_url,bio,city,country,avg_rating,review_count)').eq('visible',true).order('created_at',{ascending:false});
+    var{data:auctions}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
     if(!auctions||auctions.length===0){document.getElementById('no-auctions').style.display='block';return;}
     var now=new Date();
     var live=auctions.filter(function(a){return a.status==='live'&&new Date(a.end_time)>now;});
-    var past=auctions.filter(function(a){return a.status!=='live'||new Date(a.end_time)<=now;});
-    if(live.length>0){document.getElementById('live-section').style.display='block';renderLive(live[0]);}
-    if(past.length>0){renderPast(past);}
-    if(live.length===0&&past.length===0){document.getElementById('no-auctions').style.display='block';}
+    var upcoming=auctions.filter(function(a){return a.status==='upcoming'||(a.status==='live'&&new Date(a.start_time)>now);});
+    var past=auctions.filter(function(a){return a.status==='ended'||a.status==='sold'||a.status==='unsold'||(a.status==='live'&&new Date(a.end_time)<=now);});
+
+    if(live.length>0){
+        renderEvent(live[0]);
+        loadAndRenderLots(live[0].id);
+    }else if(upcoming.length>0){
+        renderEvent(upcoming[0]);
+        loadAndRenderLots(upcoming[0].id);
+    }
+    if(past.length>0)renderPast(past);
 }
 
-function renderLive(a){
-    var artist=a.artists||{};
-    var hasImg=a.image_url&&!a.image_url.includes('placehold');
-    var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
-    var cb=Number(a.current_bid||a.starting_price||0),hf=Math.round(cb*(a.house_fee_pct/100)),tot=cb+hf;
-    var r=Math.round(artist.avg_rating||0),stars='';for(var i=0;i<5;i++)stars+=i<r?'\u2605':'\u2606';
-
-    db.from('bids').select('bid_amount,created_at').eq('auction_id',a.id).order('created_at',{ascending:false}).limit(5).then(function(res){
-        var bids=res.data||[],bhHTML='';
-        if(bids.length>0){
-            bhHTML='<div class="bid-history"><div class="bh-title">Recent Bids</div>';
-            bids.forEach(function(b,i){var t=new Date(b.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});bhHTML+='<div class="bh-item"><span class="bh-bidder">Bidder #'+(bids.length-i)+'</span><span class="bh-amount">$'+Number(b.bid_amount).toLocaleString()+'</span><span class="bh-time">'+t+'</span></div>';});
-            bhHTML+='</div>';
-        }
-        var bidHTML='';
-        if(collectorId){
-            bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(a.total_bids||0)+' bids</div></div>'+
-            '<div class="fee-row"><span>House fee (30%)</span><span>$'+hf.toLocaleString()+'</span></div>'+
-            '<div class="fee-total"><span>Total if you win</span><span>$'+tot.toLocaleString()+'</span></div>'+
-            '<div class="bid-msg" id="bid-msg-'+a.id+'"></div>'+
-            '<div class="bid-btns" id="bid-btns-'+a.id+'"><button class="bid-btn" data-inc="10">+$10</button><button class="bid-btn" data-inc="50">+$50</button><button class="bid-btn" data-inc="100">+$100</button><button class="bid-btn" data-inc="250">+$250</button><button class="bid-btn" data-inc="500">+$500</button><button class="bid-btn" data-inc="1000">+$1,000</button></div>'+
-            '<div class="bid-custom"><input type="number" class="bid-input" id="custom-bid-'+a.id+'" placeholder="Custom amount ($)" min="1"></div>'+
-            '<button class="place-bid" id="place-bid-'+a.id+'" data-aid="'+a.id+'" data-current="'+cb+'" data-fee="'+a.house_fee_pct+'">Place Bid</button>'+bhHTML+'</div>';
-        }else{
-            bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(a.total_bids||0)+' bids</div></div><div class="login-prompt"><a href="collector-login.html">Sign in</a> to place a bid</div>'+bhHTML+'</div>';
-        }
-        document.getElementById('live-container').innerHTML='<div class="live-card"><div class="live-image">'+(hasImg?'<img src="'+a.image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'<div class="live-number">'+a.auction_number+'</div><div class="live-badge"><div class="live-dot"></div> Live</div></div><div class="live-content"><div class="live-artist-row">'+(artist.profile_image_url?'<img class="live-artist-img" src="'+artist.profile_image_url+'">':'<div class="live-artist-img"></div>')+'<div><div class="live-artist-name">'+artistName+'</div><div class="live-artist-stars">'+stars+' '+(artist.avg_rating?Number(artist.avg_rating).toFixed(1):'\u2014')+'</div><div class="live-artist-meta">'+[artist.city,artist.country].filter(Boolean).join(', ')+'</div></div></div><div class="live-title">'+a.title+'</div><div class="live-desc">'+(a.description||a.description||'')+'</div>'+(a.admin_message?'<div class="live-message">'+a.admin_message+'</div>':'')+
-        '<div class="timer"><div class="timer-label">Time Remaining</div><div class="timer-digits" id="timer-live-'+a.id+'"></div></div>'+bidHTML+'</div></div>';
-        startTimer('live-'+a.id,a.end_time);
-        bindBid(a.id);
-    });
+function renderEvent(a){
+    document.getElementById('event-section').style.display='block';
+    var isLive=a.status==='live'&&new Date(a.end_time)>new Date();
+    var banner=document.getElementById('event-banner');
+    banner.innerHTML=
+        '<div class="event-top"><div class="event-info"><div class="event-num">'+a.auction_number+'</div><div class="event-title">'+a.title+'</div>'+(a.admin_message?'<div class="event-msg">'+a.admin_message+'</div>':'')+'</div><div style="text-align:right">'+(isLive?'<div class="event-live"><div class="event-dot"></div> Live</div>':'<div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:.4rem .8rem;background:var(--g100)">Upcoming</div>')+'<div class="event-timer" id="event-timer" style="margin-top:.75rem"></div></div></div>';
+    startTimer('event-timer',isLive?a.end_time:a.start_time,isLive?'Ends in':'Starts in');
 }
 
-function renderPast(auctions){
-    var grid=document.getElementById('past-grid');grid.innerHTML='';
-    auctions.forEach(function(a,idx){
-        artist=a.artists||{};
-        var hasImg=a.image_url&&!a.image_url.includes('placehold');
-        var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
-        var num=a.auction_number||('A-'+String(idx+1).padStart(3,'0'));
-        var numDigits=num.replace(/[^0-9]/g,'')||String(idx+1);
-        var isSold=a.status==='sold';
-        var card=document.createElement('div');card.className='past-card';
-        card.innerHTML='<div class="past-bg-num">'+numDigits+'</div>'+(isSold?'<div class="past-status past-sold">Sold</div>':'<div class="past-status past-unsold">'+a.status+'</div>')+'<div class="past-inner"><div class="past-num">'+num+'</div>'+(hasImg?'<img class="past-img" src="'+a.image_url+'">':'<div class="past-img"></div>')+'<div class="past-card-title">'+a.title+'</div><div class="past-artist">by '+artistName+'</div><div class="past-stats"><div><div class="past-stat-val">'+(a.total_bids||0)+'</div><div class="past-stat-lbl">Bids</div></div><div><div class="past-stat-val">$'+Number(a.winning_bid||a.current_bid||0).toLocaleString()+'</div><div class="past-stat-lbl">'+(isSold?'Sold For':'Final Bid')+'</div></div></div></div>';
-        card.addEventListener('click',function(){openDetail(a);});
+async function loadAndRenderLots(auctionId){
+    var{data:lots}=await db.from('auction_lots').select('*').eq('auction_id',auctionId).order('lot_number',{ascending:true});
+    if(!lots||lots.length===0){document.getElementById('lots-section').style.display='block';document.getElementById('lots-grid').innerHTML='<div class="no-auctions">Paintings coming soon.</div>';return;}
+    document.getElementById('lots-section').style.display='block';
+    document.getElementById('lots-label').textContent=lots.length+' Masterpiece'+(lots.length!==1?'s':'');
+    var grid=document.getElementById('lots-grid');
+    grid.innerHTML='';
+    lots.forEach(function(lot){
+        var hasImg=lot.image_url&&lot.image_url.length>5;
+        var isLiked=likedLots.indexOf(lot.id)>=0;
+        var card=document.createElement('div');
+        card.className='lot-card';
+        card.innerHTML=
+            '<div class="lot-img-wrap">'+(hasImg?'<img class="lot-img" src="'+lot.image_url+'">':'<div class="lot-img"></div>')+'<button class="lot-like-btn'+(isLiked?' liked':'')+'" data-lid="'+lot.id+'">'+(isLiked?'♥':'♡')+'</button></div>'+
+            '<div class="lot-body"><div class="lot-num">Lot '+lot.lot_number+'</div><div class="lot-title">'+lot.title+'</div><div class="lot-artist">by '+lot.artist_name+'</div>'+
+            '<div class="lot-meta"><span>♡ '+( lot.like_count||0)+'</span><span>'+( lot.view_count||0)+' views</span><span>'+(lot.total_bids||0)+' bids</span></div>'+
+            '<div class="lot-prices"><div class="lot-start">From $'+Number(lot.starting_price).toLocaleString()+'</div><div class="lot-current">'+(lot.current_bid>0?'$'+Number(lot.current_bid).toLocaleString():'—')+'</div></div></div>';
+        card.addEventListener('click',function(e){if(!e.target.closest('.lot-like-btn'))openLotDetail(lot);});
         grid.appendChild(card);
+
+        // Track view
+        db.rpc('increment_lot_view',{lid:lot.id}).catch(function(){});
+    });
+
+    // Like button handlers
+    grid.querySelectorAll('.lot-like-btn').forEach(function(btn){
+        btn.addEventListener('click',async function(e){
+            e.stopPropagation();
+            if(!collectorId){window.location.href='collector-login.html';return;}
+            var lid=this.dataset.lid;
+            var idx=likedLots.indexOf(lid);
+            if(idx>=0){
+                await db.from('auction_lot_likes').delete().eq('lot_id',lid).eq('collector_id',collectorId);
+                likedLots.splice(idx,1);this.textContent='♡';this.classList.remove('liked');
+            }else{
+                await db.from('auction_lot_likes').insert({lot_id:lid,collector_id:collectorId});
+                likedLots.push(lid);this.textContent='♥';this.classList.add('liked');
+            }
+        });
     });
 }
 
-function openDetail(a){
-    artist=a.artists||{};
-    var hasImg=a.image_url&&!a.image_url.includes('placehold');
-    var artistName=a.artist_name_display||artist.artist_name||((artist.first_name||'')+' '+(artist.last_name||'')).trim()||'Unknown';
-    var cb=Number(a.current_bid||a.starting_price||0),hf=Math.round(cb*(a.house_fee_pct/100));
-    var isSold=a.status==='sold';
-    var c=document.getElementById('detail-container');
-    c.innerHTML='<div class="detail-panel"><button class="dp-close" onclick="this.parentElement.remove()">&times;</button><div class="dp-layout"><div class="dp-image">'+(hasImg?'<img src="'+a.image_url+'">':'<div style="width:100%;height:100%;background:var(--g200)"></div>')+'</div><div class="dp-content"><div class="dp-number">'+(a.auction_number||'')+'</div><div class="dp-title">'+a.title+'</div><div class="dp-artist">by '+artistName+'</div><div class="dp-desc">'+(a.description||a.description||'')+'</div>'+(a.admin_message?'<div class="live-message" style="margin-bottom:1rem">'+a.admin_message+'</div>':'')+'<div class="dp-stats"><div class="dp-stat"><div class="dp-stat-val">'+(a.total_bids||0)+'</div><div class="dp-stat-lbl">Total Bids</div></div><div class="dp-stat"><div class="dp-stat-val">$'+Number(a.winning_bid||cb).toLocaleString()+'</div><div class="dp-stat-lbl">'+(isSold?'Winning Bid':'Final Bid')+'</div></div><div class="dp-stat"><div class="dp-stat-val">$'+(Number(a.winning_bid||cb)+hf).toLocaleString()+'</div><div class="dp-stat-lbl">Total w/ Fee</div></div></div></div></div></div>';
-    c.scrollIntoView({behavior:'smooth',block:'start'});
+function openLotDetail(lot){
+    var modal=document.getElementById('lot-modal');
+    var content=document.getElementById('lot-modal-content');
+    var hasImg=lot.image_url&&lot.image_url.length>5;
+    var cb=Number(lot.current_bid||lot.starting_price||0);
+    var hf=Math.round(cb*(lot.house_fee_pct||30)/100);
+    var tot=cb+hf;
+
+    var bidHTML='';
+    if(collectorId){
+        bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(lot.total_bids||0)+' bids</div></div>'+
+        '<div class="fee-row"><span>House fee (30%)</span><span>$'+hf.toLocaleString()+'</span></div>'+
+        '<div class="fee-total"><span>Total if you win</span><span>$'+tot.toLocaleString()+'</span></div>'+
+        '<div class="bid-msg" id="bid-msg-'+lot.id+'"></div>'+
+        '<div class="bid-btns" id="bid-btns-'+lot.id+'"><button class="bid-btn" data-inc="10">+$10</button><button class="bid-btn" data-inc="50">+$50</button><button class="bid-btn" data-inc="100">+$100</button><button class="bid-btn" data-inc="250">+$250</button><button class="bid-btn" data-inc="500">+$500</button><button class="bid-btn" data-inc="1000">+$1K</button></div>'+
+        '<div class="bid-custom"><input type="number" class="bid-input" id="custom-bid-'+lot.id+'" placeholder="Custom ($)" min="1"></div>'+
+        '<button class="place-bid" id="place-bid-'+lot.id+'">Place Bid</button></div>';
+    }else{
+        bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(lot.total_bids||0)+' bids</div></div><div class="login-prompt"><a href="collector-login.html">Sign in</a> to place a bid</div></div>';
+    }
+
+    content.innerHTML=
+        '<button class="ld-close" id="close-lot-modal">&times;</button>'+
+        (hasImg?'<img class="ld-img" src="'+lot.image_url+'">':'<div class="ld-img"></div>')+
+        '<div class="ld-content"><div class="ld-num">Lot '+lot.lot_number+'</div><div class="ld-title">'+lot.title+'</div><div class="ld-artist">by '+lot.artist_name+'</div>'+
+        (lot.description?'<div class="ld-desc">'+lot.description+'</div>':'')+
+        '<div class="ld-meta"><span>♡ '+(lot.like_count||0)+' likes</span><span>'+(lot.view_count||0)+' views</span></div>'+
+        bidHTML+'</div>';
+
+    modal.classList.add('open');
+    document.getElementById('close-lot-modal').addEventListener('click',function(){modal.classList.remove('open');});
+    modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('open');});
+
+    // Bind bid buttons
+    if(collectorId)bindBid(lot);
 }
 
-function bindBid(aid){
-    var bg=document.getElementById('bid-btns-'+aid);if(!bg)return;
-    bg.querySelectorAll('.bid-btn').forEach(function(b){b.addEventListener('click',function(){bg.querySelectorAll('.bid-btn').forEach(function(x){x.classList.remove('active');});this.classList.add('active');document.getElementById('custom-bid-'+aid).value='';});});
-    var pb=document.getElementById('place-bid-'+aid);if(!pb)return;
+function bindBid(lot){
+    var bg=document.getElementById('bid-btns-'+lot.id);
+    if(!bg)return;
+    bg.querySelectorAll('.bid-btn').forEach(function(b){b.addEventListener('click',function(){bg.querySelectorAll('.bid-btn').forEach(function(x){x.classList.remove('active');});this.classList.add('active');document.getElementById('custom-bid-'+lot.id).value='';});});
+    var pb=document.getElementById('place-bid-'+lot.id);
+    if(!pb)return;
     pb.addEventListener('click',async function(){
-        var cb=parseFloat(this.dataset.current),fp=parseFloat(this.dataset.fee),m=document.getElementById('bid-msg-'+aid);
-        var cv=parseFloat(document.getElementById('custom-bid-'+aid).value),ab=bg.querySelector('.bid-btn.active');
+        var cb=Number(lot.current_bid||lot.starting_price||0),fp=lot.house_fee_pct||30;
+        var m=document.getElementById('bid-msg-'+lot.id);
+        var cv=parseFloat(document.getElementById('custom-bid-'+lot.id).value);
+        var ab=bg.querySelector('.bid-btn.active');
         var inc=cv||(ab?parseInt(ab.dataset.inc):0);
         if(!inc||inc<1){m.textContent='Select an increment or enter a custom amount.';m.style.display='block';m.style.background='#fef3c7';m.style.color='#92400e';return;}
         var nb=cb+inc,fee=Math.round(nb*(fp/100)),ta=nb+fee;
         if(!confirm('Bid $'+nb.toLocaleString()+'?\nHouse fee: $'+fee.toLocaleString()+'\nTotal: $'+ta.toLocaleString()))return;
-        this.textContent='PLACING BID...';this.disabled=true;
-        var{error}=await db.from('bids').insert({auction_id:aid,collector_id:collectorId,bid_amount:nb,house_fee:fee,total_amount:ta,is_anonymous:true});
-        if(error){m.textContent='Error: '+error.message;m.style.display='block';m.style.background='#fef2f2';m.style.color='#dc2626';this.textContent='PLACE BID';this.disabled=false;return;}
-        m.textContent='Bid placed \u2014 $'+nb.toLocaleString();m.style.display='block';m.style.background='#f0fdf4';m.style.color='#16a34a';
+        this.textContent='Placing...';this.disabled=true;
+        var{error}=await db.from('bids').insert({auction_id:lot.auction_id,lot_id:lot.id,collector_id:collectorId,bid_amount:nb,house_fee:fee,total_amount:ta,is_anonymous:true});
+        if(error){m.textContent='Error: '+error.message;m.style.display='block';m.style.background='#fef2f2';m.style.color='#dc2626';this.textContent='Place Bid';this.disabled=false;return;}
+        m.textContent='Bid placed — $'+nb.toLocaleString();m.style.display='block';m.style.background='#f0fdf4';m.style.color='#16a34a';
         setTimeout(function(){location.reload();},1500);
     });
 }
 
-function startTimer(id,target){
+function renderPast(auctions){
+    document.getElementById('past-section').style.display='block';
+    var grid=document.getElementById('past-grid');grid.innerHTML='';
+    auctions.forEach(function(a,idx){
+        var num=a.auction_number||('A-'+String(idx+1).padStart(3,'0'));
+        var numDigits=num.replace(/[^0-9]/g,'')||String(idx+1);
+        var card=document.createElement('div');card.className='past-card';
+        card.innerHTML='<div class="past-bg">'+numDigits+'</div><div class="past-badge">'+a.status+'</div><div class="past-inner"><div class="past-num">'+num+'</div><div class="past-title">'+a.title+'</div><div class="past-stats"><div class="past-stat"><strong>'+(a.lot_count||0)+'</strong><span>Paintings</span></div><div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div><div class="past-stat"><strong>'+(a.total_views||0)+'</strong><span>Views</span></div></div></div>';
+        grid.appendChild(card);
+    });
+}
+
+function startTimer(elId,target,label){
+    var el=document.getElementById(elId);if(!el)return;
     function u(){
-        var d=new Date(target).getTime()-Date.now(),el=document.getElementById('timer-'+id);if(!el)return;
-        if(d<=0){el.innerHTML='<div class="timer-unit"><div class="timer-num">\u2014</div><div class="timer-lbl">Ended</div></div>';return;}
-        var dy=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3),html='';
-        if(dy>0)html+='<div class="timer-unit"><div class="timer-num">'+dy+'</div><div class="timer-lbl">Days</div></div>';
-        html+='<div class="timer-unit"><div class="timer-num">'+String(h).padStart(2,'0')+'</div><div class="timer-lbl">Hrs</div></div>';
-        html+='<div class="timer-unit"><div class="timer-num">'+String(m).padStart(2,'0')+'</div><div class="timer-lbl">Min</div></div>';
-        html+='<div class="timer-unit"><div class="timer-num">'+String(s).padStart(2,'0')+'</div><div class="timer-lbl">Sec</div></div>';
+        var d=new Date(target).getTime()-Date.now();
+        if(d<=0){el.innerHTML='<div style="font-size:.7rem;color:var(--g400)">Ended</div>';return;}
+        var dy=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3);
+        var html='<div style="font-size:.45rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);margin-bottom:.4rem">'+label+'</div><div class="event-timer" style="display:flex;gap:.4rem">';
+        if(dy>0)html+='<div class="t-unit"><div class="t-num">'+dy+'</div><div class="t-lbl">Days</div></div>';
+        html+='<div class="t-unit"><div class="t-num">'+String(h).padStart(2,'0')+'</div><div class="t-lbl">Hrs</div></div>';
+        html+='<div class="t-unit"><div class="t-num">'+String(m).padStart(2,'0')+'</div><div class="t-lbl">Min</div></div>';
+        html+='<div class="t-unit"><div class="t-num">'+String(s).padStart(2,'0')+'</div><div class="t-lbl">Sec</div></div></div>';
         el.innerHTML=html;
     }
     u();setInterval(u,1000);

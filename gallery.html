@@ -722,6 +722,7 @@
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
             <a href="blog.html">The Drip</a>
+            <a href="auctions.html">Auctions</a>
             <a href="index.html#how">How It Works</a>
             <a href="index.html#artists">For Artists</a>
             <a href="about.html">About</a>
@@ -735,6 +736,7 @@
             <a href="gallery.html" class="active">Gallery</a>
             <a href="artists.html">Artists</a>
             <a href="blog.html">The Drip</a>
+            <a href="auctions.html">Auctions</a>
             <a href="index.html#how">How It Works</a>
             <a href="index.html#artists">For Artists</a>
             <a href="about.html">About</a>
@@ -791,61 +793,9 @@
                 <div class="modal-description" id="modal-description"></div>
                 <div class="modal-details" id="modal-details"></div>
                 <button class="modal-cta" id="modal-cta">Buy Now</button>
-                <div style="display:flex;gap:.5rem;margin-top:.5rem">
-                    <button class="modal-wish" id="modal-wish" style="flex:1">♡ Save to Wishlist</button>
-                    <button class="modal-wish" id="modal-offer" style="flex:1;background:var(--g100);color:var(--black);border:1px solid var(--g300)">Make an Offer</button>
-                </div>
-                <button id="modal-ar" style="width:100%;margin-top:.5rem;padding:.65rem;font-size:.8rem;font-family:'Manrope',sans-serif;background:none;border:1px solid var(--g300);cursor:pointer;color:var(--g600);transition:all .2s" onmouseover="this.style.borderColor='var(--black)';this.style.color='var(--black)'" onmouseout="this.style.borderColor='var(--g300)';this.style.color='var(--g600)'">📱 View on Your Wall (AR)</button>
-                <div id="modal-similar" style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--g200);display:none">
-                    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--g400);margin-bottom:.75rem">You might also like</div>
-                    <div id="similar-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem"></div>
-                </div>
+                <button class="modal-wish" id="modal-wish">♡ Save to Wishlist</button>
             </div>
         </div>
-    </div>
-
-    <!-- Make an Offer Modal -->
-    <div id="offer-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1001;display:none;align-items:center;justify-content:center;padding:1rem">
-        <div style="background:var(--white);max-width:420px;width:100%;padding:2rem;position:relative">
-            <button onclick="document.getElementById('offer-overlay').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--g400)">&times;</button>
-            <div style="font-size:1.1rem;font-weight:600;margin-bottom:.25rem">Make an Offer</div>
-            <div style="font-size:.8rem;color:var(--g500);margin-bottom:1.25rem" id="offer-art-info"></div>
-            <div id="offer-msg" style="padding:.5rem;font-size:.8rem;margin-bottom:.75rem;display:none"></div>
-            <div style="margin-bottom:.75rem">
-                <label style="font-size:.7rem;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.35rem">Your Offer ($)</label>
-                <input type="number" id="offer-amount" min="1" step="1" placeholder="Enter your offer" style="width:100%;padding:.75rem;font-size:1rem;font-family:'Manrope',sans-serif;border:1px solid var(--g300);font-weight:600">
-            </div>
-            <div style="margin-bottom:1rem">
-                <label style="font-size:.7rem;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.35rem">Message (optional)</label>
-                <textarea id="offer-message" rows="2" placeholder="Tell the artist why you love this piece..." style="width:100%;padding:.75rem;font-size:.85rem;font-family:'Manrope',sans-serif;border:1px solid var(--g300);resize:none"></textarea>
-            </div>
-            <button id="offer-submit" style="width:100%;padding:.875rem;background:var(--black);color:var(--white);border:none;font-family:'Manrope',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer">Submit Offer</button>
-            <div style="font-size:.7rem;color:var(--g400);margin-top:.75rem;text-align:center">The artist can accept, decline, or counter your offer.</div>
-        </div>
-    </div>
-
-    <!-- AR Wall Preview Modal -->
-    <div id="ar-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1001;display:none;flex-direction:column;align-items:center;justify-content:center">
-        <button onclick="stopAR()" style="position:absolute;top:1rem;right:1.5rem;background:none;border:none;font-size:2rem;cursor:pointer;color:white;z-index:10">&times;</button>
-        <div style="text-align:center;color:white;margin-bottom:1rem">
-            <div style="font-size:1rem;font-weight:600;margin-bottom:.25rem">AR Wall Preview</div>
-            <div style="font-size:.8rem;opacity:.7">Point your camera at a wall. Pinch to resize. Drag to move.</div>
-        </div>
-        <div style="position:relative;width:100%;max-width:500px;aspect-ratio:3/4;overflow:hidden">
-            <video id="ar-video" autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>
-            <img id="ar-artwork" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:60%;max-height:50%;box-shadow:0 8px 32px rgba(0,0,0,.5);cursor:move;user-select:none;-webkit-user-select:none" draggable="false">
-        </div>
-        <div style="display:flex;gap:1rem;margin-top:1rem">
-            <button onclick="resizeAR(-10)" style="padding:.5rem 1.5rem;background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.3);font-size:1.2rem;cursor:pointer">−</button>
-            <button onclick="resizeAR(10)" style="padding:.5rem 1.5rem;background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.3);font-size:1.2rem;cursor:pointer">+</button>
-            <button onclick="captureAR()" style="padding:.5rem 1.5rem;background:white;color:black;border:none;font-family:'Manrope',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer">📸 Capture</button>
-        </div>
-    </div>
-
-    <!-- Recently Viewed Section -->
-    <div id="recently-viewed-section" style="display:none;max-width:1200px;margin:0 auto 2rem;padding:0 2rem">
-        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:var(--g400);margin-bottom:1rem">Recently Viewed</div>
-        <div id="recently-viewed-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem"></div>
     </div>
 
     <!-- Footer -->
@@ -1033,143 +983,9 @@
             renderGallery();
         }
 
-        // ===== NEW FEATURES =====
-
-        // Track artwork view
-        function trackView(artworkId) {
-            var sid = sessionStorage.getItem('im_sid') || (Math.random().toString(36).slice(2) + Date.now().toString(36));
-            sessionStorage.setItem('im_sid', sid);
-            db.from('artwork_views').insert({ artwork_id: artworkId, session_id: sid }).then(function(){});
-            // Save to recently viewed
-            var rv = JSON.parse(localStorage.getItem('im_recent') || '[]');
-            rv = rv.filter(function(id) { return id !== artworkId; });
-            rv.unshift(artworkId);
-            if (rv.length > 12) rv = rv.slice(0, 12);
-            localStorage.setItem('im_recent', JSON.stringify(rv));
-        }
-
-        // Load similar artworks
-        function loadSimilar(artwork) {
-            var container = document.getElementById('modal-similar');
-            var grid = document.getElementById('similar-grid');
-            var similar = allArtworks.filter(function(a) {
-                return a.id !== artwork.id && (a.medium === artwork.medium || Math.abs(Number(a.price) - Number(artwork.price)) < Number(artwork.price) * 0.5);
-            }).slice(0, 3);
-            if (similar.length === 0) { container.style.display = 'none'; return; }
-            container.style.display = 'block';
-            grid.innerHTML = '';
-            similar.forEach(function(s) {
-                var hasImg = s.primary_image_url && !s.primary_image_url.includes('placehold');
-                var div = document.createElement('div');
-                div.style.cssText = 'cursor:pointer;overflow:hidden';
-                div.innerHTML = (hasImg ? '<img src="' + s.primary_image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover">' : '<div style="width:100%;aspect-ratio:1;background:var(--g200)"></div>') +
-                    '<div style="font-size:.75rem;font-weight:500;margin-top:.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + s.title + '</div>' +
-                    '<div style="font-size:.7rem;color:var(--g500)">$' + Number(s.price).toLocaleString() + '</div>';
-                div.addEventListener('click', function() {
-                    var an = (s.artists || {}).artist_name || 'Unknown';
-                    openArtworkModal(s, an);
-                });
-                grid.appendChild(div);
-            });
-        }
-
-        // Recently Viewed
-        function loadRecentlyViewed() {
-            var rv = JSON.parse(localStorage.getItem('im_recent') || '[]');
-            if (rv.length === 0 || !allArtworks || allArtworks.length === 0) return;
-            var recent = rv.map(function(id) { return allArtworks.find(function(a) { return a.id === id; }); }).filter(Boolean).slice(0, 6);
-            if (recent.length === 0) return;
-            var section = document.getElementById('recently-viewed-section');
-            var grid = document.getElementById('recently-viewed-grid');
-            section.style.display = 'block';
-            grid.innerHTML = '';
-            recent.forEach(function(a) {
-                var hasImg = a.primary_image_url && !a.primary_image_url.includes('placehold');
-                var div = document.createElement('div');
-                div.style.cssText = 'cursor:pointer';
-                div.innerHTML = (hasImg ? '<img src="' + a.primary_image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover">' : '<div style="width:100%;aspect-ratio:1;background:var(--g200)"></div>') +
-                    '<div style="font-size:.75rem;font-weight:500;margin-top:.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + a.title + '</div>' +
-                    '<div style="font-size:.7rem;color:var(--g500)">$' + Number(a.price).toLocaleString() + '</div>';
-                div.addEventListener('click', function() {
-                    var an = (a.artists || {}).artist_name || 'Unknown';
-                    openArtworkModal(a, an);
-                });
-                grid.appendChild(div);
-            });
-        }
-
-        // Make an Offer
-        document.getElementById('modal-offer').addEventListener('click', function() {
-            if (!collectorId) { window.location.href = 'collector-login.html'; return; }
-            if (!currentModalArtwork) return;
-            document.getElementById('offer-art-info').textContent = currentModalArtwork.title + ' — Listed at $' + Number(currentModalArtwork.price).toLocaleString();
-            document.getElementById('offer-amount').value = '';
-            document.getElementById('offer-message').value = '';
-            document.getElementById('offer-msg').style.display = 'none';
-            document.getElementById('offer-overlay').style.display = 'flex';
-        });
-
-        document.getElementById('offer-submit').addEventListener('click', async function() {
-            var amount = parseFloat(document.getElementById('offer-amount').value);
-            var msg = document.getElementById('offer-msg');
-            if (!amount || amount < 1) { msg.textContent = 'Please enter a valid offer amount.'; msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626'; return; }
-            this.textContent = 'Submitting...'; this.disabled = true;
-            var { data: { session } } = await db.auth.getSession();
-            var { data: col } = await db.from('collectors').select('first_name,last_name').eq('id', collectorId).single();
-            var colName = col ? (col.first_name + ' ' + (col.last_name || '')).trim() : '';
-            var { error } = await db.from('offers').insert({
-                artwork_id: currentModalArtwork.id, artist_id: currentModalArtwork.artist_id,
-                collector_id: collectorId, collector_email: session ? session.user.email : '',
-                collector_name: colName, offer_amount: amount, artwork_price: Number(currentModalArtwork.price),
-                message: document.getElementById('offer-message').value.trim(), status: 'pending'
-            });
-            if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626'; this.textContent = 'Submit Offer'; this.disabled = false; return; }
-            msg.textContent = 'Offer submitted! The artist will review it.'; msg.style.display = 'block'; msg.style.background = '#f0fdf4'; msg.style.color = '#16a34a';
-            this.textContent = 'Offer Sent ✓';
-        });
-
-        // AR Wall Preview
-        var arStream = null, arArtworkEl = null, arDragging = false, arStartX = 0, arStartY = 0, arLeft = 0, arTop = 0;
-        document.getElementById('modal-ar').addEventListener('click', function() {
-            if (!currentModalArtwork || !currentModalArtwork.primary_image_url) { alert('No artwork image available.'); return; }
-            startAR(currentModalArtwork.primary_image_url);
-        });
-        async function startAR(imgUrl) {
-            document.getElementById('ar-overlay').style.display = 'flex';
-            document.getElementById('ar-artwork').src = imgUrl;
-            arArtworkEl = document.getElementById('ar-artwork');
-            try {
-                arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-                document.getElementById('ar-video').srcObject = arStream;
-            } catch(e) {
-                document.getElementById('ar-video').style.background = 'linear-gradient(135deg,#555,#333)';
-            }
-            arArtworkEl.addEventListener('mousedown', arDS);
-            arArtworkEl.addEventListener('touchstart', arDS, { passive: false });
-            document.addEventListener('mousemove', arDM);
-            document.addEventListener('touchmove', arDM, { passive: false });
-            document.addEventListener('mouseup', arDE);
-            document.addEventListener('touchend', arDE);
-        }
-        function arDS(e) { e.preventDefault(); arDragging = true; var t = e.touches ? e.touches[0] : e; arStartX = t.clientX; arStartY = t.clientY; var r = arArtworkEl.getBoundingClientRect(); arLeft = r.left; arTop = r.top; }
-        function arDM(e) { if (!arDragging) return; var t = e.touches ? e.touches[0] : e; arArtworkEl.style.position = 'absolute'; arArtworkEl.style.transform = 'none'; arArtworkEl.style.left = (arLeft + t.clientX - arStartX) + 'px'; arArtworkEl.style.top = (arTop + t.clientY - arStartY) + 'px'; }
-        function arDE() { arDragging = false; }
-        function resizeAR(d) { if (!arArtworkEl) return; var c = parseInt(arArtworkEl.style.maxWidth) || 60; c = Math.max(20, Math.min(90, c + d)); arArtworkEl.style.maxWidth = c + '%'; arArtworkEl.style.maxHeight = (c - 10) + '%'; }
-        function captureAR() {
-            var v = document.getElementById('ar-video'), c = document.createElement('canvas');
-            c.width = v.videoWidth || 640; c.height = v.videoHeight || 480;
-            var ctx = c.getContext('2d'); ctx.drawImage(v, 0, 0, c.width, c.height);
-            var img = new Image(); img.crossOrigin = 'anonymous';
-            img.onload = function() { var s = 0.4, w = img.width * s, h = img.height * s; ctx.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h); var a = document.createElement('a'); a.download = 'InfraMint-AR-Preview.png'; a.href = c.toDataURL(); a.click(); };
-            img.src = arArtworkEl.src;
-        }
-        function stopAR() { document.getElementById('ar-overlay').style.display = 'none'; if (arStream) { arStream.getTracks().forEach(function(t) { t.stop(); }); arStream = null; } }
-
         // Open artwork detail modal
         function openArtworkModal(artwork, artistName) {
             currentModalArtwork = artwork;
-            trackView(artwork.id);
-            loadSimilar(artwork);
             const hasImage = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold.co');
             const edTotal = artwork.edition_total || 1;
             const edSold = artwork.edition_sold || 0;
@@ -1318,7 +1134,7 @@
         });
 
         // Initialize
-        loadGallery().then(function() { loadRecentlyViewed(); });
+        loadGallery();
         checkNav();
     </script>
 
