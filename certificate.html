@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Authenticity — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626}
+        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+        nav{padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
+        .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+        .logo-bar{width:3px;height:1.75rem;background:var(--white)}
+        .logo-text{font-size:1.25rem;letter-spacing:-.01em}
+        .logo-text span:first-child{font-weight:600;color:var(--white)}
+        .logo-text span:last-child{font-weight:200;color:var(--g500)}
+        .nav-link{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
+        .nav-link:hover{color:var(--white)}
+
+        .cert-page{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem}
+        .cert-card{background:var(--white);border:1px solid var(--g200);max-width:700px;width:100%;padding:3rem}
+        .cert-header{text-align:center;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--g200)}
+        .cert-logo{display:flex;align-items:center;gap:.75rem;justify-content:center;margin-bottom:1.5rem}
+        .cert-logo-bar{width:3px;height:1.5rem;background:var(--black)}
+        .cert-logo-text{font-size:1.125rem}
+        .cert-logo-text b{font-weight:600}
+        .cert-logo-text span{font-weight:200;color:var(--g400)}
+        .cert-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;letter-spacing:-.02em;margin-bottom:.25rem}
+        .cert-sub{font-size:.8rem;color:var(--g500);letter-spacing:.15em;text-transform:uppercase}
+
+        .cert-artwork{display:grid;grid-template-columns:140px 1fr;gap:1.5rem;margin-bottom:2rem}
+        .cert-img{width:140px;height:140px;object-fit:cover;background:var(--g200)}
+        .cert-details{display:flex;flex-direction:column;justify-content:center}
+        .cert-art-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:500;margin-bottom:.25rem}
+        .cert-artist{font-size:.9rem;color:var(--g500);margin-bottom:.75rem}
+
+        .cert-fields{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+        .cert-field{padding:.75rem;background:var(--g100)}
+        .cert-field-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:var(--g400);margin-bottom:.25rem}
+        .cert-field-value{font-size:.875rem;font-weight:500}
+
+        .cert-statement{font-size:.8rem;color:var(--g500);line-height:1.8;margin-bottom:2rem;padding:1.25rem;border:1px solid var(--g200)}
+
+        .cert-footer{display:flex;justify-content:space-between;align-items:flex-end;padding-top:1.5rem;border-top:1px solid var(--g200)}
+        .cert-sig{font-size:.75rem;color:var(--g400)}
+        .cert-sig strong{display:block;color:var(--black);font-size:.85rem;margin-bottom:.15rem}
+        .cert-id{font-size:.65rem;color:var(--g400);font-family:monospace}
+
+        .cert-actions{text-align:center;margin-top:1.5rem}
+        .download-btn{padding:1rem 3rem;background:var(--black);color:var(--white);border:none;font-family:'Manrope',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s}
+        .download-btn:hover{background:var(--g800)}
+
+        .loading{text-align:center;padding:4rem;color:var(--g400)}
+
+        @media(max-width:600px){
+            nav{padding:0 1.5rem}
+            .cert-card{padding:1.5rem}
+            .cert-artwork{grid-template-columns:1fr}
+            .cert-fields{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
+        <a href="gallery.html" class="nav-link">← Gallery</a>
+    </nav>
+
+    <div class="cert-page">
+        <div id="loading" class="loading">Loading certificate...</div>
+        <div class="cert-card" id="cert" style="display:none">
+            <div class="cert-header">
+                <div class="cert-logo"><div class="cert-logo-bar"></div><div class="cert-logo-text"><b>Infra</b><span>Mint</span></div></div>
+                <div class="cert-title">Certificate of Authenticity</div>
+                <div class="cert-sub">Original Artwork</div>
+            </div>
+            <div class="cert-artwork">
+                <img class="cert-img" id="cert-img" src="">
+                <div class="cert-details">
+                    <div class="cert-art-title" id="cert-art-title"></div>
+                    <div class="cert-artist" id="cert-artist"></div>
+                </div>
+            </div>
+            <div class="cert-fields">
+                <div class="cert-field"><div class="cert-field-label">Medium</div><div class="cert-field-value" id="cert-medium">—</div></div>
+                <div class="cert-field"><div class="cert-field-label">Dimensions</div><div class="cert-field-value" id="cert-dims">—</div></div>
+                <div class="cert-field"><div class="cert-field-label">Year</div><div class="cert-field-value" id="cert-year">—</div></div>
+                <div class="cert-field"><div class="cert-field-label">Edition</div><div class="cert-field-value" id="cert-edition">—</div></div>
+                <div class="cert-field"><div class="cert-field-label">Certificate ID</div><div class="cert-field-value" id="cert-certid">—</div></div>
+                <div class="cert-field"><div class="cert-field-label">Date Issued</div><div class="cert-field-value" id="cert-date">—</div></div>
+            </div>
+            <div class="cert-statement">
+                This document certifies that the artwork described above is an original work created by the named artist.
+                This certificate has been issued by InfraMint (inframint.io) and serves as proof of authenticity and provenance.
+                The artwork was sold through InfraMint's art marketplace for emerging artists. This certificate is non-transferable
+                and is tied to the original purchase. Any unauthorized reproduction of this certificate is prohibited.
+            </div>
+            <div class="cert-footer">
+                <div class="cert-sig">
+                    <strong>InfraMint</strong>
+                    Art Marketplace for Emerging Artists<br>inframint.io
+                </div>
+                <div class="cert-id" id="cert-hash"></div>
+            </div>
+            <div class="cert-actions">
+                <button class="download-btn" id="download-btn">Download PDF Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
+
+    var medNames = {oil:'Oil on Canvas',acrylic:'Acrylic on Canvas',watercolor:'Watercolor',digital:'Digital Art',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture',other:'Other'};
+    var artworkId = new URLSearchParams(window.location.search).get('artwork');
+    var orderId = new URLSearchParams(window.location.search).get('order');
+
+    async function init() {
+        if (!artworkId) { document.getElementById('loading').textContent = 'No artwork specified.'; return; }
+
+        var { data: artwork } = await db.from('artworks').select('*, artists(artist_name, first_name, last_name, city, country)').eq('id', artworkId).single();
+        if (!artwork) { document.getElementById('loading').textContent = 'Artwork not found.'; return; }
+
+        var artist = artwork.artists || {};
+        var artistName = artist.artist_name || ((artist.first_name || '') + ' ' + (artist.last_name || '')).trim() || 'Unknown Artist';
+        var hasImg = artwork.primary_image_url && !artwork.primary_image_url.includes('placehold');
+
+        // Populate certificate
+        if (hasImg) document.getElementById('cert-img').src = artwork.primary_image_url;
+        document.getElementById('cert-art-title').textContent = artwork.title || 'Untitled';
+        document.getElementById('cert-artist').textContent = 'by ' + artistName;
+        if (artist.city || artist.country) {
+            document.getElementById('cert-artist').textContent += ' · ' + [artist.city, artist.country].filter(Boolean).join(', ');
+        }
+        document.getElementById('cert-medium').textContent = medNames[artwork.medium] || artwork.medium || '—';
+        if (artwork.width_cm && artwork.height_cm) {
+            document.getElementById('cert-dims').textContent = artwork.width_cm + ' × ' + artwork.height_cm + ' cm';
+        }
+        document.getElementById('cert-year').textContent = artwork.created_at ? new Date(artwork.created_at).getFullYear() : '—';
+
+        var edTotal = artwork.edition_total || 1;
+        var edSold = artwork.edition_sold || 0;
+        document.getElementById('cert-edition').textContent = edTotal === 1 ? 'Unique (1/1)' : edSold + '/' + edTotal;
+
+        // Generate certificate ID from artwork ID
+        var certId = 'IM-COA-' + artwork.id.slice(0, 8).toUpperCase();
+        document.getElementById('cert-certid').textContent = certId;
+        document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('cert-hash').textContent = 'Verification: ' + certId + '-' + Date.now().toString(36).toUpperCase();
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('cert').style.display = 'block';
+
+        // Download handler
+        document.getElementById('download-btn').addEventListener('click', function() {
+            generatePDF(artwork, artist, artistName, certId);
+        });
+    }
+
+    function generatePDF(artwork, artist, artistName, certId) {
+        var { jsPDF } = window.jspdf;
+        var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        var w = 210, h = 297;
+        var mx = 30; // margin
+
+        // Border
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.3);
+        doc.rect(15, 15, w - 30, h - 30);
+        doc.setLineWidth(0.1);
+        doc.rect(17, 17, w - 34, h - 34);
+
+        // Logo bar
+        doc.setFillColor(0);
+        doc.rect(w/2 - 25, 30, 1.5, 12, 'F');
+
+        // Logo text
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('Infra', w/2 - 20, 39);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(160);
+        doc.text('Mint', w/2 + 1, 39);
+
+        // Title
+        doc.setTextColor(0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(24);
+        doc.text('Certificate of Authenticity', w/2, 60, { align: 'center' });
+
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        doc.text('ORIGINAL ARTWORK', w/2, 68, { align: 'center' });
+
+        // Line
+        doc.setDrawColor(200);
+        doc.setLineWidth(0.2);
+        doc.line(mx, 75, w - mx, 75);
+
+        // Artwork title
+        doc.setTextColor(0);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.text(artwork.title || 'Untitled', w/2, 90, { align: 'center' });
+
+        // Artist
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.setTextColor(100);
+        doc.text('by ' + artistName, w/2, 98, { align: 'center' });
+
+        // Details grid
+        var y = 115;
+        var col1 = mx, col2 = w/2 + 5;
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+
+        var fields = [
+            ['MEDIUM', medNames[artwork.medium] || artwork.medium || '—'],
+            ['DIMENSIONS', (artwork.width_cm && artwork.height_cm) ? artwork.width_cm + ' × ' + artwork.height_cm + ' cm' : '—'],
+            ['YEAR', artwork.created_at ? new Date(artwork.created_at).getFullYear().toString() : '—'],
+            ['EDITION', (artwork.edition_total || 1) === 1 ? 'Unique (1/1)' : (artwork.edition_sold || 0) + '/' + (artwork.edition_total || 1)],
+            ['CERTIFICATE ID', certId],
+            ['DATE ISSUED', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })]
+        ];
+
+        for (var i = 0; i < fields.length; i++) {
+            var xPos = i % 2 === 0 ? col1 : col2;
+            var yPos = y + Math.floor(i / 2) * 20;
+
+            // Background
+            doc.setFillColor(247);
+            doc.rect(xPos, yPos - 4, 70, 16, 'F');
+
+            // Label
+            doc.setFontSize(7);
+            doc.setTextColor(150);
+            doc.setFont('helvetica', 'normal');
+            doc.text(fields[i][0], xPos + 4, yPos + 1);
+
+            // Value
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            doc.setFont('helvetica', 'bold');
+            doc.text(fields[i][1], xPos + 4, yPos + 8);
+        }
+
+        // Statement
+        y = y + 65;
+        doc.setDrawColor(220);
+        doc.setLineWidth(0.2);
+        doc.rect(mx, y, w - mx * 2, 45);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        var statement = 'This document certifies that the artwork described above is an original work created by the named artist. This certificate has been issued by InfraMint (inframint.io) and serves as proof of authenticity and provenance. The artwork was sold through InfraMint\'s art marketplace for emerging artists. This certificate is non-transferable and is tied to the original purchase. Any unauthorized reproduction of this certificate is prohibited.';
+        var lines = doc.splitTextToSize(statement, w - mx * 2 - 8);
+        doc.text(lines, mx + 4, y + 6);
+
+        // Footer line
+        y = y + 55;
+        doc.setDrawColor(200);
+        doc.line(mx, y, w - mx, y);
+
+        // Footer
+        doc.setTextColor(0);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text('InfraMint', mx, y + 8);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text('Art Marketplace for Emerging Artists', mx, y + 14);
+        doc.text('inframint.io', mx, y + 19);
+
+        // Verification hash
+        doc.setFontSize(7);
+        doc.setTextColor(150);
+        doc.text('Verification: ' + certId + '-' + Date.now().toString(36).toUpperCase(), w - mx, y + 14, { align: 'right' });
+
+        // Save
+        doc.save('InfraMint-Certificate-' + certId + '.pdf');
+    }
+
+    init();
+    </script>
+</body>
+</html>
