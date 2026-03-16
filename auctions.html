@@ -27,9 +27,12 @@
 
         /* Hero */
         .hero{background:var(--black);padding:5rem 3rem 3.5rem;color:var(--white);position:relative;overflow:hidden}
-        .hero::before{content:'AUCTION';position:absolute;top:-20px;right:-20px;font-size:14rem;font-weight:800;letter-spacing:-.05em;color:rgba(255,255,255,.025);line-height:1;pointer-events:none;user-select:none}
-        .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(transparent,rgba(200,255,0,.03))}
-        .hero-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative}
+        .hero::before{content:'';position:absolute;right:-60px;top:-40px;width:500px;height:500px;background:radial-gradient(circle at 60% 40%,rgba(200,255,0,.04) 0%,transparent 60%);pointer-events:none}
+        .hero::after{content:'';position:absolute;right:60px;top:50%;transform:translateY(-50%);width:300px;height:400px;border:1px solid rgba(255,255,255,.03);pointer-events:none}
+        .hero-art{position:absolute;right:80px;top:40px;width:280px;height:350px;pointer-events:none;opacity:.06}
+        .hero-art::before{content:'';position:absolute;inset:20px;border:2px solid var(--white)}
+        .hero-art::after{content:'';position:absolute;top:60px;right:30px;width:120px;height:160px;border:1px solid var(--white);transform:rotate(6deg)}
+        .hero-ey{font-size:.8rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative}
         .hero-t{font-size:2.75rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem;position:relative}
         .hero-t strong{font-weight:700}
         .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7;position:relative}
@@ -38,7 +41,7 @@
         .event-banner{background:var(--white);border-bottom:1px solid var(--g200);padding:2rem 3rem}
         .event-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
         .event-info{}
-        .event-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:.25rem}
+        .event-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#4a7c00;margin-bottom:.25rem}
         .event-title{font-size:1.5rem;font-weight:600;margin-bottom:.25rem}
         .event-msg{font-size:.8rem;color:var(--g500);line-height:1.6;max-width:500px;border-left:3px solid var(--black);padding-left:.75rem;margin-top:.5rem}
         .event-live{display:flex;align-items:center;gap:.4rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:#c8ff00;padding:.4rem .8rem}
@@ -53,13 +56,13 @@
 
         /* Lots grid */
         .lots-section{padding:2rem 3rem}
-        .lots-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:1.25rem}
+        .lots-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--black);margin-bottom:1.25rem}
         .lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
         .lot-card{background:var(--white);border:1px solid var(--g200);cursor:pointer;transition:border-color .2s;overflow:hidden}
         .lot-card:hover{border-color:var(--black)}
         .lot-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--g200);display:block}
         .lot-body{padding:1.25rem}
-        .lot-num{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c8ff00;margin-bottom:.25rem}
+        .lot-num{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#4a7c00;margin-bottom:.25rem}
         .lot-title{font-size:1.05rem;font-weight:600;margin-bottom:.15rem}
         .lot-artist{font-size:.75rem;color:var(--g500);margin-bottom:.6rem}
         .lot-meta{display:flex;gap:1rem;font-size:.7rem;color:var(--g400);margin-bottom:.6rem;align-items:center}
@@ -79,7 +82,7 @@
         .ld-close:hover{color:var(--black)}
         .ld-img{width:100%;height:100%;min-height:400px;object-fit:cover;background:var(--g200)}
         .ld-content{padding:2rem;position:relative}
-        .ld-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c8ff00;margin-bottom:.5rem}
+        .ld-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#4a7c00;margin-bottom:.5rem}
         .ld-title{font-size:1.5rem;font-weight:300;margin-bottom:.25rem}
         .ld-artist{font-size:.85rem;color:var(--g500);margin-bottom:.75rem}
         .ld-desc{font-size:.8rem;color:var(--g500);line-height:1.7;margin-bottom:1.25rem}
@@ -113,7 +116,7 @@
         .past-card:hover{border-color:var(--black)}
         .past-bg{position:absolute;right:-10px;bottom:-20px;font-size:10rem;font-weight:800;color:var(--g100);line-height:1;pointer-events:none;user-select:none}
         .past-inner{position:relative;z-index:1;padding:1.5rem}
-        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c8ff00;margin-bottom:.5rem}
+        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#4a7c00;margin-bottom:.5rem}
         .past-title{font-size:1.1rem;font-weight:300;margin-bottom:.5rem}
         .past-stats{display:flex;gap:1.5rem;font-size:.75rem}
         .past-stat strong{display:block;font-size:1rem}
@@ -121,7 +124,7 @@
         .past-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;z-index:2;background:var(--black);color:var(--white)}
 
         .coming-soon{text-align:center;padding:8rem 2rem;background:var(--white)}
-        .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:1rem}
+        .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#4a7c00;margin-bottom:1rem}
         .cs-t{font-size:2.5rem;font-weight:300;margin-bottom:.75rem}
         .cs-t strong{font-weight:700}
         .cs-s{font-size:.9rem;color:var(--g500);max-width:400px;margin:0 auto;line-height:1.7}
@@ -153,9 +156,10 @@
     </nav>
 
     <div class="hero">
+        <div class="hero-art"></div>
         <div class="hero-ey">InfraMint Auctions</div>
         <div class="hero-t">Where <strong>Masterpieces</strong> Find Their Collector</div>
-        <div class="hero-s">Curated auctions for top-rated emerging artists. Anonymous bidding. 30% house fee on top of winning bid.</div>
+        <div class="hero-s">Curated auctions for top-rated emerging artists. Anonymous bidding on original works, selected by InfraMint.</div>
     </div>
 
     <!-- Coming soon (shown when auctions disabled) -->
@@ -192,7 +196,7 @@
     </div>
 
     <footer>
-        <a href="index.html">Home</a><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+        <a href="index.html">Home</a><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="auction-terms.html">Auction Terms</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
         <div class="footer-copy">&copy; 2026 InfraMint. All rights reserved.</div>
     </footer>
 </div>
@@ -303,12 +307,11 @@ function openLotDetail(lot){
     var bidHTML='';
     if(collectorId){
         bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(lot.total_bids||0)+' bids</div></div>'+
-        '<div class="fee-row"><span>House fee (30%)</span><span>$'+hf.toLocaleString()+'</span></div>'+
-        '<div class="fee-total"><span>Total if you win</span><span>$'+tot.toLocaleString()+'</span></div>'+
         '<div class="bid-msg" id="bid-msg-'+lot.id+'"></div>'+
         '<div class="bid-btns" id="bid-btns-'+lot.id+'"><button class="bid-btn" data-inc="10">+$10</button><button class="bid-btn" data-inc="50">+$50</button><button class="bid-btn" data-inc="100">+$100</button><button class="bid-btn" data-inc="250">+$250</button><button class="bid-btn" data-inc="500">+$500</button><button class="bid-btn" data-inc="1000">+$1K</button></div>'+
         '<div class="bid-custom"><input type="number" class="bid-input" id="custom-bid-'+lot.id+'" placeholder="Custom ($)" min="1"></div>'+
-        '<button class="place-bid" id="place-bid-'+lot.id+'">Place Bid</button></div>';
+        '<button class="place-bid" id="place-bid-'+lot.id+'">Place Bid</button>'+
+        '<div style="font-size:.6rem;color:var(--g400);text-align:center;margin-top:.6rem">By bidding you agree to our <a href="auction-terms.html" style="color:var(--g500);text-decoration:underline" target="_blank">Auction Terms</a></div></div>';
     }else{
         bidHTML='<div class="bid-section"><div class="bid-current"><div><div class="bid-label">Current Bid</div><div class="bid-amount">$'+cb.toLocaleString()+'</div></div><div class="bid-count">'+(lot.total_bids||0)+' bids</div></div><div class="login-prompt"><a href="collector-login.html">Sign in</a> to place a bid</div></div>';
     }
@@ -343,7 +346,7 @@ function bindBid(lot){
         var inc=cv||(ab?parseInt(ab.dataset.inc):0);
         if(!inc||inc<1){m.textContent='Select an increment or enter a custom amount.';m.style.display='block';m.style.background='#fef3c7';m.style.color='#92400e';return;}
         var nb=cb+inc,fee=Math.round(nb*(fp/100)),ta=nb+fee;
-        if(!confirm('Bid $'+nb.toLocaleString()+'?\nHouse fee: $'+fee.toLocaleString()+'\nTotal: $'+ta.toLocaleString()))return;
+        if(!confirm('Place bid of $'+nb.toLocaleString()+'?'))return;
         this.textContent='Placing...';this.disabled=true;
         var{error}=await db.from('bids').insert({auction_id:lot.auction_id,lot_id:lot.id,collector_id:collectorId,bid_amount:nb,house_fee:fee,total_amount:ta,is_anonymous:true});
         if(error){m.textContent='Error: '+error.message;m.style.display='block';m.style.background='#fef2f2';m.style.color='#dc2626';this.textContent='Place Bid';this.disabled=false;return;}
