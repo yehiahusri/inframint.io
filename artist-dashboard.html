@@ -675,6 +675,12 @@
                 <span>Infra</span><span>Mint</span>
             </div>
         </a>
+        <div style="display:flex;gap:1.5rem;align-items:center">
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="artists.html" class="nav-link">Artists</a>
+            <a href="blog.html" class="nav-link">The Drip</a>
+            <a href="auctions.html" class="nav-link">Auctions</a>
+        </div>
         <div class="nav-right">
             <span class="nav-user" id="user-name">Loading...</span>
             <a class="nav-link" id="sign-out">Sign Out</a>
@@ -1248,16 +1254,6 @@
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const EDGE_FN = SUPABASE_URL + '/functions/v1/send-notification';
-
-        async function sendEmail(event, data) {
-            try {
-                var { data: { session } } = await db.auth.getSession();
-                fetch(EDGE_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (session ? session.access_token : '') },
-                    body: JSON.stringify({ event: event, data: data })
-                }).catch(function(e) { console.log('Email skipped:', e); });
-            } catch(e) { console.log('Email error:', e); }
-        }
 
         let currentUser = null;
         let artistData = null;
@@ -1984,22 +1980,8 @@
                     var customs = parseFloat(document.getElementById('ship-customs-' + oid).value) || 0;
                     if (!cost) { showMessage('orders-message', 'Please enter the shipping cost from your postal quote.', false); return; }
                     this.textContent = 'Saving...'; this.disabled = true;
-                    // Get current artwork price to calculate total
-                    var { data: orderData } = await db.from('orders').select('artwork_price').eq('id', oid).single();
-                    var artPrice = Number((orderData || {}).artwork_price || 0);
-                    var newTotal = artPrice + cost + customs;
-                    var { error } = await db.from('orders').update({ shipping_cost: cost, customs_cost: customs, total_amount: newTotal, status: 'confirmed' }).eq('id', oid);
+                    var { error } = await db.from('orders').update({ shipping_cost: cost, customs_cost: customs, status: 'confirmed' }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Submit Quote'; this.disabled = false; return; }
-                    // Email collector that quote is ready
-                    var matchOrder = orders.find(function(o) { return o.id === oid; });
-                    if (matchOrder) {
-                        sendEmail('quote_ready', {
-                            order_number: matchOrder.order_number, artwork_title: matchOrder.artwork_title || (matchOrder.artworks || {}).title,
-                            artwork_price: matchOrder.artwork_price, shipping_cost: cost, customs_cost: customs,
-                            collector_email: matchOrder.collector_email, collector_name: matchOrder.collector_name,
-                            artist_email: currentUser.email, artist_name: artistData.artist_name || artistData.first_name
-                        });
-                    }
                     showMessage('orders-message', 'Shipping quote submitted! Buyer will be notified to approve and pay.', true);
                     loadOrders();
                 });
@@ -2014,16 +1996,6 @@
                     this.textContent = 'Saving...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ tracking_number: track, status: 'shipped', updated_at: new Date().toISOString() }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Mark as Shipped'; this.disabled = false; return; }
-                    // Email collector that artwork shipped
-                    var matchOrder = orders.find(function(o) { return o.id === oid; });
-                    if (matchOrder) {
-                        sendEmail('artwork_shipped', {
-                            order_number: matchOrder.order_number, artwork_title: matchOrder.artwork_title || (matchOrder.artworks || {}).title,
-                            tracking_number: track, collector_email: matchOrder.collector_email,
-                            collector_name: matchOrder.collector_name,
-                            artist_name: artistData.artist_name || artistData.first_name
-                        });
-                    }
                     showMessage('orders-message', 'Marked as shipped! Buyer will see tracking info.', true);
                     loadOrders();
                 });

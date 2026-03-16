@@ -213,7 +213,13 @@
 
         <div>
             <div class="topbar">
-                <a href="gallery.html" class="topbar-browse">← Browse Gallery</a>
+                <div style="display:flex;gap:1.5rem;align-items:center">
+                    <a href="gallery.html" class="topbar-browse">Gallery</a>
+                    <a href="artists.html" class="topbar-browse">Artists</a>
+                    <a href="blog.html" class="topbar-browse">The Drip</a>
+                    <a href="auctions.html" class="topbar-browse">Auctions</a>
+                    <a href="about.html" class="topbar-browse">About</a>
+                </div>
                 <span class="topbar-right" id="user-name">Collector</span>
             </div>
 
@@ -306,16 +312,6 @@
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const EDGE_FN = SUPABASE_URL + '/functions/v1/send-notification';
-
-        async function sendEmail(event, data) {
-            try {
-                var { data: { session } } = await db.auth.getSession();
-                fetch(EDGE_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (session ? session.access_token : '') },
-                    body: JSON.stringify({ event: event, data: data })
-                }).catch(function(e) { console.log('Email skipped:', e); });
-            } catch(e) { console.log('Email error:', e); }
-        }
 
         let currentUser = null;
         let collectorData = null;
@@ -496,18 +492,6 @@
                     this.textContent = 'Processing...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ status: 'paid', payment_status: 'paid' }).eq('id', oid);
                     if (error) { alert('Error: ' + error.message); this.textContent = 'Approve & Pay'; this.disabled = false; return; }
-                    // Email artist that payment is confirmed
-                    var matchOrder = orders.find(function(o) { return o.id === oid; });
-                    if (matchOrder) {
-                        // Get artist email
-                        var { data: artistRow } = await db.from('artists').select('email,artist_name,first_name').eq('id', matchOrder.artist_id).single();
-                        sendEmail('payment_confirmed', {
-                            order_number: matchOrder.order_number, artwork_title: matchOrder.artwork_title,
-                            artwork_price: matchOrder.artwork_price, shipping_cost: matchOrder.shipping_cost, customs_cost: matchOrder.customs_cost,
-                            collector_name: matchOrder.collector_name, collector_email: matchOrder.collector_email,
-                            artist_email: artistRow ? (artistRow.email || '') : '', artist_name: artistRow ? (artistRow.artist_name || artistRow.first_name) : ''
-                        });
-                    }
                     showMsg('purchase-message', 'Payment confirmed! The artist will ship your artwork soon.', true);
                     loadPurchases();
                 });
@@ -531,16 +515,6 @@
                     this.textContent = 'Confirming...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString() }).eq('id', oid);
                     if (error) { alert('Error: ' + error.message); this.textContent = 'I Received My Artwork'; this.disabled = false; return; }
-                    // Email artist that delivery confirmed
-                    var matchOrder = orders.find(function(o) { return o.id === oid; });
-                    if (matchOrder) {
-                        var { data: artistRow } = await db.from('artists').select('email,artist_name,first_name').eq('id', matchOrder.artist_id).single();
-                        sendEmail('delivery_confirmed', {
-                            order_number: matchOrder.order_number, artwork_title: matchOrder.artwork_title,
-                            collector_name: matchOrder.collector_name,
-                            artist_email: artistRow ? (artistRow.email || '') : '', artist_name: artistRow ? (artistRow.artist_name || artistRow.first_name) : ''
-                        });
-                    }
                     showMsg('purchase-message', 'Delivery confirmed! Thank you for your purchase.', true);
                     loadPurchases();
                 });
