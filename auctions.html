@@ -26,21 +26,23 @@
         .page{padding-top:4.5rem}
 
         /* Hero */
-        .hero{background:var(--black);padding:4rem 3rem 3rem;color:var(--white)}
-        .hero-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g500);margin-bottom:.75rem}
-        .hero-t{font-size:2.5rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem}
+        .hero{background:var(--black);padding:5rem 3rem 3.5rem;color:var(--white);position:relative;overflow:hidden}
+        .hero::before{content:'AUCTION';position:absolute;top:-20px;right:-20px;font-size:14rem;font-weight:800;letter-spacing:-.05em;color:rgba(255,255,255,.025);line-height:1;pointer-events:none;user-select:none}
+        .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(transparent,rgba(200,255,0,.03))}
+        .hero-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative}
+        .hero-t{font-size:2.75rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem;position:relative}
         .hero-t strong{font-weight:700}
-        .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7}
+        .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7;position:relative}
 
         /* Live auction event banner */
         .event-banner{background:var(--white);border-bottom:1px solid var(--g200);padding:2rem 3rem}
         .event-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
         .event-info{}
-        .event-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:.25rem}
+        .event-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:.25rem}
         .event-title{font-size:1.5rem;font-weight:600;margin-bottom:.25rem}
         .event-msg{font-size:.8rem;color:var(--g500);line-height:1.6;max-width:500px;border-left:3px solid var(--black);padding-left:.75rem;margin-top:.5rem}
-        .event-live{display:flex;align-items:center;gap:.4rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.4rem .8rem}
-        .event-dot{width:6px;height:6px;background:#16a34a;border-radius:50%;animation:pulse 1.5s infinite}
+        .event-live{display:flex;align-items:center;gap:.4rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--black);color:#c8ff00;padding:.4rem .8rem}
+        .event-dot{width:6px;height:6px;background:#c8ff00;border-radius:50%;animation:pulse 1.5s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
         .event-timer{display:flex;gap:.5rem}
         .t-unit{background:var(--g100);padding:.5rem .6rem;min-width:50px;text-align:center}
@@ -50,24 +52,24 @@
         .event-stats strong{color:var(--black)}
 
         /* Lots grid */
-        .lots-section{max-width:1200px;margin:0 auto;padding:2rem}
-        .lots-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
-        .lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+        .lots-section{padding:2rem 3rem}
+        .lots-label{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:1.25rem}
+        .lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
         .lot-card{background:var(--white);border:1px solid var(--g200);cursor:pointer;transition:border-color .2s;overflow:hidden}
         .lot-card:hover{border-color:var(--black)}
         .lot-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--g200);display:block}
-        .lot-body{padding:1rem}
-        .lot-num{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);margin-bottom:.2rem}
-        .lot-title{font-size:1rem;font-weight:600;margin-bottom:.15rem}
-        .lot-artist{font-size:.75rem;color:var(--g500);margin-bottom:.5rem}
-        .lot-meta{display:flex;gap:1rem;font-size:.7rem;color:var(--g400);margin-bottom:.5rem}
+        .lot-body{padding:1.25rem}
+        .lot-num{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c8ff00;margin-bottom:.25rem}
+        .lot-title{font-size:1.05rem;font-weight:600;margin-bottom:.15rem}
+        .lot-artist{font-size:.75rem;color:var(--g500);margin-bottom:.6rem}
+        .lot-meta{display:flex;gap:1rem;font-size:.7rem;color:var(--g400);margin-bottom:.6rem;align-items:center}
         .lot-meta span{display:flex;align-items:center;gap:.25rem}
-        .lot-prices{display:flex;justify-content:space-between;align-items:baseline}
+        .lot-like-inline{background:none;border:none;font-size:.75rem;cursor:pointer;color:var(--g400);display:flex;align-items:center;gap:.25rem;padding:0;transition:color .2s}
+        .lot-like-inline:hover{color:var(--black)}
+        .lot-like-inline.liked{color:var(--black);font-weight:600}
+        .lot-prices{display:flex;justify-content:space-between;align-items:baseline;padding-top:.6rem;border-top:1px solid var(--g200)}
         .lot-start{font-size:.7rem;color:var(--g400)}
         .lot-current{font-size:1.1rem;font-weight:700}
-        .lot-like-btn{position:absolute;top:.75rem;right:.75rem;background:rgba(255,255,255,.9);border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .2s}
-        .lot-like-btn.liked{background:var(--black);color:var(--white)}
-        .lot-img-wrap{position:relative}
 
         /* Lot detail overlay */
         .lot-detail{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:1rem}
@@ -77,7 +79,7 @@
         .ld-close:hover{color:var(--black)}
         .ld-img{width:100%;height:100%;min-height:400px;object-fit:cover;background:var(--g200)}
         .ld-content{padding:2rem;position:relative}
-        .ld-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+        .ld-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c8ff00;margin-bottom:.5rem}
         .ld-title{font-size:1.5rem;font-weight:300;margin-bottom:.25rem}
         .ld-artist{font-size:.85rem;color:var(--g500);margin-bottom:.75rem}
         .ld-desc{font-size:.8rem;color:var(--g500);line-height:1.7;margin-bottom:1.25rem}
@@ -105,13 +107,13 @@
         .login-prompt a{color:var(--black);font-weight:600}
 
         /* Past auctions */
-        .past-section{max-width:1200px;margin:0 auto;padding:2rem 2rem 4rem}
+        .past-section{padding:2rem 3rem 4rem}
         .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
         .past-card{background:var(--white);border:1px solid var(--g200);position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s}
         .past-card:hover{border-color:var(--black)}
         .past-bg{position:absolute;right:-10px;bottom:-20px;font-size:10rem;font-weight:800;color:var(--g100);line-height:1;pointer-events:none;user-select:none}
         .past-inner{position:relative;z-index:1;padding:1.5rem}
-        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c8ff00;margin-bottom:.5rem}
         .past-title{font-size:1.1rem;font-weight:300;margin-bottom:.5rem}
         .past-stats{display:flex;gap:1.5rem;font-size:.75rem}
         .past-stat strong{display:block;font-size:1rem}
@@ -119,7 +121,7 @@
         .past-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;z-index:2;background:var(--black);color:var(--white)}
 
         .coming-soon{text-align:center;padding:8rem 2rem;background:var(--white)}
-        .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
+        .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:1rem}
         .cs-t{font-size:2.5rem;font-weight:300;margin-bottom:.75rem}
         .cs-t strong{font-weight:700}
         .cs-s{font-size:.9rem;color:var(--g500);max-width:400px;margin:0 auto;line-height:1.7}
@@ -130,7 +132,7 @@
         footer a:hover{color:var(--black)}
         .footer-copy{font-size:.7rem;color:var(--g400);margin-top:1rem}
 
-        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:2.5rem 1.5rem 2rem}.hero-t{font-size:1.75rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-grid{grid-template-columns:1fr}}
+        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
     </style>
 </head>
@@ -261,11 +263,11 @@ async function loadAndRenderLots(auctionId){
         var card=document.createElement('div');
         card.className='lot-card';
         card.innerHTML=
-            '<div class="lot-img-wrap">'+(hasImg?'<img class="lot-img" src="'+lot.image_url+'">':'<div class="lot-img"></div>')+'<button class="lot-like-btn'+(isLiked?' liked':'')+'" data-lid="'+lot.id+'">'+(isLiked?'♥':'♡')+'</button></div>'+
+            (hasImg?'<img class="lot-img" src="'+lot.image_url+'">':'<div class="lot-img"></div>')+
             '<div class="lot-body"><div class="lot-num">Lot '+lot.lot_number+'</div><div class="lot-title">'+lot.title+'</div><div class="lot-artist">by '+lot.artist_name+'</div>'+
-            '<div class="lot-meta"><span>♡ '+( lot.like_count||0)+'</span><span>'+( lot.view_count||0)+' views</span><span>'+(lot.total_bids||0)+' bids</span></div>'+
+            '<div class="lot-meta"><button class="lot-like-inline'+(isLiked?' liked':'')+'" data-lid="'+lot.id+'">'+(isLiked?'♥':'♡')+' '+(lot.like_count||0)+'</button><span>'+( lot.view_count||0)+' views</span><span>'+(lot.total_bids||0)+' bids</span></div>'+
             '<div class="lot-prices"><div class="lot-start">From $'+Number(lot.starting_price).toLocaleString()+'</div><div class="lot-current">'+(lot.current_bid>0?'$'+Number(lot.current_bid).toLocaleString():'—')+'</div></div></div>';
-        card.addEventListener('click',function(e){if(!e.target.closest('.lot-like-btn'))openLotDetail(lot);});
+        card.addEventListener('click',function(e){if(!e.target.closest('.lot-like-inline'))openLotDetail(lot);});
         grid.appendChild(card);
 
         // Track view
@@ -273,7 +275,7 @@ async function loadAndRenderLots(auctionId){
     });
 
     // Like button handlers
-    grid.querySelectorAll('.lot-like-btn').forEach(function(btn){
+    grid.querySelectorAll('.lot-like-inline').forEach(function(btn){
         btn.addEventListener('click',async function(e){
             e.stopPropagation();
             if(!collectorId){window.location.href='collector-login.html';return;}
@@ -281,10 +283,10 @@ async function loadAndRenderLots(auctionId){
             var idx=likedLots.indexOf(lid);
             if(idx>=0){
                 await db.from('auction_lot_likes').delete().eq('lot_id',lid).eq('collector_id',collectorId);
-                likedLots.splice(idx,1);this.textContent='♡';this.classList.remove('liked');
+                likedLots.splice(idx,1);this.innerHTML='♡ '+(parseInt(this.textContent.replace(/[^0-9]/g,''))-1);this.classList.remove('liked');
             }else{
                 await db.from('auction_lot_likes').insert({lot_id:lid,collector_id:collectorId});
-                likedLots.push(lid);this.textContent='♥';this.classList.add('liked');
+                likedLots.push(lid);this.innerHTML='♥ '+(parseInt(this.textContent.replace(/[^0-9]/g,''))+1);this.classList.add('liked');
             }
         });
     });
