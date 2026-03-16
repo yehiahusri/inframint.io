@@ -577,6 +577,21 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Feature Toggles</span></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0">
+                            <div>
+                                <div style="font-size:.85rem;font-weight:600">Auctions</div>
+                                <div style="font-size:.7rem;color:var(--g500)">Show live auction page to visitors</div>
+                            </div>
+                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                                <input type="checkbox" id="toggle-auctions" style="opacity:0;width:0;height:0">
+                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s" id="toggle-track"></span>
+                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-thumb"></span>
+                            </label>
+                        </div>
+                        <div id="toggle-status" style="font-size:.7rem;color:var(--g400);margin-top:.25rem"></div>
+                    </div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Feature Toggles</span></div>
                         <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--g200)">
                             <div>
                                 <div style="font-size:.85rem;font-weight:600">Auctions</div>
@@ -1850,10 +1865,7 @@
         // Recent partners (last 7 days)
         var { data: newPartners } = await db.from('partners').select('first_name, last_name, company_name, status, created_at').gte('created_at', week).order('created_at', { ascending: false });
         if (newPartners) newPartners.forEach(function(p) {
-            notifs.push({ time: p.created_at, html: '🤝 New partner: <strong>' + (p.first_name || '') + ' ' + (p.last_name || '') + '</strong>' + (p.company_name ? ' (' + p.company_name + ')' : '') + ' — ' + (p.status || 'pending') });
-        });
-
-        // Recent artworks (last 7 days)
+            notifs.push({ time:  Recent artworks (last 7 days)
         var { data: newArtworks } = await db.from('artworks').select('title, status, created_at, artists(artist_name)').gte('created_at', week).order('created_at', { ascending: false });
         if (newArtworks) newArtworks.forEach(function(w) {
             var a = w.artists || {};
@@ -2041,3 +2053,12 @@
         }
 
         msgEl.textContent=name+' added to the team as '+role+'!';
+        msgEl.className='msg-ok show';
+        document.getElementById('team-email').value='';
+        document.getElementById('team-name').value='';
+        renderTeam();
+    };
+
+    </script>
+</body>
+</html>
