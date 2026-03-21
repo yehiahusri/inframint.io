@@ -199,7 +199,12 @@
         <div>
             <div class="topbar" style="justify-content:space-between">
                 <span>InfraMint Admin</span>
-                <div style="display:flex;align-items:center;gap:1.5rem">
+                <div style="display:flex;align-items:center;gap:2rem">
+                    <div style="display:flex;align-items:center;gap:.75rem;font-size:.65rem;color:var(--g500)">
+                        <span>Gallery <strong style="color:var(--black)" id="tb-gallery-pct">30</strong>%</span>
+                        <span>Partner <strong style="color:var(--black)" id="tb-partner-pct">5</strong>%</span>
+                        <span>Artist <strong style="color:var(--black)" id="tb-artist-pct">65</strong>%</span>
+                    </div>
                     <div style="display:flex;align-items:center;gap:.5rem;font-size:.7rem">
                         <span style="color:var(--g500)">Auctions</span>
                         <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;margin:0">
@@ -711,15 +716,20 @@
                             <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-total-auctions">0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Total Auctions</div></div>
                         </div>
                     </div>
-                </div>
 
+                    <!-- Auction Toggle -->
                     <div class="card">
-                        <div class="ch"><span class="ct2">Auction Finance</span></div>
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem">
-                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-total-sold">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Total Sold</div></div>
-                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-house-fees">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">House Fees (30%)</div></div>
-                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-artist-payouts">$0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Artist Payouts</div></div>
-                            <div style="background:var(--g100);padding:.75rem;text-align:center"><div style="font-size:1.25rem;font-weight:700" id="af-total-auctions">0</div><div style="font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)">Total Auctions</div></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-size:.85rem;font-weight:600">Auction Visibility</div>
+                                <div style="font-size:.7rem;color:var(--g500)">Show live auction page to visitors</div>
+                                <div id="toggle-status" style="font-size:.65rem;color:var(--g400);margin-top:.25rem"></div>
+                            </div>
+                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                                <input type="checkbox" id="toggle-auctions" style="opacity:0;width:0;height:0">
+                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s;border-radius:0" id="toggle-track"></span>
+                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-thumb"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -728,32 +738,8 @@
                 <div class="sec" id="section-settings">
                     <div class="ph"><h1>Settings</h1><p>Platform configuration</p></div>
                     <div class="card">
-                        <div class="ch"><span class="ct2">Commission Rates</span></div>
-                        <div class="form-row2">
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Gallery %</label><input type="number" class="fi" id="set-gallery" value="30"></div>
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Partner %</label><input type="number" class="fi" id="set-partner" value="5"></div>
-                        </div>
-                        <p style="font-size:.7rem;color:var(--g500);margin:.4rem 0">Artist receives the remainder. Current: <strong id="set-artist-pct">65%</strong></p>
-                        <button class="fbtn" id="save-settings">Save Settings</button>
-                    </div>
-                    <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
                         <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong>yehiahusri@gmail.com</strong></p>
-                    </div>
-                    <div class="card">
-                        <div class="ch"><span class="ct2">Feature Toggles</span></div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--g200)">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:600">Auctions</div>
-                                <div style="font-size:.7rem;color:var(--g500)">Show live auction page to visitors</div>
-                            </div>
-                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
-                                <input type="checkbox" id="toggle-auctions" style="opacity:0;width:0;height:0">
-                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s;border-radius:0" id="toggle-track"></span>
-                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-thumb"></span>
-                            </label>
-                        </div>
-                        <div id="toggle-status" style="font-size:.7rem;color:var(--g400);margin-top:.5rem"></div>
                     </div>
                 </div>
             </main>
@@ -811,15 +797,10 @@
 
     document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};
 
-    // Settings
-    document.getElementById('set-gallery').oninput=function(){
-        var g=parseInt(this.value)||0,p=parseInt(document.getElementById('set-partner').value)||0;
-        document.getElementById('set-artist-pct').textContent=(100-g-p)+'%';
-    };
-    document.getElementById('set-partner').oninput=function(){
-        var g=parseInt(document.getElementById('set-gallery').value)||0,p=parseInt(this.value)||0;
-        document.getElementById('set-artist-pct').textContent=(100-g-p)+'%';
-    };
+    // Commission display (topbar)
+    document.getElementById('tb-gallery-pct').textContent = '30';
+    document.getElementById('tb-partner-pct').textContent = '5';
+    document.getElementById('tb-artist-pct').textContent = '65';
 
     // Send message (placeholder — logs to admin_log)
     document.getElementById('send-msg').onclick=async function(){
