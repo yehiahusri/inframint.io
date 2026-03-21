@@ -679,7 +679,8 @@
             <a href="gallery.html" class="nav-link">Gallery</a>
             <a href="artists.html" class="nav-link">Artists</a>
             <a href="blog.html" class="nav-link">The Drip</a>
-            <a href="auctions.html" class="nav-link">Auctions</a>
+            <a href="auctions.html">Auctions</a>
+                    <a href="art-advisory.html" class="topbar-browse">Advisory</a>
         </div>
         <div class="nav-right">
             <span class="nav-user" id="user-name">Loading...</span>
@@ -695,6 +696,7 @@
         <button data-ms="analytics">Analytics</button>
         <button data-ms="offers">Offers</button>
         <button data-ms="commissions">Commissions</button>
+        <button data-ms="share-cards">Share</button>
         <button data-ms="verification">Verify</button>
         <button data-ms="profile">Profile</button>
         <button data-ms="payouts">Payouts</button>
@@ -749,6 +751,18 @@
                         <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
                     </svg>
                     Commissions
+                </a>
+                <a class="sidebar-link" data-section="share-cards">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7 21v-1a5 5 0 0 1 10 0v1"/>
+                    </svg>
+                    Share Cards
+                </a>
+                <a class="sidebar-link" data-section="share-cards">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    Share Cards
                 </a>
                 <a class="sidebar-link" data-section="verification">
                     <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -958,6 +972,28 @@
                 <div class="message" id="commissions-message"></div>
                 <div id="commissions-container">
                     <div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No commission requests yet.</div>
+                </div>
+            </div>
+
+            <!-- Share Cards Section -->
+            <div class="section" id="section-share-cards">
+                <div class="page-header">
+                    <h1 class="page-title">Share Cards</h1>
+                    <p class="page-subtitle">Generate Instagram-ready images to promote your art</p>
+                </div>
+                <div class="card">
+                    <div style="font-size:.8rem;color:var(--gray-500);margin-bottom:1rem;line-height:1.7">Select an artwork below to generate a shareable card. Download it and post on Instagram, WhatsApp, or any social platform. It includes your artwork, name, price, and InfraMint link.</div>
+                    <div style="margin-bottom:1rem">
+                        <label class="form-label">Select Artwork</label>
+                        <select class="form-select" id="share-artwork-select"><option value="">— Choose artwork —</option></select>
+                    </div>
+                    <button class="btn" id="generate-share-card" style="padding:.6rem 1.5rem;font-family:Manrope,sans-serif;font-size:.8rem;font-weight:600;background:var(--black);color:var(--white);border:none;cursor:pointer">Generate Card</button>
+                    <div id="share-card-preview" style="margin-top:1.5rem;display:none">
+                        <canvas id="share-canvas" width="1080" height="1080" style="width:100%;max-width:400px;border:1px solid var(--gray-200)"></canvas>
+                        <div style="margin-top:.75rem">
+                            <button id="download-share-card" style="padding:.5rem 1.25rem;font-family:Manrope,sans-serif;font-size:.8rem;font-weight:600;background:var(--black);color:var(--white);border:none;cursor:pointer">Download Card</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1290,7 +1326,12 @@
                             <option value="watercolor">Watercolor</option>
                             <option value="digital">Digital</option>
                             <option value="photography">Photography</option>
+                            <option value="sculpture">Sculpture</option>
                             <option value="mixed">Mixed Media</option>
+                            <option value="ink">Ink</option>
+                            <option value="charcoal">Charcoal</option>
+                            <option value="pastel">Pastel</option>
+                            <option value="collage">Collage</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -1307,10 +1348,37 @@
                     </div>
                 </div>
 
-                <div class="form-group" id="edition-group" style="display: none;">
-                    <label class="form-label">Number of Copies (Editions)</label>
+                <div class="form-group" id="depth-group" style="display:none;">
+                    <label class="form-label">Depth (cm)</label>
+                    <input type="number" class="form-input" id="artwork-depth" placeholder="0">
+                    <div style="font-size:.75rem;color:var(--gray-500);margin-top:.25rem">Required for sculptures — depth or diameter</div>
+                </div>
+
+                <div class="form-group" id="weight-group" style="display:none;">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" class="form-input" id="artwork-weight" placeholder="0" step="0.1">
+                    <div style="font-size:.75rem;color:var(--gray-500);margin-top:.25rem">Approximate weight — important for shipping quotes</div>
+                </div>
+
+                <div class="form-group" id="edition-group" style="display:none;">
+                    <label class="form-label">Edition Size</label>
                     <input type="number" class="form-input" id="artwork-editions" placeholder="1" min="1" max="100" value="1">
-                    <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">For digital art — how many copies do you want to sell?</div>
+                    <div style="font-size:.75rem;color:var(--gray-500);margin-top:.25rem">How many prints/copies in this edition?</div>
+                </div>
+
+                <div class="form-group" id="print-type-group" style="display:none;">
+                    <label class="form-label">Print Type</label>
+                    <select class="form-select" id="artwork-print-type">
+                        <option value="">Select...</option>
+                        <option value="C-Type">C-Type Print</option>
+                        <option value="Giclée">Giclée</option>
+                        <option value="Archival Pigment">Archival Pigment</option>
+                        <option value="Silver Gelatin">Silver Gelatin</option>
+                        <option value="Chromogenic">Chromogenic</option>
+                        <option value="Fine Art Paper">Fine Art Paper</option>
+                        <option value="Canvas Print">Canvas Print</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1625,7 +1693,10 @@
 
         function toggleEditionField() {
             var medium = document.getElementById('artwork-medium').value;
-            document.getElementById('edition-group').style.display = (medium === 'digital') ? 'block' : 'none';
+            document.getElementById('edition-group').style.display = (medium === 'digital' || medium === 'photography') ? 'block' : 'none';
+            document.getElementById('depth-group').style.display = (medium === 'sculpture') ? 'block' : 'none';
+            document.getElementById('weight-group').style.display = (medium === 'sculpture') ? 'block' : 'none';
+            document.getElementById('print-type-group').style.display = (medium === 'photography') ? 'block' : 'none';
         }
 
         function openAddModal() {
@@ -1767,7 +1838,10 @@
                     category: document.getElementById('artwork-medium').value,
                     width_cm: parseInt(document.getElementById('artwork-width').value) || null,
                     height_cm: parseInt(document.getElementById('artwork-height').value) || null,
-                    edition_total: document.getElementById('artwork-medium').value === 'digital' ? (parseInt(document.getElementById('artwork-editions').value) || 1) : 1,
+                    depth_cm: document.getElementById('artwork-medium').value === 'sculpture' ? (parseInt(document.getElementById('artwork-depth').value) || null) : null,
+                    weight_kg: document.getElementById('artwork-medium').value === 'sculpture' ? (parseFloat(document.getElementById('artwork-weight').value) || null) : null,
+                    edition_total: (document.getElementById('artwork-medium').value === 'digital' || document.getElementById('artwork-medium').value === 'photography') ? (parseInt(document.getElementById('artwork-editions').value) || 1) : 1,
+                    print_type: document.getElementById('artwork-medium').value === 'photography' ? (document.getElementById('artwork-print-type').value || null) : null,
                 };
 
                 if (imageUrl) {
@@ -2491,6 +2565,109 @@
                 }
             });
         }
+
+        // ===== SHARE CARDS =====
+        function populateShareSelect() {
+            var sel = document.getElementById('share-artwork-select');
+            sel.innerHTML = '<option value="">— Choose artwork —</option>';
+            var { data: works } = null;
+            db.from('artworks').select('id, title, primary_image_url, price').eq('artist_id', artistData.id).then(function(res) {
+                (res.data || []).forEach(function(w) {
+                    sel.innerHTML += '<option value="' + w.id + '" data-img="' + (w.primary_image_url || '') + '" data-title="' + (w.title || '') + '" data-price="' + (w.price || 0) + '">' + (w.title || 'Untitled') + ' — $' + Number(w.price || 0).toLocaleString() + '</option>';
+                });
+            });
+        }
+        populateShareSelect();
+
+        document.getElementById('generate-share-card').addEventListener('click', function() {
+            var sel = document.getElementById('share-artwork-select');
+            var opt = sel.options[sel.selectedIndex];
+            if (!opt || !opt.value) { alert('Select an artwork.'); return; }
+            var imgUrl = opt.dataset.img;
+            var title = opt.dataset.title;
+            var price = '$' + Number(opt.dataset.price).toLocaleString();
+            var artistName = artistData.artist_name || ((artistData.first_name || '') + ' ' + (artistData.last_name || '')).trim();
+
+            var canvas = document.getElementById('share-canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = 1080; canvas.height = 1080;
+
+            // Black background
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 1080, 1080);
+
+            // Load artwork image
+            if (imgUrl) {
+                var img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    // Draw artwork centered in top portion
+                    var maxH = 750, maxW = 1000;
+                    var ratio = Math.min(maxW / img.width, maxH / img.height);
+                    var w = img.width * ratio, h = img.height * ratio;
+                    var x = (1080 - w) / 2, y = 40 + (750 - h) / 2;
+                    ctx.drawImage(img, x, y, w, h);
+                    drawText(ctx, title, artistName, price);
+                    document.getElementById('share-card-preview').style.display = 'block';
+                };
+                img.onerror = function() {
+                    drawText(ctx, title, artistName, price);
+                    document.getElementById('share-card-preview').style.display = 'block';
+                };
+                img.src = imgUrl;
+            } else {
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(40, 40, 1000, 750);
+                drawText(ctx, title, artistName, price);
+                document.getElementById('share-card-preview').style.display = 'block';
+            }
+        });
+
+        function drawText(ctx, title, artistName, price) {
+            // Bottom bar
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 820, 1080, 260);
+
+            // Vertical bar (logo element)
+            ctx.fillStyle = '#c8ff00';
+            ctx.fillRect(60, 850, 4, 40);
+
+            // InfraMint text
+            ctx.fillStyle = '#fff';
+            ctx.font = '600 28px Manrope, sans-serif';
+            ctx.fillText('Infra', 80, 880);
+            ctx.fillStyle = '#737373';
+            ctx.font = '200 28px Manrope, sans-serif';
+            ctx.fillText('Mint', 80 + ctx.measureText('Infra').width + 2, 880);
+
+            // Title
+            ctx.fillStyle = '#fff';
+            ctx.font = '600 36px Manrope, sans-serif';
+            ctx.fillText(title.length > 35 ? title.substring(0, 35) + '...' : title, 60, 940);
+
+            // Artist name
+            ctx.fillStyle = '#a3a3a3';
+            ctx.font = '400 24px Manrope, sans-serif';
+            ctx.fillText('by ' + artistName, 60, 980);
+
+            // Price
+            ctx.fillStyle = '#c8ff00';
+            ctx.font = '700 36px Manrope, sans-serif';
+            ctx.fillText(price, 60, 1040);
+
+            // URL
+            ctx.fillStyle = '#525252';
+            ctx.font = '400 20px Manrope, sans-serif';
+            ctx.fillText('inframint.io', 1080 - 60 - ctx.measureText('inframint.io').width, 1040);
+        }
+
+        document.getElementById('download-share-card').addEventListener('click', function() {
+            var canvas = document.getElementById('share-canvas');
+            var link = document.createElement('a');
+            link.download = 'inframint-share-card.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
 
         // Initialize
         checkAuth();

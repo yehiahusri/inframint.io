@@ -426,8 +426,8 @@
         <!-- Step 1: Account -->
         <div class="step active" id="step-1">
             <div class="card">
-                <h1 class="card-title">Create your account</h1>
-                <p class="card-subtitle">Sign up with your preferred method</p>
+                <h1 class="card-title">Apply to Sell on InfraMint</h1>
+                <p class="card-subtitle">We curate our artists. Tell us about you and your work.</p>
 
                 <button type="button" class="social-btn" id="google-btn">
                     <svg width="20" height="20" viewBox="0 0 24 24">
@@ -527,8 +527,8 @@
         <!-- Step 3: Profile -->
         <div class="step" id="step-3">
             <div class="card">
-                <h1 class="card-title">Create your artist profile</h1>
-                <p class="card-subtitle">This is what collectors will see</p>
+                <h1 class="card-title">Your artist profile</h1>
+                <p class="card-subtitle">Help us understand your work — this is part of your application</p>
 
                 <div class="form-group">
                     <label class="form-label">Profile Photo</label>
@@ -563,6 +563,17 @@
                 <div class="form-group">
                     <label class="form-label">Biography</label>
                     <textarea class="form-textarea" id="bio" placeholder="Tell collectors about yourself, your art, and your journey..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Portfolio / Website / Instagram</label>
+                    <input type="url" class="form-input" id="portfolio_url" placeholder="https://instagram.com/yourart or your website">
+                    <p class="form-hint">Show us your best work — this helps our curation team review faster</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Why InfraMint?</label>
+                    <textarea class="form-textarea" id="artist_statement" placeholder="Tell us what excites you about selling on InfraMint and what makes your work unique..." rows="3"></textarea>
                 </div>
 
                 <div class="btn-row">
@@ -651,7 +662,7 @@
 
                 <div class="btn-row">
                     <button type="button" class="btn btn-secondary" id="btn-back5">← Back</button>
-                    <button type="button" class="btn btn-primary" id="btn-submit">Complete Registration</button>
+                    <button type="button" class="btn btn-primary" id="btn-submit">Submit Application</button>
                 </div>
             </div>
         </div>
@@ -664,9 +675,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <h2 class="success-title">Application Submitted!</h2>
+                <h2 class="success-title">Application Received!</h2>
                 <p class="success-text">
-                    Thank you for applying to InfraMint. We'll review your application within 2-3 business days. You'll receive an email once approved.
+                    Thank you for applying to sell on InfraMint. Our curation team reviews every application personally. You'll receive an email within 48 hours once approved. In the meantime, you can start setting up your dashboard.
                 </p>
                 <div style="text-align: center;">
                     <a href="artist-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
@@ -782,6 +793,8 @@
             formData.artist_name = artistName;
             formData.category = category;
             formData.bio = document.getElementById('bio').value.trim();
+            formData.portfolio_url = document.getElementById('portfolio_url').value.trim();
+            formData.artist_statement = document.getElementById('artist_statement').value.trim();
 
             showStep(4);
         });
@@ -851,6 +864,8 @@
                     artist_name: formData.artist_name,
                     category: formData.category,
                     bio: formData.bio,
+                    portfolio_url: formData.portfolio_url || null,
+                    artist_statement: formData.artist_statement || null,
                     payout_method: formData.payout_method,
                     bank_account_name: formData.bank_name || null,
                     bank_iban: formData.iban || null,
