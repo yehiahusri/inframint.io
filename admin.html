@@ -185,6 +185,8 @@
                 <a class="sb-lk" data-s="admin-offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Offers <span class="ct" id="n-offers">0</span></a>
                 <a class="sb-lk" data-s="admin-commissions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>Commissions <span class="ct" id="n-commissions">0</span></a>
                 <a class="sb-lk" data-s="admin-disputes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Disputes <span class="ct" id="n-disputes">0</span></a>
+                <a class="sb-lk" data-s="advisory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Advisory <span class="ct" id="n-advisory">0</span></a>
+                <a class="sb-lk" data-s="collections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Collections</a>
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Settings</div>
@@ -499,6 +501,43 @@
                     <div class="ph"><h1>Disputes</h1><p>Order disputes requiring resolution</p></div>
                     <div class="card">
                         <div class="tw"><table><thead><tr><th>Date</th><th>Order</th><th>Raised By</th><th>Reason</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-admin-disputes"></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- Advisory Requests -->
+                <div class="sec" id="section-advisory">
+                    <div class="ph"><h1>Art Advisory</h1><p>Personal curation requests from collectors</p></div>
+                    <div class="card">
+                        <div class="tw"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Styles</th><th>Budget</th><th>Space</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-advisory"></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- Curated Collections -->
+                <div class="sec" id="section-collections">
+                    <div class="ph"><h1>Curated Collections</h1><p>Create themed collections for the homepage</p></div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">New Collection</span></div>
+                        <div id="coll-msg" style="padding:.5rem;font-size:.8rem;margin-bottom:.75rem;display:none"></div>
+                        <div class="form-row2" style="margin-bottom:.75rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Title</label><input type="text" class="fi" id="coll-title" placeholder="e.g. Best of 2026"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Display Order</label><input type="number" class="fi" id="coll-order" value="0" min="0"></div>
+                        </div>
+                        <div style="margin-bottom:.75rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Description</label><input type="text" class="fi" id="coll-desc" placeholder="Short description"></div>
+                        <div class="form-row2" style="margin-bottom:.75rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Cover Image</label><input type="file" accept="image/*" class="fi" id="coll-img" style="padding:.4rem"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Featured on Homepage</label><select class="fi" id="coll-featured"><option value="true">Yes</option><option value="false">No</option></select></div>
+                        </div>
+                        <button class="fbtn" id="create-coll">Create Collection</button>
+                    </div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">All Collections</span></div>
+                        <div id="collections-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem"></div>
+                    </div>
+                    <div class="card" id="coll-artworks-card" style="display:none">
+                        <div class="ch"><span class="ct2">Add Artworks to: <strong id="coll-aw-name"></strong></span></div>
+                        <div style="margin-bottom:.75rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Select Artwork</label><select class="fi" id="coll-aw-select"><option value="">— Select artwork —</option></select></div>
+                        <button class="fbtn" id="add-coll-aw">Add to Collection</button>
+                        <div id="coll-aw-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.5rem;margin-top:1rem"></div>
                     </div>
                 </div>
 
@@ -868,6 +907,8 @@
         loadAdminOffers();
         loadAdminCommissions();
         loadAdminDisputes();
+        loadAdvisory();
+        loadCollections();
     }
 
     // ===== FINANCE =====
@@ -2249,6 +2290,139 @@
             }
         });
     }
+
+    // ===== ADVISORY REQUESTS =====
+    async function loadAdvisory() {
+        var { data: reqs } = await db.from('advisory_requests').select('*').order('created_at', { ascending: false });
+        var newCount = (reqs || []).filter(function(r) { return r.status === 'new'; }).length;
+        document.getElementById('n-advisory').textContent = newCount || '';
+        var b = document.getElementById('tb-advisory');
+        if (!reqs || reqs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="8">No advisory requests yet</td></tr>'; return; }
+        b.innerHTML = '';
+        reqs.forEach(function(r) {
+            var cls = r.status === 'new' ? 'b-pending' : r.status === 'in_progress' ? 'b-active' : r.status === 'completed' ? 'b-approved' : 'b-shipped';
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="font-size:.75rem">' + new Date(r.created_at).toLocaleDateString() + '</td>' +
+                '<td class="tn">' + r.name + '</td>' +
+                '<td style="font-size:.75rem">' + r.email + '</td>' +
+                '<td style="font-size:.7rem">' + (r.styles || []).join(', ') + '</td>' +
+                '<td>' + (r.budget || '—') + '</td>' +
+                '<td style="font-size:.75rem">' + (r.space_type || '—') + '</td>' +
+                '<td><span class="badge ' + cls + '">' + r.status + '</span></td>' +
+                '<td id="adv-actions-' + r.id + '"></td>';
+            b.appendChild(tr);
+            var td = document.getElementById('adv-actions-' + r.id);
+            if (r.status === 'new') {
+                mkBtn(td, 'In Progress', 'ab-list', async function() { await db.from('advisory_requests').update({ status: 'in_progress' }).eq('id', r.id); loadAdvisory(); });
+            }
+            if (r.status === 'in_progress') {
+                mkBtn(td, 'Complete', 'ab-ok', async function() { await db.from('advisory_requests').update({ status: 'completed' }).eq('id', r.id); loadAdvisory(); });
+            }
+            if (r.status !== 'archived') {
+                mkBtn(td, 'Archive', 'ab-grey', async function() { await db.from('advisory_requests').update({ status: 'archived' }).eq('id', r.id); loadAdvisory(); });
+            }
+        });
+    }
+
+    // ===== CURATED COLLECTIONS =====
+    var selectedCollId = null;
+    async function loadCollections() {
+        var { data: colls } = await db.from('collections').select('*').order('display_order', { ascending: true });
+        var list = document.getElementById('collections-list');
+        if (!colls || colls.length === 0) { list.innerHTML = '<div style="padding:1rem;color:var(--g400);font-size:.8rem">No collections yet.</div>'; return; }
+        list.innerHTML = '';
+        colls.forEach(function(c) {
+            var div = document.createElement('div');
+            div.style.cssText = 'border:1px solid var(--g200);background:var(--white);cursor:pointer;overflow:hidden;transition:border-color .2s';
+            div.innerHTML =
+                (c.image_url ? '<img src="' + c.image_url + '" style="width:100%;aspect-ratio:16/9;object-fit:cover">' : '<div style="width:100%;aspect-ratio:16/9;background:var(--g200)"></div>') +
+                '<div style="padding:.75rem">' +
+                    '<div style="font-weight:600;font-size:.85rem">' + c.title + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--g400);margin:.25rem 0">' + (c.description || '') + '</div>' +
+                    '<div style="display:flex;gap:.5rem;align-items:center">' +
+                        '<span class="badge b-' + (c.status === 'published' ? 'approved' : 'pending') + '">' + c.status + '</span>' +
+                        (c.featured ? '<span style="font-size:.6rem;color:var(--ok)">★ Featured</span>' : '') +
+                    '</div>' +
+                '</div>';
+            div.addEventListener('click', function() { selectCollection(c); });
+            div.addEventListener('mouseenter', function() { this.style.borderColor = 'var(--black)'; });
+            div.addEventListener('mouseleave', function() { this.style.borderColor = 'var(--g200)'; });
+            list.appendChild(div);
+        });
+    }
+
+    function selectCollection(c) {
+        selectedCollId = c.id;
+        document.getElementById('coll-artworks-card').style.display = 'block';
+        document.getElementById('coll-aw-name').textContent = c.title;
+        // Populate artwork selector
+        var sel = document.getElementById('coll-aw-select');
+        sel.innerHTML = '<option value="">— Select artwork —</option>';
+        allArtworks.forEach(function(w) {
+            sel.innerHTML += '<option value="' + w.id + '">' + (w.title || 'Untitled') + ' — $' + Number(w.price || 0).toLocaleString() + '</option>';
+        });
+        loadCollectionArtworks(c.id);
+        document.getElementById('coll-artworks-card').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function loadCollectionArtworks(collId) {
+        var { data: items } = await db.from('collection_artworks').select('*, artworks(title, primary_image_url, price)').eq('collection_id', collId).order('display_order', { ascending: true });
+        var grid = document.getElementById('coll-aw-grid');
+        if (!items || items.length === 0) { grid.innerHTML = '<div style="font-size:.8rem;color:var(--g400)">No artworks added yet.</div>'; return; }
+        grid.innerHTML = '';
+        items.forEach(function(item) {
+            var art = item.artworks || {};
+            var div = document.createElement('div');
+            div.style.cssText = 'border:1px solid var(--g200);overflow:hidden';
+            div.innerHTML =
+                (art.primary_image_url ? '<img src="' + art.primary_image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover">' : '<div style="width:100%;aspect-ratio:1;background:var(--g200)"></div>') +
+                '<div style="padding:.4rem;font-size:.65rem">' + (art.title || '—') + '</div>' +
+                '<button style="width:100%;padding:.3rem;font-size:.55rem;font-family:Manrope,sans-serif;background:none;border-top:1px solid var(--g200);color:#dc2626;cursor:pointer" onclick="removeCollAw(\'' + item.id + '\')">Remove</button>';
+            grid.appendChild(div);
+        });
+    }
+
+    async function removeCollAw(itemId) {
+        await db.from('collection_artworks').delete().eq('id', itemId);
+        if (selectedCollId) loadCollectionArtworks(selectedCollId);
+    }
+    window.removeCollAw = removeCollAw;
+
+    // Create collection
+    document.getElementById('create-coll').addEventListener('click', async function() {
+        var msg = document.getElementById('coll-msg');
+        var title = document.getElementById('coll-title').value.trim();
+        var desc = document.getElementById('coll-desc').value.trim();
+        var order = parseInt(document.getElementById('coll-order').value) || 0;
+        var featured = document.getElementById('coll-featured').value === 'true';
+        if (!title) { msg.textContent = 'Enter a title.'; msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626'; return; }
+        this.textContent = 'Creating...'; this.disabled = true;
+        var slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        var imageUrl = '';
+        var fileInput = document.getElementById('coll-img');
+        if (fileInput.files[0]) {
+            var fileName = 'collection-' + slug + '-' + Date.now() + '.' + fileInput.files[0].name.split('.').pop();
+            var { error: upErr } = await db.storage.from('artwork-images').upload(fileName, fileInput.files[0], { contentType: fileInput.files[0].type, upsert: true });
+            if (!upErr) { var { data: urlData } = db.storage.from('artwork-images').getPublicUrl(fileName); imageUrl = urlData.publicUrl; }
+        }
+        var { error } = await db.from('collections').insert({ title: title, slug: slug, description: desc, display_order: order, featured: featured, image_url: imageUrl, status: 'published' });
+        if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626'; }
+        else { msg.textContent = 'Collection created!'; msg.style.display = 'block'; msg.style.background = '#f0fdf4'; msg.style.color = '#16a34a'; document.getElementById('coll-title').value = ''; document.getElementById('coll-desc').value = ''; loadCollections(); }
+        this.textContent = 'Create Collection'; this.disabled = false;
+    });
+
+    // Add artwork to collection
+    document.getElementById('add-coll-aw').addEventListener('click', async function() {
+        if (!selectedCollId) return;
+        var awId = document.getElementById('coll-aw-select').value;
+        if (!awId) { alert('Select an artwork.'); return; }
+        var { data: existing } = await db.from('collection_artworks').select('id').eq('collection_id', selectedCollId).eq('artwork_id', awId);
+        if (existing && existing.length > 0) { alert('Already in this collection.'); return; }
+        var { data: count } = await db.from('collection_artworks').select('id').eq('collection_id', selectedCollId);
+        await db.from('collection_artworks').insert({ collection_id: selectedCollId, artwork_id: awId, display_order: (count || []).length });
+        loadCollectionArtworks(selectedCollId);
+    });
 
     // ===== AUCTIONS MANAGEMENT =====
     var allAuctionsList = [];
