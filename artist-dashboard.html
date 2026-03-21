@@ -930,6 +930,11 @@
                         <tbody id="analytics-table"></tbody>
                     </table></div>
                 </div>
+                <div class="card">
+                    <div class="card-header"><span style="font-weight:600">Price Comparables</span></div>
+                    <div style="font-size:.75rem;color:var(--gray-400);margin-bottom:.75rem">How your prices compare to similar artists on InfraMint</div>
+                    <div id="comparables-container" style="font-size:.8rem;color:var(--gray-500)">Loading comparables...</div>
+                </div>
             </div>
 
             <!-- Offers Section -->
@@ -2312,6 +2317,37 @@
             document.getElementById('an-wishlist').textContent = totalWishlist.toLocaleString();
             document.getElementById('an-orders').textContent = orderCount;
             document.getElementById('an-conversion').textContent = conversion + '%';
+
+            // Price comparables
+            var { data: allWorks } = await db.from('artworks').select('price, medium, artist_id, artists(artist_name)').in('status', ['listed', 'sold']);
+            var myMediums = myArtworks.map(function(w) { return w.medium; }).filter(Boolean);
+            var myPrices = myArtworks.map(function(w) { return Number(w.price || 0); }).filter(function(p) { return p > 0; });
+            var myAvg = myPrices.length > 0 ? Math.round(myPrices.reduce(function(a, b) { return a + b; }, 0) / myPrices.length) : 0;
+
+            var others = (allWorks || []).filter(function(w) { return w.artist_id !== artistData.id && Number(w.price || 0) > 0; });
+            var sameMedium = others.filter(function(w) { return myMediums.indexOf(w.medium) >= 0; });
+            var otherPrices = (sameMedium.length > 3 ? sameMedium : others).map(function(w) { return Number(w.price); });
+            var platformAvg = otherPrices.length > 0 ? Math.round(otherPrices.reduce(function(a, b) { return a + b; }, 0) / otherPrices.length) : 0;
+            var platformMin = otherPrices.length > 0 ? Math.min.apply(null, otherPrices) : 0;
+            var platformMax = otherPrices.length > 0 ? Math.max.apply(null, otherPrices) : 0;
+
+            var compEl = document.getElementById('comparables-container');
+            if (myAvg === 0 || otherPrices.length === 0) {
+                compEl.innerHTML = '<div style="color:var(--gray-400)">Not enough data yet. Add artworks with prices to see comparables.</div>';
+            } else {
+                var diff = myAvg - platformAvg;
+                var diffPct = platformAvg > 0 ? Math.round((diff / platformAvg) * 100) : 0;
+                var diffLabel = diff > 0 ? '+$' + diff.toLocaleString() + ' (' + diffPct + '% above)' : diff < 0 ? '-$' + Math.abs(diff).toLocaleString() + ' (' + Math.abs(diffPct) + '% below)' : 'At platform average';
+                var diffColor = diff > 0 ? '#16a34a' : diff < 0 ? '#dc2626' : 'var(--gray-500)';
+                compEl.innerHTML =
+                    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">' +
+                        '<div style="background:var(--gray-100);padding:1rem;text-align:center"><div style="font-size:1.25rem;font-weight:700">$' + myAvg.toLocaleString() + '</div><div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Your Average</div></div>' +
+                        '<div style="background:var(--gray-100);padding:1rem;text-align:center"><div style="font-size:1.25rem;font-weight:700">$' + platformAvg.toLocaleString() + '</div><div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Platform Average</div></div>' +
+                        '<div style="background:var(--gray-100);padding:1rem;text-align:center"><div style="font-size:1.25rem;font-weight:700">$' + platformMin.toLocaleString() + ' — $' + platformMax.toLocaleString() + '</div><div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Price Range</div></div>' +
+                        '<div style="background:var(--gray-100);padding:1rem;text-align:center"><div style="font-size:1.25rem;font-weight:700;color:' + diffColor + '">' + diffLabel + '</div><div style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">vs Platform</div></div>' +
+                    '</div>' +
+                    '<div style="font-size:.75rem;color:var(--gray-400)">Based on ' + otherPrices.length + ' artworks from other artists' + (sameMedium.length > 3 ? ' in your medium' : '') + '.</div>';
+            }
 
             var tb = document.getElementById('analytics-table');
             if (myArtworks.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="padding:1rem;color:var(--gray-400);text-align:center">No artworks yet</td></tr>'; return; }
