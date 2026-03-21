@@ -197,7 +197,20 @@
         </div>
 
         <div>
-            <div class="topbar"><span>InfraMint Admin</span><span id="aname">Admin</span></div>
+            <div class="topbar" style="justify-content:space-between">
+                <span>InfraMint Admin</span>
+                <div style="display:flex;align-items:center;gap:1.5rem">
+                    <div style="display:flex;align-items:center;gap:.5rem;font-size:.7rem">
+                        <span style="color:var(--g500)">Auctions</span>
+                        <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;margin:0">
+                            <input type="checkbox" id="topbar-toggle-auctions" style="opacity:0;width:0;height:0">
+                            <span style="position:absolute;inset:0;background:var(--g300);transition:.3s" id="topbar-track"></span>
+                            <span style="position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:white;transition:.3s" id="topbar-thumb"></span>
+                        </label>
+                    </div>
+                    <span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span>
+                </div>
+            </div>
             <main>
                 <!-- Dashboard -->
                 <div class="sec active" id="section-overview">
@@ -828,33 +841,36 @@
     var toggleTrack = document.getElementById('toggle-track');
     var toggleThumb = document.getElementById('toggle-thumb');
     var toggleStatus = document.getElementById('toggle-status');
+    var topbarToggle = document.getElementById('topbar-toggle-auctions');
+    var topbarTrack = document.getElementById('topbar-track');
+    var topbarThumb = document.getElementById('topbar-thumb');
 
     async function loadAuctionSetting() {
         var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
         var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
+        topbarToggle.checked = isOn;
         updateToggleUI(isOn);
     }
 
     function updateToggleUI(isOn) {
         toggleTrack.style.background = isOn ? 'var(--black)' : 'var(--g300)';
         toggleThumb.style.transform = isOn ? 'translateX(20px)' : 'translateX(0)';
-        toggleStatus.textContent = isOn ? 'Auctions page is live — visitors can see and bid' : 'Auctions page shows "Coming Soon" to visitors';
+        topbarTrack.style.background = isOn ? 'var(--black)' : 'var(--g300)';
+        topbarThumb.style.transform = isOn ? 'translateX(16px)' : 'translateX(0)';
+        toggleStatus.textContent = isOn ? 'Auctions page is live' : 'Auctions page shows "Coming Soon"';
     }
 
-    auctionToggle.addEventListener('change', async function() {
-        var isOn = this.checked;
+    async function saveAuctionToggle(isOn) {
         updateToggleUI(isOn);
-        toggleStatus.textContent = 'Saving...';
+        auctionToggle.checked = isOn;
+        topbarToggle.checked = isOn;
         var { error } = await db.from('site_settings').upsert({ key: 'auctions_enabled', value: isOn ? 'true' : 'false', updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        if (error) {
-            toggleStatus.textContent = 'Error: ' + error.message;
-            this.checked = !isOn;
-            updateToggleUI(!isOn);
-        } else {
-            updateToggleUI(isOn);
-        }
-    });
+        if (error) { auctionToggle.checked = !isOn; topbarToggle.checked = !isOn; updateToggleUI(!isOn); }
+    }
+
+    auctionToggle.addEventListener('change', function() { saveAuctionToggle(this.checked); });
+    topbarToggle.addEventListener('change', function() { saveAuctionToggle(this.checked); });
 
     // ===== LOAD ALL =====
     async function loadAll(){
