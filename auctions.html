@@ -123,6 +123,21 @@
         .past-stat span{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
         .past-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;z-index:2;background:var(--black);color:var(--white)}
 
+        /* Past auction expanded lots */
+        .past-lots{padding:1.5rem 3rem;background:var(--white);border-bottom:1px solid var(--g200);display:none}
+        .past-lots.open{display:block}
+        .past-lots-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+        .past-lots-title{font-size:1rem;font-weight:600}
+        .past-lots-close{background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--g400)}
+        .past-lots-close:hover{color:var(--black)}
+        .past-lots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+        .past-lot{border:1px solid var(--g200);overflow:hidden;position:relative}
+        .past-lot.sold{border-color:var(--black)}
+        .past-lot.unsold{opacity:.6}
+        .past-lot-badge{position:absolute;top:.5rem;left:.5rem;font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .4rem;z-index:2}
+        .past-lot-badge.sold{background:var(--black);color:var(--white)}
+        .past-lot-badge.unsold{background:var(--g200);color:var(--g500)}
+
         .coming-soon{text-align:center;padding:8rem 2rem;background:var(--white)}
         .cs-ey{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#4a7c00;margin-bottom:1rem}
         .cs-t{font-size:2.5rem;font-weight:300;margin-bottom:.75rem}
@@ -182,6 +197,12 @@
         <div class="lots-grid" id="lots-grid"></div>
     </div>
 
+    <!-- Past auction lots expanded view -->
+    <div class="past-lots" id="past-lots-section">
+        <div class="past-lots-head"><div class="past-lots-title" id="past-lots-title"></div><button class="past-lots-close" id="past-lots-close">&times;</button></div>
+        <div class="past-lots-grid" id="past-lots-grid"></div>
+    </div>
+
     <!-- Past auctions -->
     <div class="past-section" id="past-section" style="display:none">
         <div class="lots-label">Previous Auctions</div>
@@ -233,7 +254,7 @@ async function loadAuctions(){
     var now=new Date();
     var live=auctions.filter(function(a){return a.status==='live'&&new Date(a.end_time)>now;});
     var upcoming=auctions.filter(function(a){return a.status==='upcoming'||(a.status==='live'&&new Date(a.start_time)>now);});
-    var past=auctions.filter(function(a){return a.status==='ended'||a.status==='sold'||a.status==='unsold'||(a.status==='live'&&new Date(a.end_time)<=now);});
+    var past=auctions.filter(function(a){return a.status==='ended'||a.status==='completed'||a.status==='sold'||a.status==='unsold'||(a.status==='live'&&new Date(a.end_time)<=now);});
 
     if(live.length>0){
         renderEvent(live[0]);
@@ -361,10 +382,54 @@ function renderPast(auctions){
     auctions.forEach(function(a,idx){
         var num=a.auction_number||('A-'+String(idx+1).padStart(3,'0'));
         var numDigits=num.replace(/[^0-9]/g,'')||String(idx+1);
+        var st=a.status==='ended'||a.status==='completed'?'Ended':a.status;
         var card=document.createElement('div');card.className='past-card';
-        card.innerHTML='<div class="past-bg">'+numDigits+'</div><div class="past-badge">'+a.status+'</div><div class="past-inner"><div class="past-num">'+num+'</div><div class="past-title">'+a.title+'</div><div class="past-stats"><div class="past-stat"><strong>'+(a.lot_count||0)+'</strong><span>Paintings</span></div><div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div><div class="past-stat"><strong>'+(a.total_views||0)+'</strong><span>Views</span></div></div></div>';
+        card.innerHTML='<div class="past-bg">'+numDigits+'</div><div class="past-badge">'+st+'</div><div class="past-inner"><div class="past-num">'+num+'</div><div class="past-title">'+a.title+'</div><div class="past-stats"><div class="past-stat"><strong>'+(a.lot_count||0)+'</strong><span>Paintings</span></div><div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div><div class="past-stat"><strong>'+(a.total_views||0)+'</strong><span>Views</span></div></div></div>';
+        card.addEventListener('click',function(){loadPastLots(a);});
         grid.appendChild(card);
     });
+
+    // Close handler
+    document.getElementById('past-lots-close').addEventListener('click',function(){
+        document.getElementById('past-lots-section').classList.remove('open');
+    });
+}
+
+async function loadPastLots(auction){
+    var{data:lots}=await db.from('auction_lots').select('*').eq('auction_id',auction.id).order('lot_number',{ascending:true});
+    var section=document.getElementById('past-lots-section');
+    var title=document.getElementById('past-lots-title');
+    var grid=document.getElementById('past-lots-grid');
+
+    title.textContent=auction.auction_number+' — '+auction.title;
+
+    if(!lots||lots.length===0){
+        grid.innerHTML='<div style="padding:1rem;color:var(--g400);font-size:.8rem">No paintings in this auction.</div>';
+    }else{
+        grid.innerHTML='';
+        lots.forEach(function(lot){
+            var isSold=lot.status==='sold';
+            var isUnsold=lot.status==='unsold';
+            var hasImg=lot.image_url&&lot.image_url.length>5;
+            var finalPrice=isSold?Number(lot.winning_bid||lot.current_bid||0):Number(lot.current_bid||0);
+            var div=document.createElement('div');
+            div.className='past-lot'+(isSold?' sold':'')+(isUnsold?' unsold':'');
+            div.innerHTML=
+                (isSold?'<div class="past-lot-badge sold">Sold — $'+finalPrice.toLocaleString()+'</div>':isUnsold?'<div class="past-lot-badge unsold">Unsold</div>':'')+
+                (hasImg?'<img style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block" src="'+lot.image_url+'">':'<div style="width:100%;aspect-ratio:4/3;background:var(--g200)"></div>')+
+                '<div style="padding:.75rem">'+
+                    '<div style="font-size:.45rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#4a7c00">Lot '+lot.lot_number+'</div>'+
+                    '<div style="font-size:.9rem;font-weight:600;margin:.15rem 0">'+lot.title+'</div>'+
+                    '<div style="font-size:.7rem;color:var(--g500);margin-bottom:.4rem">by '+lot.artist_name+'</div>'+
+                    '<div style="display:flex;gap:.75rem;font-size:.65rem;color:var(--g400);margin-bottom:.35rem"><span>♡ '+(lot.like_count||0)+'</span><span>'+(lot.view_count||0)+' views</span><span>'+(lot.total_bids||0)+' bids</span></div>'+
+                    (isSold?'<div style="font-size:.85rem;font-weight:700">$'+finalPrice.toLocaleString()+'</div>':'<div style="font-size:.75rem;color:var(--g400)">Final bid: $'+finalPrice.toLocaleString()+'</div>')+
+                '</div>';
+            grid.appendChild(div);
+        });
+    }
+
+    section.classList.add('open');
+    section.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function startTimer(elId,target,label){

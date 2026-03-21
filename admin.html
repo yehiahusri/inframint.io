@@ -2291,7 +2291,7 @@
                 '<td style="font-weight:600">' + (a.auction_number || '—') + '</td>' +
                 '<td>' + (a.title || '—') + '</td>' +
                 '<td>' + (a.lot_count || 0) + ' paintings</td>' +
-                '<td><span class="badge b-' + (a.status === 'live' ? 'approved' : a.status === 'sold' ? 'shipped' : a.status === 'upcoming' ? 'pending' : 'pending') + '">' + a.status + '</span></td>' +
+                '<td><span class="badge b-' + (a.status === 'live' ? 'approved' : a.status === 'completed' ? 'shipped' : a.status === 'upcoming' ? 'pending' : a.status === 'ended' ? 'active' : 'pending') + '">' + a.status + '</span></td>' +
                 '<td>' + (a.total_likes || 0) + '</td>' +
                 '<td>' + (a.total_views || 0) + '</td>' +
                 '<td style="font-size:.7rem">' + (a.end_time ? new Date(a.end_time).toLocaleDateString() + '<br>' + new Date(a.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—') + '</td>' +
@@ -2309,7 +2309,10 @@
                 mkBtn(td, 'Add Paintings', 'ab-list', function(e) { e.stopPropagation(); selectAuction(a); });
                 if (!a.visible) mkBtn(td, 'Show', 'ab-list', function(e) { e.stopPropagation(); updateAuction(a.id, { visible: true }); });
                 if (a.visible) mkBtn(td, 'Hide', 'ab-unlist', function(e) { e.stopPropagation(); updateAuction(a.id, { visible: false }); });
-                mkBtn(td, 'End Now', 'ab-no', function(e) { e.stopPropagation(); if (!confirm('End this auction now?')) return; updateAuction(a.id, { status: 'ended', end_time: new Date().toISOString() }); });
+                mkBtn(td, 'End Now', 'ab-no', async function(e) { e.stopPropagation(); if (!confirm('End this auction now? Lots will be marked sold/unsold based on reserve.')) return; await endAuction(a.id); });
+            } else if (a.status === 'ended') {
+                mkBtn(td, 'Mark Complete', 'ab-list', function(e) { e.stopPropagation(); updateAuction(a.id, { status: 'completed' }); });
+                mkBtn(td, 'Reopen', 'ab-unlist', function(e) { e.stopPropagation(); updateAuction(a.id, { status: 'live' }); });
             } else {
                 td.innerHTML = '<span style="font-size:.7rem;color:var(--g400)">' + a.status + '</span>';
             }
@@ -2333,10 +2336,14 @@
         grid.innerHTML = '';
         lots.forEach(function(lot) {
             var div = document.createElement('div');
-            div.style.cssText = 'border:1px solid var(--g200);background:var(--white);overflow:hidden';
+            var isSold = lot.status === 'sold';
+            var isUnsold = lot.status === 'unsold';
+            var statusHTML = isSold ? '<div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;background:var(--black);color:var(--white);display:inline-block;margin-bottom:.35rem">Sold — $' + Number(lot.winning_bid || lot.current_bid || 0).toLocaleString() + '</div>' : isUnsold ? '<div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;background:var(--g200);color:var(--g500);display:inline-block;margin-bottom:.35rem">Unsold</div>' : '';
+            div.style.cssText = 'border:1px solid var(--g200);background:var(--white);overflow:hidden' + (isSold ? ';border-color:var(--black)' : '');
             div.innerHTML =
-                (lot.image_url ? '<img src="' + lot.image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover">' : '<div style="width:100%;aspect-ratio:1;background:var(--g200)"></div>') +
+                (lot.image_url ? '<img src="' + lot.image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover' + (isUnsold ? ';opacity:.5' : '') + '">' : '<div style="width:100%;aspect-ratio:1;background:var(--g200)"></div>') +
                 '<div style="padding:.75rem">' +
+                    statusHTML +
                     '<div style="font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400)">Lot ' + lot.lot_number + '</div>' +
                     '<div style="font-size:.85rem;font-weight:600;margin:.2rem 0">' + lot.title + '</div>' +
                     '<div style="font-size:.7rem;color:var(--g500);margin-bottom:.5rem">by ' + lot.artist_name + '</div>' +
@@ -2347,7 +2354,7 @@
                     '</div>' +
                     '<div style="font-size:.7rem;margin-bottom:.25rem"><span style="color:var(--g500)">Reserve:</span> <strong>$' + Number(lot.reserve_price).toLocaleString() + '</strong></div>' +
                     '<div style="font-size:.7rem;margin-bottom:.5rem"><span style="color:var(--g500)">Start:</span> $' + Number(lot.starting_price).toLocaleString() + (lot.current_bid > 0 ? ' · <strong style="color:var(--ok)">Current: $' + Number(lot.current_bid).toLocaleString() + '</strong>' : '') + '</div>' +
-                    '<button style="width:100%;padding:.4rem;font-size:.65rem;font-family:Manrope,sans-serif;background:none;border:1px solid #dc2626;color:#dc2626;cursor:pointer" onclick="removeLot(\'' + lot.id + '\')">Remove</button>' +
+                    (lot.status === 'active' ? '<button style="width:100%;padding:.4rem;font-size:.65rem;font-family:Manrope,sans-serif;background:none;border:1px solid #dc2626;color:#dc2626;cursor:pointer" onclick="removeLot(\'' + lot.id + '\')">Remove</button>' : '') +
                 '</div>';
             grid.appendChild(div);
         });
@@ -2367,6 +2374,25 @@
     async function updateAuction(id, data) {
         data.updated_at = new Date().toISOString();
         await db.from('auctions').update(data).eq('id', id);
+        loadAuctions();
+    }
+
+    async function endAuction(auctionId) {
+        // Get all lots for this auction
+        var { data: lots } = await db.from('auction_lots').select('*').eq('auction_id', auctionId);
+        if (lots && lots.length > 0) {
+            for (var i = 0; i < lots.length; i++) {
+                var lot = lots[i];
+                var cb = Number(lot.current_bid || 0);
+                var rp = Number(lot.reserve_price || 0);
+                if (cb >= rp && cb > 0) {
+                    await db.from('auction_lots').update({ status: 'sold', winning_bid: cb }).eq('id', lot.id);
+                } else {
+                    await db.from('auction_lots').update({ status: 'unsold' }).eq('id', lot.id);
+                }
+            }
+        }
+        await db.from('auctions').update({ status: 'ended', end_time: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', auctionId);
         loadAuctions();
     }
 
