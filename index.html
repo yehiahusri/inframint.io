@@ -740,6 +740,7 @@
             <a href="about.html">About</a>
             <a href="artist-login.html">Artist Login</a>
             <a href="collector-login.html">Collector Login</a>
+            <a href="partner-login.html">Partner Login</a>
         </div>
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
@@ -752,6 +753,7 @@
         <div class="nav-right" id="nav-right">
             <a href="artist-login.html" class="nav-login" id="artist-login-link">Artist Login</a>
             <a href="collector-login.html" class="nav-login">Collector Login</a>
+            <a href="partner-login.html" class="nav-login">Partner Login</a>
         </div>
     </nav>
 
@@ -814,6 +816,18 @@
             <div class="stat-number" id="home-stat-sold">—</div>
             <div class="stat-label">Sold</div>
         </div>
+    </section>
+
+    <!-- Curated Collections -->
+    <section id="curated-collections" style="padding:4rem 3rem;max-width:1400px;margin:0 auto;display:none">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+            <div>
+                <div style="font-size:.55rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.35rem">Curated For You</div>
+                <div style="font-size:1.75rem;font-weight:300;letter-spacing:-.02em">Explore <strong style="font-weight:600">Collections</strong></div>
+            </div>
+            <a href="gallery.html" style="font-size:.8rem;color:var(--gray-500);text-decoration:none;border-bottom:1px solid var(--gray-300)">View all →</a>
+        </div>
+        <div id="collections-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem"></div>
     </section>
 
     <!-- How It Works -->
@@ -985,6 +999,33 @@
             document.getElementById('home-stat-artworks').textContent = artworkCount;
             document.getElementById('home-stat-countries').textContent = countries.size;
             document.getElementById('home-stat-sold').textContent = soldCount;
+
+            // Load curated collections
+            var { data: colls } = await db.from('collections').select('*, collection_artworks(artwork_id, artworks(primary_image_url))').eq('status', 'published').eq('featured', true).order('display_order', { ascending: true }).limit(6);
+            if (colls && colls.length > 0) {
+                document.getElementById('curated-collections').style.display = 'block';
+                var grid = document.getElementById('collections-grid');
+                grid.innerHTML = '';
+                colls.forEach(function(c) {
+                    var imgs = (c.collection_artworks || []).slice(0, 4).map(function(ca) { return (ca.artworks || {}).primary_image_url; }).filter(Boolean);
+                    var coverImg = c.image_url || (imgs.length > 0 ? imgs[0] : '');
+                    var card = document.createElement('a');
+                    card.href = 'gallery.html?collection=' + c.slug;
+                    card.style.cssText = 'display:block;text-decoration:none;color:inherit;border:1px solid var(--gray-200);background:var(--white);overflow:hidden;transition:border-color .2s';
+                    card.addEventListener('mouseenter', function() { this.style.borderColor = 'var(--black)'; });
+                    card.addEventListener('mouseleave', function() { this.style.borderColor = 'var(--gray-200)'; });
+                    var imgGrid = '';
+                    if (imgs.length >= 4) {
+                        imgGrid = '<div style="display:grid;grid-template-columns:1fr 1fr;aspect-ratio:16/9">' + imgs.slice(0, 4).map(function(u) { return '<img src="' + u + '" style="width:100%;height:100%;object-fit:cover">'; }).join('') + '</div>';
+                    } else if (coverImg) {
+                        imgGrid = '<img src="' + coverImg + '" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block">';
+                    } else {
+                        imgGrid = '<div style="width:100%;aspect-ratio:16/9;background:var(--gray-200)"></div>';
+                    }
+                    card.innerHTML = imgGrid + '<div style="padding:1rem"><div style="font-weight:600;font-size:.95rem;margin-bottom:.2rem">' + c.title + '</div>' + (c.description ? '<div style="font-size:.75rem;color:var(--gray-500)">' + c.description + '</div>' : '') + '</div>';
+                    grid.appendChild(card);
+                });
+            }
         })();
     </script>
 
