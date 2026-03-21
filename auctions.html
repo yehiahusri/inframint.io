@@ -111,21 +111,22 @@
 
         /* Past auctions */
         .past-section{padding:2rem 3rem 4rem}
-        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
-        .past-card{position:relative;overflow:hidden;cursor:pointer;transition:transform .2s;min-height:260px;background:var(--black)}
-        .past-card:hover{transform:translateY(-4px)}
-        .past-card-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35;transition:opacity .3s}
-        .past-card:hover .past-card-img{opacity:.45}
-        .past-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70%;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none;z-index:1}
-        .past-card-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9rem;font-weight:800;color:rgba(200,255,0,.08);line-height:1;pointer-events:none;user-select:none;letter-spacing:-.05em}
-        .past-inner{position:relative;z-index:2;padding:1.75rem;display:flex;flex-direction:column;justify-content:flex-end;min-height:260px}
-        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:.35rem}
-        .past-title{font-size:1.25rem;font-weight:300;color:var(--white);margin-bottom:.6rem}
-        .past-stats{display:flex;gap:1.5rem;font-size:.75rem}
+        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1.5rem}
+        .past-card{display:grid;grid-template-columns:1fr 180px;min-height:200px;background:var(--black);position:relative;overflow:hidden;cursor:pointer;transition:transform .2s}
+        .past-card:hover{transform:translateY(-3px)}
+        .past-card-left{position:relative;padding:1.5rem;display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+        .past-card-num-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:8rem;font-weight:800;color:rgba(200,255,0,.1);line-height:1;pointer-events:none;user-select:none;letter-spacing:-.05em}
+        .past-card-right{position:relative;overflow:hidden}
+        .past-card-img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85;transition:opacity .3s}
+        .past-card:hover .past-card-img{opacity:1}
+        .past-card-img-empty{width:100%;height:100%;background:var(--g800)}
+        .past-num{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.4rem}
+        .past-title{font-size:1.2rem;font-weight:300;color:var(--white);margin-bottom:.65rem}
+        .past-stats{display:flex;gap:1.25rem;font-size:.75rem}
         .past-stat strong{display:block;font-size:1rem;color:var(--white)}
-        .past-stat span{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-        .past-badge{position:absolute;top:1.25rem;right:1.25rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;z-index:3;background:rgba(200,255,0,.9);color:var(--black)}
-        .past-sold-price{font-size:.7rem;color:#c8ff00;font-weight:600;margin-top:.5rem}
+        .past-stat span{font-size:.45rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+        .past-badge{position:absolute;top:0;right:0;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .65rem;z-index:3;background:#c8ff00;color:var(--black)}
+        .past-sold-price{font-size:.7rem;color:#c8ff00;font-weight:600;margin-top:.6rem}
 
         /* Past auction expanded lots */
         .past-lots{padding:1.5rem 3rem;background:var(--white);border-bottom:1px solid var(--g200);display:none}
@@ -154,7 +155,7 @@
         footer a:hover{color:var(--black)}
         .footer-copy{font-size:.7rem;color:var(--g400);margin-top:1rem}
 
-        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card-num{font-size:5rem}.past-lots{padding:1rem}}
+        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card{grid-template-columns:1fr 140px}.past-card-num-bg{font-size:5rem}.past-lots{padding:1rem}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
     </style>
 </head>
@@ -408,10 +409,8 @@ async function renderPast(auctions){
 
         var card=document.createElement('div');card.className='past-card';
         card.innerHTML=
-            (heroImg?'<div class="past-card-img" style="background-image:url(\''+heroImg+'\')"></div>':'')+
-            '<div class="past-card-num">'+numDigits+'</div>'+
-            '<div class="past-badge">'+st+'</div>'+
-            '<div class="past-inner">'+
+            '<div class="past-card-left">'+
+                '<div class="past-card-num-bg">'+numDigits+'</div>'+
                 '<div class="past-num">'+num+'</div>'+
                 '<div class="past-title">'+a.title+'</div>'+
                 '<div class="past-stats">'+
@@ -420,7 +419,9 @@ async function renderPast(auctions){
                     '<div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div>'+
                 '</div>'+
                 (topSaleAmount>0?'<div class="past-sold-price">Top sale: $'+topSaleAmount.toLocaleString()+'</div>':'')+
-            '</div>';
+            '</div>'+
+            '<div class="past-card-right">'+(heroImg?'<img class="past-card-img" src="'+heroImg+'">':'<div class="past-card-img-empty"></div>')+'</div>'+
+            '<div class="past-badge">'+(st==='Ended'?'Ended':st)+'</div>';
         card.addEventListener('click',function(){loadPastLots(a);});
         grid.appendChild(card);
     });
