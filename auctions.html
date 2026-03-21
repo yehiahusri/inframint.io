@@ -257,23 +257,28 @@ async function loadAuctions(){
     var{data:auctions}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
     if(!auctions||auctions.length===0){document.getElementById('no-auctions').style.display='block';return;}
     var now=new Date();
-    var live=auctions.filter(function(a){return a.status==='live'&&new Date(a.end_time)>now;});
-    var upcoming=auctions.filter(function(a){return a.status==='upcoming'||(a.status==='live'&&new Date(a.start_time)>now);});
-    var past=auctions.filter(function(a){return a.status==='ended'||a.status==='completed'||a.status==='sold'||a.status==='unsold'||(a.status==='live'&&new Date(a.end_time)<=now);});
+
+    // Auto-classify: if end_time passed and still "live", treat as ended
+    auctions.forEach(function(a){
+        if(a.status==='live'&&a.end_time&&new Date(a.end_time)<=now){a._expired=true;}
+    });
+
+    var live=auctions.filter(function(a){return a.status==='live'&&!a._expired;});
+    var upcoming=auctions.filter(function(a){return a.status==='upcoming'||(a.status==='draft'&&a.visible);});
+    var past=auctions.filter(function(a){return a.status==='ended'||a.status==='completed'||a.status==='sold'||a.status==='unsold'||a._expired;});
 
     if(live.length>0){
-        renderEvent(live[0]);
+        renderEvent(live[0],true);
         loadAndRenderLots(live[0].id);
     }else if(upcoming.length>0){
-        renderEvent(upcoming[0]);
+        renderEvent(upcoming[0],false);
         loadAndRenderLots(upcoming[0].id);
     }
     if(past.length>0)renderPast(past);
 }
 
-function renderEvent(a){
+function renderEvent(a,isLive){
     document.getElementById('event-section').style.display='block';
-    var isLive=a.status==='live'&&new Date(a.end_time)>new Date();
     var banner=document.getElementById('event-banner');
     banner.innerHTML=
         '<div class="event-top"><div class="event-info"><div class="event-num">'+a.auction_number+'</div><div class="event-title">'+a.title+'</div>'+(a.admin_message?'<div class="event-msg">'+a.admin_message+'</div>':'')+'</div><div style="text-align:right">'+(isLive?'<div class="event-live"><div class="event-dot"></div> Live</div>':'<div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:.4rem .8rem;background:var(--g100)">Upcoming</div>')+'<div class="event-timer" id="event-timer" style="margin-top:.75rem"></div></div></div>';
@@ -421,8 +426,15 @@ async function renderPast(auctions){
                 (topSaleAmount>0?'<div class="past-sold-price">Top sale: $'+topSaleAmount.toLocaleString()+'</div>':'')+
             '</div>'+
             '<div class="past-card-right">'+(heroImg?'<img class="past-card-img" src="'+heroImg+'">':'<div class="past-card-img-empty"></div>')+'</div>'+
-            '<div class="past-badge">'+(st==='Ended'?'Ended':st)+'</div>';
-        card.addEventListener('click',function(){loadPastLots(a);});
+            '<div class="past-badge">Closed</div>';
+        card.addEventListener('click',function(){
+            var sec=document.getElementById('past-lots-section');
+            if(sec.classList.contains('open')&&sec.dataset.auctionId===a.id){
+                sec.classList.remove('open');
+            }else{
+                loadPastLots(a);
+            }
+        });
         grid.appendChild(card);
     });
 
@@ -438,6 +450,7 @@ async function loadPastLots(auction){
     var title=document.getElementById('past-lots-title');
     var grid=document.getElementById('past-lots-grid');
 
+    section.dataset.auctionId=auction.id;
     title.textContent=auction.auction_number+' — '+auction.title;
 
     if(!lots||lots.length===0){
