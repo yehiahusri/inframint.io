@@ -692,6 +692,9 @@
         <button class="active" data-ms="overview">Overview</button>
         <button data-ms="artworks">Artworks</button>
         <button data-ms="orders">Orders</button>
+        <button data-ms="analytics">Analytics</button>
+        <button data-ms="offers">Offers</button>
+        <button data-ms="commissions">Commissions</button>
         <button data-ms="verification">Verify</button>
         <button data-ms="profile">Profile</button>
         <button data-ms="payouts">Payouts</button>
@@ -728,6 +731,24 @@
                         <rect x="6" y="11" width="12" height="2"/>
                     </svg>
                     Orders
+                </a>
+                <a class="sidebar-link" data-section="analytics">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Analytics
+                </a>
+                <a class="sidebar-link" data-section="offers">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                    Offers <span id="offers-count" style="background:var(--black);color:var(--white);font-size:.6rem;padding:.1rem .4rem;margin-left:.25rem"></span>
+                </a>
+                <a class="sidebar-link" data-section="commissions">
+                    <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>
+                    </svg>
+                    Commissions
                 </a>
                 <a class="sidebar-link" data-section="verification">
                     <svg class="sidebar-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -887,6 +908,51 @@
                 <div class="message" id="orders-message"></div>
                 <div id="orders-container">
                     <div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">Loading orders...</div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="section" id="section-analytics">
+                <div class="page-header">
+                    <h1 class="page-title">Analytics</h1>
+                    <p class="page-subtitle">How your artworks are performing</p>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem">
+                    <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:1.5rem;font-weight:700" id="an-views">0</div><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Total Views</div></div>
+                    <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:1.5rem;font-weight:700" id="an-wishlist">0</div><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Wishlist Saves</div></div>
+                    <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:1.5rem;font-weight:700" id="an-orders">0</div><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Orders</div></div>
+                    <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:1.5rem;font-weight:700" id="an-conversion">0%</div><div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Conversion</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span style="font-weight:600">Per Artwork Performance</span></div>
+                    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8rem">
+                        <thead><tr style="border-bottom:1px solid var(--gray-200);text-align:left"><th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Artwork</th><th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Views</th><th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Wishlist</th><th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Orders</th><th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Price</th></tr></thead>
+                        <tbody id="analytics-table"></tbody>
+                    </table></div>
+                </div>
+            </div>
+
+            <!-- Offers Section -->
+            <div class="section" id="section-offers">
+                <div class="page-header">
+                    <h1 class="page-title">Offers</h1>
+                    <p class="page-subtitle">Collectors who want to negotiate a price for your work</p>
+                </div>
+                <div class="message" id="offers-message"></div>
+                <div id="offers-container">
+                    <div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No offers yet.</div>
+                </div>
+            </div>
+
+            <!-- Commissions Section -->
+            <div class="section" id="section-commissions">
+                <div class="page-header">
+                    <h1 class="page-title">Commission Requests</h1>
+                    <p class="page-subtitle">Custom work requests from collectors</p>
+                </div>
+                <div class="message" id="commissions-message"></div>
+                <div id="commissions-container">
+                    <div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No commission requests yet.</div>
                 </div>
             </div>
 
@@ -1445,6 +1511,9 @@
             loadVerificationStatus();
             loadOrders();
             loadPartnerInfo();
+            loadAnalytics();
+            loadOffers();
+            loadCommissions();
         }
 
         // Navigation
@@ -2223,6 +2292,169 @@
                 btn.disabled = false;
             }
         });
+
+        // ===== ANALYTICS =====
+        async function loadAnalytics() {
+            var artworkIds = [];
+            var myArtworks = [];
+            var { data: works } = await db.from('artworks').select('id, title, price, view_count, wishlist_count, primary_image_url').eq('artist_id', artistData.id);
+            myArtworks = works || [];
+            artworkIds = myArtworks.map(function(w) { return w.id; });
+
+            var totalViews = 0, totalWishlist = 0;
+            myArtworks.forEach(function(w) { totalViews += Number(w.view_count || 0); totalWishlist += Number(w.wishlist_count || 0); });
+
+            var { data: myOrders } = await db.from('orders').select('id').eq('artist_id', artistData.id);
+            var orderCount = (myOrders || []).length;
+            var conversion = totalViews > 0 ? ((orderCount / totalViews) * 100).toFixed(1) : '0';
+
+            document.getElementById('an-views').textContent = totalViews.toLocaleString();
+            document.getElementById('an-wishlist').textContent = totalWishlist.toLocaleString();
+            document.getElementById('an-orders').textContent = orderCount;
+            document.getElementById('an-conversion').textContent = conversion + '%';
+
+            var tb = document.getElementById('analytics-table');
+            if (myArtworks.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="padding:1rem;color:var(--gray-400);text-align:center">No artworks yet</td></tr>'; return; }
+            tb.innerHTML = '';
+            myArtworks.forEach(function(w) {
+                var hasImg = w.primary_image_url && !w.primary_image_url.includes('placehold');
+                var tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--gray-200)';
+                tr.innerHTML =
+                    '<td style="padding:.5rem;display:flex;align-items:center;gap:.5rem">' + (hasImg ? '<img src="' + w.primary_image_url + '" style="width:36px;height:36px;object-fit:cover">' : '') + '<span style="font-weight:500">' + (w.title || '—') + '</span></td>' +
+                    '<td style="padding:.5rem">' + Number(w.view_count || 0).toLocaleString() + '</td>' +
+                    '<td style="padding:.5rem">' + Number(w.wishlist_count || 0).toLocaleString() + '</td>' +
+                    '<td style="padding:.5rem">' + ((myOrders || []).filter(function(o) { return o.artwork_id === w.id; }).length || 0) + '</td>' +
+                    '<td style="padding:.5rem;font-weight:600">$' + Number(w.price || 0).toLocaleString() + '</td>';
+                tb.appendChild(tr);
+            });
+        }
+
+        // ===== OFFERS =====
+        async function loadOffers() {
+            var { data: offers } = await db.from('offers')
+                .select('*, artworks(title, primary_image_url, price)')
+                .eq('artist_id', artistData.id)
+                .order('created_at', { ascending: false });
+
+            var container = document.getElementById('offers-container');
+            var pending = (offers || []).filter(function(o) { return o.status === 'pending'; });
+            var countEl = document.getElementById('offers-count');
+            countEl.textContent = pending.length > 0 ? pending.length : '';
+
+            if (!offers || offers.length === 0) {
+                container.innerHTML = '<div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No offers yet. When collectors make offers on your artwork, they\'ll appear here.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            offers.forEach(function(o) {
+                var art = o.artworks || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var pct = o.artwork_price > 0 ? Math.round((o.offer_amount / o.artwork_price) * 100) : 0;
+                var statusCls = o.status === 'pending' ? 'background:#fef3c7;color:#92400e' : o.status === 'accepted' ? 'background:#f0fdf4;color:#16a34a' : o.status === 'declined' ? 'background:#fef2f2;color:#dc2626' : 'background:var(--gray-100);color:var(--gray-500)';
+
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '1rem';
+                card.innerHTML =
+                    '<div style="display:flex;gap:1rem;margin-bottom:1rem">' +
+                        (hasImg ? '<img src="' + art.primary_image_url + '" style="width:60px;height:60px;object-fit:cover">' : '<div style="width:60px;height:60px;background:var(--gray-200)"></div>') +
+                        '<div style="flex:1"><div style="font-weight:600">' + (art.title || 'Artwork') + '</div>' +
+                        '<div style="font-size:.75rem;color:var(--gray-500)">Listed at $' + Number(o.artwork_price || 0).toLocaleString() + '</div>' +
+                        '<div style="font-size:.75rem;color:var(--gray-400)">' + (o.collector_name || 'Anonymous') + ' · ' + new Date(o.created_at).toLocaleDateString() + '</div></div>' +
+                        '<div style="text-align:right"><div style="font-size:1.25rem;font-weight:700">$' + Number(o.offer_amount).toLocaleString() + '</div><div style="font-size:.65rem;color:var(--gray-400)">' + pct + '% of asking</div><div style="font-size:.65rem;padding:.15rem .4rem;display:inline-block;margin-top:.25rem;' + statusCls + '">' + o.status + '</div></div>' +
+                    '</div>' +
+                    (o.message ? '<div style="font-size:.8rem;color:var(--gray-500);padding:.75rem;background:var(--gray-100);margin-bottom:.75rem;line-height:1.6;border-left:3px solid var(--gray-300)">"' + o.message + '"</div>' : '') +
+                    (o.status === 'pending' ? '<div style="display:flex;gap:.5rem" id="offer-actions-' + o.id + '"></div>' : '');
+
+                container.appendChild(card);
+
+                if (o.status === 'pending') {
+                    var actionsEl = document.getElementById('offer-actions-' + o.id);
+                    var acceptBtn = document.createElement('button');
+                    acceptBtn.className = 'btn btn-primary';
+                    acceptBtn.textContent = 'Accept Offer';
+                    acceptBtn.style.cssText = 'padding:.5rem 1rem;font-size:.8rem;background:var(--black);color:var(--white);border:none;cursor:pointer;font-family:Manrope,sans-serif;font-weight:600';
+                    acceptBtn.addEventListener('click', async function() {
+                        if (!confirm('Accept offer of $' + Number(o.offer_amount).toLocaleString() + '?')) return;
+                        await db.from('offers').update({ status: 'accepted' }).eq('id', o.id);
+                        showMessage('offers-message', 'Offer accepted! The collector will be notified.', true);
+                        loadOffers();
+                    });
+
+                    var declineBtn = document.createElement('button');
+                    declineBtn.textContent = 'Decline';
+                    declineBtn.style.cssText = 'padding:.5rem 1rem;font-size:.8rem;background:var(--white);color:var(--gray-500);border:1px solid var(--gray-300);cursor:pointer;font-family:Manrope,sans-serif';
+                    declineBtn.addEventListener('click', async function() {
+                        if (!confirm('Decline this offer?')) return;
+                        await db.from('offers').update({ status: 'declined' }).eq('id', o.id);
+                        loadOffers();
+                    });
+
+                    actionsEl.appendChild(acceptBtn);
+                    actionsEl.appendChild(declineBtn);
+                }
+            });
+        }
+
+        // ===== COMMISSIONS =====
+        async function loadCommissions() {
+            var { data: commissions } = await db.from('commissions')
+                .select('*')
+                .eq('artist_id', artistData.id)
+                .order('created_at', { ascending: false });
+
+            var container = document.getElementById('commissions-container');
+            if (!commissions || commissions.length === 0) {
+                container.innerHTML = '<div class="card" style="text-align:center;padding:2rem;color:var(--gray-400)">No commission requests yet. When collectors request custom work, it\'ll appear here.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            commissions.forEach(function(c) {
+                var statusCls = c.status === 'pending' ? 'background:#fef3c7;color:#92400e' : c.status === 'accepted' ? 'background:#f0fdf4;color:#16a34a' : c.status === 'declined' ? 'background:#fef2f2;color:#dc2626' : 'background:var(--gray-100);color:var(--gray-500)';
+
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '1rem';
+                card.innerHTML =
+                    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">' +
+                        '<div><div style="font-weight:600">' + (c.collector_name || 'Collector') + '</div><div style="font-size:.75rem;color:var(--gray-400)">' + new Date(c.created_at).toLocaleDateString() + '</div></div>' +
+                        '<div style="font-size:.65rem;padding:.15rem .4rem;' + statusCls + '">' + c.status + '</div>' +
+                    '</div>' +
+                    '<div style="font-size:.85rem;color:var(--gray-600);line-height:1.7;margin-bottom:.75rem">' + (c.description || '') + '</div>' +
+                    (c.medium ? '<div style="font-size:.75rem;color:var(--gray-400);margin-bottom:.25rem">Medium: ' + c.medium + '</div>' : '') +
+                    (c.size_preference ? '<div style="font-size:.75rem;color:var(--gray-400);margin-bottom:.25rem">Size: ' + c.size_preference + '</div>' : '') +
+                    (c.budget_min || c.budget_max ? '<div style="font-size:.75rem;color:var(--gray-400);margin-bottom:.75rem">Budget: $' + Number(c.budget_min || 0).toLocaleString() + ' — $' + Number(c.budget_max || 0).toLocaleString() + '</div>' : '') +
+                    (c.status === 'pending' ? '<div style="display:flex;gap:.5rem" id="comm-actions-' + c.id + '"></div>' : '');
+
+                container.appendChild(card);
+
+                if (c.status === 'pending') {
+                    var actionsEl = document.getElementById('comm-actions-' + c.id);
+                    var acceptBtn = document.createElement('button');
+                    acceptBtn.textContent = 'Accept';
+                    acceptBtn.style.cssText = 'padding:.5rem 1rem;font-size:.8rem;background:var(--black);color:var(--white);border:none;cursor:pointer;font-family:Manrope,sans-serif;font-weight:600';
+                    acceptBtn.addEventListener('click', async function() {
+                        await db.from('commissions').update({ status: 'accepted' }).eq('id', c.id);
+                        showMessage('commissions-message', 'Commission accepted!', true);
+                        loadCommissions();
+                    });
+
+                    var declineBtn = document.createElement('button');
+                    declineBtn.textContent = 'Decline';
+                    declineBtn.style.cssText = 'padding:.5rem 1rem;font-size:.8rem;background:var(--white);color:var(--gray-500);border:1px solid var(--gray-300);cursor:pointer;font-family:Manrope,sans-serif';
+                    declineBtn.addEventListener('click', async function() {
+                        await db.from('commissions').update({ status: 'declined' }).eq('id', c.id);
+                        loadCommissions();
+                    });
+
+                    actionsEl.appendChild(acceptBtn);
+                    actionsEl.appendChild(declineBtn);
+                }
+            });
+        }
 
         // Initialize
         checkAuth();

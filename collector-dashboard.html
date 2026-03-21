@@ -170,6 +170,9 @@
         <button class="active" data-ms="overview">Overview</button>
         <button data-ms="purchases">Purchases</button>
         <button data-ms="wishlist">Wishlist</button>
+        <button data-ms="offers">Offers</button>
+        <button data-ms="reviews">Reviews</button>
+        <button data-ms="disputes">Disputes</button>
         <button data-ms="profile">Profile</button>
         <button data-ms="shipping">Shipping</button>
     </div>
@@ -193,6 +196,18 @@
                 <a class="sidebar-link" data-section="wishlist">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     Wishlist
+                </a>
+                <a class="sidebar-link" data-section="offers">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    My Offers
+                </a>
+                <a class="sidebar-link" data-section="reviews">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Reviews
+                </a>
+                <a class="sidebar-link" data-section="disputes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Disputes
                 </a>
             </div>
             <div class="sidebar-section">
@@ -248,6 +263,31 @@
                     <div class="page-header"><h1 class="page-title">Wishlist</h1><p class="page-subtitle">Artworks you're interested in</p></div>
                     <div class="card" id="wishlist-container">
                         <div class="empty-text">Your wishlist is empty. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and save artworks you like.</div>
+                    </div>
+                </div>
+
+                <!-- My Offers -->
+                <div class="section" id="section-offers">
+                    <div class="page-header"><h1 class="page-title">My Offers</h1><p class="page-subtitle">Track offers you've made to artists</p></div>
+                    <div id="my-offers-container">
+                        <div class="card"><div class="empty-text">No offers yet. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and make an offer on artwork you like.</div></div>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="section" id="section-reviews">
+                    <div class="page-header"><h1 class="page-title">Reviews</h1><p class="page-subtitle">Rate artists from your delivered purchases</p></div>
+                    <div id="reviews-container">
+                        <div class="card"><div class="empty-text">No delivered purchases to review yet.</div></div>
+                    </div>
+                </div>
+
+                <!-- Disputes -->
+                <div class="section" id="section-disputes">
+                    <div class="page-header"><h1 class="page-title">Disputes</h1><p class="page-subtitle">Report issues with orders</p></div>
+                    <div class="message" id="dispute-message"></div>
+                    <div id="disputes-container">
+                        <div class="card"><div class="empty-text">No disputes.</div></div>
                     </div>
                 </div>
 
@@ -608,6 +648,205 @@
             }).eq('id', collectorData.id);
             showMsg('shipping-message', error ? 'Error: ' + error.message : 'Shipping address saved!', !error);
         });
+
+        // ===== MY OFFERS =====
+        async function loadMyOffers() {
+            var { data: offers } = await db.from('offers')
+                .select('*, artworks(title, primary_image_url, price)')
+                .eq('collector_id', collectorData.id)
+                .order('created_at', { ascending: false });
+
+            var container = document.getElementById('my-offers-container');
+            if (!offers || offers.length === 0) {
+                container.innerHTML = '<div class="card"><div class="empty-text">No offers yet. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and make an offer on artwork you like.</div></div>';
+                return;
+            }
+            container.innerHTML = '';
+            offers.forEach(function(o) {
+                var art = o.artworks || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var statusCls = o.status === 'pending' ? 'background:#fef3c7;color:#92400e' : o.status === 'accepted' ? 'background:#f0fdf4;color:#16a34a' : o.status === 'declined' ? 'background:#fef2f2;color:#dc2626' : 'background:var(--gray-200);color:var(--gray-500)';
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '1rem';
+                card.innerHTML =
+                    '<div style="display:flex;gap:1rem;align-items:center">' +
+                        (hasImg ? '<img src="' + art.primary_image_url + '" style="width:60px;height:60px;object-fit:cover">' : '<div style="width:60px;height:60px;background:var(--gray-200)"></div>') +
+                        '<div style="flex:1"><div style="font-weight:600">' + (art.title || 'Artwork') + '</div>' +
+                        '<div style="font-size:.75rem;color:var(--gray-500)">Listed at $' + Number(o.artwork_price || 0).toLocaleString() + '</div>' +
+                        '<div style="font-size:.7rem;color:var(--gray-400)">' + new Date(o.created_at).toLocaleDateString() + '</div></div>' +
+                        '<div style="text-align:right"><div style="font-size:1.25rem;font-weight:700">$' + Number(o.offer_amount).toLocaleString() + '</div>' +
+                        '<div style="font-size:.65rem;padding:.15rem .4rem;display:inline-block;margin-top:.25rem;' + statusCls + '">' + o.status + '</div></div>' +
+                    '</div>' +
+                    (o.status === 'accepted' ? '<div style="margin-top:.75rem;padding:.75rem;background:#f0fdf4;font-size:.8rem;color:#16a34a">Offer accepted! The artist will prepare your order.</div>' : '');
+                container.appendChild(card);
+            });
+        }
+
+        // ===== REVIEWS =====
+        async function loadReviews() {
+            // Get delivered orders that haven't been reviewed yet
+            var { data: delivered } = await db.from('orders')
+                .select('*, artworks(title, primary_image_url, artists(id, artist_name))')
+                .eq('collector_id', collectorData.id)
+                .eq('status', 'delivered')
+                .order('created_at', { ascending: false });
+
+            var { data: existingReviews } = await db.from('artist_reviews')
+                .select('order_id')
+                .eq('collector_id', collectorData.id);
+            var reviewedOrderIds = (existingReviews || []).map(function(r) { return r.order_id; });
+
+            var container = document.getElementById('reviews-container');
+            if (!delivered || delivered.length === 0) {
+                container.innerHTML = '<div class="card"><div class="empty-text">No delivered purchases to review yet.</div></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            delivered.forEach(function(order) {
+                var art = order.artworks || {};
+                var artist = art.artists || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var alreadyReviewed = reviewedOrderIds.indexOf(order.id) >= 0;
+
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '1rem';
+
+                if (alreadyReviewed) {
+                    card.innerHTML =
+                        '<div style="display:flex;gap:1rem;align-items:center">' +
+                            (hasImg ? '<img src="' + art.primary_image_url + '" style="width:50px;height:50px;object-fit:cover">' : '<div style="width:50px;height:50px;background:var(--gray-200)"></div>') +
+                            '<div><div style="font-weight:500">' + (art.title || 'Artwork') + '</div><div style="font-size:.75rem;color:var(--gray-400)">by ' + (artist.artist_name || 'Unknown') + '</div></div>' +
+                            '<div style="margin-left:auto;font-size:.75rem;color:var(--gray-400)">✓ Reviewed</div>' +
+                        '</div>';
+                } else {
+                    card.innerHTML =
+                        '<div style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem">' +
+                            (hasImg ? '<img src="' + art.primary_image_url + '" style="width:50px;height:50px;object-fit:cover">' : '<div style="width:50px;height:50px;background:var(--gray-200)"></div>') +
+                            '<div><div style="font-weight:500">' + (art.title || 'Artwork') + '</div><div style="font-size:.75rem;color:var(--gray-400)">by ' + (artist.artist_name || 'Unknown') + '</div></div>' +
+                        '</div>' +
+                        '<div style="margin-bottom:.75rem"><div style="font-size:.7rem;font-weight:600;margin-bottom:.35rem">Rating</div>' +
+                        '<div class="star-row" id="stars-' + order.id + '" style="display:flex;gap:.25rem;font-size:1.5rem;cursor:pointer;color:var(--gray-300)" data-rating="0">' +
+                            '<span data-star="1">★</span><span data-star="2">★</span><span data-star="3">★</span><span data-star="4">★</span><span data-star="5">★</span>' +
+                        '</div></div>' +
+                        '<div style="margin-bottom:.75rem"><textarea id="review-text-' + order.id + '" placeholder="Share your experience (optional)" style="width:100%;padding:.6rem;font-family:Manrope,sans-serif;font-size:.85rem;border:1px solid var(--gray-300);resize:vertical" rows="2"></textarea></div>' +
+                        '<button id="submit-review-' + order.id + '" data-oid="' + order.id + '" data-aid="' + (artist.id || '') + '" style="padding:.5rem 1.25rem;font-family:Manrope,sans-serif;font-size:.8rem;font-weight:600;background:var(--black);color:var(--white);border:none;cursor:pointer">Submit Review</button>';
+                }
+                container.appendChild(card);
+
+                if (!alreadyReviewed) {
+                    // Star rating click handler
+                    var starRow = document.getElementById('stars-' + order.id);
+                    starRow.querySelectorAll('span').forEach(function(s) {
+                        s.addEventListener('click', function() {
+                            var val = parseInt(this.dataset.star);
+                            starRow.dataset.rating = val;
+                            starRow.querySelectorAll('span').forEach(function(x) {
+                                x.style.color = parseInt(x.dataset.star) <= val ? 'var(--black)' : 'var(--gray-300)';
+                            });
+                        });
+                    });
+
+                    // Submit review
+                    document.getElementById('submit-review-' + order.id).addEventListener('click', async function() {
+                        var oid = this.dataset.oid;
+                        var aid = this.dataset.aid;
+                        var rating = parseInt(document.getElementById('stars-' + oid).dataset.rating);
+                        var text = document.getElementById('review-text-' + oid).value.trim();
+                        if (!rating || rating < 1) { alert('Please select a star rating.'); return; }
+                        if (!aid) { alert('Artist not found.'); return; }
+                        this.textContent = 'Submitting...'; this.disabled = true;
+                        var { error } = await db.from('artist_reviews').insert({
+                            artist_id: aid, collector_id: collectorData.id, order_id: oid,
+                            rating: rating, review_text: text
+                        });
+                        if (error) { alert('Error: ' + error.message); this.textContent = 'Submit Review'; this.disabled = false; return; }
+                        this.textContent = 'Submitted ✓';
+                        loadReviews();
+                    });
+                }
+            });
+        }
+
+        // ===== DISPUTES =====
+        async function loadDisputes() {
+            // Get orders eligible for disputes (shipped or delivered, not already disputed)
+            var { data: orders } = await db.from('orders')
+                .select('*, artworks(title)')
+                .eq('collector_id', collectorData.id)
+                .in('status', ['shipped', 'delivered', 'paid'])
+                .order('created_at', { ascending: false });
+
+            var { data: existingDisputes } = await db.from('disputes')
+                .select('*')
+                .eq('raised_by_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            var disputedOrderIds = (existingDisputes || []).map(function(d) { return d.order_id; });
+
+            var container = document.getElementById('disputes-container');
+            container.innerHTML = '';
+
+            // Show existing disputes first
+            if (existingDisputes && existingDisputes.length > 0) {
+                existingDisputes.forEach(function(d) {
+                    var statusCls = d.status === 'open' ? 'background:#fef3c7;color:#92400e' : d.status === 'resolved' ? 'background:#f0fdf4;color:#16a34a' : 'background:var(--gray-200);color:var(--gray-500)';
+                    var div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.marginBottom = '1rem';
+                    div.innerHTML =
+                        '<div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><div style="font-weight:600">Dispute</div><div style="font-size:.65rem;padding:.15rem .4rem;' + statusCls + '">' + d.status + '</div></div>' +
+                        '<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:.25rem">Reason: ' + (d.reason || '—') + '</div>' +
+                        '<div style="font-size:.8rem;color:var(--gray-400)">' + (d.description || '') + '</div>' +
+                        (d.resolution ? '<div style="font-size:.8rem;color:#16a34a;margin-top:.5rem;padding:.5rem;background:#f0fdf4">Resolution: ' + d.resolution + '</div>' : '');
+                    container.appendChild(div);
+                });
+            }
+
+            // Show orders that can be disputed
+            var undisputed = (orders || []).filter(function(o) { return disputedOrderIds.indexOf(o.id) < 0; });
+            if (undisputed.length > 0) {
+                var formCard = document.createElement('div');
+                formCard.className = 'card';
+                formCard.innerHTML =
+                    '<div style="font-weight:600;margin-bottom:.75rem">File a Dispute</div>' +
+                    '<div style="margin-bottom:.75rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Select Order</label>' +
+                    '<select id="dispute-order" style="width:100%;padding:.6rem;font-family:Manrope,sans-serif;font-size:.85rem;border:1px solid var(--gray-300)"><option value="">— Select order —</option>' +
+                    undisputed.map(function(o) { return '<option value="' + o.id + '">' + (o.order_number || '#' + o.id.slice(0, 8)) + ' — ' + (o.artwork_title || (o.artworks || {}).title || 'Artwork') + '</option>'; }).join('') +
+                    '</select></div>' +
+                    '<div style="margin-bottom:.75rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Reason</label>' +
+                    '<select id="dispute-reason" style="width:100%;padding:.6rem;font-family:Manrope,sans-serif;font-size:.85rem;border:1px solid var(--gray-300)"><option value="">— Select reason —</option><option value="not_received">Artwork not received</option><option value="damaged">Artwork damaged</option><option value="not_as_described">Not as described</option><option value="wrong_item">Wrong item received</option><option value="other">Other</option></select></div>' +
+                    '<div style="margin-bottom:.75rem"><textarea id="dispute-desc" placeholder="Describe the issue..." style="width:100%;padding:.6rem;font-family:Manrope,sans-serif;font-size:.85rem;border:1px solid var(--gray-300);resize:vertical" rows="3"></textarea></div>' +
+                    '<button id="submit-dispute" style="padding:.6rem 1.25rem;font-family:Manrope,sans-serif;font-size:.8rem;font-weight:600;background:var(--black);color:var(--white);border:none;cursor:pointer">Submit Dispute</button>';
+                container.appendChild(formCard);
+
+                document.getElementById('submit-dispute').addEventListener('click', async function() {
+                    var orderId = document.getElementById('dispute-order').value;
+                    var reason = document.getElementById('dispute-reason').value;
+                    var desc = document.getElementById('dispute-desc').value.trim();
+                    if (!orderId || !reason) { alert('Please select an order and reason.'); return; }
+                    this.textContent = 'Submitting...'; this.disabled = true;
+                    var { error } = await db.from('disputes').insert({
+                        order_id: orderId, raised_by: 'collector', raised_by_id: currentUser.id,
+                        reason: reason, description: desc, status: 'open'
+                    });
+                    if (error) { alert('Error: ' + error.message); this.textContent = 'Submit Dispute'; this.disabled = false; return; }
+                    showMsg('dispute-message', 'Dispute filed. Our team will review it within 48 hours.', true);
+                    loadDisputes();
+                });
+            }
+
+            if (!existingDisputes.length && !undisputed.length) {
+                container.innerHTML = '<div class="card"><div class="empty-text">No disputes. If you have an issue with an order, it will appear here once you have active orders.</div></div>';
+            }
+        }
+
+        // Load new sections
+        loadMyOffers();
+        loadReviews();
+        loadDisputes();
 
         checkAuth();
     </script>
