@@ -111,17 +111,21 @@
 
         /* Past auctions */
         .past-section{padding:2rem 3rem 4rem}
-        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
-        .past-card{background:var(--white);border:1px solid var(--g200);position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s}
-        .past-card:hover{border-color:var(--black)}
-        .past-bg{position:absolute;right:-10px;bottom:-20px;font-size:10rem;font-weight:800;color:var(--g100);line-height:1;pointer-events:none;user-select:none}
-        .past-inner{position:relative;z-index:1;padding:1.5rem}
-        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#4a7c00;margin-bottom:.5rem}
-        .past-title{font-size:1.1rem;font-weight:300;margin-bottom:.5rem}
+        .past-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+        .past-card{position:relative;overflow:hidden;cursor:pointer;transition:transform .2s;min-height:260px;background:var(--black)}
+        .past-card:hover{transform:translateY(-4px)}
+        .past-card-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35;transition:opacity .3s}
+        .past-card:hover .past-card-img{opacity:.45}
+        .past-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70%;background:linear-gradient(transparent,rgba(0,0,0,.85));pointer-events:none;z-index:1}
+        .past-card-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9rem;font-weight:800;color:rgba(200,255,0,.08);line-height:1;pointer-events:none;user-select:none;letter-spacing:-.05em}
+        .past-inner{position:relative;z-index:2;padding:1.75rem;display:flex;flex-direction:column;justify-content:flex-end;min-height:260px}
+        .past-num{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#c8ff00;margin-bottom:.35rem}
+        .past-title{font-size:1.25rem;font-weight:300;color:var(--white);margin-bottom:.6rem}
         .past-stats{display:flex;gap:1.5rem;font-size:.75rem}
-        .past-stat strong{display:block;font-size:1rem}
-        .past-stat span{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
-        .past-badge{position:absolute;top:1.5rem;right:1.5rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;z-index:2;background:var(--black);color:var(--white)}
+        .past-stat strong{display:block;font-size:1rem;color:var(--white)}
+        .past-stat span{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+        .past-badge{position:absolute;top:1.25rem;right:1.25rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;z-index:3;background:rgba(200,255,0,.9);color:var(--black)}
+        .past-sold-price{font-size:.7rem;color:#c8ff00;font-weight:600;margin-top:.5rem}
 
         /* Past auction expanded lots */
         .past-lots{padding:1.5rem 3rem;background:var(--white);border-bottom:1px solid var(--g200);display:none}
@@ -150,7 +154,7 @@
         footer a:hover{color:var(--black)}
         .footer-copy{font-size:.7rem;color:var(--g400);margin-top:1rem}
 
-        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}}
+        @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card-num{font-size:5rem}.past-lots{padding:1rem}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
     </style>
 </head>
@@ -376,15 +380,47 @@ function bindBid(lot){
     });
 }
 
-function renderPast(auctions){
+async function renderPast(auctions){
     document.getElementById('past-section').style.display='block';
     var grid=document.getElementById('past-grid');grid.innerHTML='';
+
+    // Load all lots for past auctions in one query
+    var aIds=auctions.map(function(a){return a.id;});
+    var{data:allLots}=await db.from('auction_lots').select('auction_id,image_url,status,winning_bid,current_bid').in('auction_id',aIds);
+    var lotsByAuction={};
+    (allLots||[]).forEach(function(l){
+        if(!lotsByAuction[l.auction_id])lotsByAuction[l.auction_id]=[];
+        lotsByAuction[l.auction_id].push(l);
+    });
+
     auctions.forEach(function(a,idx){
         var num=a.auction_number||('A-'+String(idx+1).padStart(3,'0'));
         var numDigits=num.replace(/[^0-9]/g,'')||String(idx+1);
         var st=a.status==='ended'||a.status==='completed'?'Ended':a.status;
+        var lots=lotsByAuction[a.id]||[];
+
+        // Find highest sold lot for the hero image
+        var sold=lots.filter(function(l){return l.status==='sold';});
+        sold.sort(function(a,b){return Number(b.winning_bid||b.current_bid||0)-Number(a.winning_bid||a.current_bid||0);});
+        var heroImg=sold.length>0&&sold[0].image_url?sold[0].image_url:(lots.length>0&&lots[0].image_url?lots[0].image_url:'');
+        var topSaleAmount=sold.length>0?Number(sold[0].winning_bid||sold[0].current_bid||0):0;
+        var soldCount=sold.length;
+
         var card=document.createElement('div');card.className='past-card';
-        card.innerHTML='<div class="past-bg">'+numDigits+'</div><div class="past-badge">'+st+'</div><div class="past-inner"><div class="past-num">'+num+'</div><div class="past-title">'+a.title+'</div><div class="past-stats"><div class="past-stat"><strong>'+(a.lot_count||0)+'</strong><span>Paintings</span></div><div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div><div class="past-stat"><strong>'+(a.total_views||0)+'</strong><span>Views</span></div></div></div>';
+        card.innerHTML=
+            (heroImg?'<div class="past-card-img" style="background-image:url(\''+heroImg+'\')"></div>':'')+
+            '<div class="past-card-num">'+numDigits+'</div>'+
+            '<div class="past-badge">'+st+'</div>'+
+            '<div class="past-inner">'+
+                '<div class="past-num">'+num+'</div>'+
+                '<div class="past-title">'+a.title+'</div>'+
+                '<div class="past-stats">'+
+                    '<div class="past-stat"><strong>'+(a.lot_count||0)+'</strong><span>Paintings</span></div>'+
+                    '<div class="past-stat"><strong>'+soldCount+'</strong><span>Sold</span></div>'+
+                    '<div class="past-stat"><strong>'+(a.total_likes||0)+'</strong><span>Likes</span></div>'+
+                '</div>'+
+                (topSaleAmount>0?'<div class="past-sold-price">Top sale: $'+topSaleAmount.toLocaleString()+'</div>':'')+
+            '</div>';
         card.addEventListener('click',function(){loadPastLots(a);});
         grid.appendChild(card);
     });
