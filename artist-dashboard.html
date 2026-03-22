@@ -1803,7 +1803,7 @@
             document.getElementById('save-artwork').textContent = 'Save Changes';
             document.getElementById('artwork-title').value = artwork.title || '';
             document.getElementById('artwork-description').value = artwork.description || '';
-            document.getElementById('artwork-price').value = artwork.artwork_price || '';
+            document.getElementById('artwork-price').value = artwork.artwork_price || artwork.price || '';
             document.getElementById('artwork-medium').value = artwork.medium || 'oil';
             document.getElementById('artwork-width').value = artwork.width_cm || '';
             document.getElementById('artwork-height').value = artwork.height_cm || '';
@@ -1979,7 +1979,7 @@
                         '</div>' +
                         '<div class="artwork-info">' +
                             '<div class="artwork-title">' + artwork.title + '</div>' +
-                            '<div class="artwork-price">$' + (artwork.artwork_price || 0) + '</div>' +
+                            '<div class="artwork-price">$' + (artwork.artwork_price || artwork.price || 0) + '</div>' +
                             '<div class="artwork-status">' +
                                 '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + editionText + '</span>' +
                             '</div>' +
@@ -2438,7 +2438,7 @@
         async function loadAnalytics() {
             var artworkIds = [];
             var myArtworks = [];
-            var { data: works } = await db.from('artworks').select('id, title, artwork_price, view_count, wishlist_count, primary_image_url').eq('artist_id', artistData.id);
+            var { data: works } = await db.from('artworks').select('*').eq('artist_id', artistData.id);
             myArtworks = works || [];
             artworkIds = myArtworks.map(function(w) { return w.id; });
 
@@ -2455,14 +2455,14 @@
             document.getElementById('an-conversion').textContent = conversion + '%';
 
             // Price comparables
-            var { data: allWorks } = await db.from('artworks').select('artwork_price, medium, artist_id, artists(artist_name)').in('status', ['listed', 'sold']);
+            var { data: allWorks } = await db.from('artworks').select('*, artists(artist_name)').in('status', ['listed', 'sold']);
             var myMediums = myArtworks.map(function(w) { return w.medium; }).filter(Boolean);
-            var myPrices = myArtworks.map(function(w) { return Number(w.artwork_price || 0); }).filter(function(p) { return p > 0; });
+            var myPrices = myArtworks.map(function(w) { return Number(w.artwork_price || w.price || 0); }).filter(function(p) { return p > 0; });
             var myAvg = myPrices.length > 0 ? Math.round(myPrices.reduce(function(a, b) { return a + b; }, 0) / myPrices.length) : 0;
 
-            var others = (allWorks || []).filter(function(w) { return w.artist_id !== artistData.id && Number(w.artwork_price || 0) > 0; });
+            var others = (allWorks || []).filter(function(w) { return w.artist_id !== artistData.id && Number(w.artwork_price || w.price || 0) > 0; });
             var sameMedium = others.filter(function(w) { return myMediums.indexOf(w.medium) >= 0; });
-            var otherPrices = (sameMedium.length > 3 ? sameMedium : others).map(function(w) { return Number(w.artwork_price); });
+            var otherPrices = (sameMedium.length > 3 ? sameMedium : others).map(function(w) { return Number(w.artwork_price || w.price || 0); });
             var platformAvg = otherPrices.length > 0 ? Math.round(otherPrices.reduce(function(a, b) { return a + b; }, 0) / otherPrices.length) : 0;
             var platformMin = otherPrices.length > 0 ? Math.min.apply(null, otherPrices) : 0;
             var platformMax = otherPrices.length > 0 ? Math.max.apply(null, otherPrices) : 0;
@@ -2497,7 +2497,7 @@
                     '<td style="padding:.5rem">' + Number(w.view_count || 0).toLocaleString() + '</td>' +
                     '<td style="padding:.5rem">' + Number(w.wishlist_count || 0).toLocaleString() + '</td>' +
                     '<td style="padding:.5rem">' + ((myOrders || []).filter(function(o) { return o.artwork_id === w.id; }).length || 0) + '</td>' +
-                    '<td style="padding:.5rem;font-weight:600">$' + Number(w.artwork_price || 0).toLocaleString() + '</td>';
+                    '<td style="padding:.5rem;font-weight:600">$' + Number(w.artwork_price || w.price || 0).toLocaleString() + '</td>';
                 tb.appendChild(tr);
             });
         }
@@ -2738,9 +2738,9 @@
             var sel = document.getElementById('share-artwork-select');
             sel.innerHTML = '<option value="">— Choose artwork —</option>';
             var { data: works } = null;
-            db.from('artworks').select('id, title, primary_image_url, artwork_price').eq('artist_id', artistData.id).then(function(res) {
+            db.from('artworks').select('*').eq('artist_id', artistData.id).then(function(res) {
                 (res.data || []).forEach(function(w) {
-                    sel.innerHTML += '<option value="' + w.id + '" data-img="' + (w.primary_image_url || '') + '" data-title="' + (w.title || '') + '" data-price="' + (w.artwork_price || 0) + '">' + (w.title || 'Untitled') + ' — $' + Number(w.artwork_price || 0).toLocaleString() + '</option>';
+                    sel.innerHTML += '<option value="' + w.id + '" data-img="' + (w.primary_image_url || '') + '" data-title="' + (w.title || '') + '" data-price="' + (w.artwork_price || w.price || 0) + '">' + (w.title || 'Untitled') + ' — $' + Number(w.artwork_price || w.price || 0).toLocaleString() + '</option>';
                 });
             });
         }
