@@ -987,15 +987,19 @@
                     <div class="card-header"><span style="font-weight:600">Customers</span></div>
                     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8rem">
                         <thead><tr style="border-bottom:1px solid var(--gray-200);text-align:left">
+                            <th style="padding:.5rem;width:30px"><input type="checkbox" id="select-all-customers" style="width:16px;height:16px;cursor:pointer"></th>
                             <th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Collector</th>
                             <th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Artwork</th>
                             <th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Type</th>
                             <th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Date</th>
-                            <th style="padding:.5rem;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400)">Action</th>
                         </tr></thead>
                         <tbody id="customers-table"></tbody>
                     </table></div>
                     <div id="customers-empty" style="text-align:center;padding:2rem;color:var(--gray-400);font-size:.85rem">No customers yet. When collectors buy or wishlist your work, they'll appear here.</div>
+                    <div id="customer-selection-bar" style="display:none;margin-top:1rem;padding:.75rem;background:var(--gray-100);font-size:.8rem;display:flex;justify-content:space-between;align-items:center">
+                        <span><strong id="selected-count">0</strong> selected</span>
+                        <button id="email-selected-btn" style="padding:.4rem 1rem;font-family:Manrope,sans-serif;font-size:.75rem;font-weight:600;background:var(--black);color:var(--white);border:none;cursor:pointer">Email Selected</button>
+                    </div>
                 </div>
                 <div class="card" style="margin-top:1rem">
                     <div class="card-header"><span style="font-weight:600">Notify Customers About New Work</span></div>
@@ -1799,7 +1803,7 @@
             document.getElementById('save-artwork').textContent = 'Save Changes';
             document.getElementById('artwork-title').value = artwork.title || '';
             document.getElementById('artwork-description').value = artwork.description || '';
-            document.getElementById('artwork-price').value = artwork.price || '';
+            document.getElementById('artwork-price').value = artwork.artwork_price || '';
             document.getElementById('artwork-medium').value = artwork.medium || 'oil';
             document.getElementById('artwork-width').value = artwork.width_cm || '';
             document.getElementById('artwork-height').value = artwork.height_cm || '';
@@ -1891,7 +1895,7 @@
                 const artworkData = {
                     title: title,
                     description: document.getElementById('artwork-description').value,
-                    price: parseFloat(price),
+                    artwork_price: parseFloat(price),
                     medium: document.getElementById('artwork-medium').value,
                     category: document.getElementById('artwork-medium').value,
                     width_cm: parseInt(document.getElementById('artwork-width').value) || null,
@@ -1975,7 +1979,7 @@
                         '</div>' +
                         '<div class="artwork-info">' +
                             '<div class="artwork-title">' + artwork.title + '</div>' +
-                            '<div class="artwork-price">$' + artwork.price + '</div>' +
+                            '<div class="artwork-price">$' + (artwork.artwork_price || 0) + '</div>' +
                             '<div class="artwork-status">' +
                                 '<span class="status-badge status-' + (artwork.status === 'listed' ? 'approved' : 'pending') + '">' + artwork.status + editionText + '</span>' +
                             '</div>' +
@@ -2434,7 +2438,7 @@
         async function loadAnalytics() {
             var artworkIds = [];
             var myArtworks = [];
-            var { data: works } = await db.from('artworks').select('id, title, price, view_count, wishlist_count, primary_image_url').eq('artist_id', artistData.id);
+            var { data: works } = await db.from('artworks').select('id, title, artwork_price, view_count, wishlist_count, primary_image_url').eq('artist_id', artistData.id);
             myArtworks = works || [];
             artworkIds = myArtworks.map(function(w) { return w.id; });
 
@@ -2451,14 +2455,14 @@
             document.getElementById('an-conversion').textContent = conversion + '%';
 
             // Price comparables
-            var { data: allWorks } = await db.from('artworks').select('price, medium, artist_id, artists(artist_name)').in('status', ['listed', 'sold']);
+            var { data: allWorks } = await db.from('artworks').select('artwork_price, medium, artist_id, artists(artist_name)').in('status', ['listed', 'sold']);
             var myMediums = myArtworks.map(function(w) { return w.medium; }).filter(Boolean);
-            var myPrices = myArtworks.map(function(w) { return Number(w.price || 0); }).filter(function(p) { return p > 0; });
+            var myPrices = myArtworks.map(function(w) { return Number(w.artwork_price || 0); }).filter(function(p) { return p > 0; });
             var myAvg = myPrices.length > 0 ? Math.round(myPrices.reduce(function(a, b) { return a + b; }, 0) / myPrices.length) : 0;
 
-            var others = (allWorks || []).filter(function(w) { return w.artist_id !== artistData.id && Number(w.price || 0) > 0; });
+            var others = (allWorks || []).filter(function(w) { return w.artist_id !== artistData.id && Number(w.artwork_price || 0) > 0; });
             var sameMedium = others.filter(function(w) { return myMediums.indexOf(w.medium) >= 0; });
-            var otherPrices = (sameMedium.length > 3 ? sameMedium : others).map(function(w) { return Number(w.price); });
+            var otherPrices = (sameMedium.length > 3 ? sameMedium : others).map(function(w) { return Number(w.artwork_price); });
             var platformAvg = otherPrices.length > 0 ? Math.round(otherPrices.reduce(function(a, b) { return a + b; }, 0) / otherPrices.length) : 0;
             var platformMin = otherPrices.length > 0 ? Math.min.apply(null, otherPrices) : 0;
             var platformMax = otherPrices.length > 0 ? Math.max.apply(null, otherPrices) : 0;
@@ -2493,7 +2497,7 @@
                     '<td style="padding:.5rem">' + Number(w.view_count || 0).toLocaleString() + '</td>' +
                     '<td style="padding:.5rem">' + Number(w.wishlist_count || 0).toLocaleString() + '</td>' +
                     '<td style="padding:.5rem">' + ((myOrders || []).filter(function(o) { return o.artwork_id === w.id; }).length || 0) + '</td>' +
-                    '<td style="padding:.5rem;font-weight:600">$' + Number(w.price || 0).toLocaleString() + '</td>';
+                    '<td style="padding:.5rem;font-weight:600">$' + Number(w.artwork_price || 0).toLocaleString() + '</td>';
                 tb.appendChild(tr);
             });
         }
@@ -2650,8 +2654,10 @@
         loadEarnings();
 
         // ===== CUSTOMERS =====
+        var allCustomerEmails = [];
         async function loadCustomers() {
             var customers = [];
+            allCustomerEmails = [];
             // Get buyers
             var { data: orders } = await db.from('orders').select('*, collectors(first_name, last_name, email), artworks(title)').eq('artist_id', artistData.id);
             (orders || []).forEach(function(o) {
@@ -2680,22 +2686,51 @@
             });
             var tbody = document.getElementById('customers-table');
             tbody.innerHTML = '';
-            // Deduplicate by email
             var seen = {};
             customers.forEach(function(c) {
                 var key = c.email + c.artwork;
                 if (seen[key]) return;
                 seen[key] = true;
-                tbody.innerHTML += '<tr style="border-bottom:1px solid var(--gray-100)"><td style="padding:.5rem">' + c.name.trim() + '</td><td style="padding:.5rem">' + c.artwork + '</td><td style="padding:.5rem"><span class="status-badge status-' + (c.type === 'Buyer' ? 'active' : 'pending') + '">' + c.type + '</span></td><td style="padding:.5rem">' + new Date(c.date).toLocaleDateString() + '</td><td style="padding:.5rem"><a href="mailto:' + c.email + '" style="color:var(--black);font-weight:600;font-size:.75rem;text-decoration:none;border-bottom:1px solid var(--black)">Email</a></td></tr>';
+                if (c.email && allCustomerEmails.indexOf(c.email) === -1) allCustomerEmails.push(c.email);
+                tbody.innerHTML += '<tr style="border-bottom:1px solid var(--gray-100)"><td style="padding:.5rem"><input type="checkbox" class="customer-check" data-email="' + c.email + '" style="width:16px;height:16px;cursor:pointer"></td><td style="padding:.5rem">' + c.name.trim() + '</td><td style="padding:.5rem">' + c.artwork + '</td><td style="padding:.5rem"><span class="status-badge status-' + (c.type === 'Buyer' ? 'active' : 'pending') + '">' + c.type + '</span></td><td style="padding:.5rem">' + new Date(c.date).toLocaleDateString() + '</td></tr>';
             });
             document.getElementById('customers-empty').style.display = customers.length > 0 ? 'none' : 'block';
+            document.getElementById('customer-selection-bar').style.display = customers.length > 0 ? 'flex' : 'none';
+            updateSelectedCount();
         }
         loadCustomers();
+
+        function updateSelectedCount() {
+            var checks = document.querySelectorAll('.customer-check:checked');
+            document.getElementById('selected-count').textContent = checks.length;
+        }
+
+        document.getElementById('select-all-customers').addEventListener('change', function() {
+            var checked = this.checked;
+            document.querySelectorAll('.customer-check').forEach(function(cb) { cb.checked = checked; });
+            updateSelectedCount();
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('customer-check')) updateSelectedCount();
+        });
+
+        document.getElementById('email-selected-btn').addEventListener('click', function() {
+            var selected = [];
+            document.querySelectorAll('.customer-check:checked').forEach(function(cb) {
+                if (cb.dataset.email) selected.push(cb.dataset.email);
+            });
+            if (selected.length === 0) { alert('Select at least one customer.'); return; }
+            // Unique emails
+            var unique = selected.filter(function(v, i, a) { return a.indexOf(v) === i; });
+            window.location.href = 'mailto:' + unique.join(',');
+        });
 
         document.getElementById('send-customer-notify').addEventListener('click', function() {
             var msg = document.getElementById('customer-notify-msg').value.trim();
             if (!msg) { alert('Please write a message.'); return; }
-            document.getElementById('notify-status').textContent = 'This feature will be available once email integration is fully set up. For now, use the email links above to contact customers directly.';
+            if (allCustomerEmails.length === 0) { alert('No customers to notify yet.'); return; }
+            window.location.href = 'mailto:' + allCustomerEmails.join(',') + '?subject=New%20artwork%20from%20' + encodeURIComponent(artistData.artist_name || 'InfraMint Artist') + '&body=' + encodeURIComponent(msg);
         });
 
         // ===== SHARE CARDS =====
@@ -2703,9 +2738,9 @@
             var sel = document.getElementById('share-artwork-select');
             sel.innerHTML = '<option value="">— Choose artwork —</option>';
             var { data: works } = null;
-            db.from('artworks').select('id, title, primary_image_url, price').eq('artist_id', artistData.id).then(function(res) {
+            db.from('artworks').select('id, title, primary_image_url, artwork_price').eq('artist_id', artistData.id).then(function(res) {
                 (res.data || []).forEach(function(w) {
-                    sel.innerHTML += '<option value="' + w.id + '" data-img="' + (w.primary_image_url || '') + '" data-title="' + (w.title || '') + '" data-price="' + (w.price || 0) + '">' + (w.title || 'Untitled') + ' — $' + Number(w.price || 0).toLocaleString() + '</option>';
+                    sel.innerHTML += '<option value="' + w.id + '" data-img="' + (w.primary_image_url || '') + '" data-title="' + (w.title || '') + '" data-price="' + (w.artwork_price || 0) + '">' + (w.title || 'Untitled') + ' — $' + Number(w.artwork_price || 0).toLocaleString() + '</option>';
                 });
             });
         }
