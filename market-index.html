@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Market Index — InfraMint</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="description" content="Art market intelligence: price trends, trending artists, comparable sales, and market analytics for emerging art.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inframint.io/market-index.html">
+<meta property="og:title" content="Art Market Index — InfraMint">
+<meta property="og:description" content="Art market intelligence: price trends, trending artists, comparable sales, and market analytics for emerging art.">
+<meta property="og:image" content="https://inframint.io/og-image.png">
+<meta property="og:site_name" content="InfraMint">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--accent:#c8ff00;--up:#16a34a;--down:#dc2626;--warn:#f59e0b}
+body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
+.logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}.logo-bar{width:3px;height:1.75rem;background:var(--white)}.logo-text{font-size:1.25rem;letter-spacing:-.01em}.logo-text span:first-child{font-weight:600;color:var(--white)}.logo-text span:last-child{font-weight:200;color:var(--g500)}
+.nav-center{display:flex;gap:2.5rem;align-items:center}.nav-center a{font-size:.9375rem;font-weight:400;color:var(--g400);text-decoration:none;transition:color .2s}.nav-center a:hover,.nav-center a.active{color:var(--white)}
+.nav-right{display:flex;gap:1.5rem;align-items:center}.nav-login{font-size:.875rem;font-weight:400;color:var(--g400);text-decoration:none;transition:color .2s}.nav-login:hover{color:var(--white)}
+
+/* Hamburger */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem}
+.mobile-dropdown{display:none}
+@media(max-width:1200px){.nav-center{display:none!important}.nav-right{display:none!important}.hamburger{display:block}.mobile-dropdown{display:none;position:absolute;top:4.5rem;left:0;right:0;background:var(--black);padding:1rem 2rem 1.5rem;flex-direction:column;border-top:1px solid #222}.mobile-dropdown.open{display:flex}.mobile-dropdown a{font-size:.9375rem;color:var(--g400);text-decoration:none;padding:.6rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}.mobile-dropdown a:hover{color:var(--white)}.mobile-dropdown a:last-child{border-bottom:none}}
+
+/* Hero */
+.hero{padding:7rem 3rem 3rem;background:var(--black);color:var(--white)}
+.hero-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end}
+.hero-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+.hero-title{font-size:3rem;font-weight:300;letter-spacing:-.04em;line-height:1.1;margin-bottom:1rem}
+.hero-title strong{font-weight:700}
+.hero-sub{font-size:.9rem;color:var(--g400);line-height:1.8;max-width:500px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08)}
+.hero-stat{background:var(--black);padding:1.25rem 1rem;text-align:center}
+.hero-stat-val{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+.hero-stat-val.up{color:var(--up)}.hero-stat-val.down{color:var(--down)}
+.hero-stat-lbl{font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--g500);margin-top:.25rem}
+
+/* Tabs */
+.tabs{padding:0 3rem;max-width:1400px;margin:0 auto;border-bottom:1px solid var(--g200);display:flex;gap:0;margin-top:-.5px}
+.tab-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:var(--g500);background:none;border:none;padding:.875rem 1.5rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--black)}
+.tab-btn.active{color:var(--black);border-bottom-color:var(--black);font-weight:600}
+
+/* Content area */
+.content{padding:2rem 3rem;max-width:1400px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Section headers */
+.section-title{font-size:1.25rem;font-weight:600;letter-spacing:-.02em;margin-bottom:1.5rem}
+.section-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--g200);padding:1.5rem;margin-bottom:1.5rem}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--g200)}
+.card-title{font-size:1rem;font-weight:600}
+.card-badge{font-size:.6875rem;font-weight:600;padding:.25rem .6rem;background:var(--g100);color:var(--g600)}
+
+/* Stats grid */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border:1px solid var(--g200);padding:1.25rem}
+.stat-label{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.35rem}
+.stat-value{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+.stat-change{font-size:.75rem;font-weight:500;margin-top:.25rem}
+.stat-change.up{color:var(--up)}.stat-change.down{color:var(--down)}.stat-change.neutral{color:var(--g400)}
+
+/* Chart containers */
+.chart-container{position:relative;height:280px;margin:1rem 0}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);text-align:left;padding:.75rem .5rem;border-bottom:1px solid var(--g200)}
+.data-table td{font-size:.875rem;padding:.75rem .5rem;border-bottom:1px solid var(--g100)}
+.data-table tr:hover td{background:var(--g100)}
+.data-table .artist-cell{display:flex;align-items:center;gap:.75rem}
+.data-table .artist-avatar{width:32px;height:32px;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:var(--g500);flex-shrink:0}
+.data-table .artist-name{font-weight:500}
+.data-table .medium-tag{font-size:.6875rem;color:var(--g500)}
+.change-pill{display:inline-block;font-size:.6875rem;font-weight:600;padding:.15rem .5rem}
+.change-pill.up{background:#f0fdf4;color:var(--up)}
+.change-pill.down{background:#fef2f2;color:var(--down)}
+.change-pill.neutral{background:var(--g100);color:var(--g500)}
+
+/* Comparables */
+.comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.comp-card{background:var(--white);border:1px solid var(--g200);overflow:hidden}
+.comp-img{width:100%;height:160px;background:var(--g200);object-fit:cover}
+.comp-body{padding:1rem}
+.comp-title{font-size:.875rem;font-weight:600;margin-bottom:.25rem}
+.comp-artist{font-size:.75rem;color:var(--g500);margin-bottom:.75rem}
+.comp-prices{display:flex;justify-content:space-between;padding-top:.75rem;border-top:1px solid var(--g100)}
+.comp-price-group{text-align:center}
+.comp-price-label{font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400)}
+.comp-price-val{font-size:.9375rem;font-weight:600;margin-top:.15rem}
+.comp-price-val.sold{color:var(--up)}
+
+/* Medium breakdown */
+.medium-bars{display:flex;flex-direction:column;gap:.75rem}
+.medium-bar-row{display:flex;align-items:center;gap:1rem}
+.medium-bar-label{font-size:.8125rem;font-weight:500;width:100px;text-align:right;flex-shrink:0}
+.medium-bar-track{flex:1;height:28px;background:var(--g100);position:relative;overflow:hidden}
+.medium-bar-fill{height:100%;background:var(--black);transition:width .6s ease;display:flex;align-items:center;padding:0 .5rem;min-width:fit-content}
+.medium-bar-value{font-size:.6875rem;font-weight:600;color:var(--white);white-space:nowrap}
+.medium-bar-avg{font-size:.75rem;color:var(--g500);width:80px;text-align:right;flex-shrink:0}
+
+/* Loading */
+.loading{text-align:center;padding:3rem;color:var(--g400);font-size:.875rem}
+.skeleton{background:linear-gradient(90deg,var(--g200) 25%,var(--g100) 50%,var(--g200) 75%);background-size:200%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Empty states */
+.empty-state{text-align:center;padding:3rem;color:var(--g400)}
+.empty-state svg{margin-bottom:1rem}
+.empty-state p{font-size:.875rem;max-width:400px;margin:0 auto}
+
+/* Footer */
+footer{border-top:1px solid var(--g200);padding:3rem;display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto}
+.footer-logo{display:flex;align-items:center;gap:.75rem}
+.footer-bar{width:2px;height:1.25rem;background:var(--black)}
+.footer-text{font-size:1rem;letter-spacing:-.01em}
+.footer-text span:first-child{font-weight:600;color:var(--black)}.footer-text span:last-child{font-weight:200;color:var(--g400)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:.8125rem;color:var(--g500);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--black)}
+.footer-copy{font-size:.75rem;color:var(--g400)}
+
+/* Responsive */
+@media(max-width:768px){
+    nav{padding:0 1.5rem}
+    .hero{padding:6rem 1.5rem 2rem}
+    .hero-inner{grid-template-columns:1fr}
+    .hero-title{font-size:2rem}
+    .hero-stats{grid-template-columns:repeat(2,1fr)}
+    .tabs{padding:0 1.5rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tab-btn{white-space:nowrap;padding:.75rem 1rem;font-size:.75rem}
+    .content{padding:1.5rem}
+    .stats-row{grid-template-columns:repeat(2,1fr)}
+    .chart-row{grid-template-columns:1fr}
+    .comp-grid{grid-template-columns:1fr}
+    .medium-bar-label{width:70px;font-size:.75rem}
+    footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem 1.5rem}
+    .footer-links{flex-wrap:wrap;justify-content:center}
+}
+@media(max-width:480px){
+    .stats-row{grid-template-columns:1fr}
+    .hero-stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
+    <button class="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
+        <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a>
+        <a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a>
+        <a href="artist-login.html">Artist Login</a><a href="collector-login.html">Collector Login</a><a href="partner-login.html">Partner Login</a>
+    </div>
+    <div class="nav-center">
+        <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a>
+        <a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html" class="active">Market Index</a><a href="about.html">About</a>
+    </div>
+    <div class="nav-right">
+        <a href="artist-login.html" class="nav-login">Artist Login</a>
+        <a href="collector-login.html" class="nav-login">Collector Login</a>
+        <a href="partner-login.html" class="nav-login">Partner Login</a>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+    <div class="hero-inner">
+        <div>
+            <div class="hero-eyebrow">Art Market Intelligence</div>
+            <div class="hero-title">The <strong>Market Index</strong></div>
+            <div class="hero-sub">Real-time analytics on pricing, trends, and artist performance. Data-driven confidence for collectors and proof of growth for artists.</div>
+        </div>
+        <div class="hero-stats" id="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-val" id="hs-total-listed">—</div><div class="hero-stat-lbl">Artworks Listed</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="hs-total-sold">—</div><div class="hero-stat-lbl">Total Sold</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="hs-avg-price">—</div><div class="hero-stat-lbl">Avg. Sale Price</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="hs-artists">—</div><div class="hero-stat-lbl">Active Artists</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="trending">Trending Artists</button>
+    <button class="tab-btn" data-tab="mediums">By Medium</button>
+    <button class="tab-btn" data-tab="comparables">Comparables</button>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+    <!-- Overview Tab -->
+    <div class="tab-panel active" id="tab-overview">
+        <div class="stats-row" id="overview-stats">
+            <div class="stat-card"><div class="stat-label">Total Market Value</div><div class="stat-value" id="st-market-val">—</div><div class="stat-change neutral" id="st-market-change">Loading...</div></div>
+            <div class="stat-card"><div class="stat-label">Avg. Listed Price</div><div class="stat-value" id="st-avg-list">—</div><div class="stat-change neutral" id="st-avg-change">Loading...</div></div>
+            <div class="stat-card"><div class="stat-label">Avg. Days on Market</div><div class="stat-value" id="st-avg-dom">—</div><div class="stat-change neutral" id="st-dom-change">Loading...</div></div>
+            <div class="stat-card"><div class="stat-label">Sell-Through Rate</div><div class="stat-value" id="st-sell-rate">—</div><div class="stat-change neutral" id="st-sell-change">Loading...</div></div>
+        </div>
+
+        <div class="chart-row">
+            <div class="card">
+                <div class="card-header"><div class="card-title">Price Distribution</div><div class="card-badge">All Artworks</div></div>
+                <div class="chart-container"><canvas id="chart-price-dist"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><div class="card-title">Sales Over Time</div><div class="card-badge">Monthly</div></div>
+                <div class="chart-container"><canvas id="chart-sales-time"></canvas></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><div class="card-title">Recent Sales</div><div class="card-badge" id="recent-count">0</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-table">
+                    <thead><tr><th>Artwork</th><th>Artist</th><th>Medium</th><th>Listed Price</th><th>Sale Price</th><th>Days Listed</th><th>Date</th></tr></thead>
+                    <tbody id="tb-recent-sales"><tr><td colspan="7" class="loading">Loading sales data...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trending Artists Tab -->
+    <div class="tab-panel" id="tab-trending">
+        <div class="section-eyebrow">Market Movers</div>
+        <div class="section-title">Trending Artists</div>
+
+        <div class="stats-row" id="trending-stats">
+            <div class="stat-card"><div class="stat-label">Most Viewed</div><div class="stat-value" id="tr-most-viewed" style="font-size:1.25rem">—</div></div>
+            <div class="stat-card"><div class="stat-label">Most Sales</div><div class="stat-value" id="tr-most-sales" style="font-size:1.25rem">—</div></div>
+            <div class="stat-card"><div class="stat-label">Highest Avg. Price</div><div class="stat-value" id="tr-highest-avg" style="font-size:1.25rem">—</div></div>
+            <div class="stat-card"><div class="stat-label">Newest Seller</div><div class="stat-value" id="tr-newest" style="font-size:1.25rem">—</div></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><div class="card-title">Artist Rankings</div><div class="card-badge">By Market Cap</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-table">
+                    <thead><tr><th>#</th><th>Artist</th><th>Works Listed</th><th>Works Sold</th><th>Avg. Price</th><th>Market Cap</th><th>Total Views</th></tr></thead>
+                    <tbody id="tb-artist-rank"><tr><td colspan="7" class="loading">Loading artist data...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- By Medium Tab -->
+    <div class="tab-panel" id="tab-mediums">
+        <div class="section-eyebrow">Category Breakdown</div>
+        <div class="section-title">Performance by Medium</div>
+
+        <div class="card">
+            <div class="card-header"><div class="card-title">Average Price by Medium</div></div>
+            <div class="medium-bars" id="medium-bars"></div>
+        </div>
+
+        <div class="chart-row">
+            <div class="card">
+                <div class="card-header"><div class="card-title">Listings by Medium</div></div>
+                <div class="chart-container"><canvas id="chart-medium-pie"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><div class="card-title">Medium Price Ranges</div></div>
+                <div class="chart-container"><canvas id="chart-medium-range"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparables Tab -->
+    <div class="tab-panel" id="tab-comparables">
+        <div class="section-eyebrow">Price Comparables</div>
+        <div class="section-title">Similar Works, Similar Prices</div>
+        <p style="font-size:.875rem;color:var(--g500);margin-bottom:2rem;max-width:600px">Compare sale prices for similar artworks — by medium, size, and artist. Useful for pricing new works and understanding fair market value.</p>
+
+        <!-- Filter row -->
+        <div style="display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+            <select id="comp-medium-filter" style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);background:var(--white);outline:none">
+                <option value="all">All Mediums</option>
+                <option value="oil">Oil</option><option value="acrylic">Acrylic</option><option value="watercolor">Watercolor</option>
+                <option value="digital">Digital</option><option value="photography">Photography</option><option value="mixed">Mixed Media</option><option value="sculpture">Sculpture</option>
+            </select>
+            <select id="comp-price-filter" style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);background:var(--white);outline:none">
+                <option value="all">All Prices</option>
+                <option value="0-500">Under $500</option><option value="500-1000">$500 – $1,000</option><option value="1000-5000">$1,000 – $5,000</option><option value="5000+">$5,000+</option>
+            </select>
+        </div>
+
+        <div class="comp-grid" id="comp-grid">
+            <div class="loading" style="grid-column:1/-1">Loading comparables...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-logo"><div class="footer-bar"></div><div class="footer-text"><span>Infra</span><span>Mint</span></div></div>
+    <div class="footer-links">
+        <a href="gallery.html">Gallery</a><a href="index.html#artists">For Artists</a><a href="index.html#how">How It Works</a>
+        <a href="about.html">About</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+    </div>
+    <div class="footer-copy">© 2026 InfraMint · <a href="admin.html" style="color:var(--g400);text-decoration:none;font-size:.75rem">Gallery Owner</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const fmt = (n) => n != null ? '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0}) : '—';
+const mediumNames = {oil:'Oil on Canvas',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture',other:'Other'};
+const mediumColors = {oil:'#1a1a1a',acrylic:'#374151',watercolor:'#6b7280',digital:'#0ea5e9',photography:'#8b5cf6',mixed:'#f59e0b',sculpture:'#ef4444',other:'#a3a3a3'};
+
+let allArtworks = [];
+let allOrders = [];
+let allViews = [];
+let chartInstances = {};
+
+// ---- Tab navigation ----
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    });
+});
+
+// ---- Load all data ----
+async function loadAll() {
+    const [artRes, orderRes, viewRes, artistRes] = await Promise.all([
+        db.from('artworks').select('*, artists(id, artist_name, profile_image_url)').order('created_at', {ascending: false}),
+        db.from('orders').select('*').order('created_at', {ascending: false}),
+        db.from('artwork_views').select('*'),
+        db.from('artists').select('id, artist_name, created_at')
+    ]);
+
+    allArtworks = artRes.data || [];
+    allOrders = orderRes.data || [];
+    allViews = viewRes.data || [];
+    const artists = artistRes.data || [];
+
+    renderHeroStats(artists);
+    renderOverview();
+    renderTrending(artists);
+    renderMediums();
+    renderComparables();
+}
+
+// ---- Hero stats ----
+function renderHeroStats(artists) {
+    const soldOrders = allOrders.filter(o => o.status === 'delivered' || o.status === 'shipped' || o.status === 'paid');
+    document.getElementById('hs-total-listed').textContent = allArtworks.length;
+    document.getElementById('hs-total-sold').textContent = soldOrders.length;
+    const avgSale = soldOrders.length > 0 ? soldOrders.reduce((s, o) => s + (o.total_amount || 0), 0) / soldOrders.length : 0;
+    document.getElementById('hs-avg-price').textContent = fmt(avgSale);
+    document.getElementById('hs-artists').textContent = artists.length;
+}
+
+// ---- Overview ----
+function renderOverview() {
+    const totalVal = allArtworks.reduce((s, a) => s + (a.artwork_price || a.price || 0), 0);
+    const avgList = allArtworks.length > 0 ? totalVal / allArtworks.length : 0;
+    const soldOrders = allOrders.filter(o => ['delivered','shipped','paid'].includes(o.status));
+    const sellRate = allArtworks.length > 0 ? ((soldOrders.length / allArtworks.length) * 100) : 0;
+
+    // Days on market
+    let avgDOM = 0;
+    if (soldOrders.length > 0) {
+        const doms = soldOrders.map(o => {
+            const artwork = allArtworks.find(a => a.id === o.artwork_id);
+            if (!artwork) return 0;
+            return Math.max(1, Math.round((new Date(o.created_at) - new Date(artwork.created_at)) / (1000*60*60*24)));
+        }).filter(d => d > 0);
+        avgDOM = doms.length > 0 ? Math.round(doms.reduce((s,d)=>s+d,0)/doms.length) : 0;
+    }
+
+    document.getElementById('st-market-val').textContent = fmt(totalVal);
+    document.getElementById('st-market-change').textContent = allArtworks.length + ' listed works';
+    document.getElementById('st-avg-list').textContent = fmt(avgList);
+    document.getElementById('st-avg-change').textContent = 'Across all mediums';
+    document.getElementById('st-avg-dom').textContent = avgDOM > 0 ? avgDOM + 'd' : '—';
+    document.getElementById('st-dom-change').textContent = 'Average for sold works';
+    document.getElementById('st-sell-rate').textContent = sellRate.toFixed(1) + '%';
+    document.getElementById('st-sell-change').textContent = soldOrders.length + ' of ' + allArtworks.length + ' sold';
+
+    // Price distribution chart
+    const priceBuckets = {'Under $250': 0, '$250–$500': 0, '$500–$1K': 0, '$1K–$2.5K': 0, '$2.5K–$5K': 0, '$5K+': 0};
+    allArtworks.forEach(a => {
+        const p = a.artwork_price || a.price || 0;
+        if (p < 250) priceBuckets['Under $250']++;
+        else if (p < 500) priceBuckets['$250–$500']++;
+        else if (p < 1000) priceBuckets['$500–$1K']++;
+        else if (p < 2500) priceBuckets['$1K–$2.5K']++;
+        else if (p < 5000) priceBuckets['$2.5K–$5K']++;
+        else priceBuckets['$5K+']++;
+    });
+
+    if (chartInstances.priceDist) chartInstances.priceDist.destroy();
+    chartInstances.priceDist = new Chart(document.getElementById('chart-price-dist'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(priceBuckets),
+            datasets: [{
+                data: Object.values(priceBuckets),
+                backgroundColor: '#000',
+                borderWidth: 0,
+                borderSkipped: false,
+                barPercentage: 0.7
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {legend: {display: false}},
+            scales: {
+                x: {grid: {display: false}, ticks: {font: {family: 'Manrope', size: 11}}},
+                y: {grid: {color: '#f0f0f0'}, ticks: {font: {family: 'Manrope', size: 11}, stepSize: 1}}
+            }
+        }
+    });
+
+    // Sales over time chart
+    const monthlySales = {};
+    soldOrders.forEach(o => {
+        const d = new Date(o.created_at);
+        const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+        monthlySales[key] = (monthlySales[key] || 0) + 1;
+    });
+    const sortedMonths = Object.keys(monthlySales).sort();
+    const monthLabels = sortedMonths.map(m => {
+        const [y, mo] = m.split('-');
+        return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(mo)-1] + ' ' + y.slice(2);
+    });
+
+    if (chartInstances.salesTime) chartInstances.salesTime.destroy();
+    if (sortedMonths.length > 0) {
+        chartInstances.salesTime = new Chart(document.getElementById('chart-sales-time'), {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    data: sortedMonths.map(m => monthlySales[m]),
+                    borderColor: '#000', backgroundColor: 'rgba(0,0,0,0.05)',
+                    fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#000', borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {legend: {display: false}},
+                scales: {
+                    x: {grid: {display: false}, ticks: {font: {family: 'Manrope', size: 11}}},
+                    y: {grid: {color: '#f0f0f0'}, ticks: {font: {family: 'Manrope', size: 11}, stepSize: 1}, beginAtZero: true}
+                }
+            }
+        });
+    } else {
+        document.getElementById('chart-sales-time').parentElement.innerHTML = '<div class="empty-state"><p>No sales data yet. Sales trends will appear here as artworks are sold.</p></div>';
+    }
+
+    // Recent sales table
+    renderRecentSales(soldOrders);
+}
+
+function renderRecentSales(sold) {
+    const tbody = document.getElementById('tb-recent-sales');
+    document.getElementById('recent-count').textContent = sold.length;
+    if (sold.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No sales recorded yet</td></tr>';
+        return;
+    }
+    tbody.innerHTML = sold.slice(0, 20).map(o => {
+        const a = allArtworks.find(art => art.id === o.artwork_id);
+        const title = a ? a.title : 'Unknown';
+        const artist = a && a.artists ? a.artists.artist_name : '—';
+        const medium = a ? (mediumNames[a.medium] || a.medium || '—') : '—';
+        const listed = a ? fmt(a.artwork_price || a.price) : '—';
+        const salePrice = fmt(o.total_amount);
+        const dom = a ? Math.max(1, Math.round((new Date(o.created_at) - new Date(a.created_at)) / (1000*60*60*24))) : '—';
+        const date = new Date(o.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+        return `<tr><td style="font-weight:500">${title}</td><td>${artist}</td><td><span class="medium-tag">${medium}</span></td><td>${listed}</td><td style="font-weight:600;color:var(--up)">${salePrice}</td><td>${dom}d</td><td style="color:var(--g500)">${date}</td></tr>`;
+    }).join('');
+}
+
+// ---- Trending Artists ----
+function renderTrending(artists) {
+    // Build artist stats
+    const artistStats = artists.map(ar => {
+        const works = allArtworks.filter(a => a.artist_id === ar.id);
+        const sold = allOrders.filter(o => ['delivered','shipped','paid'].includes(o.status) && works.some(w => w.id === o.artwork_id));
+        const views = allViews.filter(v => works.some(w => w.id === v.artwork_id)).length;
+        const totalVal = works.reduce((s, w) => s + (w.artwork_price || w.price || 0), 0);
+        const avgPrice = works.length > 0 ? totalVal / works.length : 0;
+        return { ...ar, worksCount: works.length, soldCount: sold.length, views, totalVal, avgPrice };
+    }).filter(a => a.worksCount > 0);
+
+    // Top stats
+    const byViews = [...artistStats].sort((a,b) => b.views - a.views);
+    const bySales = [...artistStats].sort((a,b) => b.soldCount - a.soldCount);
+    const byAvg = [...artistStats].sort((a,b) => b.avgPrice - a.avgPrice);
+    const byNew = [...artistStats].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+    document.getElementById('tr-most-viewed').textContent = byViews[0]?.artist_name || '—';
+    document.getElementById('tr-most-sales').textContent = bySales[0]?.artist_name || '—';
+    document.getElementById('tr-highest-avg').textContent = byAvg[0]?.artist_name || '—';
+    document.getElementById('tr-newest').textContent = byNew[0]?.artist_name || '—';
+
+    // Rankings table
+    const byMarketCap = [...artistStats].sort((a,b) => b.totalVal - a.totalVal);
+    const tbody = document.getElementById('tb-artist-rank');
+    if (byMarketCap.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No artist data yet</td></tr>';
+        return;
+    }
+    tbody.innerHTML = byMarketCap.slice(0, 25).map((ar, i) => {
+        const initials = ar.artist_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+        return `<tr>
+            <td style="font-weight:600;color:var(--g400)">${i+1}</td>
+            <td><div class="artist-cell"><div class="artist-avatar">${initials}</div><div class="artist-name">${ar.artist_name}</div></div></td>
+            <td>${ar.worksCount}</td>
+            <td>${ar.soldCount}</td>
+            <td>${fmt(ar.avgPrice)}</td>
+            <td style="font-weight:600">${fmt(ar.totalVal)}</td>
+            <td>${ar.views.toLocaleString()}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ---- By Medium ----
+function renderMediums() {
+    const mediumStats = {};
+    allArtworks.forEach(a => {
+        const m = a.medium || 'other';
+        if (!mediumStats[m]) mediumStats[m] = {count: 0, totalPrice: 0, prices: []};
+        const p = a.artwork_price || a.price || 0;
+        mediumStats[m].count++;
+        mediumStats[m].totalPrice += p;
+        mediumStats[m].prices.push(p);
+    });
+
+    // Horizontal bars
+    const sorted = Object.entries(mediumStats).sort((a,b) => (b[1].totalPrice/b[1].count) - (a[1].totalPrice/a[1].count));
+    const maxAvg = sorted.length > 0 ? sorted[0][1].totalPrice / sorted[0][1].count : 1;
+
+    document.getElementById('medium-bars').innerHTML = sorted.map(([m, s]) => {
+        const avg = s.count > 0 ? s.totalPrice / s.count : 0;
+        const pct = maxAvg > 0 ? (avg / maxAvg * 100) : 0;
+        return `<div class="medium-bar-row">
+            <div class="medium-bar-label">${mediumNames[m] || m}</div>
+            <div class="medium-bar-track"><div class="medium-bar-fill" style="width:${Math.max(pct, 8)}%;background:${mediumColors[m]||'#000'}"><span class="medium-bar-value">${s.count} works</span></div></div>
+            <div class="medium-bar-avg">${fmt(avg)}</div>
+        </div>`;
+    }).join('');
+
+    // Pie chart
+    const labels = sorted.map(([m]) => mediumNames[m] || m);
+    const counts = sorted.map(([, s]) => s.count);
+    const colors = sorted.map(([m]) => mediumColors[m] || '#a3a3a3');
+
+    if (chartInstances.mediumPie) chartInstances.mediumPie.destroy();
+    chartInstances.mediumPie = new Chart(document.getElementById('chart-medium-pie'), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { font: {family:'Manrope', size: 11}, padding: 12, usePointStyle: true, pointStyleWidth: 8 } } },
+            cutout: '60%'
+        }
+    });
+
+    // Price range chart (box-like with min/max bars)
+    const rangeLabels = sorted.map(([m]) => mediumNames[m]?.split(' ')[0] || m);
+    const mins = sorted.map(([, s]) => Math.min(...s.prices));
+    const maxs = sorted.map(([, s]) => Math.max(...s.prices));
+    const avgs = sorted.map(([, s]) => s.totalPrice / s.count);
+
+    if (chartInstances.mediumRange) chartInstances.mediumRange.destroy();
+    chartInstances.mediumRange = new Chart(document.getElementById('chart-medium-range'), {
+        type: 'bar',
+        data: {
+            labels: rangeLabels,
+            datasets: [
+                { label: 'Min', data: mins, backgroundColor: 'rgba(0,0,0,0.1)', borderWidth: 0, barPercentage: 0.5 },
+                { label: 'Avg', data: avgs, backgroundColor: 'rgba(0,0,0,0.5)', borderWidth: 0, barPercentage: 0.5 },
+                { label: 'Max', data: maxs, backgroundColor: 'rgba(0,0,0,0.9)', borderWidth: 0, barPercentage: 0.5 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+            plugins: { legend: { position: 'bottom', labels: { font: {family:'Manrope', size: 11}, usePointStyle: true, pointStyleWidth: 8 } } },
+            scales: {
+                x: { grid: {color: '#f0f0f0'}, ticks: {font: {family:'Manrope', size: 11}, callback: v => '$' + v.toLocaleString()} },
+                y: { grid: {display: false}, ticks: {font: {family:'Manrope', size: 11}} }
+            }
+        }
+    });
+}
+
+// ---- Comparables ----
+function renderComparables() {
+    const mf = document.getElementById('comp-medium-filter').value;
+    const pf = document.getElementById('comp-price-filter').value;
+
+    let filtered = [...allArtworks];
+    if (mf !== 'all') filtered = filtered.filter(a => a.medium === mf);
+    if (pf !== 'all') {
+        const [min, max] = pf.includes('+') ? [parseInt(pf), Infinity] : pf.split('-').map(Number);
+        filtered = filtered.filter(a => {
+            const p = a.artwork_price || a.price || 0;
+            return p >= min && p <= max;
+        });
+    }
+
+    const grid = document.getElementById('comp-grid');
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>No artworks match these filters.</p></div>';
+        return;
+    }
+
+    // Sort by price for comparability
+    filtered.sort((a,b) => (a.artwork_price || a.price || 0) - (b.artwork_price || b.price || 0));
+
+    // Find sold orders for these artworks
+    const soldIds = new Set(allOrders.filter(o => ['delivered','shipped','paid'].includes(o.status)).map(o => o.artwork_id));
+    const orderMap = {};
+    allOrders.forEach(o => { if (soldIds.has(o.artwork_id)) orderMap[o.artwork_id] = o; });
+
+    grid.innerHTML = filtered.slice(0, 12).map(a => {
+        const imgUrl = a.image_url || '';
+        const price = a.artwork_price || a.price || 0;
+        const artist = a.artists ? a.artists.artist_name : 'Unknown';
+        const sold = orderMap[a.id];
+        const salePrice = sold ? sold.total_amount : null;
+        const imgTag = imgUrl ? `<img class="comp-img" src="${imgUrl}" alt="${a.title}" loading="lazy">` : `<div class="comp-img" style="display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:.75rem">No image</div>`;
+
+        return `<div class="comp-card">
+            ${imgTag}
+            <div class="comp-body">
+                <div class="comp-title">${a.title || 'Untitled'}</div>
+                <div class="comp-artist">${artist} · ${mediumNames[a.medium] || a.medium || '—'}</div>
+                <div class="comp-prices">
+                    <div class="comp-price-group"><div class="comp-price-label">Listed</div><div class="comp-price-val">${fmt(price)}</div></div>
+                    <div class="comp-price-group"><div class="comp-price-label">Sold</div><div class="comp-price-val ${salePrice ? 'sold' : ''}">${salePrice ? fmt(salePrice) : 'Available'}</div></div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Filter listeners
+document.getElementById('comp-medium-filter').addEventListener('change', renderComparables);
+document.getElementById('comp-price-filter').addEventListener('change', renderComparables);
+
+// Init
+loadAll();
+</script>
+</body>
+</html>

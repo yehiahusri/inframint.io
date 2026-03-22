@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisor Portal — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --error: #dc2626;
+            --success: #16a34a;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
+            background: var(--white);
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-link {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        /* Main */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            padding: 2.5rem;
+        }
+
+        .auth-header {
+            margin-bottom: 2rem;
+        }
+
+        .auth-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            line-height: 1.7;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--gray-600);
+        }
+
+        .tab.active {
+            color: var(--black);
+            border-bottom-color: var(--black);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.875rem;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--black);
+        }
+
+        .submit-btn {
+            width: 100%;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.875rem;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            background: var(--gray-800);
+        }
+
+        .submit-btn:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        /* Google button */
+        .social-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.75rem;
+            background: var(--white);
+            border: 1px solid var(--gray-300);
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--black);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1.25rem;
+        }
+
+        .social-btn:hover {
+            border-color: var(--black);
+            background: var(--gray-100);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.6875rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Message */
+        .message {
+            padding: 0.6rem 0.75rem;
+            font-size: 0.8125rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Auth forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+
+        .toggle-link a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .gallery-owner-link {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .gallery-owner-link a {
+            color: var(--gray-400);
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .gallery-owner-link a:hover {
+            color: var(--gray-600);
+        }
+
+        @media (max-width: 500px) {
+            nav { padding: 0 1.5rem; }
+            .auth-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        <a href="index.html" class="nav-link">← Back to Home</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-badge">Advisor Portal</div>
+                <h1 class="auth-title">Welcome, Advisor</h1>
+                <p class="auth-subtitle">Sign in to manage your advisory projects, track commissions, and communicate with clients.</p>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="signin">Sign In</div>
+                <div class="tab" data-tab="setup">Set Up Account</div>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <!-- Google Button -->
+            <button type="button" class="social-btn" id="google-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+
+            <div class="divider"><span>or</span></div>
+
+            <!-- Sign In Form -->
+            <form class="auth-form active" id="signin-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="signin-email" placeholder="advisor@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="signin-password" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+
+            <!-- Setup Account Form -->
+            <form class="auth-form" id="setup-form">
+                <p style="font-size:0.8125rem;color:var(--gray-500);margin-bottom:1.25rem;line-height:1.7">Been approved as an advisor? Create your login credentials below using the email you applied with.</p>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="setup-email" placeholder="Your approved email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="setup-password" placeholder="Choose a password (min 6 chars)" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" id="setup-password2" placeholder="Confirm password" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="toggle-link">Not an advisor yet? <a href="art-advisory.html#become-advisor">Apply here</a></div>
+        </div>
+    </div>
+
+    <div class="gallery-owner-link">
+        <a href="index.html">Home</a> · <a href="gallery.html">Gallery</a> · <a href="art-advisory.html">Advisory</a> · <a href="terms.html">Terms</a>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function showMsg(text, type) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = 'message show ' + type;
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            this.classList.add('active');
+            const target = this.dataset.tab === 'signin' ? 'signin-form' : 'setup-form';
+            document.getElementById(target).classList.add('active');
+            document.getElementById('message').className = 'message';
+        });
+    });
+
+    // Auto-switch to setup tab if URL has ?setup=true
+    if (new URLSearchParams(window.location.search).get('setup') === 'true') {
+        document.querySelector('[data-tab="setup"]').click();
+    }
+
+    // Sign In
+    document.getElementById('signin-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('signin-email').value.trim();
+        const pass = document.getElementById('signin-password').value;
+        if (!email || !pass) { showMsg('Email and password required.', 'error'); return; }
+
+        const btn = this.querySelector('.submit-btn');
+        btn.textContent = 'Signing in...'; btn.disabled = true;
+
+        const { data, error } = await db.auth.signInWithPassword({ email: email, password: pass });
+        if (error) { showMsg(error.message, 'error'); btn.textContent = 'Sign In'; btn.disabled = false; return; }
+
+        // Verify they're an approved advisor
+        const { data: advisor, error: advErr } = await db.from('advisors').select('*').eq('email', email).single();
+        if (advErr || !advisor) {
+            showMsg('No advisor account found for this email. Apply at our Advisory page.', 'error');
+            await db.auth.signOut();
+            btn.textContent = 'Sign In'; btn.disabled = false; return;
+        }
+        if (advisor.status !== 'approved' && advisor.status !== 'active') {
+            showMsg('Your advisor application is still ' + (advisor.status || 'pending') + '. You\'ll be notified when approved.', 'error');
+            await db.auth.signOut();
+            btn.textContent = 'Sign In'; btn.disabled = false; return;
+        }
+
+        // Link user_id if not already linked
+        if (!advisor.user_id && data.user) {
+            await db.from('advisors').update({ user_id: data.user.id }).eq('id', advisor.id);
+        }
+
+        window.location.href = 'advisor-dashboard.html';
+    });
+
+    // Google OAuth
+    document.getElementById('google-btn').addEventListener('click', async function() {
+        await db.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin + '/advisor-dashboard.html' }
+        });
+    });
+
+    // Setup Account
+    document.getElementById('setup-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('setup-email').value.trim();
+        const pass = document.getElementById('setup-password').value;
+        const pass2 = document.getElementById('setup-password2').value;
+
+        if (!email || !pass) { showMsg('All fields required.', 'error'); return; }
+        if (pass.length < 6) { showMsg('Password must be at least 6 characters.', 'error'); return; }
+        if (pass !== pass2) { showMsg('Passwords do not match.', 'error'); return; }
+
+        const btn = this.querySelector('.submit-btn');
+        btn.textContent = 'Creating...'; btn.disabled = true;
+
+        // Check if email exists in advisors table and is approved
+        const { data: advisor } = await db.from('advisors').select('*').eq('email', email).single();
+        if (!advisor) {
+            showMsg('This email is not in our advisor list. Please apply first on the Advisory page.', 'error');
+            btn.textContent = 'Create Account'; btn.disabled = false; return;
+        }
+        if (advisor.status !== 'approved' && advisor.status !== 'active') {
+            showMsg('Your application is still ' + (advisor.status || 'pending') + '. Wait for approval before creating an account.', 'error');
+            btn.textContent = 'Create Account'; btn.disabled = false; return;
+        }
+
+        const { data, error } = await db.auth.signUp({ email: email, password: pass });
+        if (error) { showMsg(error.message, 'error'); btn.textContent = 'Create Account'; btn.disabled = false; return; }
+
+        if (data.user && !data.user.confirmed_at && !data.session) {
+            showMsg('Check your email to confirm your account, then sign in.', 'success');
+        } else if (data.user) {
+            await db.from('advisors').update({ user_id: data.user.id, status: 'active' }).eq('id', advisor.id);
+            window.location.href = 'advisor-dashboard.html';
+        }
+        btn.textContent = 'Create Account'; btn.disabled = false;
+    });
+
+    // Auto-redirect if already logged in
+    (async () => {
+        const { data: { session } } = await db.auth.getSession();
+        if (session) {
+            const { data: advisor } = await db.from('advisors').select('*').eq('email', session.user.email).single();
+            if (advisor && (advisor.status === 'approved' || advisor.status === 'active')) {
+                window.location.href = 'advisor-dashboard.html';
+            }
+        }
+    })();
+</script>
+</body>
+</html>

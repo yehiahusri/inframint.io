@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisor Dashboard — InfraMint</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--success:#16a34a;--error:#dc2626;--warn:#f59e0b;--info:#0ea5e9}
+body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* Sidebar */
+.sidebar{background:var(--white);border-right:1px solid var(--g200);padding-top:1.5rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;text-decoration:none;border-bottom:1px solid var(--g200)}
+.sidebar-logo .bar{width:2px;height:1.25rem;background:var(--black)}
+.sidebar-logo .text{font-size:1.125rem;letter-spacing:-.01em}
+.sidebar-logo .text span:first-child{font-weight:600;color:var(--black)}.sidebar-logo .text span:last-child{font-weight:200;color:var(--g400)}
+.sidebar-badge{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.15rem .4rem;margin-left:.5rem}
+.sidebar-section{padding:1rem 0}
+.sidebar-label{font-size:.625rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:0 1.5rem;margin-bottom:.5rem}
+.sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;font-size:.875rem;color:var(--g500);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
+.sidebar-link:hover{color:var(--black);background:var(--g100)}
+.sidebar-link.active{color:var(--black);font-weight:500;border-left-color:var(--black);background:var(--g100)}
+.sidebar-link svg{width:18px;height:18px;flex-shrink:0}
+.sidebar-link .count{font-size:.6875rem;font-weight:600;background:var(--g100);padding:.1rem .4rem;margin-left:auto}
+.sidebar-link.active .count{background:var(--g200)}
+.sidebar-bottom{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--g200)}
+#sign-out{font-family:'Manrope',sans-serif;font-size:.8125rem;color:var(--g500);background:none;border:none;cursor:pointer}
+#sign-out:hover{color:var(--error)}
+
+/* Topbar */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--g200);background:var(--white)}
+.topbar-left{font-size:.875rem;font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.topbar-link{font-size:.8125rem;color:var(--g500);text-decoration:none}.topbar-link:hover{color:var(--black)}
+.topbar-user{font-size:.8125rem;color:var(--g600)}
+
+/* Main */
+main{overflow-y:auto}
+.section{display:none}
+.section.active{display:block}
+.page-header{padding:2rem 2rem 1rem}
+.page-title{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
+.page-subtitle{font-size:.875rem;color:var(--g500);font-weight:300;margin-top:.25rem}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:0 2rem 1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--g200);padding:1.25rem}
+.stat-label{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.35rem}
+.stat-value{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+.stat-sub{font-size:.75rem;color:var(--g500);margin-top:.2rem}
+
+/* Card */
+.card{background:var(--white);border:1px solid var(--g200);margin:0 2rem 1.5rem;padding:1.5rem}
+.card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
+
+/* Table */
+table{width:100%;border-collapse:collapse}
+th{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);text-align:left;padding:.75rem .5rem;border-bottom:1px solid var(--g200)}
+td{font-size:.875rem;padding:.75rem .5rem;border-bottom:1px solid var(--g100)}
+tr:hover td{background:var(--g100)}
+.empty{color:var(--g400);text-align:center;padding:2rem}
+
+/* Status badges */
+.badge{font-size:.6875rem;font-weight:600;padding:.2rem .5rem;display:inline-block}
+.badge-new{background:#eff6ff;color:#2563eb}
+.badge-progress{background:#fef3c7;color:#d97706}
+.badge-proposed{background:#f0fdf4;color:var(--success)}
+.badge-reviewing{background:#fdf4ff;color:#a855f7}
+.badge-completed{background:#f0fdf4;color:var(--success)}
+.badge-archived{background:var(--g100);color:var(--g500)}
+
+/* Buttons */
+.btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:600;padding:.4rem .75rem;border:none;cursor:pointer;transition:all .15s}
+.btn-dark{background:var(--black);color:var(--white)}.btn-dark:hover{background:var(--g800)}
+.btn-outline{background:none;border:1px solid var(--g300);color:var(--g600)}.btn-outline:hover{border-color:var(--black);color:var(--black)}
+.btn-sm{font-size:.6875rem;padding:.3rem .5rem}
+.btn-success{background:var(--success);color:var(--white)}.btn-success:hover{opacity:.9}
+.btn-warn{background:var(--warn);color:var(--white)}.btn-warn:hover{opacity:.9}
+
+/* Project detail panel */
+.detail-panel{display:none;position:fixed;top:0;right:0;bottom:0;width:560px;background:var(--white);border-left:1px solid var(--g200);z-index:200;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
+.detail-panel.open{display:block}
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:199}
+.detail-overlay.open{display:block}
+.detail-header{padding:1.5rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start}
+.detail-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--g400);line-height:1}.detail-close:hover{color:var(--black)}
+.detail-title{font-size:1.125rem;font-weight:600}
+.detail-sub{font-size:.8125rem;color:var(--g500);margin-top:.25rem}
+.detail-body{padding:1.5rem}
+.detail-section{margin-bottom:1.5rem}
+.detail-label{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+.detail-value{font-size:.875rem;line-height:1.7}
+.detail-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.detail-field{font-size:.875rem}
+.detail-field-label{font-size:.6875rem;color:var(--g400);font-weight:500}
+
+/* Messages */
+.messages-container{max-height:320px;overflow-y:auto;padding:1rem;background:var(--g100);margin-bottom:1rem;display:flex;flex-direction:column;gap:.75rem}
+.msg-bubble{max-width:80%;padding:.6rem .85rem;font-size:.8125rem;line-height:1.6}
+.msg-advisor{background:var(--black);color:var(--white);align-self:flex-end;margin-left:auto}
+.msg-client{background:var(--white);border:1px solid var(--g200);align-self:flex-start}
+.msg-system{background:var(--g200);color:var(--g500);align-self:center;font-size:.75rem;font-style:italic}
+.msg-time{font-size:.6rem;color:var(--g400);margin-top:.2rem}
+.msg-input-row{display:flex;gap:.5rem}
+.msg-input{flex:1;font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.6rem .75rem;border:1px solid var(--g300);outline:none;resize:none;min-height:40px}
+.msg-input:focus{border-color:var(--black)}
+.msg-send{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:600;padding:.6rem 1rem;background:var(--black);color:var(--white);border:none;cursor:pointer}
+.msg-send:hover{background:var(--g800)}
+
+/* Artwork picker */
+.artwork-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.75rem;max-height:300px;overflow-y:auto}
+.artwork-pick{border:1px solid var(--g200);cursor:pointer;transition:all .15s;position:relative}
+.artwork-pick:hover{border-color:var(--black)}
+.artwork-pick.selected{border-color:var(--black);border-width:2px}
+.artwork-pick img{width:100%;height:80px;object-fit:cover;display:block}
+.artwork-pick-info{padding:.4rem;font-size:.6875rem}
+.artwork-pick-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.artwork-pick-price{color:var(--g500)}
+.artwork-pick-check{position:absolute;top:4px;right:4px;width:18px;height:18px;background:var(--black);color:var(--white);display:none;align-items:center;justify-content:center;font-size:.6rem;font-weight:700}
+.artwork-pick.selected .artwork-pick-check{display:flex}
+
+/* Earnings */
+.earnings-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.earnings-card{background:var(--white);border:1px solid var(--g200);padding:1.25rem;text-align:center}
+.earnings-val{font-size:2rem;font-weight:700}
+.earnings-lbl{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-top:.25rem}
+
+/* Profile */
+.profile-form{max-width:600px}
+.form-group{margin-bottom:1.25rem}
+.form-label{font-size:.6875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g500);margin-bottom:.4rem;display:block}
+.form-input,.form-textarea,.form-select{width:100%;font-family:'Manrope',sans-serif;font-size:.875rem;padding:.75rem;border:1px solid var(--g300);background:var(--white);outline:none;transition:border-color .2s}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--black)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Loading */
+.loading{text-align:center;padding:2rem;color:var(--g400);font-size:.875rem}
+
+/* Mobile */
+@media(max-width:768px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{display:none}
+    .stats-grid{grid-template-columns:repeat(2,1fr);padding:0 1rem 1rem}
+    .card{margin:0 1rem 1rem}
+    .page-header{padding:1.5rem 1rem .75rem}
+    .detail-panel{width:100%}
+    .artwork-picker{grid-template-columns:repeat(2,1fr)}
+    .earnings-summary{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="index.html" class="sidebar-logo"><div class="bar"></div><div class="text"><span>Infra</span><span>Mint</span></div><span class="sidebar-badge">Advisor</span></a>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Dashboard</div>
+            <a class="sidebar-link active" data-s="overview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Overview
+            </a>
+            <a class="sidebar-link" data-s="projects">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Projects <span class="count" id="n-projects">0</span>
+            </a>
+            <a class="sidebar-link" data-s="artworks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                Browse Artworks
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Finance</div>
+            <a class="sidebar-link" data-s="earnings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Earnings <span class="count" id="n-earnings">0</span>
+            </a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Account</div>
+            <a class="sidebar-link" data-s="profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+            </a>
+        </div>
+        <div class="sidebar-bottom">
+            <button id="sign-out">Sign Out</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <div class="topbar">
+            <div class="topbar-left" id="topbar-title">Overview</div>
+            <div class="topbar-right">
+                <a href="art-advisory.html" class="topbar-link">Advisory Page</a>
+                <a href="gallery.html" class="topbar-link">Gallery</a>
+                <span class="topbar-user" id="topbar-user"></span>
+            </div>
+        </div>
+
+        <!-- Overview -->
+        <div class="section active" id="section-overview">
+            <div class="page-header">
+                <div class="page-title" id="welcome-title">Welcome back</div>
+                <div class="page-subtitle">Manage your advisory projects and track your commissions</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">Active Projects</div><div class="stat-value" id="ov-active">0</div></div>
+                <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" id="ov-completed">0</div></div>
+                <div class="stat-card"><div class="stat-label">Total Earnings</div><div class="stat-value" id="ov-earnings">$0</div></div>
+                <div class="stat-card"><div class="stat-label">Commission Rate</div><div class="stat-value" id="ov-rate">5%</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Recent Projects</div>
+                <table><thead><tr><th>Client</th><th>Type</th><th>Budget</th><th>Status</th><th>Updated</th></tr></thead>
+                <tbody id="tb-recent-projects"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="section" id="section-projects">
+            <div class="page-header">
+                <div class="page-title">Projects</div>
+                <div class="page-subtitle">Manage assigned advisory projects</div>
+            </div>
+            <!-- Status filter tabs -->
+            <div style="padding:0 2rem .75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+                <button class="btn btn-dark proj-filter active" data-filter="all">All</button>
+                <button class="btn btn-outline proj-filter" data-filter="new">New</button>
+                <button class="btn btn-outline proj-filter" data-filter="in_progress">In Progress</button>
+                <button class="btn btn-outline proj-filter" data-filter="artworks_proposed">Proposed</button>
+                <button class="btn btn-outline proj-filter" data-filter="completed">Completed</button>
+            </div>
+            <div class="card">
+                <table><thead><tr><th>Client</th><th>Email</th><th>Type</th><th>Styles</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="tb-projects"><tr><td colspan="7" class="loading">Loading projects...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- Browse Artworks -->
+        <div class="section" id="section-artworks">
+            <div class="page-header">
+                <div class="page-title">Browse Artworks</div>
+                <div class="page-subtitle">Find the right pieces for your clients</div>
+            </div>
+            <div style="padding:0 2rem .75rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
+                <input type="text" id="artwork-search" placeholder="Search by title, artist, or medium..." style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);outline:none;width:300px">
+                <select id="artwork-medium-filter" style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);outline:none">
+                    <option value="all">All Mediums</option><option value="oil">Oil</option><option value="acrylic">Acrylic</option><option value="watercolor">Watercolor</option><option value="digital">Digital</option><option value="photography">Photography</option><option value="mixed">Mixed Media</option><option value="sculpture">Sculpture</option>
+                </select>
+            </div>
+            <div class="card">
+                <table><thead><tr><th>Image</th><th>Title</th><th>Artist</th><th>Medium</th><th>Price</th><th>Status</th></tr></thead>
+                <tbody id="tb-artworks"><tr><td colspan="6" class="loading">Loading artworks...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- Earnings -->
+        <div class="section" id="section-earnings">
+            <div class="page-header">
+                <div class="page-title">Earnings</div>
+                <div class="page-subtitle">Track your advisory commissions</div>
+            </div>
+            <div class="earnings-summary" style="padding:0 2rem">
+                <div class="earnings-card"><div class="earnings-val" id="earn-total">$0</div><div class="earnings-lbl">Total Earned</div></div>
+                <div class="earnings-card"><div class="earnings-val" id="earn-pending">$0</div><div class="earnings-lbl">Pending Payout</div></div>
+                <div class="earnings-card"><div class="earnings-val" id="earn-paid">$0</div><div class="earnings-lbl">Paid Out</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Commission History</div>
+                <table><thead><tr><th>Date</th><th>Project</th><th>Sale Amount</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead>
+                <tbody id="tb-earnings"><tr><td colspan="6" class="loading">Loading earnings...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <div class="section" id="section-profile">
+            <div class="page-header">
+                <div class="page-title">Profile</div>
+                <div class="page-subtitle">Update your advisor information</div>
+            </div>
+            <div class="card">
+                <div class="profile-form">
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="pf-first"></div>
+                        <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="pf-last"></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="pf-email" disabled></div>
+                    <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="pf-phone" placeholder="+971 ..."></div>
+                    <div class="form-group"><label class="form-label">Company</label><input type="text" class="form-input" id="pf-company"></div>
+                    <div class="form-group"><label class="form-label">Specialty</label>
+                        <select class="form-select" id="pf-specialty"><option value="">Select...</option><option value="residential">Residential</option><option value="commercial">Commercial & Hospitality</option><option value="interior_design">Interior Design</option><option value="corporate">Corporate</option><option value="general">General Curation</option></select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Bio</label><textarea class="form-textarea" id="pf-bio" placeholder="Tell clients about your experience and approach..."></textarea></div>
+                    <div class="form-group"><label class="form-label">Portfolio URL</label><input type="url" class="form-input" id="pf-portfolio" placeholder="https://..."></div>
+                    <button class="btn btn-dark" id="save-profile" style="padding:.75rem 2rem;font-size:.8125rem">Save Changes</button>
+                    <span id="pf-msg" style="font-size:.8125rem;margin-left:1rem;display:none"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Project Detail Panel -->
+<div class="detail-overlay" id="detail-overlay"></div>
+<div class="detail-panel" id="detail-panel">
+    <div class="detail-header">
+        <div>
+            <div class="detail-title" id="dp-title">Project Details</div>
+            <div class="detail-sub" id="dp-sub"></div>
+        </div>
+        <button class="detail-close" id="dp-close">&times;</button>
+    </div>
+    <div class="detail-body" id="dp-body"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const fmt = n => n != null ? '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—';
+const mediumNames = {oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture'};
+const statusLabels = {new:'New',in_progress:'In Progress',artworks_proposed:'Proposed',client_reviewing:'Reviewing',completed:'Completed',archived:'Archived'};
+const statusClass = {new:'badge-new',in_progress:'badge-progress',artworks_proposed:'badge-proposed',client_reviewing:'badge-reviewing',completed:'badge-completed',archived:'badge-archived'};
+
+let advisorData = null;
+let allProjects = [];
+let allArtworks = [];
+let allEarnings = [];
+let projectFilter = 'all';
+
+// ===== Auth =====
+async function init() {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) { window.location.href = 'advisor-login.html'; return; }
+
+    const { data: advisor } = await db.from('advisors').select('*').eq('email', session.user.email).single();
+    if (!advisor || (advisor.status !== 'approved' && advisor.status !== 'active')) {
+        alert('Your advisor account is not active.');
+        await db.auth.signOut();
+        window.location.href = 'advisor-login.html';
+        return;
+    }
+
+    // Link user_id if needed
+    if (!advisor.user_id) {
+        await db.from('advisors').update({ user_id: session.user.id }).eq('id', advisor.id);
+    }
+
+    advisorData = advisor;
+    document.getElementById('topbar-user').textContent = (advisor.first_name || '') + ' ' + (advisor.last_name || '');
+    document.getElementById('welcome-title').textContent = 'Welcome back, ' + (advisor.first_name || 'Advisor');
+    document.getElementById('ov-rate').textContent = (advisor.commission_rate || 5) + '%';
+
+    loadAll();
+    populateProfile();
+}
+
+// ===== Load all data =====
+async function loadAll() {
+    await Promise.all([loadProjects(), loadArtworks(), loadEarnings()]);
+    renderOverview();
+}
+
+async function loadProjects() {
+    const { data } = await db.from('advisory_projects').select('*').eq('advisor_id', advisorData.id).order('created_at', { ascending: false });
+    allProjects = data || [];
+    document.getElementById('n-projects').textContent = allProjects.filter(p => p.status !== 'archived' && p.status !== 'completed').length || '';
+    renderProjects();
+}
+
+async function loadArtworks() {
+    const { data } = await db.from('artworks').select('*, artists(artist_name)').order('created_at', { ascending: false });
+    allArtworks = data || [];
+    renderArtworks();
+}
+
+async function loadEarnings() {
+    const { data } = await db.from('advisory_earnings').select('*, advisory_projects(client_name)').eq('advisor_id', advisorData.id).order('created_at', { ascending: false });
+    allEarnings = data || [];
+    document.getElementById('n-earnings').textContent = allEarnings.length || '';
+    renderEarnings();
+}
+
+// ===== Overview =====
+function renderOverview() {
+    const active = allProjects.filter(p => !['completed','archived'].includes(p.status));
+    const completed = allProjects.filter(p => p.status === 'completed');
+    const totalEarned = allEarnings.reduce((s, e) => s + (e.commission_amount || 0), 0);
+
+    document.getElementById('ov-active').textContent = active.length;
+    document.getElementById('ov-completed').textContent = completed.length;
+    document.getElementById('ov-earnings').textContent = fmt(totalEarned);
+
+    const tbody = document.getElementById('tb-recent-projects');
+    if (allProjects.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">No projects assigned yet. New projects will appear here when admin assigns them to you.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = allProjects.slice(0, 5).map(p => `<tr style="cursor:pointer" onclick="openProject('${p.id}')">
+        <td style="font-weight:500">${p.client_name || '—'}</td>
+        <td>${p.project_type || '—'}</td>
+        <td>${p.budget || '—'}</td>
+        <td><span class="badge ${statusClass[p.status] || 'badge-new'}">${statusLabels[p.status] || p.status}</span></td>
+        <td style="color:var(--g500)">${p.updated_at ? new Date(p.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</td>
+    </tr>`).join('');
+}
+
+// ===== Projects =====
+function renderProjects() {
+    let filtered = projectFilter === 'all' ? allProjects : allProjects.filter(p => p.status === projectFilter);
+    const tbody = document.getElementById('tb-projects');
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">No projects match this filter</td></tr>';
+        return;
+    }
+    tbody.innerHTML = filtered.map(p => `<tr>
+        <td style="font-weight:500">${p.client_name || '—'}</td>
+        <td style="font-size:.8125rem">${p.client_email || '—'}</td>
+        <td>${p.project_type || '—'}</td>
+        <td style="font-size:.8125rem">${(p.styles || []).join(', ') || '—'}</td>
+        <td>${p.budget || '—'}</td>
+        <td><span class="badge ${statusClass[p.status] || 'badge-new'}">${statusLabels[p.status] || p.status}</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="openProject('${p.id}')">Open</button></td>
+    </tr>`).join('');
+}
+
+// Project filter
+document.querySelectorAll('.proj-filter').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.proj-filter').forEach(b => { b.classList.remove('active'); b.classList.add('btn-outline'); b.classList.remove('btn-dark'); });
+        this.classList.add('active','btn-dark'); this.classList.remove('btn-outline');
+        projectFilter = this.dataset.filter;
+        renderProjects();
+    });
+});
+
+// ===== Project Detail Panel =====
+async function openProject(id) {
+    const project = allProjects.find(p => p.id === id);
+    if (!project) return;
+
+    // Load messages and proposed artworks
+    const [msgRes, artRes] = await Promise.all([
+        db.from('advisory_messages').select('*').eq('project_id', id).order('created_at', { ascending: true }),
+        db.from('advisory_project_artworks').select('*, artworks(title, image_url, artwork_price, medium, artists(artist_name))').eq('project_id', id)
+    ]);
+    const messages = msgRes.data || [];
+    const proposedArtworks = artRes.data || [];
+
+    document.getElementById('dp-title').textContent = project.client_name || 'Project';
+    document.getElementById('dp-sub').textContent = (statusLabels[project.status] || project.status) + ' · ' + (project.project_type || 'General');
+
+    let html = '';
+
+    // Info section
+    html += `<div class="detail-section"><div class="detail-label">Client Details</div>
+        <div class="detail-row">
+            <div class="detail-field"><div class="detail-field-label">Email</div>${project.client_email || '—'}</div>
+            <div class="detail-field"><div class="detail-field-label">Budget</div>${project.budget || '—'}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-field"><div class="detail-field-label">Timeline</div>${project.timeline || '—'}</div>
+            <div class="detail-field"><div class="detail-field-label">Styles</div>${(project.styles || []).join(', ') || '—'}</div>
+        </div>
+        ${project.notes ? `<div class="detail-value" style="margin-top:.5rem;color:var(--g600)">${project.notes}</div>` : ''}
+    </div>`;
+
+    // Status actions
+    html += `<div class="detail-section"><div class="detail-label">Update Status</div><div style="display:flex;gap:.5rem;flex-wrap:wrap">`;
+    const statusFlow = ['new','in_progress','artworks_proposed','client_reviewing','completed','archived'];
+    statusFlow.forEach(s => {
+        const active = project.status === s;
+        html += `<button class="btn ${active ? 'btn-dark' : 'btn-outline'} btn-sm" ${active ? 'disabled' : ''} onclick="updateProjectStatus('${id}','${s}')">${statusLabels[s]}</button>`;
+    });
+    html += `</div></div>`;
+
+    // Proposed artworks
+    html += `<div class="detail-section"><div class="detail-label">Proposed Artworks (${proposedArtworks.length})</div>`;
+    if (proposedArtworks.length > 0) {
+        html += `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem">`;
+        proposedArtworks.forEach(pa => {
+            const a = pa.artworks;
+            if (!a) return;
+            html += `<div style="border:1px solid var(--g200);padding:.5rem">
+                ${a.image_url ? `<img src="${a.image_url}" style="width:100%;height:60px;object-fit:cover;margin-bottom:.35rem">` : ''}
+                <div style="font-size:.75rem;font-weight:500">${a.title || 'Untitled'}</div>
+                <div style="font-size:.6875rem;color:var(--g500)">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price)}</div>
+                ${pa.client_approved ? '<div style="font-size:.6rem;color:var(--success);font-weight:600;margin-top:.25rem">✓ CLIENT APPROVED</div>' : ''}
+            </div>`;
+        });
+        html += `</div>`;
+    }
+    html += `<button class="btn btn-outline" style="margin-top:.75rem" onclick="showArtworkPicker('${id}')">+ Propose Artwork</button></div>`;
+
+    // Messages
+    html += `<div class="detail-section"><div class="detail-label">Messages</div>
+        <div class="messages-container" id="msg-container-${id}">`;
+    if (messages.length === 0) {
+        html += `<div style="text-align:center;color:var(--g400);font-size:.8125rem;padding:1rem">No messages yet. Start the conversation below.</div>`;
+    } else {
+        messages.forEach(m => {
+            const cls = m.sender_type === 'advisor' ? 'msg-advisor' : m.sender_type === 'system' ? 'msg-system' : 'msg-client';
+            const time = new Date(m.created_at).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+            html += `<div class="msg-bubble ${cls}"><div>${m.message}</div><div class="msg-time">${m.sender_name || m.sender_type} · ${time}</div></div>`;
+        });
+    }
+    html += `</div>
+        <div class="msg-input-row">
+            <textarea class="msg-input" id="msg-input-${id}" placeholder="Type a message to the client..."></textarea>
+            <button class="msg-send" onclick="sendMessage('${id}')">Send</button>
+        </div>
+    </div>`;
+
+    document.getElementById('dp-body').innerHTML = html;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('detail-overlay').classList.add('open');
+
+    // Scroll messages to bottom
+    const container = document.getElementById('msg-container-' + id);
+    if (container) container.scrollTop = container.scrollHeight;
+}
+
+// Close panel
+document.getElementById('dp-close').addEventListener('click', closePanel);
+document.getElementById('detail-overlay').addEventListener('click', closePanel);
+function closePanel() {
+    document.getElementById('detail-panel').classList.remove('open');
+    document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// Update project status
+async function updateProjectStatus(id, status) {
+    await db.from('advisory_projects').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+    await loadProjects();
+    renderOverview();
+    openProject(id); // Refresh panel
+}
+
+// Send message
+async function sendMessage(projectId) {
+    const input = document.getElementById('msg-input-' + projectId);
+    const text = input.value.trim();
+    if (!text) return;
+
+    await db.from('advisory_messages').insert({
+        project_id: projectId,
+        sender_type: 'advisor',
+        sender_name: (advisorData.first_name || '') + ' ' + (advisorData.last_name || ''),
+        message: text
+    });
+
+    input.value = '';
+    openProject(projectId); // Refresh
+}
+
+// Artwork picker
+function showArtworkPicker(projectId) {
+    const container = document.getElementById('dp-body');
+    // Check if picker already exists
+    if (document.getElementById('artwork-picker-modal')) return;
+
+    const pickerHtml = `<div id="artwork-picker-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center">
+        <div style="background:var(--white);width:90%;max-width:700px;max-height:80vh;overflow-y:auto;padding:1.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <div style="font-weight:600">Select Artworks to Propose</div>
+                <button onclick="document.getElementById('artwork-picker-modal').remove()" style="background:none;border:none;font-size:1.25rem;cursor:pointer">&times;</button>
+            </div>
+            <input type="text" id="picker-search" placeholder="Search artworks..." style="width:100%;font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem;border:1px solid var(--g300);outline:none;margin-bottom:1rem">
+            <div class="artwork-picker" id="picker-grid"></div>
+            <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end">
+                <button class="btn btn-outline" onclick="document.getElementById('artwork-picker-modal').remove()">Cancel</button>
+                <button class="btn btn-dark" onclick="proposeSelected('${projectId}')">Propose Selected</button>
+            </div>
+        </div>
+    </div>`;
+    document.body.insertAdjacentHTML('beforeend', pickerHtml);
+
+    renderPickerGrid(allArtworks);
+
+    document.getElementById('picker-search').addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        const filtered = allArtworks.filter(a => {
+            const t = (a.title || '').toLowerCase();
+            const ar = a.artists ? a.artists.artist_name.toLowerCase() : '';
+            return t.includes(q) || ar.includes(q) || (a.medium || '').includes(q);
+        });
+        renderPickerGrid(filtered);
+    });
+}
+
+let selectedArtworkIds = new Set();
+function renderPickerGrid(artworks) {
+    const grid = document.getElementById('picker-grid');
+    grid.innerHTML = artworks.slice(0, 30).map(a => {
+        const sel = selectedArtworkIds.has(a.id) ? 'selected' : '';
+        return `<div class="artwork-pick ${sel}" onclick="toggleArtworkPick(this,'${a.id}')">
+            <div class="artwork-pick-check">✓</div>
+            ${a.image_url ? `<img src="${a.image_url}" alt="${a.title}">` : '<div style="height:80px;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--g400)">No image</div>'}
+            <div class="artwork-pick-info">
+                <div class="artwork-pick-title">${a.title || 'Untitled'}</div>
+                <div class="artwork-pick-price">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price || a.price)}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function toggleArtworkPick(el, id) {
+    if (selectedArtworkIds.has(id)) {
+        selectedArtworkIds.delete(id);
+        el.classList.remove('selected');
+    } else {
+        selectedArtworkIds.add(id);
+        el.classList.add('selected');
+    }
+}
+
+async function proposeSelected(projectId) {
+    if (selectedArtworkIds.size === 0) return;
+
+    const inserts = [...selectedArtworkIds].map(aid => ({
+        project_id: projectId,
+        artwork_id: aid,
+        advisor_notes: ''
+    }));
+
+    await db.from('advisory_project_artworks').insert(inserts);
+    selectedArtworkIds.clear();
+    document.getElementById('artwork-picker-modal')?.remove();
+    openProject(projectId); // Refresh
+}
+
+// ===== Browse Artworks =====
+function renderArtworks() {
+    const search = (document.getElementById('artwork-search')?.value || '').toLowerCase();
+    const medium = document.getElementById('artwork-medium-filter')?.value || 'all';
+
+    let filtered = allArtworks;
+    if (search) {
+        filtered = filtered.filter(a => {
+            return (a.title || '').toLowerCase().includes(search)
+                || (a.artists?.artist_name || '').toLowerCase().includes(search)
+                || (a.medium || '').includes(search);
+        });
+    }
+    if (medium !== 'all') filtered = filtered.filter(a => a.medium === medium);
+
+    const tbody = document.getElementById('tb-artworks');
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">No artworks found</td></tr>';
+        return;
+    }
+    tbody.innerHTML = filtered.slice(0, 50).map(a => {
+        const img = a.image_url ? `<img src="${a.image_url}" style="width:48px;height:36px;object-fit:cover">` : '<div style="width:48px;height:36px;background:var(--g200)"></div>';
+        return `<tr>
+            <td>${img}</td>
+            <td style="font-weight:500">${a.title || 'Untitled'}</td>
+            <td>${a.artists?.artist_name || '—'}</td>
+            <td>${mediumNames[a.medium] || a.medium || '—'}</td>
+            <td style="font-weight:600">${fmt(a.artwork_price || a.price)}</td>
+            <td><span class="badge ${a.status === 'sold' ? 'badge-archived' : 'badge-new'}">${a.status || 'available'}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+document.getElementById('artwork-search')?.addEventListener('input', renderArtworks);
+document.getElementById('artwork-medium-filter')?.addEventListener('change', renderArtworks);
+
+// ===== Earnings =====
+function renderEarnings() {
+    const totalEarned = allEarnings.reduce((s, e) => s + (e.commission_amount || 0), 0);
+    const pending = allEarnings.filter(e => e.status === 'pending').reduce((s, e) => s + (e.commission_amount || 0), 0);
+    const paid = allEarnings.filter(e => e.status === 'paid').reduce((s, e) => s + (e.commission_amount || 0), 0);
+
+    document.getElementById('earn-total').textContent = fmt(totalEarned);
+    document.getElementById('earn-pending').textContent = fmt(pending);
+    document.getElementById('earn-paid').textContent = fmt(paid);
+
+    const tbody = document.getElementById('tb-earnings');
+    if (allEarnings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">No commissions earned yet. Commissions are generated when advisory project sales close.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = allEarnings.map(e => `<tr>
+        <td style="color:var(--g500)">${new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+        <td>${e.advisory_projects?.client_name || '—'}</td>
+        <td>${fmt(e.sale_amount)}</td>
+        <td>${e.commission_rate || 5}%</td>
+        <td style="font-weight:600;color:var(--success)">${fmt(e.commission_amount)}</td>
+        <td><span class="badge ${e.status === 'paid' ? 'badge-completed' : 'badge-progress'}">${e.status || 'pending'}</span></td>
+    </tr>`).join('');
+}
+
+// ===== Profile =====
+function populateProfile() {
+    document.getElementById('pf-first').value = advisorData.first_name || '';
+    document.getElementById('pf-last').value = advisorData.last_name || '';
+    document.getElementById('pf-email').value = advisorData.email || '';
+    document.getElementById('pf-phone').value = advisorData.phone || '';
+    document.getElementById('pf-company').value = advisorData.company || '';
+    document.getElementById('pf-specialty').value = advisorData.specialty || '';
+    document.getElementById('pf-bio').value = advisorData.bio || '';
+    document.getElementById('pf-portfolio').value = advisorData.portfolio_url || '';
+}
+
+document.getElementById('save-profile').addEventListener('click', async function() {
+    const updates = {
+        first_name: document.getElementById('pf-first').value.trim(),
+        last_name: document.getElementById('pf-last').value.trim(),
+        phone: document.getElementById('pf-phone').value.trim(),
+        company: document.getElementById('pf-company').value.trim(),
+        specialty: document.getElementById('pf-specialty').value,
+        bio: document.getElementById('pf-bio').value.trim(),
+        portfolio_url: document.getElementById('pf-portfolio').value.trim()
+    };
+
+    this.textContent = 'Saving...'; this.disabled = true;
+    const { error } = await db.from('advisors').update(updates).eq('id', advisorData.id);
+    const msg = document.getElementById('pf-msg');
+    if (error) {
+        msg.textContent = 'Error: ' + error.message; msg.style.color = 'var(--error)';
+    } else {
+        msg.textContent = 'Saved!'; msg.style.color = 'var(--success)';
+        Object.assign(advisorData, updates);
+    }
+    msg.style.display = 'inline';
+    this.textContent = 'Save Changes'; this.disabled = false;
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+});
+
+// ===== Sidebar navigation =====
+document.querySelectorAll('.sidebar-link[data-s]').forEach(link => {
+    link.addEventListener('click', function() {
+        const s = this.dataset.s;
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById('section-' + s).classList.add('active');
+        document.getElementById('topbar-title').textContent = this.textContent.trim().replace(/\d+$/, '').trim();
+    });
+});
+
+// Sign out
+document.getElementById('sign-out').addEventListener('click', async () => {
+    await db.auth.signOut();
+    window.location.href = 'advisor-login.html';
+});
+
+// Init
+init();
+</script>
+</body>
+</html>

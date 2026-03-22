@@ -186,6 +186,7 @@
                 <a class="sb-lk" data-s="admin-commissions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>Commissions <span class="ct" id="n-commissions">0</span></a>
                 <a class="sb-lk" data-s="admin-disputes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Disputes <span class="ct" id="n-disputes">0</span></a>
                 <a class="sb-lk" data-s="advisory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Advisory <span class="ct" id="n-advisory">0</span></a>
+                <a class="sb-lk" data-s="advisors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 14l3-3 3 3"/></svg>Advisors <span class="ct" id="n-advisors">0</span></a>
                 <a class="sb-lk" data-s="collections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Collections</a>
             </div>
             <div class="sb-sec">
@@ -509,6 +510,14 @@
                     <div class="ph"><h1>Art Advisory</h1><p>Personal curation requests from collectors</p></div>
                     <div class="card">
                         <div class="tw"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Styles</th><th>Budget</th><th>Space</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-advisory"></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- Advisors Management -->
+                <div class="sec" id="section-advisors">
+                    <div class="ph"><h1>Advisors</h1><p>Manage advisor applications and assignments</p></div>
+                    <div class="card">
+                        <div class="tw"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Company</th><th>Specialty</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-advisors"></tbody></table></div>
                     </div>
                 </div>
 
@@ -891,6 +900,7 @@
         loadAdminCommissions();
         loadAdminDisputes();
         loadAdvisory();
+        loadAdvisors();
         loadCollections();
     }
 
@@ -2275,15 +2285,21 @@
     }
 
     // ===== ADVISORY REQUESTS =====
+    var cachedAdvisors = [];
     async function loadAdvisory() {
-        var { data: reqs } = await db.from('advisory_requests').select('*').order('created_at', { ascending: false });
-        var newCount = (reqs || []).filter(function(r) { return r.status === 'new'; }).length;
+        var [reqRes, advRes] = await Promise.all([
+            db.from('advisory_requests').select('*').order('created_at', { ascending: false }),
+            db.from('advisors').select('id, first_name, last_name, email, status').in('status', ['approved','active'])
+        ]);
+        var reqs = reqRes.data || [];
+        cachedAdvisors = advRes.data || [];
+        var newCount = reqs.filter(function(r) { return r.status === 'new'; }).length;
         document.getElementById('n-advisory').textContent = newCount || '';
         var b = document.getElementById('tb-advisory');
-        if (!reqs || reqs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="8">No advisory requests yet</td></tr>'; return; }
+        if (reqs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="8">No advisory requests yet</td></tr>'; return; }
         b.innerHTML = '';
         reqs.forEach(function(r) {
-            var cls = r.status === 'new' ? 'b-pending' : r.status === 'in_progress' ? 'b-active' : r.status === 'completed' ? 'b-approved' : 'b-shipped';
+            var cls = r.status === 'new' ? 'b-pending' : r.status === 'in_progress' ? 'b-active' : r.status === 'completed' ? 'b-approved' : r.status === 'assigned' ? 'b-active' : 'b-shipped';
             var tr = document.createElement('tr');
             tr.innerHTML =
                 '<td style="font-size:.75rem">' + new Date(r.created_at).toLocaleDateString() + '</td>' +
@@ -2292,18 +2308,106 @@
                 '<td style="font-size:.7rem">' + (r.styles || []).join(', ') + '</td>' +
                 '<td>' + (r.budget || '—') + '</td>' +
                 '<td style="font-size:.75rem">' + (r.space_type || '—') + '</td>' +
-                '<td><span class="badge ' + cls + '">' + r.status + '</span></td>' +
+                '<td><span class="badge ' + cls + '">' + (r.status || 'new') + '</span></td>' +
                 '<td id="adv-actions-' + r.id + '"></td>';
             b.appendChild(tr);
             var td = document.getElementById('adv-actions-' + r.id);
             if (r.status === 'new') {
                 mkBtn(td, 'In Progress', 'ab-list', async function() { await db.from('advisory_requests').update({ status: 'in_progress' }).eq('id', r.id); loadAdvisory(); });
             }
+            // Assign to Advisor — only for new or in_progress
+            if (r.status === 'new' || r.status === 'in_progress') {
+                if (cachedAdvisors.length > 0) {
+                    var sel = document.createElement('select');
+                    sel.style.cssText = 'font-family:Manrope,sans-serif;font-size:.65rem;padding:.25rem .4rem;border:1px solid #555;background:#222;color:#ccc;margin-left:.35rem;cursor:pointer';
+                    sel.innerHTML = '<option value="">Assign…</option>' + cachedAdvisors.map(function(adv) {
+                        return '<option value="' + adv.id + '">' + (adv.first_name || '') + ' ' + (adv.last_name || '') + '</option>';
+                    }).join('');
+                    sel.addEventListener('change', async function() {
+                        if (!this.value) return;
+                        var advisorId = this.value;
+                        // Create advisory_project from this request
+                        var { error } = await db.from('advisory_projects').insert({
+                            request_id: r.id,
+                            advisor_id: advisorId,
+                            client_name: r.name,
+                            client_email: r.email,
+                            project_type: r.space_type || 'general',
+                            styles: r.styles || [],
+                            budget: r.budget || '',
+                            timeline: r.timeline || '',
+                            notes: r.details || '',
+                            status: 'new'
+                        });
+                        if (error) { alert('Error assigning: ' + error.message); return; }
+                        await db.from('advisory_requests').update({ status: 'assigned' }).eq('id', r.id);
+                        loadAdvisory();
+                    });
+                    td.appendChild(sel);
+                } else {
+                    var hint = document.createElement('span');
+                    hint.style.cssText = 'font-size:.6rem;color:#666;margin-left:.35rem';
+                    hint.textContent = 'No advisors';
+                    td.appendChild(hint);
+                }
+            }
             if (r.status === 'in_progress') {
                 mkBtn(td, 'Complete', 'ab-ok', async function() { await db.from('advisory_requests').update({ status: 'completed' }).eq('id', r.id); loadAdvisory(); });
             }
             if (r.status !== 'archived') {
                 mkBtn(td, 'Archive', 'ab-grey', async function() { await db.from('advisory_requests').update({ status: 'archived' }).eq('id', r.id); loadAdvisory(); });
+            }
+        });
+    }
+
+    // ===== ADVISORS MANAGEMENT =====
+    async function loadAdvisors() {
+        var { data: advs } = await db.from('advisors').select('*').order('created_at', { ascending: false });
+        var pendingCount = (advs || []).filter(function(a) { return a.status === 'pending'; }).length;
+        document.getElementById('n-advisors').textContent = pendingCount || '';
+        var b = document.getElementById('tb-advisors');
+        if (!advs || advs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="7">No advisor applications yet</td></tr>'; return; }
+        b.innerHTML = '';
+        advs.forEach(function(a) {
+            var cls = a.status === 'pending' ? 'b-pending' : a.status === 'approved' ? 'b-approved' : a.status === 'active' ? 'b-active' : a.status === 'rejected' ? 'b-no' : 'b-shipped';
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="font-size:.75rem">' + new Date(a.created_at).toLocaleDateString() + '</td>' +
+                '<td class="tn">' + (a.first_name || '') + ' ' + (a.last_name || '') + '</td>' +
+                '<td style="font-size:.75rem">' + (a.email || '—') + '</td>' +
+                '<td style="font-size:.75rem">' + (a.company || '—') + '</td>' +
+                '<td style="font-size:.75rem">' + (a.specialty || '—') + '</td>' +
+                '<td><span class="badge ' + cls + '">' + (a.status || 'pending') + '</span></td>' +
+                '<td id="advisor-actions-' + a.id + '"></td>';
+            b.appendChild(tr);
+            var td = document.getElementById('advisor-actions-' + a.id);
+            if (a.status === 'pending') {
+                mkBtn(td, 'Approve', 'ab-ok', async function() {
+                    await db.from('advisors').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', a.id);
+                    loadAdvisors();
+                    loadAdvisory(); // refresh cached advisors
+                });
+                mkBtn(td, 'Reject', 'ab-no', async function() {
+                    await db.from('advisors').update({ status: 'rejected' }).eq('id', a.id);
+                    loadAdvisors();
+                });
+            }
+            if (a.status === 'approved' || a.status === 'active') {
+                mkBtn(td, 'Suspend', 'ab-grey', async function() {
+                    await db.from('advisors').update({ status: 'suspended' }).eq('id', a.id);
+                    loadAdvisors();
+                    loadAdvisory();
+                });
+            }
+            if (a.status === 'rejected' || a.status === 'suspended') {
+                mkBtn(td, 'Re-Approve', 'ab-ok', async function() {
+                    await db.from('advisors').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', a.id);
+                    loadAdvisors();
+                    loadAdvisory();
+                });
+            }
+            if (a.portfolio_url) {
+                mkBtn(td, 'Portfolio', 'ab-grey', function() { window.open(a.portfolio_url, '_blank'); });
             }
         });
     }
