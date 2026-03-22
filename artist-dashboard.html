@@ -1649,6 +1649,9 @@
             loadAnalytics();
             loadOffers();
             loadCommissions();
+            loadEarnings();
+            loadCustomers();
+            populateShareSelect();
         }
 
         // Navigation
@@ -2651,7 +2654,6 @@
             document.getElementById('earn-sales').textContent = salesCount;
             document.getElementById('earnings-empty').style.display = salesCount > 0 ? 'none' : 'block';
         }
-        loadEarnings();
 
         // ===== CUSTOMERS =====
         var allCustomerEmails = [];
@@ -2698,7 +2700,6 @@
             document.getElementById('customer-selection-bar').style.display = customers.length > 0 ? 'flex' : 'none';
             updateSelectedCount();
         }
-        loadCustomers();
 
         function updateSelectedCount() {
             var checks = document.querySelectorAll('.customer-check:checked');
@@ -2744,7 +2745,6 @@
                 });
             });
         }
-        populateShareSelect();
 
         document.getElementById('generate-share-card').addEventListener('click', function() {
             var sel = document.getElementById('share-artwork-select');
