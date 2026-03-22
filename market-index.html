@@ -643,7 +643,7 @@ function renderComparables() {
     allOrders.forEach(o => { if (soldIds.has(o.artwork_id)) orderMap[o.artwork_id] = o; });
 
     grid.innerHTML = filtered.slice(0, 12).map(a => {
-        const imgUrl = a.image_url || '';
+        const imgUrl = a.primary_image_url || '';
         const price = a.artwork_price || a.price || 0;
         const artist = a.artists ? a.artists.artist_name : 'Unknown';
         const sold = orderMap[a.id];

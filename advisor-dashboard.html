@@ -453,7 +453,7 @@ async function openProject(id) {
     // Load messages and proposed artworks
     const [msgRes, artRes] = await Promise.all([
         db.from('advisory_messages').select('*').eq('project_id', id).order('created_at', { ascending: true }),
-        db.from('advisory_project_artworks').select('*, artworks(title, image_url, artwork_price, medium, artists(artist_name))').eq('project_id', id)
+        db.from('advisory_project_artworks').select('*, artworks(title, primary_image_url, artwork_price, medium, artists(artist_name))').eq('project_id', id)
     ]);
     const messages = msgRes.data || [];
     const proposedArtworks = artRes.data || [];
@@ -493,7 +493,7 @@ async function openProject(id) {
             const a = pa.artworks;
             if (!a) return;
             html += `<div style="border:1px solid var(--g200);padding:.5rem">
-                ${a.image_url ? `<img src="${a.image_url}" style="width:100%;height:60px;object-fit:cover;margin-bottom:.35rem">` : ''}
+                ${a.primary_image_url ? `<img src="${a.primary_image_url}" style="width:100%;height:60px;object-fit:cover;margin-bottom:.35rem">` : ''}
                 <div style="font-size:.75rem;font-weight:500">${a.title || 'Untitled'}</div>
                 <div style="font-size:.6875rem;color:var(--g500)">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price)}</div>
                 ${pa.client_approved ? '<div style="font-size:.6rem;color:var(--success);font-weight:600;margin-top:.25rem">✓ CLIENT APPROVED</div>' : ''}
@@ -606,7 +606,7 @@ function renderPickerGrid(artworks) {
         const sel = selectedArtworkIds.has(a.id) ? 'selected' : '';
         return `<div class="artwork-pick ${sel}" onclick="toggleArtworkPick(this,'${a.id}')">
             <div class="artwork-pick-check">✓</div>
-            ${a.image_url ? `<img src="${a.image_url}" alt="${a.title}">` : '<div style="height:80px;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--g400)">No image</div>'}
+            ${a.primary_image_url ? `<img src="${a.primary_image_url}" alt="${a.title}">` : '<div style="height:80px;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--g400)">No image</div>'}
             <div class="artwork-pick-info">
                 <div class="artwork-pick-title">${a.title || 'Untitled'}</div>
                 <div class="artwork-pick-price">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price || a.price)}</div>
@@ -661,7 +661,7 @@ function renderArtworks() {
         return;
     }
     tbody.innerHTML = filtered.slice(0, 50).map(a => {
-        const img = a.image_url ? `<img src="${a.image_url}" style="width:48px;height:36px;object-fit:cover">` : '<div style="width:48px;height:36px;background:var(--g200)"></div>';
+        const img = a.primary_image_url ? `<img src="${a.primary_image_url}" style="width:48px;height:36px;object-fit:cover">` : '<div style="width:48px;height:36px;background:var(--g200)"></div>';
         return `<tr>
             <td>${img}</td>
             <td style="font-weight:500">${a.title || 'Untitled'}</td>
