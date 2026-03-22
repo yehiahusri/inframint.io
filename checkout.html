@@ -248,7 +248,7 @@
         document.getElementById('os-medium').textContent=medNames[artwork.medium]||artwork.medium||'';
         if(artwork.width_cm&&artwork.height_cm)document.getElementById('os-dims').textContent=artwork.width_cm+' × '+artwork.height_cm+' cm';
 
-        var price=Number(artwork.price||0);
+        var price=Number(artwork.artwork_price||artwork.price||0);
         document.getElementById('os-price').textContent='$'+price.toLocaleString();
         document.getElementById('os-total').textContent='$'+price.toLocaleString()+' + shipping';
 
@@ -339,8 +339,8 @@
             artwork_id:artwork.id,
             artist_id:artist.id,
             collector_id:collector.id,
-            artwork_price:Number(artwork.price),
-            total_amount:Number(artwork.price),
+            artwork_price:price,
+            total_amount:price,
             shipping_cost:0,
             customs_cost:0,
             status:'pending',
@@ -374,7 +374,7 @@
             fetch(EDGE_FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(sess?sess.access_token:'')},
                 body:JSON.stringify({event:'order_placed',data:{
                     order_number:order.order_number,artwork_title:artwork.title,
-                    artwork_price:Number(artwork.price),collector_name:firstName+' '+lastName,
+                    artwork_price:price,collector_name:firstName+' '+lastName,
                     collector_email:currentUser.email,artist_email:artist.email||'',
                     artist_name:artist.artist_name||artist.first_name||'',
                     shipping_address:shippingAddress

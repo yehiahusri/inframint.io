@@ -1455,6 +1455,16 @@
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const EDGE_FN = 'https://vyibnkztkacifahhlxof.supabase.co/functions/v1/send-notification';
+
+        async function sendEmail(event, data) {
+            try {
+                var { data: { session } } = await db.auth.getSession();
+                fetch(EDGE_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (session ? session.access_token : '') },
+                    body: JSON.stringify({ event: event, data: data })
+                }).catch(function(e) { console.log('Email send skipped:', e); });
+            } catch(e) { console.log('Email error:', e); }
+        }
 
         let currentUser = null;
         let artistData = null;
@@ -2195,6 +2205,12 @@
                     this.textContent = 'Saving...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ shipping_cost: cost, customs_cost: customs, status: 'confirmed' }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Submit Quote'; this.disabled = false; return; }
+                    sendEmail('quote_ready', {
+                        order_number: order.order_number, artwork_title: (order.artworks||{}).title || order.artwork_title || '',
+                        artwork_price: Number(order.artwork_price||0), shipping_cost: cost, customs_cost: customs,
+                        collector_email: order.collector_email, collector_name: order.collector_name || '',
+                        artist_email: artistData.email || '', artist_name: artistData.artist_name || ''
+                    });
                     showMessage('orders-message', 'Shipping quote submitted! Buyer will be notified to approve and pay.', true);
                     loadOrders();
                 });
@@ -2209,6 +2225,12 @@
                     this.textContent = 'Saving...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ tracking_number: track, status: 'shipped', updated_at: new Date().toISOString() }).eq('id', oid);
                     if (error) { showMessage('orders-message', 'Error: ' + error.message, false); this.textContent = 'Mark as Shipped'; this.disabled = false; return; }
+                    sendEmail('artwork_shipped', {
+                        order_number: order.order_number, artwork_title: (order.artworks||{}).title || order.artwork_title || '',
+                        artwork_price: Number(order.artwork_price||0), tracking_number: track,
+                        collector_email: order.collector_email, collector_name: order.collector_name || '',
+                        artist_email: artistData.email || '', artist_name: artistData.artist_name || ''
+                    });
                     showMessage('orders-message', 'Marked as shipped! Buyer will see tracking info.', true);
                     loadOrders();
                 });

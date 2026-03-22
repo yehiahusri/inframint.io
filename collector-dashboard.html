@@ -353,6 +353,16 @@
         const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const EDGE_FN = 'https://vyibnkztkacifahhlxof.supabase.co/functions/v1/send-notification';
+
+        async function sendEmail(event, data) {
+            try {
+                var { data: { session } } = await db.auth.getSession();
+                fetch(EDGE_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (session ? session.access_token : '') },
+                    body: JSON.stringify({ event: event, data: data })
+                }).catch(function(e) { console.log('Email send skipped:', e); });
+            } catch(e) { console.log('Email error:', e); }
+        }
 
         let currentUser = null;
         let collectorData = null;
@@ -425,7 +435,7 @@
         // Load purchases
         async function loadPurchases() {
             const { data: orders } = await db.from('orders')
-                .select('*, artworks(title, primary_image_url, price, artists(artist_name))')
+                .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                 .eq('collector_id', collectorData.id)
                 .order('created_at', { ascending: false });
 
@@ -533,6 +543,17 @@
                     this.textContent = 'Processing...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ status: 'paid', payment_status: 'paid' }).eq('id', oid);
                     if (error) { alert('Error: ' + error.message); this.textContent = 'Approve & Pay'; this.disabled = false; return; }
+                    var ord = (orders || []).find(function(o) { return o.id === oid; });
+                    if (ord) {
+                        var art = ord.artworks || {};
+                        var artist = art.artists || {};
+                        sendEmail('payment_confirmed', {
+                            order_number: ord.order_number, artwork_title: art.title || ord.artwork_title || '',
+                            artwork_price: Number(ord.artwork_price || 0), shipping_cost: Number(ord.shipping_cost || 0), customs_cost: Number(ord.customs_cost || 0),
+                            collector_email: currentUser.email, collector_name: collectorData.first_name + ' ' + (collectorData.last_name || ''),
+                            artist_email: artist.email || '', artist_name: artist.artist_name || ''
+                        });
+                    }
                     showMsg('purchase-message', 'Payment confirmed! The artist will ship your artwork soon.', true);
                     loadPurchases();
                 });
@@ -556,6 +577,17 @@
                     this.textContent = 'Confirming...'; this.disabled = true;
                     var { error } = await db.from('orders').update({ status: 'delivered', buyer_confirmed_receipt: true, buyer_confirmed_at: new Date().toISOString() }).eq('id', oid);
                     if (error) { alert('Error: ' + error.message); this.textContent = 'I Received My Artwork'; this.disabled = false; return; }
+                    var ord = (orders || []).find(function(o) { return o.id === oid; });
+                    if (ord) {
+                        var art = ord.artworks || {};
+                        var artist = art.artists || {};
+                        sendEmail('delivery_confirmed', {
+                            order_number: ord.order_number, artwork_title: art.title || ord.artwork_title || '',
+                            artwork_price: Number(ord.artwork_price || 0),
+                            collector_email: currentUser.email, collector_name: collectorData.first_name + ' ' + (collectorData.last_name || ''),
+                            artist_email: artist.email || '', artist_name: artist.artist_name || ''
+                        });
+                    }
                     showMsg('purchase-message', 'Delivery confirmed! Thank you for your purchase.', true);
                     loadPurchases();
                 });
@@ -565,7 +597,7 @@
         // Load wishlist
         async function loadWishlist() {
             const { data: wishes } = await db.from('wishlists')
-                .select('*, artworks(id, title, primary_image_url, price, medium, artists(artist_name))')
+                .select('*, artworks(id, title, primary_image_url, artwork_price, price, medium, artists(artist_name))')
                 .eq('collector_id', collectorData.id)
                 .order('created_at', { ascending: false });
 
@@ -593,7 +625,7 @@
                             '<div class="art-item-title">' + (art.title || '') + '</div>' +
                             '<div class="art-item-artist">' + (artist.artist_name || '') + '</div>' +
                             '<div class="art-item-meta">' +
-                                '<div class="art-item-price">$' + Number(art.price || 0).toLocaleString() + '</div>' +
+                                '<div class="art-item-price">$' + Number(art.artwork_price || art.price || 0).toLocaleString() + '</div>' +
                                 '<button class="btn-danger" onclick="removeWishlist(\'' + w.id + '\')">Remove</button>' +
                             '</div>' +
                         '</div>' +
