@@ -281,12 +281,14 @@ var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGc
 var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
-    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').single();
-    if(setting&&setting.value==='false'){
-        document.getElementById('coming-soon').style.display='block';
-        document.querySelector('.hero').style.display='none';
-        return;
-    }
+    try{
+        var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').maybeSingle();
+        if(setting&&setting.value==='false'){
+            document.getElementById('coming-soon').style.display='block';
+            document.querySelector('.hero').style.display='none';
+            return;
+        }
+    }catch(e){/* no setting = auctions enabled by default */}
     var{data:{session}}=await db.auth.getSession();
     if(session){
         currentUser=session.user;
@@ -302,7 +304,8 @@ async function init(){
 }
 
 async function loadAuctions(){
-    var{data:auctions}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
+    var{data:auctions,error}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
+    if(error){console.error('Auctions query error:',error);/* Try without visible filter in case column missing */var r=await db.from('auctions').select('*').order('created_at',{ascending:false});auctions=r.data;}
     if(!auctions||auctions.length===0){document.getElementById('no-auctions').style.display='block';return;}
     var now=new Date();
 
