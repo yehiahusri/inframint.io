@@ -187,47 +187,50 @@
             padding: 0.25rem;
         }
 
-        .mobile-dropdown {
-            display: none;
-        }
+        
 
         @media (max-width: 1200px) {
             .nav-center { display: none !important; }
             .nav-right { display: none !important; }
             .hamburger { display: block; }
-            .mobile-dropdown {
-                display: none;
-                position: absolute;
-                top: 4.5rem;
-                left: 0;
-                right: 0;
-                background: var(--black);
-                padding: 1rem 2rem 1.5rem;
-                flex-direction: column;
-                gap: 0;
-                border-top: 1px solid #222;
-            }
-            .mobile-dropdown.open {
-                display: flex;
-            }
-            .mobile-dropdown a {
-                font-size: 0.9375rem;
-                font-weight: 400;
-                color: var(--gray-400);
-                text-decoration: none;
-                padding: 0.6rem 0;
-                border-bottom: 1px solid #1a1a1a;
-                transition: color 0.2s;
-            }
-            .mobile-dropdown a:hover {
-                color: var(--white);
-            }
-            .mobile-dropdown a:last-child {
-                border-bottom: none;
-            }
+            
+            
+            
+            
+            
         }
 
-    </style>
+    /* === STANDARD NAV === */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;height:4.5rem}
+.logo{display:flex;align-items:center;gap:.875rem;text-decoration:none;flex-shrink:0}
+.logo-bar{width:3px;height:1.75rem;background:#fff}
+.logo-text{font-size:1.25rem;letter-spacing:-.01em}
+.logo-text span:first-child{font-weight:600;color:#fff}
+.logo-text span:last-child{font-weight:200;color:#555}
+.nav-center{display:flex;gap:1.75rem;align-items:center}
+.nav-center a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;transition:color .2s}
+.nav-center a:hover,.nav-center a.active{color:#fff}
+.nav-right{display:flex;gap:.75rem;align-items:center}
+.nav-login-btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:500;color:#a3a3a3;background:none;border:1px solid #333;padding:.4rem .9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.nav-login-btn:hover{color:#fff;border-color:#555}
+.nav-login-btn svg{width:14px;height:14px}
+.nav-login-drop{display:none;position:absolute;top:3.5rem;right:0;background:#111;border:1px solid #222;min-width:180px;z-index:200}
+.nav-login-drop.open{display:flex;flex-direction:column}
+.nav-login-drop a{font-size:.8rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;transition:all .15s;border-bottom:1px solid #1a1a1a}
+.nav-login-drop a:last-child{border-bottom:none}
+.nav-login-drop a:hover{color:#fff;background:rgba(255,255,255,.04)}
+.nav-dash{font-size:.8rem;color:#a3a3a3;text-decoration:none;transition:color .2s;white-space:nowrap}
+.nav-dash:hover{color:#fff}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem;color:#fff}
+.hamburger svg{width:22px;height:22px}
+.mobile-menu{display:none;position:fixed;top:4.5rem;left:0;right:0;bottom:0;background:#0a0a0a;z-index:99;flex-direction:column;padding:1.5rem 2rem;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:1rem;color:#a3a3a3;text-decoration:none;padding:.75rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
+.mobile-menu a:hover,.mobile-menu a.active{color:#fff}
+.mobile-menu .mm-label{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#444;padding:1rem 0 .4rem;border-bottom:none}
+@media(max-width:900px){.nav-center{display:none}.nav-right{display:none}.hamburger{display:block}}
+
+</style>
 
     <meta name="description" content="Discover emerging artists from around the world. View profiles, browse collections, and buy directly from the creator.">
     <meta property="og:type" content="website">
@@ -244,42 +247,34 @@
 </head>
 <body>
     <nav>
-        <a href="index.html" class="logo">
-            <div class="logo-bar"></div>
-            <div class="logo-text"><span>Infra</span><span>Mint</span></div>
-        </a>
-        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
-            <a href="gallery.html">Gallery</a>
-            <a href="artists.html">Artists</a>
-            <a href="blog.html">The Drip</a>
-            <a href="auctions.html">Auctions</a>
-            <a href="art-advisory.html">Advisory</a>
-            <a href="market-index.html">Market Index</a>
-            <a href="about.html">About</a>
-            <a href="artist-login.html">Artist Login</a>
-            <a href="collector-login.html">Collector Login</a>
-            <a href="partner-login.html">Partner Login</a>
-            <a href="advisor-login.html">Advisor Login</a>
-        </div>
-        <div class="nav-center">
-            <a href="gallery.html">Gallery</a>
-            <a href="artists.html" class="active">Artists</a>
-            <a href="blog.html">The Drip</a>
-            <a href="auctions.html">Auctions</a>
-            <a href="art-advisory.html">Advisory</a>
-            <a href="market-index.html">Market Index</a>
-            <a href="about.html">About</a>
-        </div>
+        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
+        <div class="nav-center"><a href="gallery.html">Gallery</a><a href="artists.html" class="active">Artists</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a></div>
         <div class="nav-right" id="nav-right">
-            <a href="artist-login.html" class="nav-login">Artist Login</a>
-            <a href="collector-login.html" class="nav-login">Collector Login</a>
-            <a href="partner-login.html" class="nav-login">Partner Login</a>
-            <a href="advisor-login.html" class="nav-login">Advisor Login</a>
+            <div style="position:relative">
+                <button class="nav-login-btn" id="login-toggle" onclick="document.getElementById('login-drop').classList.toggle('open')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Sign In
+                </button>
+                <div class="nav-login-drop" id="login-drop">
+                    <a href="artist-login.html">Artist Login</a>
+                    <a href="collector-login.html">Collector Login</a>
+                    <a href="partner-login.html">Partner Login</a>
+                    <a href="advisor-login.html">Advisor Login</a>
+                </div>
+            </div>
         </div>
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open');this.innerHTML=document.getElementById('mobile-menu').classList.contains('open')?'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M18 6L6 18M6 6l12 12&apos;/></svg>':'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M3 12h18M3 6h18M3 18h18&apos;/></svg>'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
     </nav>
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="gallery.html">Gallery</a><a href="artists.html" class=active>Artists</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a>
+        <div class="mm-label">Account</div>
+        <a href="artist-login.html">Artist Login</a>
+        <a href="collector-login.html">Collector Login</a>
+        <a href="partner-login.html">Partner Login</a>
+        <a href="advisor-login.html">Advisor Login</a>
+    </div>
 
     <div id="list-view">
         <div class="page-header">
@@ -636,6 +631,11 @@
         });
 
         loadArtists();
-    </script>
+    
+// === NAV AUTH ===
+document.addEventListener('click',function(e){var d=document.getElementById('login-drop');if(d&&!e.target.closest('.nav-login-btn')&&!e.target.closest('.nav-login-drop'))d.classList.remove('open');var m=document.getElementById('mobile-menu');if(m&&m.classList.contains('open')&&!e.target.closest('.hamburger')&&!e.target.closest('.mobile-menu')){m.classList.remove('open');document.getElementById('hamburger').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';}});
+(async function(){try{var{data:{session}}=await db.auth.getSession();if(!session)return;var e=session.user.email,u=session.user.id;var{data:art}=await db.from('artists').select('id').eq('user_id',u).single();if(art){document.getElementById('nav-right').innerHTML='<a href="artist-dashboard.html" class="nav-dash">Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:col}=await db.from('collectors').select('id').eq('user_id',u).single();if(col){document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-dash">My Account</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:adv}=await db.from('advisors').select('id,status').eq('email',e).single();if(adv&&(adv.status==='approved'||adv.status==='active')){document.getElementById('nav-right').innerHTML='<a href="advisor-dashboard.html" class="nav-dash">Advisor Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:par}=await db.from('partners').select('id').eq('user_id',u).single();if(par){document.getElementById('nav-right').innerHTML='<a href="partner-dashboard.html" class="nav-dash">Partner Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}}catch(err){}})();
+
+</script>
 </body>
 </html>
