@@ -528,7 +528,7 @@
                         '<div class="profile-work-title">' + work.title + '</div>' +
                         '<div class="profile-work-medium">' + mediumLabel + '</div>' +
                         '<div class="profile-work-meta">' +
-                            '<div class="profile-work-price' + (allSold || work.status === 'sold' ? ' sold' : '') + '">$' + Number(work.price).toLocaleString() + '</div>' +
+                            '<div class="profile-work-price' + (allSold || work.status === 'sold' ? ' sold' : '') + '">$' + Number(work.artwork_price||work.price||0).toLocaleString() + '</div>' +
                             (work.width_cm && work.height_cm ? '<div class="profile-work-dims">' + work.width_cm + ' x ' + work.height_cm + ' cm</div>' : '') +
                         '</div>' +
                         '<div class="profile-work-availability' + (allSold || work.status === 'sold' ? ' sold-out' : '') + '">' + statusText + '</div>' +
@@ -568,7 +568,7 @@
             document.getElementById('art-modal-artist').textContent = 'by ' + artistName;
 
             var priceEl = document.getElementById('art-modal-price');
-            priceEl.textContent = '$' + Number(work.price).toLocaleString();
+            priceEl.textContent = '$' + Number(work.artwork_price||work.price||0).toLocaleString();
             priceEl.className = 'art-modal-price' + (allSold || work.status === 'sold' ? ' sold' : '');
 
             var badgeEl = document.getElementById('art-modal-badge');
@@ -593,7 +593,7 @@
                 ctaEl.className = 'art-modal-cta sold-btn';
                 ctaEl.onclick = null;
             } else {
-                ctaEl.textContent = 'Buy Now — $' + Number(work.price).toLocaleString();
+                ctaEl.textContent = 'Buy Now — $' + Number(work.artwork_price||work.price||0).toLocaleString();
                 ctaEl.className = 'art-modal-cta';
                 ctaEl.onclick = function() { window.location.href = 'checkout.html?artwork=' + work.id; };
             }

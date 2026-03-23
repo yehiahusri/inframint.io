@@ -957,7 +957,7 @@
                 document.getElementById('hero-img').src = hero.primary_image_url;
                 document.getElementById('hero-title').textContent = hero.title;
                 document.getElementById('hero-artist').textContent = hero.artists ? hero.artists.artist_name : '';
-                document.getElementById('hero-price').textContent = hero.status === 'sold' ? 'Sold' : '$' + Number(hero.price).toLocaleString();
+                document.getElementById('hero-price').textContent = hero.status === 'sold' ? 'Sold' : '$' + Number(hero.artwork_price||hero.price||0).toLocaleString();
                 document.getElementById('hero-image').style.cursor = 'pointer';
                 document.getElementById('hero-image').onclick = function() { window.location.href = 'gallery.html'; };
             }
@@ -983,7 +983,7 @@
                         '</div>' +
                         '<div class="artwork-info">' +
                             '<div class="artwork-title">' + aw.title + '</div>' +
-                            '<div class="artwork-artist">' + (artist.artist_name || '') + ' · $' + Number(aw.price).toLocaleString() + '</div>' +
+                            '<div class="artwork-artist">' + (artist.artist_name || '') + ' · $' + Number(aw.artwork_price||aw.price||0).toLocaleString() + '</div>' +
                         '</div>';
                     grid.appendChild(card);
                 });

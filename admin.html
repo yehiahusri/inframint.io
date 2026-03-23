@@ -1108,7 +1108,7 @@
         list.forEach(function(w){
             var artist=w.artists||{};
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.price||0).toLocaleString()+'</td><td>'+(MED[w.medium]||'—')+'</td><td>'+trunc(w.description,80)+'</td><td></td>';
+            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.artwork_price||w.price||0).toLocaleString()+'</td><td>'+(MED[w.medium]||'—')+'</td><td>'+trunc(w.description,80)+'</td><td></td>';
             var td=tr.lastChild;
             mkBtn(td,'Approve & List','ab-list',function(){setStatus('artworks',w.id,'listed')});
             mkBtn(td,'Reject','ab-no',function(){setStatus('artworks',w.id,'rejected')});
@@ -1245,7 +1245,7 @@
 
             // Artworks
             '<div class="card" style="margin-top:1rem"><div class="ch"><span class="ct2">Artworks ('+works.length+')</span></div>' +
-                (works.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.5rem">'+works.map(function(w){return '<div><img src="'+(w.primary_image_url||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;background:var(--g200)"><div style="font-size:.7rem;font-weight:500;margin-top:.3rem">'+w.title+'</div><div style="font-size:.65rem;color:var(--g400)">$'+Number(w.price||0).toLocaleString()+' · '+w.status+'</div></div>'}).join('')+'</div>':'<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No artworks listed yet.</div>') +
+                (works.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.5rem">'+works.map(function(w){return '<div><img src="'+(w.primary_image_url||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;background:var(--g200)"><div style="font-size:.7rem;font-weight:500;margin-top:.3rem">'+w.title+'</div><div style="font-size:.65rem;color:var(--g400)">$'+Number(w.artwork_price||w.price||0).toLocaleString()+' · '+w.status+'</div></div>'}).join('')+'</div>':'<div style="font-size:.8rem;color:var(--g400);padding:.5rem">No artworks listed yet.</div>') +
             '</div>' +
 
             // Orders
@@ -1414,7 +1414,7 @@
             var bc=w.status==='listed'?'b-listed':(w.status==='sold'?'b-sold':'b-pending');
             var ed=(w.edition_sold||0)+'/'+(w.edition_total||1);
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.price||0).toLocaleString()+'</td><td>'+(MED[w.medium]||'—')+'</td><td><span class="badge '+bc+'">'+(w.status||'pending')+'</span></td><td>'+ed+'</td><td></td>';
+            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.artwork_price||w.price||0).toLocaleString()+'</td><td>'+(MED[w.medium]||'—')+'</td><td><span class="badge '+bc+'">'+(w.status||'pending')+'</span></td><td>'+ed+'</td><td></td>';
             var td=tr.lastChild;
             if(w.status==='pending')mkBtn(td,'List','ab-list',function(){setStatus('artworks',w.id,'listed')});
             if(w.status==='listed')mkBtn(td,'Unlist','ab-unlist',function(){setStatus('artworks',w.id,'pending')});
@@ -1433,7 +1433,7 @@
             var artist=w.artists||{};
             var isFeat=w.featured;
             var tr=document.createElement('tr');
-            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.price||0).toLocaleString()+'</td><td>'+(isFeat?'<span class="badge b-approved">Featured</span>':'—')+'</td><td></td>';
+            tr.innerHTML='<td>'+img(w.primary_image_url)+'</td><td class="tn">'+(w.title||'—')+'</td><td>'+(artist.artist_name||'—')+'</td><td>$'+Number(w.artwork_price||w.price||0).toLocaleString()+'</td><td>'+(isFeat?'<span class="badge b-approved">Featured</span>':'—')+'</td><td></td>';
             var td=tr.lastChild;
             if(!isFeat)mkBtn(td,'Feature','ab-feat',async function(){await db.from('artworks').update({featured:true}).eq('id',w.id);loadAll()});
             else mkBtn(td,'Remove','ab-grey',async function(){await db.from('artworks').update({featured:false}).eq('id',w.id);loadAll()});
@@ -2447,7 +2447,7 @@
         var sel = document.getElementById('coll-aw-select');
         sel.innerHTML = '<option value="">— Select artwork —</option>';
         allArtworks.forEach(function(w) {
-            sel.innerHTML += '<option value="' + w.id + '">' + (w.title || 'Untitled') + ' — $' + Number(w.price || 0).toLocaleString() + '</option>';
+            sel.innerHTML += '<option value="' + w.id + '">' + (w.title || 'Untitled') + ' — $' + Number(w.artwork_price || w.price || 0).toLocaleString() + '</option>';
         });
         loadCollectionArtworks(c.id);
         document.getElementById('coll-artworks-card').scrollIntoView({ behavior: 'smooth' });
