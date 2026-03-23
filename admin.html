@@ -218,9 +218,9 @@
                     </div>
                     <div class="sg">
                         <div class="sc"><div class="sv" id="s-rev">$0</div><div class="sl">Total Revenue</div></div>
-                        <div class="sc"><div class="sv" id="s-gal">$0</div><div class="sl">Gallery Earnings (30%)</div></div>
+                        <div class="sc"><div class="sv" id="s-gal">$0</div><div class="sl">Gallery Earnings</div></div>
                         <div class="sc"><div class="sv" id="s-part">$0</div><div class="sl">Partner Payouts (5%)</div></div>
-                        <div class="sc"><div class="sv" id="s-art">$0</div><div class="sl">Artist Payouts (65%)</div></div>
+                        <div class="sc"><div class="sv" id="s-art">$0</div><div class="sl">Artist Payouts</div></div>
                     </div>
 
                     <!-- Notifications -->
@@ -400,7 +400,7 @@
                     <div class="card">
                         <div class="ch"><span class="ct2">Quarterly Breakdown (Current Year)</span></div>
                         <div class="tw"><table>
-                            <thead><tr><th>Quarter</th><th>Orders</th><th>Art Sales</th><th>Shipping</th><th>Gallery (30%)</th><th>Artists</th><th>Partners</th><th>Paid</th><th>Pending</th></tr></thead>
+                            <thead><tr><th>Quarter</th><th>Orders</th><th>Art Sales</th><th>Shipping</th><th>Gallery</th><th>Artists</th><th>Partners</th><th>Paid</th><th>Pending</th></tr></thead>
                             <tbody id="tb-quarterly"></tbody>
                         </table></div>
                     </div>
@@ -409,7 +409,7 @@
                     <div class="card">
                         <div class="ch"><span class="ct2">Artist Payouts</span></div>
                         <div class="tw"><table>
-                            <thead><tr><th>Artist</th><th>Total Sales</th><th>Their Earnings (65%)</th><th>Paid</th><th>Pending</th><th>Payout Method</th></tr></thead>
+                            <thead><tr><th>Artist</th><th>Total Sales</th><th>Their Earnings</th><th>Paid</th><th>Pending</th><th>Payout Method</th></tr></thead>
                             <tbody id="tb-artist-pay"></tbody>
                         </table></div>
                     </div>
@@ -1619,10 +1619,14 @@
         var sh = Number(o.shipping_cost || 0);
         var cu = Number(o.customs_cost || 0);
         var total = ap + sh + cu;
-        var galleryPct = 0.30, partnerPct = 0.05;
+        var hasAdvisor = !!o.advisor_id;
+        var galleryPct = hasAdvisor ? 0.15 : 0.30;
+        var advisorPct = hasAdvisor ? 0.15 : 0;
+        var partnerPct = 0.05;
         var galleryEarning = Math.round(ap * galleryPct);
+        var advisorEarning = Math.round(ap * advisorPct);
         var partnerEarning = Math.round(ap * partnerPct);
-        var artistEarning = ap - galleryEarning - partnerEarning;
+        var artistEarning = ap - galleryEarning - advisorEarning - partnerEarning;
         var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
 
         var statusColors = { pending: '#f59e0b', confirmed: '#d97706', paid: '#2563eb', shipped: '#3b82f6', delivered: '#16a34a', cancelled: '#dc2626' };
@@ -1699,8 +1703,9 @@
                     '<div class="card">' +
                         '<div class="ch"><span class="ct2">Commission Split</span></div>' +
                         '<div style="font-size:.85rem;line-height:2.2">' +
-                            '<div style="display:flex;justify-content:space-between"><span>Artist (65%)</span><strong>$' + artistEarning.toLocaleString() + '</strong></div>' +
-                            '<div style="display:flex;justify-content:space-between"><span>Gallery (30%)</span><strong>$' + galleryEarning.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Artist (' + Math.round((artistEarning/ap)*100) + '%)</span><strong>$' + artistEarning.toLocaleString() + '</strong></div>' +
+                            '<div style="display:flex;justify-content:space-between"><span>Gallery (' + Math.round(galleryPct*100) + '%)</span><strong>$' + galleryEarning.toLocaleString() + '</strong></div>' +
+                            (hasAdvisor ? '<div style="display:flex;justify-content:space-between"><span>Advisor (15%)</span><strong style="color:#16a34a">$' + advisorEarning.toLocaleString() + '</strong></div>' : '') +
                             '<div style="display:flex;justify-content:space-between"><span>Partner (5%)</span><strong>$' + partnerEarning.toLocaleString() + '</strong></div>' +
                         '</div>' +
                     '</div>' +
