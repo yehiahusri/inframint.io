@@ -32,7 +32,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;
 /* Hero */
 .hero{padding:7rem 3rem 3rem;background:var(--black);color:var(--white);position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.03) 39px,rgba(255,255,255,.03) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.03) 39px,rgba(255,255,255,.03) 40px);pointer-events:none}
-.hero-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end}
+.hero::after{content:'';position:absolute;bottom:0;left:5%;right:30%;height:40%;background:linear-gradient(to top,rgba(200,255,0,.03),transparent);pointer-events:none}
+.hero-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;position:relative;z-index:1}
 .hero-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem}
 .hero-title{font-size:3rem;font-weight:300;letter-spacing:-.04em;line-height:1.1;margin-bottom:1rem}
 .hero-title strong{font-weight:700}
@@ -86,7 +87,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;
 .data-table .artist-name{font-weight:500}
 .data-table .medium-tag{font-size:.6875rem;color:var(--g500)}
 .change-pill{display:inline-block;font-size:.6875rem;font-weight:600;padding:.15rem .5rem}
-.change-pill.up{background:#f0fdf4;color:var(--up)}
+.change-pill.up{background:#f0fdf0;color:#4a7c00}
 .change-pill.down{background:#fef2f2;color:var(--down)}
 .change-pill.neutral{background:var(--g100);color:var(--g500)}
 
@@ -185,6 +186,7 @@ footer{border-top:1px solid var(--g200);padding:3rem;display:flex;justify-conten
 
 <!-- Hero -->
 <div class="hero">
+    <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.08;pointer-events:none" preserveAspectRatio="none" viewBox="0 0 100 100"><polyline fill="none" stroke="#c8ff00" stroke-width=".4" points="0,80 8,78 16,82 24,68 32,62 40,65 48,52 56,48 64,50 72,38 80,35 88,28 96,22 100,18"/></svg>
     <div class="hero-inner">
         <div>
             <div class="hero-eyebrow">Art Market Intelligence</div>
@@ -334,7 +336,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fmt = (n) => n != null ? '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0}) : '—';
 const mediumNames = {oil:'Oil on Canvas',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture',other:'Other'};
-const mediumColors = {oil:'#c8ff00',acrylic:'#0ea5e9',watercolor:'#a78bfa',digital:'#f472b6',photography:'#34d399',mixed:'#fb923c',sculpture:'#f87171',other:'#94a3b8'};
+const mediumColors = {oil:'#c8ff00',acrylic:'#262626',watercolor:'#525252',digital:'#737373',photography:'#a3a3a3',mixed:'#404040',sculpture:'#1a1a1a',other:'#d4d4d4'};
 
 let allArtworks = [];
 let allOrders = [];
@@ -428,7 +430,7 @@ function renderOverview() {
             labels: Object.keys(priceBuckets),
             datasets: [{
                 data: Object.values(priceBuckets),
-                backgroundColor: ['#c8ff00','#a3e635','#4ade80','#2dd4bf','#22d3ee','#818cf8'],
+                backgroundColor: ['#e5e5e5','#d4d4d4','#a3a3a3','#525252','#262626','#c8ff00'],
                 borderWidth: 0,
                 borderSkipped: false,
                 barPercentage: 0.65,
@@ -508,7 +510,7 @@ function renderRecentSales(sold) {
         const salePrice = fmt(o.total_amount);
         const dom = a ? Math.max(1, Math.round((new Date(o.created_at) - new Date(a.created_at)) / (1000*60*60*24))) : '—';
         const date = new Date(o.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
-        return `<tr><td style="font-weight:500">${title}</td><td>${artist}</td><td><span class="medium-tag">${medium}</span></td><td>${listed}</td><td style="font-weight:600;color:var(--up)">${salePrice}</td><td>${dom}d</td><td style="color:var(--g500)">${date}</td></tr>`;
+        return `<tr><td style="font-weight:500">${title}</td><td>${artist}</td><td><span class="medium-tag">${medium}</span></td><td>${listed}</td><td style="font-weight:600;color:#4a7c00">${salePrice}</td><td>${dom}d</td><td style="color:var(--g500)">${date}</td></tr>`;
     }).join('');
 }
 
@@ -577,7 +579,7 @@ function renderMediums() {
         const pct = maxAvg > 0 ? (avg / maxAvg * 100) : 0;
         return `<div class="medium-bar-row">
             <div class="medium-bar-label">${mediumNames[m] || m}</div>
-            <div class="medium-bar-track"><div class="medium-bar-fill" style="width:${Math.max(pct, 8)}%;background:${mediumColors[m]||'#000'}"><span class="medium-bar-value">${s.count} works</span></div></div>
+            <div class="medium-bar-track"><div class="medium-bar-fill" style="width:${Math.max(pct, 8)}%;background:${mediumColors[m]||'#000'}"><span class="medium-bar-value" style="color:${mediumColors[m]==='#c8ff00'||mediumColors[m]==='#d4d4d4'||mediumColors[m]==='#a3a3a3'?'#000':'#fff'}">${s.count} works</span></div></div>
             <div class="medium-bar-avg">${fmt(avg)}</div>
         </div>`;
     }).join('');
@@ -593,7 +595,7 @@ function renderMediums() {
         data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 3, borderColor: '#fff', hoverBorderColor: '#000', hoverOffset: 8 }] },
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'right', labels: { font: {family:'Manrope', size: 12, weight: 500}, padding: 16, usePointStyle: true, pointStyleWidth: 10 } },
+            plugins: { legend: { position: 'right', labels: { font: {family:'Manrope', size: 12, weight: 500}, color: '#525252', padding: 16, usePointStyle: true, pointStyleWidth: 10 } },
                 tooltip: {backgroundColor: '#000', titleFont: {family: 'Manrope'}, bodyFont: {family: 'Manrope'}} },
             cutout: '65%'
         }
@@ -611,9 +613,9 @@ function renderMediums() {
         data: {
             labels: rangeLabels,
             datasets: [
-                { label: 'Min', data: mins, backgroundColor: sorted.map(([m]) => (mediumColors[m]||'#94a3b8') + '33'), borderWidth: 0, barPercentage: 0.6, borderRadius: 2 },
-                { label: 'Avg', data: avgs, backgroundColor: sorted.map(([m]) => (mediumColors[m]||'#94a3b8') + '88'), borderWidth: 0, barPercentage: 0.6, borderRadius: 2 },
-                { label: 'Max', data: maxs, backgroundColor: sorted.map(([m]) => mediumColors[m]||'#94a3b8'), borderWidth: 0, barPercentage: 0.6, borderRadius: 2 }
+                { label: 'Min', data: mins, backgroundColor: '#e5e5e5', borderWidth: 0, barPercentage: 0.6, borderRadius: 2 },
+                { label: 'Avg', data: avgs, backgroundColor: '#737373', borderWidth: 0, barPercentage: 0.6, borderRadius: 2 },
+                { label: 'Max', data: maxs, backgroundColor: '#c8ff00', borderWidth: 0, barPercentage: 0.6, borderRadius: 2 }
             ]
         },
         options: {
