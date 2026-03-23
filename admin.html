@@ -518,6 +518,26 @@
                 <div class="sec" id="section-advisors">
                     <div class="ph"><h1>Advisors</h1><p>Manage advisor applications and assignments</p></div>
                     <div class="card">
+                        <div class="ch"><span class="ct2">Advisory Commission Rates</span></div>
+                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:1rem">Configure how revenue is split on advisor-facilitated sales. Changes apply to new sales only.</p>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.75rem">
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Gallery %</label><input type="number" class="fi" id="adv-gallery-pct" value="15" min="0" max="100"></div>
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Advisor %</label><input type="number" class="fi" id="adv-advisor-pct" value="15" min="0" max="100"></div>
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Partner %</label><input type="number" class="fi" id="adv-partner-pct" value="5" min="0" max="100"></div>
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Artist %</label><input type="number" class="fi" id="adv-artist-pct" value="65" disabled style="background:var(--g100)"></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">3rd Party Commission %</label><input type="number" class="fi" id="adv-3p-pct" value="15" min="0" max="100"></div>
+                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Based On</label><select class="fi" id="adv-3p-basis"><option value="client_price">Client Sale Price</option><option value="vendor_price">Vendor Receipt Price</option></select></div>
+                        </div>
+                        <div style="background:var(--g100);padding:.75rem;margin-bottom:1rem;font-size:.75rem;line-height:1.8">
+                            <strong>Advisor-facilitated InfraMint sales:</strong> <span id="adv-split-preview">15% Gallery / 15% Advisor / 5% Partner / 65% Artist</span><br>
+                            <strong>3rd Party external sales:</strong> <span id="adv-3p-preview">15% of client sale price → InfraMint</span>
+                        </div>
+                        <button class="fbtn" id="save-adv-commission">Save Commission Rates</button>
+                        <span id="adv-comm-msg" style="font-size:.75rem;margin-left:.5rem;display:none"></span>
+                    </div>
+                    <div class="card">
                         <div class="tw"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Company</th><th>Specialty</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-advisors"></tbody></table></div>
                     </div>
                 </div>
@@ -954,6 +974,54 @@
 
     setupFeatureToggle('advisory_enabled', 'toggle-advisory', 'toggle-advisory-track', 'toggle-advisory-thumb', 'toggle-advisory-status', 'Advisory page is live', 'Advisory page is hidden');
     setupFeatureToggle('market_index_enabled', 'toggle-market', 'toggle-market-track', 'toggle-market-thumb', 'toggle-market-status', 'Market Index page is live', 'Market Index page is hidden');
+
+    // ===== ADVISORY COMMISSION RATES =====
+    function updateAdvSplitPreview() {
+        var g = parseInt(document.getElementById('adv-gallery-pct').value) || 0;
+        var a = parseInt(document.getElementById('adv-advisor-pct').value) || 0;
+        var p = parseInt(document.getElementById('adv-partner-pct').value) || 0;
+        var artist = 100 - g - a - p;
+        document.getElementById('adv-artist-pct').value = artist;
+        document.getElementById('adv-split-preview').textContent = g + '% Gallery / ' + a + '% Advisor / ' + p + '% Partner / ' + artist + '% Artist';
+        var tp = parseInt(document.getElementById('adv-3p-pct').value) || 0;
+        var basis = document.getElementById('adv-3p-basis').value === 'client_price' ? 'client sale price' : 'vendor receipt price';
+        document.getElementById('adv-3p-preview').textContent = tp + '% of ' + basis + ' → InfraMint';
+    }
+    ['adv-gallery-pct','adv-advisor-pct','adv-partner-pct','adv-3p-pct'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', updateAdvSplitPreview);
+    });
+    document.getElementById('adv-3p-basis').addEventListener('change', updateAdvSplitPreview);
+
+    // Load saved rates
+    (async function() {
+        var { data } = await db.from('site_settings').select('key, value').in('key', ['adv_gallery_pct','adv_advisor_pct','adv_partner_pct','adv_3p_pct','adv_3p_basis']);
+        if (data) data.forEach(function(s) {
+            if (s.key === 'adv_gallery_pct' && s.value) document.getElementById('adv-gallery-pct').value = s.value;
+            if (s.key === 'adv_advisor_pct' && s.value) document.getElementById('adv-advisor-pct').value = s.value;
+            if (s.key === 'adv_partner_pct' && s.value) document.getElementById('adv-partner-pct').value = s.value;
+            if (s.key === 'adv_3p_pct' && s.value) document.getElementById('adv-3p-pct').value = s.value;
+            if (s.key === 'adv_3p_basis' && s.value) document.getElementById('adv-3p-basis').value = s.value;
+        });
+        updateAdvSplitPreview();
+    })();
+
+    document.getElementById('save-adv-commission').onclick = async function() {
+        var rates = [
+            { key: 'adv_gallery_pct', value: document.getElementById('adv-gallery-pct').value },
+            { key: 'adv_advisor_pct', value: document.getElementById('adv-advisor-pct').value },
+            { key: 'adv_partner_pct', value: document.getElementById('adv-partner-pct').value },
+            { key: 'adv_3p_pct', value: document.getElementById('adv-3p-pct').value },
+            { key: 'adv_3p_basis', value: document.getElementById('adv-3p-basis').value }
+        ];
+        this.textContent = 'Saving...'; this.disabled = true;
+        for (var i = 0; i < rates.length; i++) {
+            await db.from('site_settings').upsert({ key: rates[i].key, value: rates[i].value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        }
+        var msg = document.getElementById('adv-comm-msg');
+        msg.textContent = 'Saved!'; msg.style.color = 'var(--ok)'; msg.style.display = 'inline';
+        this.textContent = 'Save Commission Rates'; this.disabled = false;
+        setTimeout(function() { msg.style.display = 'none'; }, 3000);
+    };
 
     // ===== LOAD ALL =====
     async function loadAll(){
