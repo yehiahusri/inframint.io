@@ -207,17 +207,17 @@ tr:hover td{background:var(--g100)}
 
 <!-- 3RD PARTY SALES -->
 <div class="sec" id="section-thirdparty">
-    <div class="ph"><h1>3rd Party Sales</h1><p>Log artwork purchases from external vendors — 15% commission through InfraMint</p></div>
+    <div class="ph"><h1>3rd Party Sales</h1><p>Log artwork purchases from external vendors — <span class="rate-tp">15%</span> commission through InfraMint</p></div>
     <div style="padding:0 2rem .75rem"><button class="btn btn-d" id="new-3p-btn">+ Log New Sale</button></div>
-    <div class="card"><table><thead><tr><th>Date</th><th>Vendor</th><th>Artwork</th><th>Client</th><th>Price</th><th>Commission (15%)</th><th>Status</th></tr></thead><tbody id="tb-3p"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
+    <div class="card"><table><thead><tr><th>Date</th><th>Vendor</th><th>Artwork</th><th>Client</th><th>Price</th><th>Commission (<span class="rate-tp">15%</span>)</th><th>Status</th></tr></thead><tbody id="tb-3p"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
 </div>
 
 <!-- EARNINGS -->
 <div class="sec" id="section-earnings">
     <div class="ph"><h1>Earnings</h1><p>InfraMint advisory commissions + 3rd party commissions</p></div>
     <div class="sg" style="grid-template-columns:repeat(3,1fr)">
-        <div class="sc"><div class="sc-l">InfraMint Commission</div><div class="sc-v" id="earn-im">$0</div><div class="sc-s">15% per InfraMint sale</div></div>
-        <div class="sc"><div class="sc-l">3rd Party Commission</div><div class="sc-v" id="earn-3p">$0</div><div class="sc-s">15% per external sale</div></div>
+        <div class="sc"><div class="sc-l">InfraMint Commission</div><div class="sc-v" id="earn-im">$0</div><div class="sc-s"><span class="rate-im">15%</span> per InfraMint sale</div></div>
+        <div class="sc"><div class="sc-l">3rd Party Commission</div><div class="sc-v" id="earn-3p">$0</div><div class="sc-s"><span class="rate-tp">15%</span> per external sale</div></div>
         <div class="sc"><div class="sc-l">Total Earnings</div><div class="sc-v" id="earn-total">$0</div></div>
     </div>
     <div class="card"><div class="ct">InfraMint Commissions</div><table><thead><tr><th>Date</th><th>Project</th><th>Sale</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead><tbody id="tb-earn-im"><tr><td colspan="6" class="empty">No InfraMint commissions yet</td></tr></tbody></table></div>
@@ -274,7 +274,7 @@ tr:hover td{background:var(--g100)}
     <div class="fr"><div class="fg"><label class="fl">Vendor / Gallery Name *</label><input class="fi" id="tp-vendor"></div><div class="fg"><label class="fl">Vendor URL</label><input class="fi" id="tp-url" placeholder="https://..."></div></div>
     <div class="fr"><div class="fg"><label class="fl">Artwork Description *</label><input class="fi" id="tp-artwork"></div><div class="fg"><label class="fl">Artist Name</label><input class="fi" id="tp-artist"></div></div>
     <div class="fr"><div class="fg"><label class="fl">Client Sale Price (USD) *</label><input type="number" class="fi" id="tp-price" placeholder="0"></div><div class="fg"><label class="fl">Client</label><select class="fs" id="tp-client"><option value="">Select client...</option></select></div></div>
-    <div style="background:var(--g100);padding:.75rem;margin-bottom:1rem;font-size:.8rem">Commission: <strong>15%</strong> = $<span id="tp-commission">0</span></div>
+    <div style="background:var(--g100);padding:.75rem;margin-bottom:1rem;font-size:.8rem">Commission: <strong><span class="rate-tp">15%</span></strong> = $<span id="tp-commission">0</span></div>
     <div style="display:flex;gap:.5rem;margin-top:.5rem"><button class="btn btn-d" id="tp-save" style="padding:.65rem 1.5rem">Submit for Approval</button><button class="btn btn-o" onclick="closeModal('tp-modal')">Cancel</button></div>
 </div></div>
 
@@ -292,6 +292,7 @@ const MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital'
 const STAT={new:'b-new',in_progress:'b-progress',artworks_proposed:'b-ok',completed:'b-ok',archived:'b-grey',draft:'b-grey',sent:'b-sent',viewed:'b-progress',accepted:'b-ok',declined:'b-err',expired:'b-warn',pending:'b-pending',approved:'b-ok',paid:'b-ok',rejected:'b-err'};
 
 let me=null,allClients=[],allProjects=[],allProposals=[],allArtworks=[],allEarnings=[],all3p=[],projFilter='all';
+let RATES={im:15,tp:15};
 
 // ===== AUTH =====
 async function init(){
@@ -301,6 +302,15 @@ async function init(){
     if(!adv||(adv.status!=='approved'&&adv.status!=='active')){alert('Account not active.');await db.auth.signOut();window.location.href='advisor-login.html';return}
     if(!adv.user_id)await db.from('advisors').update({user_id:session.user.id}).eq('id',adv.id);
     me=adv;
+    // Load commission rates from site_settings
+    var{data:rates}=await db.from('site_settings').select('key,value').in('key',['adv_advisor_pct','adv_3p_pct']);
+    if(rates)rates.forEach(function(r){
+        if(r.key==='adv_advisor_pct'&&r.value)RATES.im=parseInt(r.value);
+        if(r.key==='adv_3p_pct'&&r.value)RATES.tp=parseInt(r.value);
+    });
+    // Update all rate labels
+    document.querySelectorAll('.rate-im').forEach(function(el){el.textContent=RATES.im+'%';});
+    document.querySelectorAll('.rate-tp').forEach(function(el){el.textContent=RATES.tp+'%';});
     document.getElementById('tb-user').textContent=(me.first_name||'')+' '+(me.last_name||'');
     document.getElementById('welcome').textContent='Welcome back, '+(me.first_name||'Advisor');
     populateProfile();
@@ -544,7 +554,7 @@ document.getElementById('new-3p-btn').onclick=()=>{
 };
 
 document.getElementById('tp-price').oninput=function(){
-    document.getElementById('tp-commission').textContent=Math.round(Number(this.value||0)*0.15).toLocaleString();
+    document.getElementById('tp-commission').textContent=Math.round(Number(this.value||0)*RATES.tp/100).toLocaleString();
 };
 
 document.getElementById('tp-save').onclick=async function(){
@@ -555,8 +565,8 @@ document.getElementById('tp-save').onclick=async function(){
     this.textContent='Submitting...';this.disabled=true;
     await db.from('third_party_purchases').insert({advisor_id:me.id,client_id:document.getElementById('tp-client').value||null,
         vendor_name:vendor,vendor_url:document.getElementById('tp-url').value.trim(),artwork_description:artwork,
-        artist_name:document.getElementById('tp-artist').value.trim(),purchase_price:price,commission_rate:15,
-        commission_amount:Math.round(price*0.15),status:'pending'});
+        artist_name:document.getElementById('tp-artist').value.trim(),purchase_price:price,commission_rate:RATES.tp,
+        commission_amount:Math.round(price*RATES.tp/100),status:'pending'});
     this.textContent='Submit for Approval';this.disabled=false;
     closeModal('tp-modal');load3p();renderOverview();
 };
@@ -578,7 +588,7 @@ function renderEarnings(){
 
     var b1=document.getElementById('tb-earn-im');
     if(!allEarnings.length)b1.innerHTML='<tr><td colspan="6" class="empty">No InfraMint commissions yet</td></tr>';
-    else b1.innerHTML=allEarnings.map(e=>`<tr><td style="color:var(--g500)">${new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${e.advisory_projects?.client_name||'—'}</td><td>${fmt(e.sale_amount)}</td><td>${e.commission_rate||15}%</td><td style="font-weight:600;color:var(--ok)">${fmt(e.commission_amount)}</td><td><span class="badge ${STAT[e.status]||'b-pending'}">${e.status||'pending'}</span></td></tr>`).join('');
+    else b1.innerHTML=allEarnings.map(e=>`<tr><td style="color:var(--g500)">${new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${e.advisory_projects?.client_name||'—'}</td><td>${fmt(e.sale_amount)}</td><td>${e.commission_rate||RATES.im}%</td><td style="font-weight:600;color:var(--ok)">${fmt(e.commission_amount)}</td><td><span class="badge ${STAT[e.status]||'b-pending'}">${e.status||'pending'}</span></td></tr>`).join('');
 
     var b2=document.getElementById('tb-earn-3p');
     if(!tpApproved.length)b2.innerHTML='<tr><td colspan="7" class="empty">No approved 3rd party commissions yet</td></tr>';
