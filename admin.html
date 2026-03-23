@@ -967,10 +967,12 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
-        var isOn = data && data.value === 'true';
+        try{
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
+        var isOn = !data || data.value !== 'false';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
+        }catch(e){auctionToggle.checked=true;updateToggleUI(true);}
     }
 
     function updateToggleUI(isOn) {
@@ -983,12 +985,12 @@
         var isOn = this.checked;
         updateToggleUI(isOn);
         var { error } = await db.from('site_settings').upsert({ key: 'auctions_enabled', value: isOn ? 'true' : 'false', updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        if (error) { this.checked = !isOn; updateToggleUI(!isOn); }
+        if (error) { console.error('Toggle save error:', error); this.checked = !isOn; updateToggleUI(!isOn); alert('Failed to save: ' + error.message); }
     });
 
     // ===== ADVISORY HERO IMAGE =====
     (async function(){
-        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').single();
+        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').maybeSingle();
         if (setting && setting.value) {
             document.getElementById('adv-hero-preview').innerHTML = '<img src="' + setting.value + '" style="width:100%;max-width:400px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--g200)">';
         }
@@ -1032,10 +1034,12 @@
 
         // Load initial state
         (async function() {
-            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
+            try{
+            var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
+            }catch(e){updateUI(false);}
         })();
 
         cb.addEventListener('change', async function() {
