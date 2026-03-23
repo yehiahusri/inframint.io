@@ -281,7 +281,7 @@ var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
     var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').single();
-    if(!setting||setting.value!=='true'){
+    if(setting&&setting.value==='false'){
         document.getElementById('coming-soon').style.display='block';
         document.querySelector('.hero').style.display='none';
         return;
@@ -320,6 +320,10 @@ async function loadAuctions(){
     }else if(upcoming.length>0){
         renderEvent(upcoming[0],false);
         loadAndRenderLots(upcoming[0].id);
+    }else{
+        // No live or upcoming — show a message in the event section
+        document.getElementById('event-section').style.display='block';
+        document.getElementById('event-banner').innerHTML='<div style="text-align:center;padding:2rem"><div style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem">No Live Auctions</div><div style="font-size:1.25rem;font-weight:300;color:var(--g500);margin-bottom:.5rem">Check back soon for our next curated auction event.</div>'+(past.length?'<div style="font-size:.8rem;color:var(--g400)">Scroll down to view past auctions.</div>':'')+'</div>';
     }
     if(past.length>0)renderPast(past);
 }
