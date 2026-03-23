@@ -34,7 +34,7 @@ footer{border-top:1px solid var(--g200);padding:2rem;text-align:center}footer a{
 <div class="hero-s">Whether you're furnishing a home, designing a hotel lobby, or transforming a commercial space — we connect you with expert art advisors and original works from emerging artists.</div>
 <div class="hero-btns"><a href="#request" class="btn-primary">Find Art for My Space</a><a href="#become-advisor" class="btn-secondary">Become an Advisor</a></div>
 </div>
-<div class="hero-right"><img class="hero-img" src="advisory-hero.png" alt="Luxury Parisian apartment with contemporary art"><div class="hero-overlay"></div></div>
+<div class="hero-right"><img class="hero-img" id="adv-hero-img" src="advisory-hero.png" alt="Luxury Parisian apartment with contemporary art"><div class="hero-overlay"></div></div>
 </div></div>
 
 <div class="services"><div class="services-label">What We Do</div><div class="services-title">Art Curation for <strong>Every Setting</strong></div>
@@ -76,6 +76,8 @@ footer{border-top:1px solid var(--g200);padding:2rem;text-align:center}footer a{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
+// Load custom advisory hero image
+(async function(){var{data}=await db.from('site_settings').select('value').eq('key','advisory_hero_url').single();if(data&&data.value){document.getElementById('adv-hero-img').src=data.value;}})();
 document.querySelectorAll('#style-grid .style-opt, #project-grid .style-opt').forEach(function(el){el.addEventListener('click',function(){this.classList.toggle('selected');});});
 document.querySelectorAll('.budget-opt').forEach(function(el){el.addEventListener('click',function(){document.querySelectorAll('.budget-opt').forEach(function(b){b.classList.remove('selected');});this.classList.add('selected');});});
 (async function(){var{data:{session}}=await db.auth.getSession();if(session){var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();if(col)document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';var{data:art}=await db.from('artists').select('id').eq('user_id',session.user.id).single();if(art)document.getElementById('nav-right').innerHTML='<a href="artist-dashboard.html" class="nav-login">My Dashboard</a>';}})();

@@ -7,756 +7,637 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--success:#16a34a;--error:#dc2626;--warn:#f59e0b;--info:#0ea5e9}
+:root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b;--info:#0ea5e9}
 body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased}
-
-/* Layout */
 .layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
 
 /* Sidebar */
-.sidebar{background:var(--white);border-right:1px solid var(--g200);padding-top:1.5rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sidebar-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;text-decoration:none;border-bottom:1px solid var(--g200)}
-.sidebar-logo .bar{width:2px;height:1.25rem;background:var(--black)}
-.sidebar-logo .text{font-size:1.125rem;letter-spacing:-.01em}
-.sidebar-logo .text span:first-child{font-weight:600;color:var(--black)}.sidebar-logo .text span:last-child{font-weight:200;color:var(--g400)}
-.sidebar-badge{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.15rem .4rem;margin-left:.5rem}
-.sidebar-section{padding:1rem 0}
-.sidebar-label{font-size:.625rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:0 1.5rem;margin-bottom:.5rem}
-.sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;font-size:.875rem;color:var(--g500);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
-.sidebar-link:hover{color:var(--black);background:var(--g100)}
-.sidebar-link.active{color:var(--black);font-weight:500;border-left-color:var(--black);background:var(--g100)}
-.sidebar-link svg{width:18px;height:18px;flex-shrink:0}
-.sidebar-link .count{font-size:.6875rem;font-weight:600;background:var(--g100);padding:.1rem .4rem;margin-left:auto}
-.sidebar-link.active .count{background:var(--g200)}
-.sidebar-bottom{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--g200)}
-#sign-out{font-family:'Manrope',sans-serif;font-size:.8125rem;color:var(--g500);background:none;border:none;cursor:pointer}
-#sign-out:hover{color:var(--error)}
+.sb{background:var(--white);border-right:1px solid var(--g200);padding-top:1.5rem;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;text-decoration:none;border-bottom:1px solid var(--g200)}
+.sb-logo .bar{width:2px;height:1.25rem;background:var(--black)}
+.sb-logo .text{font-size:1.125rem;letter-spacing:-.01em}
+.sb-logo .text span:first-child{font-weight:600;color:var(--black)}.sb-logo .text span:last-child{font-weight:200;color:var(--g400)}
+.sb-badge{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--white);padding:.15rem .4rem;margin-left:.5rem}
+.sb-sec{padding:1rem 0}
+.sb-lbl{font-size:.625rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:0 1.5rem;margin-bottom:.5rem}
+.sb-lk{display:flex;align-items:center;gap:.75rem;padding:.55rem 1.5rem;font-size:.85rem;color:var(--g500);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
+.sb-lk:hover{color:var(--black);background:var(--g100)}
+.sb-lk.active{color:var(--black);font-weight:500;border-left-color:var(--black);background:var(--g100)}
+.sb-lk svg{width:17px;height:17px;flex-shrink:0}
+.sb-ct{font-size:.65rem;font-weight:600;background:var(--g100);padding:.1rem .4rem;margin-left:auto}
+.sb-lk.active .sb-ct{background:var(--g200)}
+.sb-bottom{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--g200)}
+#sign-out{font-family:'Manrope',sans-serif;font-size:.8rem;color:var(--g500);background:none;border:none;cursor:pointer}
+#sign-out:hover{color:var(--err)}
 
 /* Topbar */
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--g200);background:var(--white)}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:.85rem 2rem;border-bottom:1px solid var(--g200);background:var(--white)}
 .topbar-left{font-size:.875rem;font-weight:500}
 .topbar-right{display:flex;align-items:center;gap:1rem}
-.topbar-link{font-size:.8125rem;color:var(--g500);text-decoration:none}.topbar-link:hover{color:var(--black)}
-.topbar-user{font-size:.8125rem;color:var(--g600)}
+.topbar-link{font-size:.8rem;color:var(--g500);text-decoration:none}.topbar-link:hover{color:var(--black)}
 
 /* Main */
 main{overflow-y:auto}
-.section{display:none}
-.section.active{display:block}
-.page-header{padding:2rem 2rem 1rem}
-.page-title{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
-.page-subtitle{font-size:.875rem;color:var(--g500);font-weight:300;margin-top:.25rem}
+.sec{display:none}.sec.active{display:block}
+.ph{padding:2rem 2rem 1rem}.ph h1{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}.ph p{font-size:.85rem;color:var(--g500);margin-top:.25rem}
 
 /* Stats */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:0 2rem 1.5rem}
-.stat-card{background:var(--white);border:1px solid var(--g200);padding:1.25rem}
-.stat-label{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.35rem}
-.stat-value{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
-.stat-sub{font-size:.75rem;color:var(--g500);margin-top:.2rem}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:0 2rem 1.5rem}
+.sc{background:var(--white);border:1px solid var(--g200);padding:1.25rem}
+.sc-l{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:.3rem}
+.sc-v{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
+.sc-s{font-size:.7rem;color:var(--g500);margin-top:.2rem}
 
 /* Card */
 .card{background:var(--white);border:1px solid var(--g200);margin:0 2rem 1.5rem;padding:1.5rem}
-.card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
+.ct{font-size:1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
 
 /* Table */
 table{width:100%;border-collapse:collapse}
-th{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);text-align:left;padding:.75rem .5rem;border-bottom:1px solid var(--g200)}
-td{font-size:.875rem;padding:.75rem .5rem;border-bottom:1px solid var(--g100)}
+th{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);text-align:left;padding:.65rem .5rem;border-bottom:1px solid var(--g200)}
+td{font-size:.85rem;padding:.65rem .5rem;border-bottom:1px solid var(--g100);vertical-align:top}
 tr:hover td{background:var(--g100)}
 .empty{color:var(--g400);text-align:center;padding:2rem}
+.tn{font-weight:500}
 
-/* Status badges */
-.badge{font-size:.6875rem;font-weight:600;padding:.2rem .5rem;display:inline-block}
-.badge-new{background:#eff6ff;color:#2563eb}
-.badge-progress{background:#fef3c7;color:#d97706}
-.badge-proposed{background:#f0fdf4;color:var(--success)}
-.badge-reviewing{background:#fdf4ff;color:#a855f7}
-.badge-completed{background:#f0fdf4;color:var(--success)}
-.badge-archived{background:var(--g100);color:var(--g500)}
+/* Badges */
+.badge{font-size:.65rem;font-weight:600;padding:.2rem .5rem;display:inline-block}
+.b-new{background:#eff6ff;color:#2563eb}.b-progress{background:#fef3c7;color:#d97706}.b-ok{background:#f0fdf4;color:var(--ok)}
+.b-sent{background:#f0f9ff;color:#0369a1}.b-warn{background:#fef3c7;color:var(--warn)}.b-err{background:#fef2f2;color:var(--err)}
+.b-grey{background:var(--g100);color:var(--g500)}.b-pending{background:#fef3c7;color:#92400e}
 
 /* Buttons */
-.btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:600;padding:.4rem .75rem;border:none;cursor:pointer;transition:all .15s}
-.btn-dark{background:var(--black);color:var(--white)}.btn-dark:hover{background:var(--g800)}
-.btn-outline{background:none;border:1px solid var(--g300);color:var(--g600)}.btn-outline:hover{border-color:var(--black);color:var(--black)}
-.btn-sm{font-size:.6875rem;padding:.3rem .5rem}
-.btn-success{background:var(--success);color:var(--white)}.btn-success:hover{opacity:.9}
-.btn-warn{background:var(--warn);color:var(--white)}.btn-warn:hover{opacity:.9}
+.btn{font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:600;padding:.4rem .75rem;border:none;cursor:pointer;transition:all .15s}
+.btn-d{background:var(--black);color:var(--white)}.btn-d:hover{background:var(--g800)}
+.btn-o{background:none;border:1px solid var(--g300);color:var(--g600)}.btn-o:hover{border-color:var(--black);color:var(--black)}
+.btn-ok{background:var(--ok);color:var(--white)}.btn-ok:hover{opacity:.9}
+.btn-sm{font-size:.65rem;padding:.3rem .5rem}
 
-/* Project detail panel */
-.detail-panel{display:none;position:fixed;top:0;right:0;bottom:0;width:560px;background:var(--white);border-left:1px solid var(--g200);z-index:200;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
-.detail-panel.open{display:block}
-.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:199}
-.detail-overlay.open{display:block}
-.detail-header{padding:1.5rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start}
-.detail-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--g400);line-height:1}.detail-close:hover{color:var(--black)}
-.detail-title{font-size:1.125rem;font-weight:600}
-.detail-sub{font-size:.8125rem;color:var(--g500);margin-top:.25rem}
-.detail-body{padding:1.5rem}
-.detail-section{margin-bottom:1.5rem}
-.detail-label{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
-.detail-value{font-size:.875rem;line-height:1.7}
-.detail-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
-.detail-field{font-size:.875rem}
-.detail-field-label{font-size:.6875rem;color:var(--g400);font-weight:500}
+/* Forms */
+.fg{margin-bottom:1rem}
+.fl{font-size:.65rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g500);margin-bottom:.35rem;display:block}
+.fi,.fs,.ft{width:100%;font-family:'Manrope',sans-serif;font-size:.85rem;padding:.65rem;border:1px solid var(--g300);background:var(--white);outline:none;transition:border-color .2s}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--black)}
+.ft{resize:vertical;min-height:80px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);width:90%;max-width:640px;max-height:85vh;overflow-y:auto;padding:2rem}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+.modal-title{font-size:1.125rem;font-weight:600}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--g400);line-height:1}.modal-close:hover{color:var(--black)}
+
+/* Tags */
+.tag{display:inline-block;font-size:.6rem;font-weight:600;padding:.15rem .4rem;background:var(--g100);color:var(--g600);margin-right:.25rem;margin-bottom:.25rem}
+
+/* Detail panel */
+.dp{display:none;position:fixed;top:0;right:0;bottom:0;width:560px;background:var(--white);border-left:1px solid var(--g200);z-index:200;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,.08)}
+.dp.open{display:block}
+.dp-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:199}
+.dp-overlay.open{display:block}
+.dp-h{padding:1.5rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:flex-start}
+.dp-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--g400)}.dp-close:hover{color:var(--black)}
+.dp-body{padding:1.5rem}
+.dp-lbl{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:.5rem}
+.dp-sec{margin-bottom:1.5rem}
 
 /* Messages */
-.messages-container{max-height:320px;overflow-y:auto;padding:1rem;background:var(--g100);margin-bottom:1rem;display:flex;flex-direction:column;gap:.75rem}
-.msg-bubble{max-width:80%;padding:.6rem .85rem;font-size:.8125rem;line-height:1.6}
-.msg-advisor{background:var(--black);color:var(--white);align-self:flex-end;margin-left:auto}
-.msg-client{background:var(--white);border:1px solid var(--g200);align-self:flex-start}
-.msg-system{background:var(--g200);color:var(--g500);align-self:center;font-size:.75rem;font-style:italic}
-.msg-time{font-size:.6rem;color:var(--g400);margin-top:.2rem}
-.msg-input-row{display:flex;gap:.5rem}
-.msg-input{flex:1;font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.6rem .75rem;border:1px solid var(--g300);outline:none;resize:none;min-height:40px}
-.msg-input:focus{border-color:var(--black)}
-.msg-send{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:600;padding:.6rem 1rem;background:var(--black);color:var(--white);border:none;cursor:pointer}
-.msg-send:hover{background:var(--g800)}
+.msgs{max-height:250px;overflow-y:auto;padding:.75rem;background:var(--g100);margin-bottom:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.msg-b{max-width:80%;padding:.5rem .7rem;font-size:.8rem;line-height:1.5}
+.msg-adv{background:var(--black);color:var(--white);align-self:flex-end;margin-left:auto}
+.msg-cl{background:var(--white);border:1px solid var(--g200);align-self:flex-start}
+.msg-t{font-size:.55rem;color:var(--g400);margin-top:.15rem}
 
 /* Artwork picker */
-.artwork-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.75rem;max-height:300px;overflow-y:auto}
-.artwork-pick{border:1px solid var(--g200);cursor:pointer;transition:all .15s;position:relative}
-.artwork-pick:hover{border-color:var(--black)}
-.artwork-pick.selected{border-color:var(--black);border-width:2px}
-.artwork-pick img{width:100%;height:80px;object-fit:cover;display:block}
-.artwork-pick-info{padding:.4rem;font-size:.6875rem}
-.artwork-pick-title{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.artwork-pick-price{color:var(--g500)}
-.artwork-pick-check{position:absolute;top:4px;right:4px;width:18px;height:18px;background:var(--black);color:var(--white);display:none;align-items:center;justify-content:center;font-size:.6rem;font-weight:700}
-.artwork-pick.selected .artwork-pick-check{display:flex}
+.ap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-height:280px;overflow-y:auto}
+.ap-item{border:1px solid var(--g200);cursor:pointer;transition:all .15s;position:relative}
+.ap-item:hover{border-color:var(--black)}.ap-item.sel{border-color:var(--black);border-width:2px}
+.ap-item img{width:100%;height:70px;object-fit:cover;display:block}
+.ap-info{padding:.3rem;font-size:.65rem}
+.ap-check{position:absolute;top:3px;right:3px;width:16px;height:16px;background:var(--black);color:var(--white);display:none;align-items:center;justify-content:center;font-size:.55rem;font-weight:700}
+.ap-item.sel .ap-check{display:flex}
 
-/* Earnings */
-.earnings-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
-.earnings-card{background:var(--white);border:1px solid var(--g200);padding:1.25rem;text-align:center}
-.earnings-val{font-size:2rem;font-weight:700}
-.earnings-lbl{font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-top:.25rem}
-
-/* Profile */
-.profile-form{max-width:600px}
-.form-group{margin-bottom:1.25rem}
-.form-label{font-size:.6875rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g500);margin-bottom:.4rem;display:block}
-.form-input,.form-textarea,.form-select{width:100%;font-family:'Manrope',sans-serif;font-size:.875rem;padding:.75rem;border:1px solid var(--g300);background:var(--white);outline:none;transition:border-color .2s}
-.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--black)}
-.form-textarea{resize:vertical;min-height:100px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-
-/* Loading */
-.loading{text-align:center;padding:2rem;color:var(--g400);font-size:.875rem}
-
-/* Mobile */
-@media(max-width:768px){
-    .layout{grid-template-columns:1fr}
-    .sidebar{display:none}
-    .stats-grid{grid-template-columns:repeat(2,1fr);padding:0 1rem 1rem}
-    .card{margin:0 1rem 1rem}
-    .page-header{padding:1.5rem 1rem .75rem}
-    .detail-panel{width:100%}
-    .artwork-picker{grid-template-columns:repeat(2,1fr)}
-    .earnings-summary{grid-template-columns:1fr}
-}
+/* Responsive */
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sb{display:none}.sg{grid-template-columns:repeat(2,1fr);padding:0 1rem 1rem}.card{margin:0 1rem 1rem}.ph{padding:1.5rem 1rem .75rem}.dp{width:100%}.ap-grid{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div class="layout">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <a href="index.html" class="sidebar-logo"><div class="bar"></div><div class="text"><span>Infra</span><span>Mint</span></div><span class="sidebar-badge">Advisor</span></a>
-        <div class="sidebar-section">
-            <div class="sidebar-label">Dashboard</div>
-            <a class="sidebar-link active" data-s="overview">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Overview
-            </a>
-            <a class="sidebar-link" data-s="projects">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                Projects <span class="count" id="n-projects">0</span>
-            </a>
-            <a class="sidebar-link" data-s="artworks">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                Browse Artworks
-            </a>
-        </div>
-        <div class="sidebar-section">
-            <div class="sidebar-label">Finance</div>
-            <a class="sidebar-link" data-s="earnings">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                Earnings <span class="count" id="n-earnings">0</span>
-            </a>
-        </div>
-        <div class="sidebar-section">
-            <div class="sidebar-label">Account</div>
-            <a class="sidebar-link" data-s="profile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Profile
-            </a>
-        </div>
-        <div class="sidebar-bottom">
-            <button id="sign-out">Sign Out</button>
-        </div>
+<!-- Sidebar -->
+<div class="sb">
+    <a href="index.html" class="sb-logo"><div class="bar"></div><div class="text"><span>Infra</span><span>Mint</span></div><span class="sb-badge">Advisor</span></a>
+    <div class="sb-sec"><div class="sb-lbl">Dashboard</div>
+        <a class="sb-lk active" data-s="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Overview</a>
+        <a class="sb-lk" data-s="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients <span class="sb-ct" id="n-clients">0</span></a>
+        <a class="sb-lk" data-s="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects <span class="sb-ct" id="n-projects">0</span></a>
+        <a class="sb-lk" data-s="proposals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Proposals <span class="sb-ct" id="n-proposals">0</span></a>
+        <a class="sb-lk" data-s="artworks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>Browse Art</a>
     </div>
-
-    <!-- Main Content -->
-    <main>
-        <div class="topbar">
-            <div class="topbar-left" id="topbar-title">Overview</div>
-            <div class="topbar-right">
-                <a href="art-advisory.html" class="topbar-link">Advisory Page</a>
-                <a href="gallery.html" class="topbar-link">Gallery</a>
-                <span class="topbar-user" id="topbar-user"></span>
-            </div>
-        </div>
-
-        <!-- Overview -->
-        <div class="section active" id="section-overview">
-            <div class="page-header">
-                <div class="page-title" id="welcome-title">Welcome back</div>
-                <div class="page-subtitle">Manage your advisory projects and track your commissions</div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-label">Active Projects</div><div class="stat-value" id="ov-active">0</div></div>
-                <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" id="ov-completed">0</div></div>
-                <div class="stat-card"><div class="stat-label">Total Earnings</div><div class="stat-value" id="ov-earnings">$0</div></div>
-                <div class="stat-card"><div class="stat-label">Commission Rate</div><div class="stat-value" id="ov-rate">5%</div></div>
-            </div>
-            <div class="card">
-                <div class="card-title">Recent Projects</div>
-                <table><thead><tr><th>Client</th><th>Type</th><th>Budget</th><th>Status</th><th>Updated</th></tr></thead>
-                <tbody id="tb-recent-projects"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
-            </div>
-        </div>
-
-        <!-- Projects -->
-        <div class="section" id="section-projects">
-            <div class="page-header">
-                <div class="page-title">Projects</div>
-                <div class="page-subtitle">Manage assigned advisory projects</div>
-            </div>
-            <!-- Status filter tabs -->
-            <div style="padding:0 2rem .75rem;display:flex;gap:.5rem;flex-wrap:wrap">
-                <button class="btn btn-dark proj-filter active" data-filter="all">All</button>
-                <button class="btn btn-outline proj-filter" data-filter="new">New</button>
-                <button class="btn btn-outline proj-filter" data-filter="in_progress">In Progress</button>
-                <button class="btn btn-outline proj-filter" data-filter="artworks_proposed">Proposed</button>
-                <button class="btn btn-outline proj-filter" data-filter="completed">Completed</button>
-            </div>
-            <div class="card">
-                <table><thead><tr><th>Client</th><th>Email</th><th>Type</th><th>Styles</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="tb-projects"><tr><td colspan="7" class="loading">Loading projects...</td></tr></tbody></table>
-            </div>
-        </div>
-
-        <!-- Browse Artworks -->
-        <div class="section" id="section-artworks">
-            <div class="page-header">
-                <div class="page-title">Browse Artworks</div>
-                <div class="page-subtitle">Find the right pieces for your clients</div>
-            </div>
-            <div style="padding:0 2rem .75rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center">
-                <input type="text" id="artwork-search" placeholder="Search by title, artist, or medium..." style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);outline:none;width:300px">
-                <select id="artwork-medium-filter" style="font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem .75rem;border:1px solid var(--g300);outline:none">
-                    <option value="all">All Mediums</option><option value="oil">Oil</option><option value="acrylic">Acrylic</option><option value="watercolor">Watercolor</option><option value="digital">Digital</option><option value="photography">Photography</option><option value="mixed">Mixed Media</option><option value="sculpture">Sculpture</option>
-                </select>
-            </div>
-            <div class="card">
-                <table><thead><tr><th>Image</th><th>Title</th><th>Artist</th><th>Medium</th><th>Price</th><th>Status</th></tr></thead>
-                <tbody id="tb-artworks"><tr><td colspan="6" class="loading">Loading artworks...</td></tr></tbody></table>
-            </div>
-        </div>
-
-        <!-- Earnings -->
-        <div class="section" id="section-earnings">
-            <div class="page-header">
-                <div class="page-title">Earnings</div>
-                <div class="page-subtitle">Track your advisory commissions</div>
-            </div>
-            <div class="earnings-summary" style="padding:0 2rem">
-                <div class="earnings-card"><div class="earnings-val" id="earn-total">$0</div><div class="earnings-lbl">Total Earned</div></div>
-                <div class="earnings-card"><div class="earnings-val" id="earn-pending">$0</div><div class="earnings-lbl">Pending Payout</div></div>
-                <div class="earnings-card"><div class="earnings-val" id="earn-paid">$0</div><div class="earnings-lbl">Paid Out</div></div>
-            </div>
-            <div class="card">
-                <div class="card-title">Commission History</div>
-                <table><thead><tr><th>Date</th><th>Project</th><th>Sale Amount</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead>
-                <tbody id="tb-earnings"><tr><td colspan="6" class="loading">Loading earnings...</td></tr></tbody></table>
-            </div>
-        </div>
-
-        <!-- Profile -->
-        <div class="section" id="section-profile">
-            <div class="page-header">
-                <div class="page-title">Profile</div>
-                <div class="page-subtitle">Update your advisor information</div>
-            </div>
-            <div class="card">
-                <div class="profile-form">
-                    <div class="form-row">
-                        <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="pf-first"></div>
-                        <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="pf-last"></div>
-                    </div>
-                    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="pf-email" disabled></div>
-                    <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="pf-phone" placeholder="+971 ..."></div>
-                    <div class="form-group"><label class="form-label">Company</label><input type="text" class="form-input" id="pf-company"></div>
-                    <div class="form-group"><label class="form-label">Specialty</label>
-                        <select class="form-select" id="pf-specialty"><option value="">Select...</option><option value="residential">Residential</option><option value="commercial">Commercial & Hospitality</option><option value="interior_design">Interior Design</option><option value="corporate">Corporate</option><option value="general">General Curation</option></select>
-                    </div>
-                    <div class="form-group"><label class="form-label">Bio</label><textarea class="form-textarea" id="pf-bio" placeholder="Tell clients about your experience and approach..."></textarea></div>
-                    <div class="form-group"><label class="form-label">Portfolio URL</label><input type="url" class="form-input" id="pf-portfolio" placeholder="https://..."></div>
-                    <button class="btn btn-dark" id="save-profile" style="padding:.75rem 2rem;font-size:.8125rem">Save Changes</button>
-                    <span id="pf-msg" style="font-size:.8125rem;margin-left:1rem;display:none"></span>
-                </div>
-            </div>
-        </div>
-    </main>
+    <div class="sb-sec"><div class="sb-lbl">Finance</div>
+        <a class="sb-lk" data-s="thirdparty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg>3rd Party Sales <span class="sb-ct" id="n-3p">0</span></a>
+        <a class="sb-lk" data-s="earnings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Earnings</a>
+    </div>
+    <div class="sb-sec"><div class="sb-lbl">Account</div>
+        <a class="sb-lk" data-s="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+    </div>
+    <div class="sb-bottom"><button id="sign-out">Sign Out</button></div>
 </div>
 
-<!-- Project Detail Panel -->
-<div class="detail-overlay" id="detail-overlay"></div>
-<div class="detail-panel" id="detail-panel">
-    <div class="detail-header">
-        <div>
-            <div class="detail-title" id="dp-title">Project Details</div>
-            <div class="detail-sub" id="dp-sub"></div>
-        </div>
-        <button class="detail-close" id="dp-close">&times;</button>
+<!-- Main -->
+<main>
+<div class="topbar">
+    <div class="topbar-left" id="tb-title">Overview</div>
+    <div class="topbar-right">
+        <a href="gallery.html" class="topbar-link">Gallery</a>
+        <a href="art-advisory.html" class="topbar-link">Advisory Page</a>
+        <span id="tb-user" style="font-size:.8rem;color:var(--g600)"></span>
     </div>
-    <div class="detail-body" id="dp-body"></div>
 </div>
+
+<!-- OVERVIEW -->
+<div class="sec active" id="section-overview">
+    <div class="ph"><h1 id="welcome">Welcome back</h1><p>Your advisory CRM at a glance</p></div>
+    <div class="sg">
+        <div class="sc"><div class="sc-l">Clients</div><div class="sc-v" id="ov-clients">0</div></div>
+        <div class="sc"><div class="sc-l">Active Projects</div><div class="sc-v" id="ov-projects">0</div></div>
+        <div class="sc"><div class="sc-l">Open Proposals</div><div class="sc-v" id="ov-proposals">0</div></div>
+        <div class="sc"><div class="sc-l">Total Earnings</div><div class="sc-v" id="ov-earnings">$0</div></div>
+    </div>
+    <div class="card"><div class="ct">Recent Clients</div><table><thead><tr><th>Name</th><th>Email</th><th>Budget</th><th>Tags</th><th>Added</th></tr></thead><tbody id="tb-ov-clients"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody></table></div>
+    <div class="card"><div class="ct">Pending 3rd Party Approvals</div><table><thead><tr><th>Vendor</th><th>Artwork</th><th>Price</th><th>Commission</th><th>Status</th></tr></thead><tbody id="tb-ov-3p"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- CLIENTS -->
+<div class="sec" id="section-clients">
+    <div class="ph"><h1>Clients</h1><p>Your client CRM — contacts, notes, and history</p></div>
+    <div style="padding:0 2rem .75rem"><button class="btn btn-d" id="add-client-btn">+ Add Client</button></div>
+    <div class="card"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Budget</th><th>Tags</th><th>Source</th><th>Actions</th></tr></thead><tbody id="tb-clients"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- PROJECTS -->
+<div class="sec" id="section-projects">
+    <div class="ph"><h1>Projects</h1><p>Advisory projects assigned by admin</p></div>
+    <div style="padding:0 2rem .75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-d pf active" data-f="all">All</button>
+        <button class="btn btn-o pf" data-f="new">New</button>
+        <button class="btn btn-o pf" data-f="in_progress">In Progress</button>
+        <button class="btn btn-o pf" data-f="completed">Completed</button>
+    </div>
+    <div class="card"><table><thead><tr><th>Client</th><th>Type</th><th>Styles</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-projects"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- PROPOSALS -->
+<div class="sec" id="section-proposals">
+    <div class="ph"><h1>Proposals</h1><p>Create curated artwork proposals for your clients</p></div>
+    <div style="padding:0 2rem .75rem"><button class="btn btn-d" id="new-proposal-btn">+ New Proposal</button></div>
+    <div class="card"><table><thead><tr><th>Title</th><th>Client</th><th>Items</th><th>Value</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="tb-proposals"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- BROWSE ARTWORKS -->
+<div class="sec" id="section-artworks">
+    <div class="ph"><h1>Browse Artworks</h1><p>InfraMint catalog — find pieces for your clients</p></div>
+    <div style="padding:0 2rem .75rem;display:flex;gap:.75rem;flex-wrap:wrap">
+        <input type="text" id="aw-search" placeholder="Search title, artist, medium..." class="fi" style="width:280px">
+        <select id="aw-med" class="fs" style="width:auto"><option value="all">All Mediums</option><option value="oil">Oil</option><option value="acrylic">Acrylic</option><option value="watercolor">Watercolor</option><option value="digital">Digital</option><option value="photography">Photography</option><option value="mixed">Mixed Media</option><option value="sculpture">Sculpture</option></select>
+    </div>
+    <div class="card"><table><thead><tr><th></th><th>Title</th><th>Artist</th><th>Medium</th><th>Price</th><th>Status</th></tr></thead><tbody id="tb-artworks"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- 3RD PARTY SALES -->
+<div class="sec" id="section-thirdparty">
+    <div class="ph"><h1>3rd Party Sales</h1><p>Log artwork purchases from external vendors — 15% commission through InfraMint</p></div>
+    <div style="padding:0 2rem .75rem"><button class="btn btn-d" id="new-3p-btn">+ Log New Sale</button></div>
+    <div class="card"><table><thead><tr><th>Date</th><th>Vendor</th><th>Artwork</th><th>Client</th><th>Price</th><th>Commission (15%)</th><th>Status</th></tr></thead><tbody id="tb-3p"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
+</div>
+
+<!-- EARNINGS -->
+<div class="sec" id="section-earnings">
+    <div class="ph"><h1>Earnings</h1><p>InfraMint advisory commissions + 3rd party commissions</p></div>
+    <div class="sg" style="grid-template-columns:repeat(3,1fr)">
+        <div class="sc"><div class="sc-l">InfraMint Commission</div><div class="sc-v" id="earn-im">$0</div><div class="sc-s">5% per InfraMint sale</div></div>
+        <div class="sc"><div class="sc-l">3rd Party Commission</div><div class="sc-v" id="earn-3p">$0</div><div class="sc-s">15% per external sale</div></div>
+        <div class="sc"><div class="sc-l">Total Earnings</div><div class="sc-v" id="earn-total">$0</div></div>
+    </div>
+    <div class="card"><div class="ct">InfraMint Commissions</div><table><thead><tr><th>Date</th><th>Project</th><th>Sale</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead><tbody id="tb-earn-im"><tr><td colspan="6" class="empty">No InfraMint commissions yet</td></tr></tbody></table></div>
+    <div class="card"><div class="ct">3rd Party Commissions</div><table><thead><tr><th>Date</th><th>Vendor</th><th>Artwork</th><th>Sale</th><th>Rate</th><th>Commission</th><th>Status</th></tr></thead><tbody id="tb-earn-3p"><tr><td colspan="7" class="empty">No 3rd party commissions yet</td></tr></tbody></table></div>
+</div>
+
+<!-- PROFILE -->
+<div class="sec" id="section-profile">
+    <div class="ph"><h1>Profile</h1><p>Your advisor information</p></div>
+    <div class="card">
+        <div style="max-width:600px">
+            <div class="fr"><div class="fg"><label class="fl">First Name</label><input class="fi" id="pf-first"></div><div class="fg"><label class="fl">Last Name</label><input class="fi" id="pf-last"></div></div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" id="pf-email" disabled></div>
+            <div class="fg"><label class="fl">Phone</label><input class="fi" id="pf-phone" placeholder="+971 ..."></div>
+            <div class="fg"><label class="fl">Company</label><input class="fi" id="pf-company"></div>
+            <div class="fg"><label class="fl">Specialty</label><select class="fs" id="pf-spec"><option value="">Select...</option><option value="residential">Residential</option><option value="commercial">Commercial & Hospitality</option><option value="interior_design">Interior Design</option><option value="corporate">Corporate</option><option value="general">General Curation</option></select></div>
+            <div class="fg"><label class="fl">Bio</label><textarea class="ft" id="pf-bio" placeholder="Your experience and approach..."></textarea></div>
+            <div class="fg"><label class="fl">Portfolio URL</label><input class="fi" id="pf-portfolio" placeholder="https://..."></div>
+            <button class="btn btn-d" id="save-profile" style="padding:.7rem 2rem;font-size:.8rem">Save Changes</button>
+            <span id="pf-msg" style="font-size:.8rem;margin-left:1rem;display:none"></span>
+        </div>
+    </div>
+</div>
+</main>
+</div>
+
+<!-- CLIENT MODAL -->
+<div class="modal-overlay" id="client-modal"><div class="modal">
+    <div class="modal-header"><div class="modal-title" id="cm-title">Add Client</div><button class="modal-close" onclick="closeModal('client-modal')">&times;</button></div>
+    <div class="fr"><div class="fg"><label class="fl">Full Name *</label><input class="fi" id="cm-name"></div><div class="fg"><label class="fl">Email</label><input class="fi" id="cm-email"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Phone</label><input class="fi" id="cm-phone"></div><div class="fg"><label class="fl">Company</label><input class="fi" id="cm-company"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Location</label><input class="fi" id="cm-location"></div><div class="fg"><label class="fl">Budget Range</label><select class="fs" id="cm-budget"><option value="">Select...</option><option value="Under $500">Under $500</option><option value="$500-$2K">$500 – $2K</option><option value="$2K-$10K">$2K – $10K</option><option value="$10K-$50K">$10K – $50K</option><option value="$50K+">$50K+</option></select></div></div>
+    <div class="fg"><label class="fl">Tags (comma separated)</label><input class="fi" id="cm-tags" placeholder="VIP, collector, designer, hotel..."></div>
+    <div class="fg"><label class="fl">Notes</label><textarea class="ft" id="cm-notes" placeholder="Client preferences, interaction history..."></textarea></div>
+    <input type="hidden" id="cm-id">
+    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-d" id="cm-save" style="padding:.65rem 1.5rem">Save Client</button><button class="btn btn-o" onclick="closeModal('client-modal')">Cancel</button></div>
+</div></div>
+
+<!-- PROPOSAL MODAL -->
+<div class="modal-overlay" id="proposal-modal"><div class="modal">
+    <div class="modal-header"><div class="modal-title">New Proposal</div><button class="modal-close" onclick="closeModal('proposal-modal')">&times;</button></div>
+    <div class="fr"><div class="fg"><label class="fl">Title *</label><input class="fi" id="pm-title" placeholder="e.g. Living Room Curation for Mr. Ahmed"></div><div class="fg"><label class="fl">Client</label><select class="fs" id="pm-client"><option value="">Select client...</option></select></div></div>
+    <div class="fg"><label class="fl">Notes</label><textarea class="ft" id="pm-notes" placeholder="Proposal description, context..."></textarea></div>
+    <div class="fg"><label class="fl">Select Artworks</label>
+        <input class="fi" id="pm-aw-search" placeholder="Search artworks..." style="margin-bottom:.5rem">
+        <div class="ap-grid" id="pm-aw-grid"></div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-d" id="pm-save" style="padding:.65rem 1.5rem">Create Proposal</button><button class="btn btn-o" onclick="closeModal('proposal-modal')">Cancel</button></div>
+</div></div>
+
+<!-- 3RD PARTY MODAL -->
+<div class="modal-overlay" id="tp-modal"><div class="modal">
+    <div class="modal-header"><div class="modal-title">Log 3rd Party Sale</div><button class="modal-close" onclick="closeModal('tp-modal')">&times;</button></div>
+    <div class="fr"><div class="fg"><label class="fl">Vendor / Gallery Name *</label><input class="fi" id="tp-vendor"></div><div class="fg"><label class="fl">Vendor URL</label><input class="fi" id="tp-url" placeholder="https://..."></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Artwork Description *</label><input class="fi" id="tp-artwork"></div><div class="fg"><label class="fl">Artist Name</label><input class="fi" id="tp-artist"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Purchase Price (USD) *</label><input type="number" class="fi" id="tp-price" placeholder="0"></div><div class="fg"><label class="fl">Client</label><select class="fs" id="tp-client"><option value="">Select client...</option></select></div></div>
+    <div style="background:var(--g100);padding:.75rem;margin-bottom:1rem;font-size:.8rem">Commission: <strong>15%</strong> = $<span id="tp-commission">0</span></div>
+    <div style="display:flex;gap:.5rem;margin-top:.5rem"><button class="btn btn-d" id="tp-save" style="padding:.65rem 1.5rem">Submit for Approval</button><button class="btn btn-o" onclick="closeModal('tp-modal')">Cancel</button></div>
+</div></div>
+
+<!-- PROJECT DETAIL PANEL -->
+<div class="dp-overlay" id="dp-overlay"></div>
+<div class="dp" id="dp"><div class="dp-h"><div><div style="font-size:1.125rem;font-weight:600" id="dp-title"></div><div style="font-size:.8rem;color:var(--g500)" id="dp-sub"></div></div><button class="dp-close" id="dp-close">&times;</button></div><div class="dp-body" id="dp-body"></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SB='https://vyibnkztkacifahhlxof.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+const db=supabase.createClient(SB,SK);
+const fmt=n=>n!=null?'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}):'—';
+const MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture'};
+const STAT={new:'b-new',in_progress:'b-progress',artworks_proposed:'b-ok',completed:'b-ok',archived:'b-grey',draft:'b-grey',sent:'b-sent',viewed:'b-progress',accepted:'b-ok',declined:'b-err',expired:'b-warn',pending:'b-pending',approved:'b-ok',paid:'b-ok',rejected:'b-err'};
 
-const fmt = n => n != null ? '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—';
-const mediumNames = {oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photography',mixed:'Mixed Media',sculpture:'Sculpture'};
-const statusLabels = {new:'New',in_progress:'In Progress',artworks_proposed:'Proposed',client_reviewing:'Reviewing',completed:'Completed',archived:'Archived'};
-const statusClass = {new:'badge-new',in_progress:'badge-progress',artworks_proposed:'badge-proposed',client_reviewing:'badge-reviewing',completed:'badge-completed',archived:'badge-archived'};
+let me=null,allClients=[],allProjects=[],allProposals=[],allArtworks=[],allEarnings=[],all3p=[],projFilter='all';
 
-let advisorData = null;
-let allProjects = [];
-let allArtworks = [];
-let allEarnings = [];
-let projectFilter = 'all';
-
-// ===== Auth =====
-async function init() {
-    const { data: { session } } = await db.auth.getSession();
-    if (!session) { window.location.href = 'advisor-login.html'; return; }
-
-    const { data: advisor } = await db.from('advisors').select('*').eq('email', session.user.email).single();
-    if (!advisor || (advisor.status !== 'approved' && advisor.status !== 'active')) {
-        alert('Your advisor account is not active.');
-        await db.auth.signOut();
-        window.location.href = 'advisor-login.html';
-        return;
-    }
-
-    // Link user_id if needed
-    if (!advisor.user_id) {
-        await db.from('advisors').update({ user_id: session.user.id }).eq('id', advisor.id);
-    }
-
-    advisorData = advisor;
-    document.getElementById('topbar-user').textContent = (advisor.first_name || '') + ' ' + (advisor.last_name || '');
-    document.getElementById('welcome-title').textContent = 'Welcome back, ' + (advisor.first_name || 'Advisor');
-    document.getElementById('ov-rate').textContent = (advisor.commission_rate || 5) + '%';
-
-    loadAll();
+// ===== AUTH =====
+async function init(){
+    var{data:{session}}=await db.auth.getSession();
+    if(!session){window.location.href='advisor-login.html';return}
+    var{data:adv}=await db.from('advisors').select('*').eq('email',session.user.email).single();
+    if(!adv||(adv.status!=='approved'&&adv.status!=='active')){alert('Account not active.');await db.auth.signOut();window.location.href='advisor-login.html';return}
+    if(!adv.user_id)await db.from('advisors').update({user_id:session.user.id}).eq('id',adv.id);
+    me=adv;
+    document.getElementById('tb-user').textContent=(me.first_name||'')+' '+(me.last_name||'');
+    document.getElementById('welcome').textContent='Welcome back, '+(me.first_name||'Advisor');
     populateProfile();
+    loadAll();
 }
 
-// ===== Load all data =====
-async function loadAll() {
-    await Promise.all([loadProjects(), loadArtworks(), loadEarnings()]);
+async function loadAll(){
+    await Promise.all([loadClients(),loadProjects(),loadProposals(),loadArtworks(),loadEarnings(),load3p()]);
     renderOverview();
 }
 
-async function loadProjects() {
-    const { data } = await db.from('advisory_projects').select('*').eq('advisor_id', advisorData.id).order('created_at', { ascending: false });
-    allProjects = data || [];
-    document.getElementById('n-projects').textContent = allProjects.filter(p => p.status !== 'archived' && p.status !== 'completed').length || '';
+// ===== CLIENTS =====
+async function loadClients(){
+    var{data}=await db.from('advisor_clients').select('*').eq('advisor_id',me.id).order('created_at',{ascending:false});
+    allClients=data||[];
+    document.getElementById('n-clients').textContent=allClients.length||'';
+    renderClients();
+    populateClientDropdowns();
+}
+
+function renderClients(){
+    var b=document.getElementById('tb-clients');
+    if(!allClients.length){b.innerHTML='<tr><td colspan="7" class="empty">No clients yet. Add your first client above.</td></tr>';return}
+    b.innerHTML=allClients.map(c=>`<tr>
+        <td class="tn">${c.name}</td><td style="font-size:.8rem">${c.email||'—'}</td><td style="font-size:.8rem">${c.phone||'—'}</td>
+        <td>${c.budget_range||'—'}</td><td>${(c.tags||[]).map(t=>'<span class="tag">'+t+'</span>').join('')||'—'}</td>
+        <td style="font-size:.75rem;color:var(--g500)">${c.source||'manual'}</td>
+        <td><button class="btn btn-o btn-sm" onclick="editClient('${c.id}')">Edit</button></td>
+    </tr>`).join('');
+}
+
+function populateClientDropdowns(){
+    var opts='<option value="">Select client...</option>'+allClients.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+    ['pm-client','tp-client'].forEach(id=>{var el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+
+document.getElementById('add-client-btn').onclick=()=>{
+    document.getElementById('cm-id').value='';
+    document.getElementById('cm-title').textContent='Add Client';
+    ['cm-name','cm-email','cm-phone','cm-company','cm-location','cm-tags','cm-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cm-budget').value='';
+    openModal('client-modal');
+};
+
+function editClient(id){
+    var c=allClients.find(x=>x.id===id);if(!c)return;
+    document.getElementById('cm-id').value=c.id;
+    document.getElementById('cm-title').textContent='Edit Client';
+    document.getElementById('cm-name').value=c.name||'';
+    document.getElementById('cm-email').value=c.email||'';
+    document.getElementById('cm-phone').value=c.phone||'';
+    document.getElementById('cm-company').value=c.company||'';
+    document.getElementById('cm-location').value=c.location||'';
+    document.getElementById('cm-budget').value=c.budget_range||'';
+    document.getElementById('cm-tags').value=(c.tags||[]).join(', ');
+    document.getElementById('cm-notes').value=c.notes||'';
+    openModal('client-modal');
+}
+
+document.getElementById('cm-save').onclick=async function(){
+    var name=document.getElementById('cm-name').value.trim();
+    if(!name){alert('Name is required.');return}
+    var row={advisor_id:me.id,name:name,email:document.getElementById('cm-email').value.trim(),phone:document.getElementById('cm-phone').value.trim(),
+        company:document.getElementById('cm-company').value.trim(),location:document.getElementById('cm-location').value.trim(),
+        budget_range:document.getElementById('cm-budget').value,notes:document.getElementById('cm-notes').value.trim(),
+        tags:document.getElementById('cm-tags').value.split(',').map(t=>t.trim()).filter(Boolean),updated_at:new Date().toISOString()};
+    var id=document.getElementById('cm-id').value;
+    this.textContent='Saving...';this.disabled=true;
+    if(id){await db.from('advisor_clients').update(row).eq('id',id);}
+    else{await db.from('advisor_clients').insert(row);}
+    this.textContent='Save Client';this.disabled=false;
+    closeModal('client-modal');loadClients();renderOverview();
+};
+
+// ===== PROJECTS =====
+async function loadProjects(){
+    var{data}=await db.from('advisory_projects').select('*').eq('advisor_id',me.id).order('created_at',{ascending:false});
+    allProjects=data||[];
+    document.getElementById('n-projects').textContent=allProjects.filter(p=>!['completed','archived'].includes(p.status)).length||'';
     renderProjects();
 }
 
-async function loadArtworks() {
-    const { data } = await db.from('artworks').select('*, artists(artist_name)').order('created_at', { ascending: false });
-    allArtworks = data || [];
+function renderProjects(){
+    var list=projFilter==='all'?allProjects:allProjects.filter(p=>p.status===projFilter);
+    var b=document.getElementById('tb-projects');
+    if(!list.length){b.innerHTML='<tr><td colspan="6" class="empty">No projects match</td></tr>';return}
+    b.innerHTML=list.map(p=>`<tr>
+        <td class="tn">${p.client_name||'—'}</td><td>${p.project_type||'—'}</td>
+        <td style="font-size:.75rem">${(p.styles||[]).join(', ')||'—'}</td><td>${p.budget||'—'}</td>
+        <td><span class="badge ${STAT[p.status]||'b-new'}">${p.status||'new'}</span></td>
+        <td><button class="btn btn-o btn-sm" onclick="openProject('${p.id}')">Open</button></td>
+    </tr>`).join('');
+}
+
+document.querySelectorAll('.pf').forEach(b=>b.onclick=function(){document.querySelectorAll('.pf').forEach(x=>{x.className='btn btn-o pf'});this.className='btn btn-d pf active';projFilter=this.dataset.f;renderProjects();});
+
+async function openProject(id){
+    var p=allProjects.find(x=>x.id===id);if(!p)return;
+    var[msgR,artR]=await Promise.all([db.from('advisory_messages').select('*').eq('project_id',id).order('created_at',{ascending:true}),db.from('advisory_project_artworks').select('*, artworks(title, primary_image_url, artwork_price, medium, artists(artist_name))').eq('project_id',id)]);
+    var msgs=msgR.data||[],arts=artR.data||[];
+    document.getElementById('dp-title').textContent=p.client_name||'Project';
+    document.getElementById('dp-sub').textContent=(p.status||'new')+' · '+(p.project_type||'');
+    var h='<div class="dp-sec"><div class="dp-lbl">Client Details</div><div style="font-size:.85rem;line-height:1.8">'+
+        (p.client_email?'Email: '+p.client_email+'<br>':'')+
+        (p.budget?'Budget: '+p.budget+'<br>':'')+
+        (p.timeline?'Timeline: '+p.timeline+'<br>':'')+
+        ((p.styles||[]).length?'Styles: '+(p.styles||[]).join(', ')+'<br>':'')+
+        (p.notes?'<br>'+p.notes:'')+'</div></div>';
+    h+='<div class="dp-sec"><div class="dp-lbl">Status</div><div style="display:flex;gap:.35rem;flex-wrap:wrap">';
+    ['new','in_progress','artworks_proposed','completed','archived'].forEach(s=>{
+        h+='<button class="btn '+(p.status===s?'btn-d':'btn-o')+' btn-sm" '+(p.status===s?'disabled':'')+' onclick="updateProjStatus(\''+id+'\',\''+s+'\')">'+s.replace(/_/g,' ')+'</button>';
+    });
+    h+='</div></div>';
+    h+='<div class="dp-sec"><div class="dp-lbl">Proposed Artworks ('+arts.length+')</div>';
+    if(arts.length){h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem">';arts.forEach(a=>{var aw=a.artworks||{};h+='<div style="border:1px solid var(--g200);padding:.4rem">'+(aw.primary_image_url?'<img src="'+aw.primary_image_url+'" style="width:100%;height:50px;object-fit:cover;margin-bottom:.3rem">':'')+'<div style="font-size:.7rem;font-weight:500">'+((aw.title)||'')+'</div><div style="font-size:.65rem;color:var(--g500)">'+(aw.artists?.artist_name||'')+' · '+fmt(aw.artwork_price)+'</div></div>';});h+='</div>';}
+    h+='</div>';
+    h+='<div class="dp-sec"><div class="dp-lbl">Messages</div><div class="msgs" id="msg-'+id+'">';
+    if(!msgs.length)h+='<div style="text-align:center;color:var(--g400);font-size:.8rem;padding:.75rem">No messages yet</div>';
+    else msgs.forEach(m=>{var cls=m.sender_type==='advisor'?'msg-adv':'msg-cl';h+='<div class="msg-b '+cls+'">'+m.message+'<div class="msg-t">'+(m.sender_name||m.sender_type)+' · '+new Date(m.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+'</div></div>';});
+    h+='</div><div style="display:flex;gap:.4rem"><textarea class="fi" id="mi-'+id+'" placeholder="Type a message..." style="flex:1;min-height:36px;resize:none;font-size:.8rem"></textarea><button class="btn btn-d" onclick="sendMsg(\''+id+'\')">Send</button></div></div>';
+    document.getElementById('dp-body').innerHTML=h;
+    document.getElementById('dp').classList.add('open');document.getElementById('dp-overlay').classList.add('open');
+    var mc=document.getElementById('msg-'+id);if(mc)mc.scrollTop=mc.scrollHeight;
+}
+
+async function updateProjStatus(id,s){await db.from('advisory_projects').update({status:s,updated_at:new Date().toISOString()}).eq('id',id);await loadProjects();renderOverview();openProject(id);}
+async function sendMsg(pid){var el=document.getElementById('mi-'+pid);var t=el.value.trim();if(!t)return;await db.from('advisory_messages').insert({project_id:pid,sender_type:'advisor',sender_name:(me.first_name||'')+' '+(me.last_name||''),message:t});el.value='';openProject(pid);}
+
+document.getElementById('dp-close').onclick=()=>{document.getElementById('dp').classList.remove('open');document.getElementById('dp-overlay').classList.remove('open');};
+document.getElementById('dp-overlay').onclick=()=>{document.getElementById('dp').classList.remove('open');document.getElementById('dp-overlay').classList.remove('open');};
+
+// ===== PROPOSALS =====
+async function loadProposals(){
+    var{data}=await db.from('advisor_proposals').select('*, advisor_clients(name), advisor_proposal_items(id)').eq('advisor_id',me.id).order('created_at',{ascending:false});
+    allProposals=data||[];
+    document.getElementById('n-proposals').textContent=allProposals.filter(p=>p.status==='draft'||p.status==='sent').length||'';
+    renderProposals();
+}
+
+function renderProposals(){
+    var b=document.getElementById('tb-proposals');
+    if(!allProposals.length){b.innerHTML='<tr><td colspan="7" class="empty">No proposals yet. Create your first one.</td></tr>';return}
+    b.innerHTML=allProposals.map(p=>`<tr>
+        <td class="tn">${p.title}</td><td>${p.advisor_clients?.name||'—'}</td>
+        <td>${(p.advisor_proposal_items||[]).length}</td><td>${fmt(p.total_value)}</td>
+        <td><span class="badge ${STAT[p.status]||'b-grey'}">${p.status}</span></td>
+        <td style="font-size:.75rem;color:var(--g500)">${new Date(p.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td><button class="btn btn-o btn-sm" onclick="markProposal('${p.id}','sent')">Send</button></td>
+    </tr>`).join('');
+}
+
+async function markProposal(id,s){await db.from('advisor_proposals').update({status:s,sent_at:s==='sent'?new Date().toISOString():null,updated_at:new Date().toISOString()}).eq('id',id);loadProposals();}
+
+let selArtIds=new Set();
+document.getElementById('new-proposal-btn').onclick=()=>{
+    selArtIds.clear();
+    ['pm-title','pm-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pm-client').value='';
+    renderProposalPicker(allArtworks);
+    openModal('proposal-modal');
+};
+
+document.getElementById('pm-aw-search').oninput=function(){
+    var q=this.value.toLowerCase();
+    renderProposalPicker(allArtworks.filter(a=>(a.title||'').toLowerCase().includes(q)||(a.artists?.artist_name||'').toLowerCase().includes(q)));
+};
+
+function renderProposalPicker(arts){
+    document.getElementById('pm-aw-grid').innerHTML=arts.slice(0,30).map(a=>{
+        var sel=selArtIds.has(a.id)?'sel':'';
+        return '<div class="ap-item '+sel+'" onclick="toggleArt(this,\''+a.id+'\')"><div class="ap-check">✓</div>'+(a.primary_image_url?'<img src="'+a.primary_image_url+'" alt="">':'<div style="height:70px;background:var(--g200)"></div>')+'<div class="ap-info"><div style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(a.title||'Untitled')+'</div><div style="color:var(--g500)">'+(a.artists?.artist_name||'')+' · '+fmt(a.artwork_price||a.price)+'</div></div></div>';
+    }).join('');
+}
+
+function toggleArt(el,id){if(selArtIds.has(id)){selArtIds.delete(id);el.classList.remove('sel')}else{selArtIds.add(id);el.classList.add('sel')}}
+
+document.getElementById('pm-save').onclick=async function(){
+    var title=document.getElementById('pm-title').value.trim();
+    if(!title){alert('Title required');return}
+    this.textContent='Creating...';this.disabled=true;
+    var totalVal=[...selArtIds].reduce((s,id)=>{var a=allArtworks.find(x=>x.id===id);return s+(a?Number(a.artwork_price||a.price||0):0)},0);
+    var{data:prop,error}=await db.from('advisor_proposals').insert({advisor_id:me.id,client_id:document.getElementById('pm-client').value||null,title:title,notes:document.getElementById('pm-notes').value.trim(),total_value:totalVal,status:'draft'}).select().single();
+    if(error){alert('Error: '+error.message);this.textContent='Create Proposal';this.disabled=false;return}
+    if(selArtIds.size>0){
+        var items=[...selArtIds].map((aid,i)=>({proposal_id:prop.id,artwork_id:aid,sort_order:i}));
+        await db.from('advisor_proposal_items').insert(items);
+    }
+    this.textContent='Create Proposal';this.disabled=false;
+    closeModal('proposal-modal');loadProposals();renderOverview();
+};
+
+// ===== ARTWORKS =====
+async function loadArtworks(){
+    var{data}=await db.from('artworks').select('*, artists(artist_name)').order('created_at',{ascending:false});
+    allArtworks=data||[];
     renderArtworks();
 }
 
-async function loadEarnings() {
-    const { data } = await db.from('advisory_earnings').select('*, advisory_projects(client_name)').eq('advisor_id', advisorData.id).order('created_at', { ascending: false });
-    allEarnings = data || [];
-    document.getElementById('n-earnings').textContent = allEarnings.length || '';
+function renderArtworks(){
+    var q=(document.getElementById('aw-search')?.value||'').toLowerCase();
+    var m=document.getElementById('aw-med')?.value||'all';
+    var f=allArtworks;
+    if(q)f=f.filter(a=>(a.title||'').toLowerCase().includes(q)||(a.artists?.artist_name||'').toLowerCase().includes(q)||(a.medium||'').includes(q));
+    if(m!=='all')f=f.filter(a=>a.medium===m);
+    var b=document.getElementById('tb-artworks');
+    if(!f.length){b.innerHTML='<tr><td colspan="6" class="empty">No artworks found</td></tr>';return}
+    b.innerHTML=f.slice(0,50).map(a=>{
+        var img=a.primary_image_url?'<img src="'+a.primary_image_url+'" style="width:44px;height:33px;object-fit:cover">':'<div style="width:44px;height:33px;background:var(--g200)"></div>';
+        return '<tr><td>'+img+'</td><td class="tn">'+(a.title||'Untitled')+'</td><td>'+(a.artists?.artist_name||'—')+'</td><td>'+(MED[a.medium]||a.medium||'—')+'</td><td style="font-weight:600">'+fmt(a.artwork_price||a.price)+'</td><td><span class="badge '+(a.status==='sold'?'b-grey':'b-new')+'">'+(a.status||'available')+'</span></td></tr>';
+    }).join('');
+}
+
+document.getElementById('aw-search')?.addEventListener('input',renderArtworks);
+document.getElementById('aw-med')?.addEventListener('change',renderArtworks);
+
+// ===== 3RD PARTY SALES =====
+async function load3p(){
+    var{data}=await db.from('third_party_purchases').select('*, advisor_clients(name)').eq('advisor_id',me.id).order('created_at',{ascending:false});
+    all3p=data||[];
+    document.getElementById('n-3p').textContent=all3p.filter(x=>x.status==='pending').length||'';
+    render3p();
+}
+
+function render3p(){
+    var b=document.getElementById('tb-3p');
+    if(!all3p.length){b.innerHTML='<tr><td colspan="7" class="empty">No 3rd party sales logged yet</td></tr>';return}
+    b.innerHTML=all3p.map(t=>`<tr>
+        <td style="font-size:.75rem;color:var(--g500)">${new Date(t.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+        <td class="tn">${t.vendor_name}</td><td>${t.artwork_description}</td>
+        <td>${t.advisor_clients?.name||'—'}</td><td>${fmt(t.purchase_price)}</td>
+        <td style="font-weight:600;color:var(--ok)">${fmt(t.commission_amount)}</td>
+        <td><span class="badge ${STAT[t.status]||'b-pending'}">${t.status}</span></td>
+    </tr>`).join('');
+}
+
+document.getElementById('new-3p-btn').onclick=()=>{
+    ['tp-vendor','tp-url','tp-artwork','tp-artist','tp-price'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('tp-client').value='';
+    document.getElementById('tp-commission').textContent='0';
+    openModal('tp-modal');
+};
+
+document.getElementById('tp-price').oninput=function(){
+    document.getElementById('tp-commission').textContent=Math.round(Number(this.value||0)*0.15).toLocaleString();
+};
+
+document.getElementById('tp-save').onclick=async function(){
+    var vendor=document.getElementById('tp-vendor').value.trim();
+    var artwork=document.getElementById('tp-artwork').value.trim();
+    var price=Number(document.getElementById('tp-price').value)||0;
+    if(!vendor||!artwork||!price){alert('Vendor, artwork description, and price are required.');return}
+    this.textContent='Submitting...';this.disabled=true;
+    await db.from('third_party_purchases').insert({advisor_id:me.id,client_id:document.getElementById('tp-client').value||null,
+        vendor_name:vendor,vendor_url:document.getElementById('tp-url').value.trim(),artwork_description:artwork,
+        artist_name:document.getElementById('tp-artist').value.trim(),purchase_price:price,commission_rate:15,
+        commission_amount:Math.round(price*0.15),status:'pending'});
+    this.textContent='Submit for Approval';this.disabled=false;
+    closeModal('tp-modal');load3p();renderOverview();
+};
+
+// ===== EARNINGS =====
+async function loadEarnings(){
+    var{data}=await db.from('advisory_earnings').select('*, advisory_projects(client_name)').eq('advisor_id',me.id).order('created_at',{ascending:false});
+    allEarnings=data||[];
     renderEarnings();
 }
 
-// ===== Overview =====
-function renderOverview() {
-    const active = allProjects.filter(p => !['completed','archived'].includes(p.status));
-    const completed = allProjects.filter(p => p.status === 'completed');
-    const totalEarned = allEarnings.reduce((s, e) => s + (e.commission_amount || 0), 0);
+function renderEarnings(){
+    var imTotal=allEarnings.reduce((s,e)=>s+(e.commission_amount||0),0);
+    var tpApproved=all3p.filter(t=>t.status==='approved'||t.status==='paid');
+    var tpTotal=tpApproved.reduce((s,t)=>s+(t.commission_amount||0),0);
+    document.getElementById('earn-im').textContent=fmt(imTotal);
+    document.getElementById('earn-3p').textContent=fmt(tpTotal);
+    document.getElementById('earn-total').textContent=fmt(imTotal+tpTotal);
 
-    document.getElementById('ov-active').textContent = active.length;
-    document.getElementById('ov-completed').textContent = completed.length;
-    document.getElementById('ov-earnings').textContent = fmt(totalEarned);
+    var b1=document.getElementById('tb-earn-im');
+    if(!allEarnings.length)b1.innerHTML='<tr><td colspan="6" class="empty">No InfraMint commissions yet</td></tr>';
+    else b1.innerHTML=allEarnings.map(e=>`<tr><td style="color:var(--g500)">${new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${e.advisory_projects?.client_name||'—'}</td><td>${fmt(e.sale_amount)}</td><td>${e.commission_rate||5}%</td><td style="font-weight:600;color:var(--ok)">${fmt(e.commission_amount)}</td><td><span class="badge ${STAT[e.status]||'b-pending'}">${e.status||'pending'}</span></td></tr>`).join('');
 
-    const tbody = document.getElementById('tb-recent-projects');
-    if (allProjects.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty">No projects assigned yet. New projects will appear here when admin assigns them to you.</td></tr>';
-        return;
-    }
-    tbody.innerHTML = allProjects.slice(0, 5).map(p => `<tr style="cursor:pointer" onclick="openProject('${p.id}')">
-        <td style="font-weight:500">${p.client_name || '—'}</td>
-        <td>${p.project_type || '—'}</td>
-        <td>${p.budget || '—'}</td>
-        <td><span class="badge ${statusClass[p.status] || 'badge-new'}">${statusLabels[p.status] || p.status}</span></td>
-        <td style="color:var(--g500)">${p.updated_at ? new Date(p.updated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</td>
-    </tr>`).join('');
+    var b2=document.getElementById('tb-earn-3p');
+    if(!tpApproved.length)b2.innerHTML='<tr><td colspan="7" class="empty">No approved 3rd party commissions yet</td></tr>';
+    else b2.innerHTML=tpApproved.map(t=>`<tr><td style="color:var(--g500)">${new Date(t.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td><td>${t.vendor_name}</td><td>${t.artwork_description}</td><td>${fmt(t.purchase_price)}</td><td>${t.commission_rate}%</td><td style="font-weight:600;color:var(--ok)">${fmt(t.commission_amount)}</td><td><span class="badge ${STAT[t.status]||'b-pending'}">${t.status}</span></td></tr>`).join('');
 }
 
-// ===== Projects =====
-function renderProjects() {
-    let filtered = projectFilter === 'all' ? allProjects : allProjects.filter(p => p.status === projectFilter);
-    const tbody = document.getElementById('tb-projects');
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty">No projects match this filter</td></tr>';
-        return;
-    }
-    tbody.innerHTML = filtered.map(p => `<tr>
-        <td style="font-weight:500">${p.client_name || '—'}</td>
-        <td style="font-size:.8125rem">${p.client_email || '—'}</td>
-        <td>${p.project_type || '—'}</td>
-        <td style="font-size:.8125rem">${(p.styles || []).join(', ') || '—'}</td>
-        <td>${p.budget || '—'}</td>
-        <td><span class="badge ${statusClass[p.status] || 'badge-new'}">${statusLabels[p.status] || p.status}</span></td>
-        <td><button class="btn btn-outline btn-sm" onclick="openProject('${p.id}')">Open</button></td>
-    </tr>`).join('');
+// ===== OVERVIEW =====
+function renderOverview(){
+    document.getElementById('ov-clients').textContent=allClients.length;
+    document.getElementById('ov-projects').textContent=allProjects.filter(p=>!['completed','archived'].includes(p.status)).length;
+    document.getElementById('ov-proposals').textContent=allProposals.filter(p=>p.status==='draft'||p.status==='sent').length;
+    var imT=allEarnings.reduce((s,e)=>s+(e.commission_amount||0),0);
+    var tpT=all3p.filter(t=>t.status==='approved'||t.status==='paid').reduce((s,t)=>s+(t.commission_amount||0),0);
+    document.getElementById('ov-earnings').textContent=fmt(imT+tpT);
+
+    var b1=document.getElementById('tb-ov-clients');
+    if(!allClients.length)b1.innerHTML='<tr><td colspan="5" class="empty">No clients yet</td></tr>';
+    else b1.innerHTML=allClients.slice(0,5).map(c=>`<tr><td class="tn">${c.name}</td><td style="font-size:.8rem">${c.email||'—'}</td><td>${c.budget_range||'—'}</td><td>${(c.tags||[]).map(t=>'<span class="tag">'+t+'</span>').join('')||'—'}</td><td style="font-size:.75rem;color:var(--g500)">${new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td></tr>`).join('');
+
+    var pending3p=all3p.filter(t=>t.status==='pending');
+    var b2=document.getElementById('tb-ov-3p');
+    if(!pending3p.length)b2.innerHTML='<tr><td colspan="5" class="empty">No pending approvals</td></tr>';
+    else b2.innerHTML=pending3p.slice(0,5).map(t=>`<tr><td class="tn">${t.vendor_name}</td><td>${t.artwork_description}</td><td>${fmt(t.purchase_price)}</td><td style="font-weight:600;color:var(--ok)">${fmt(t.commission_amount)}</td><td><span class="badge b-pending">${t.status}</span></td></tr>`).join('');
 }
 
-// Project filter
-document.querySelectorAll('.proj-filter').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.proj-filter').forEach(b => { b.classList.remove('active'); b.classList.add('btn-outline'); b.classList.remove('btn-dark'); });
-        this.classList.add('active','btn-dark'); this.classList.remove('btn-outline');
-        projectFilter = this.dataset.filter;
-        renderProjects();
-    });
+// ===== PROFILE =====
+function populateProfile(){
+    document.getElementById('pf-first').value=me.first_name||'';document.getElementById('pf-last').value=me.last_name||'';
+    document.getElementById('pf-email').value=me.email||'';document.getElementById('pf-phone').value=me.phone||'';
+    document.getElementById('pf-company').value=me.company||'';document.getElementById('pf-spec').value=me.specialty||'';
+    document.getElementById('pf-bio').value=me.bio||'';document.getElementById('pf-portfolio').value=me.portfolio_url||'';
+}
+
+document.getElementById('save-profile').onclick=async function(){
+    var u={first_name:document.getElementById('pf-first').value.trim(),last_name:document.getElementById('pf-last').value.trim(),
+        phone:document.getElementById('pf-phone').value.trim(),company:document.getElementById('pf-company').value.trim(),
+        specialty:document.getElementById('pf-spec').value,bio:document.getElementById('pf-bio').value.trim(),
+        portfolio_url:document.getElementById('pf-portfolio').value.trim()};
+    this.textContent='Saving...';this.disabled=true;
+    var{error}=await db.from('advisors').update(u).eq('id',me.id);
+    var m=document.getElementById('pf-msg');m.textContent=error?'Error: '+error.message:'Saved!';m.style.color=error?'var(--err)':'var(--ok)';m.style.display='inline';
+    Object.assign(me,u);this.textContent='Save Changes';this.disabled=false;
+    setTimeout(()=>{m.style.display='none'},3000);
+};
+
+// ===== NAV =====
+document.querySelectorAll('.sb-lk[data-s]').forEach(l=>l.onclick=function(){
+    document.querySelectorAll('.sb-lk').forEach(x=>x.classList.remove('active'));this.classList.add('active');
+    document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+    document.getElementById('section-'+this.dataset.s).classList.add('active');
+    document.getElementById('tb-title').textContent=this.textContent.trim().replace(/\d+$/,'').trim();
 });
 
-// ===== Project Detail Panel =====
-async function openProject(id) {
-    const project = allProjects.find(p => p.id === id);
-    if (!project) return;
+document.getElementById('sign-out').onclick=async()=>{await db.auth.signOut();window.location.href='advisor-login.html';};
 
-    // Load messages and proposed artworks
-    const [msgRes, artRes] = await Promise.all([
-        db.from('advisory_messages').select('*').eq('project_id', id).order('created_at', { ascending: true }),
-        db.from('advisory_project_artworks').select('*, artworks(title, primary_image_url, artwork_price, medium, artists(artist_name))').eq('project_id', id)
-    ]);
-    const messages = msgRes.data || [];
-    const proposedArtworks = artRes.data || [];
+// ===== HELPERS =====
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
 
-    document.getElementById('dp-title').textContent = project.client_name || 'Project';
-    document.getElementById('dp-sub').textContent = (statusLabels[project.status] || project.status) + ' · ' + (project.project_type || 'General');
-
-    let html = '';
-
-    // Info section
-    html += `<div class="detail-section"><div class="detail-label">Client Details</div>
-        <div class="detail-row">
-            <div class="detail-field"><div class="detail-field-label">Email</div>${project.client_email || '—'}</div>
-            <div class="detail-field"><div class="detail-field-label">Budget</div>${project.budget || '—'}</div>
-        </div>
-        <div class="detail-row">
-            <div class="detail-field"><div class="detail-field-label">Timeline</div>${project.timeline || '—'}</div>
-            <div class="detail-field"><div class="detail-field-label">Styles</div>${(project.styles || []).join(', ') || '—'}</div>
-        </div>
-        ${project.notes ? `<div class="detail-value" style="margin-top:.5rem;color:var(--g600)">${project.notes}</div>` : ''}
-    </div>`;
-
-    // Status actions
-    html += `<div class="detail-section"><div class="detail-label">Update Status</div><div style="display:flex;gap:.5rem;flex-wrap:wrap">`;
-    const statusFlow = ['new','in_progress','artworks_proposed','client_reviewing','completed','archived'];
-    statusFlow.forEach(s => {
-        const active = project.status === s;
-        html += `<button class="btn ${active ? 'btn-dark' : 'btn-outline'} btn-sm" ${active ? 'disabled' : ''} onclick="updateProjectStatus('${id}','${s}')">${statusLabels[s]}</button>`;
-    });
-    html += `</div></div>`;
-
-    // Proposed artworks
-    html += `<div class="detail-section"><div class="detail-label">Proposed Artworks (${proposedArtworks.length})</div>`;
-    if (proposedArtworks.length > 0) {
-        html += `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem">`;
-        proposedArtworks.forEach(pa => {
-            const a = pa.artworks;
-            if (!a) return;
-            html += `<div style="border:1px solid var(--g200);padding:.5rem">
-                ${a.primary_image_url ? `<img src="${a.primary_image_url}" style="width:100%;height:60px;object-fit:cover;margin-bottom:.35rem">` : ''}
-                <div style="font-size:.75rem;font-weight:500">${a.title || 'Untitled'}</div>
-                <div style="font-size:.6875rem;color:var(--g500)">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price)}</div>
-                ${pa.client_approved ? '<div style="font-size:.6rem;color:var(--success);font-weight:600;margin-top:.25rem">✓ CLIENT APPROVED</div>' : ''}
-            </div>`;
-        });
-        html += `</div>`;
-    }
-    html += `<button class="btn btn-outline" style="margin-top:.75rem" onclick="showArtworkPicker('${id}')">+ Propose Artwork</button></div>`;
-
-    // Messages
-    html += `<div class="detail-section"><div class="detail-label">Messages</div>
-        <div class="messages-container" id="msg-container-${id}">`;
-    if (messages.length === 0) {
-        html += `<div style="text-align:center;color:var(--g400);font-size:.8125rem;padding:1rem">No messages yet. Start the conversation below.</div>`;
-    } else {
-        messages.forEach(m => {
-            const cls = m.sender_type === 'advisor' ? 'msg-advisor' : m.sender_type === 'system' ? 'msg-system' : 'msg-client';
-            const time = new Date(m.created_at).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-            html += `<div class="msg-bubble ${cls}"><div>${m.message}</div><div class="msg-time">${m.sender_name || m.sender_type} · ${time}</div></div>`;
-        });
-    }
-    html += `</div>
-        <div class="msg-input-row">
-            <textarea class="msg-input" id="msg-input-${id}" placeholder="Type a message to the client..."></textarea>
-            <button class="msg-send" onclick="sendMessage('${id}')">Send</button>
-        </div>
-    </div>`;
-
-    document.getElementById('dp-body').innerHTML = html;
-    document.getElementById('detail-panel').classList.add('open');
-    document.getElementById('detail-overlay').classList.add('open');
-
-    // Scroll messages to bottom
-    const container = document.getElementById('msg-container-' + id);
-    if (container) container.scrollTop = container.scrollHeight;
-}
-
-// Close panel
-document.getElementById('dp-close').addEventListener('click', closePanel);
-document.getElementById('detail-overlay').addEventListener('click', closePanel);
-function closePanel() {
-    document.getElementById('detail-panel').classList.remove('open');
-    document.getElementById('detail-overlay').classList.remove('open');
-}
-
-// Update project status
-async function updateProjectStatus(id, status) {
-    await db.from('advisory_projects').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
-    await loadProjects();
-    renderOverview();
-    openProject(id); // Refresh panel
-}
-
-// Send message
-async function sendMessage(projectId) {
-    const input = document.getElementById('msg-input-' + projectId);
-    const text = input.value.trim();
-    if (!text) return;
-
-    await db.from('advisory_messages').insert({
-        project_id: projectId,
-        sender_type: 'advisor',
-        sender_name: (advisorData.first_name || '') + ' ' + (advisorData.last_name || ''),
-        message: text
-    });
-
-    input.value = '';
-    openProject(projectId); // Refresh
-}
-
-// Artwork picker
-function showArtworkPicker(projectId) {
-    const container = document.getElementById('dp-body');
-    // Check if picker already exists
-    if (document.getElementById('artwork-picker-modal')) return;
-
-    const pickerHtml = `<div id="artwork-picker-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center">
-        <div style="background:var(--white);width:90%;max-width:700px;max-height:80vh;overflow-y:auto;padding:1.5rem">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-                <div style="font-weight:600">Select Artworks to Propose</div>
-                <button onclick="document.getElementById('artwork-picker-modal').remove()" style="background:none;border:none;font-size:1.25rem;cursor:pointer">&times;</button>
-            </div>
-            <input type="text" id="picker-search" placeholder="Search artworks..." style="width:100%;font-family:'Manrope',sans-serif;font-size:.8125rem;padding:.5rem;border:1px solid var(--g300);outline:none;margin-bottom:1rem">
-            <div class="artwork-picker" id="picker-grid"></div>
-            <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end">
-                <button class="btn btn-outline" onclick="document.getElementById('artwork-picker-modal').remove()">Cancel</button>
-                <button class="btn btn-dark" onclick="proposeSelected('${projectId}')">Propose Selected</button>
-            </div>
-        </div>
-    </div>`;
-    document.body.insertAdjacentHTML('beforeend', pickerHtml);
-
-    renderPickerGrid(allArtworks);
-
-    document.getElementById('picker-search').addEventListener('input', function() {
-        const q = this.value.toLowerCase();
-        const filtered = allArtworks.filter(a => {
-            const t = (a.title || '').toLowerCase();
-            const ar = a.artists ? a.artists.artist_name.toLowerCase() : '';
-            return t.includes(q) || ar.includes(q) || (a.medium || '').includes(q);
-        });
-        renderPickerGrid(filtered);
-    });
-}
-
-let selectedArtworkIds = new Set();
-function renderPickerGrid(artworks) {
-    const grid = document.getElementById('picker-grid');
-    grid.innerHTML = artworks.slice(0, 30).map(a => {
-        const sel = selectedArtworkIds.has(a.id) ? 'selected' : '';
-        return `<div class="artwork-pick ${sel}" onclick="toggleArtworkPick(this,'${a.id}')">
-            <div class="artwork-pick-check">✓</div>
-            ${a.primary_image_url ? `<img src="${a.primary_image_url}" alt="${a.title}">` : '<div style="height:80px;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--g400)">No image</div>'}
-            <div class="artwork-pick-info">
-                <div class="artwork-pick-title">${a.title || 'Untitled'}</div>
-                <div class="artwork-pick-price">${a.artists?.artist_name || '—'} · ${fmt(a.artwork_price || a.price)}</div>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function toggleArtworkPick(el, id) {
-    if (selectedArtworkIds.has(id)) {
-        selectedArtworkIds.delete(id);
-        el.classList.remove('selected');
-    } else {
-        selectedArtworkIds.add(id);
-        el.classList.add('selected');
-    }
-}
-
-async function proposeSelected(projectId) {
-    if (selectedArtworkIds.size === 0) return;
-
-    const inserts = [...selectedArtworkIds].map(aid => ({
-        project_id: projectId,
-        artwork_id: aid,
-        advisor_notes: ''
-    }));
-
-    await db.from('advisory_project_artworks').insert(inserts);
-    selectedArtworkIds.clear();
-    document.getElementById('artwork-picker-modal')?.remove();
-    openProject(projectId); // Refresh
-}
-
-// ===== Browse Artworks =====
-function renderArtworks() {
-    const search = (document.getElementById('artwork-search')?.value || '').toLowerCase();
-    const medium = document.getElementById('artwork-medium-filter')?.value || 'all';
-
-    let filtered = allArtworks;
-    if (search) {
-        filtered = filtered.filter(a => {
-            return (a.title || '').toLowerCase().includes(search)
-                || (a.artists?.artist_name || '').toLowerCase().includes(search)
-                || (a.medium || '').includes(search);
-        });
-    }
-    if (medium !== 'all') filtered = filtered.filter(a => a.medium === medium);
-
-    const tbody = document.getElementById('tb-artworks');
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty">No artworks found</td></tr>';
-        return;
-    }
-    tbody.innerHTML = filtered.slice(0, 50).map(a => {
-        const img = a.primary_image_url ? `<img src="${a.primary_image_url}" style="width:48px;height:36px;object-fit:cover">` : '<div style="width:48px;height:36px;background:var(--g200)"></div>';
-        return `<tr>
-            <td>${img}</td>
-            <td style="font-weight:500">${a.title || 'Untitled'}</td>
-            <td>${a.artists?.artist_name || '—'}</td>
-            <td>${mediumNames[a.medium] || a.medium || '—'}</td>
-            <td style="font-weight:600">${fmt(a.artwork_price || a.price)}</td>
-            <td><span class="badge ${a.status === 'sold' ? 'badge-archived' : 'badge-new'}">${a.status || 'available'}</span></td>
-        </tr>`;
-    }).join('');
-}
-
-document.getElementById('artwork-search')?.addEventListener('input', renderArtworks);
-document.getElementById('artwork-medium-filter')?.addEventListener('change', renderArtworks);
-
-// ===== Earnings =====
-function renderEarnings() {
-    const totalEarned = allEarnings.reduce((s, e) => s + (e.commission_amount || 0), 0);
-    const pending = allEarnings.filter(e => e.status === 'pending').reduce((s, e) => s + (e.commission_amount || 0), 0);
-    const paid = allEarnings.filter(e => e.status === 'paid').reduce((s, e) => s + (e.commission_amount || 0), 0);
-
-    document.getElementById('earn-total').textContent = fmt(totalEarned);
-    document.getElementById('earn-pending').textContent = fmt(pending);
-    document.getElementById('earn-paid').textContent = fmt(paid);
-
-    const tbody = document.getElementById('tb-earnings');
-    if (allEarnings.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty">No commissions earned yet. Commissions are generated when advisory project sales close.</td></tr>';
-        return;
-    }
-    tbody.innerHTML = allEarnings.map(e => `<tr>
-        <td style="color:var(--g500)">${new Date(e.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
-        <td>${e.advisory_projects?.client_name || '—'}</td>
-        <td>${fmt(e.sale_amount)}</td>
-        <td>${e.commission_rate || 5}%</td>
-        <td style="font-weight:600;color:var(--success)">${fmt(e.commission_amount)}</td>
-        <td><span class="badge ${e.status === 'paid' ? 'badge-completed' : 'badge-progress'}">${e.status || 'pending'}</span></td>
-    </tr>`).join('');
-}
-
-// ===== Profile =====
-function populateProfile() {
-    document.getElementById('pf-first').value = advisorData.first_name || '';
-    document.getElementById('pf-last').value = advisorData.last_name || '';
-    document.getElementById('pf-email').value = advisorData.email || '';
-    document.getElementById('pf-phone').value = advisorData.phone || '';
-    document.getElementById('pf-company').value = advisorData.company || '';
-    document.getElementById('pf-specialty').value = advisorData.specialty || '';
-    document.getElementById('pf-bio').value = advisorData.bio || '';
-    document.getElementById('pf-portfolio').value = advisorData.portfolio_url || '';
-}
-
-document.getElementById('save-profile').addEventListener('click', async function() {
-    const updates = {
-        first_name: document.getElementById('pf-first').value.trim(),
-        last_name: document.getElementById('pf-last').value.trim(),
-        phone: document.getElementById('pf-phone').value.trim(),
-        company: document.getElementById('pf-company').value.trim(),
-        specialty: document.getElementById('pf-specialty').value,
-        bio: document.getElementById('pf-bio').value.trim(),
-        portfolio_url: document.getElementById('pf-portfolio').value.trim()
-    };
-
-    this.textContent = 'Saving...'; this.disabled = true;
-    const { error } = await db.from('advisors').update(updates).eq('id', advisorData.id);
-    const msg = document.getElementById('pf-msg');
-    if (error) {
-        msg.textContent = 'Error: ' + error.message; msg.style.color = 'var(--error)';
-    } else {
-        msg.textContent = 'Saved!'; msg.style.color = 'var(--success)';
-        Object.assign(advisorData, updates);
-    }
-    msg.style.display = 'inline';
-    this.textContent = 'Save Changes'; this.disabled = false;
-    setTimeout(() => { msg.style.display = 'none'; }, 3000);
-});
-
-// ===== Sidebar navigation =====
-document.querySelectorAll('.sidebar-link[data-s]').forEach(link => {
-    link.addEventListener('click', function() {
-        const s = this.dataset.s;
-        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-        document.getElementById('section-' + s).classList.add('active');
-        document.getElementById('topbar-title').textContent = this.textContent.trim().replace(/\d+$/, '').trim();
-    });
-});
-
-// Sign out
-document.getElementById('sign-out').addEventListener('click', async () => {
-    await db.auth.signOut();
-    window.location.href = 'advisor-login.html';
-});
-
-// Init
 init();
 </script>
 </body>
