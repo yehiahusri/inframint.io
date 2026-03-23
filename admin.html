@@ -12,10 +12,10 @@
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b;--blue:#2563eb}
         body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;font-size:13px}
-        .layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+        .layout{display:grid;grid-template-columns:230px 1fr;height:100vh;overflow:hidden}
 
         /* Sidebar */
-        .sb{background:#0a0a0a;padding-top:1.25rem;display:flex;flex-direction:column;overflow-y:auto}
+        .sb{background:#0a0a0a;padding-top:1.25rem;display:flex;flex-direction:column;overflow-y:auto;height:100vh}
         .sb-logo{display:flex;align-items:center;gap:.6rem;padding:0 1.25rem 1.25rem;text-decoration:none;border-bottom:1px solid #1a1a1a}
         .sb-logo .bar{width:2px;height:1.1rem;background:#fff}
         .sb-logo .t{font-size:1rem;letter-spacing:-.01em}
@@ -35,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0;overflow-x:hidden}
+        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -758,6 +758,32 @@
                         <button class="fbtn" id="save-adv-hero">Upload & Save</button>
                         <span id="adv-hero-msg" style="font-size:.75rem;margin-left:.5rem;display:none"></span>
                     </div>
+                    <div class="card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                            <div>
+                                <div style="font-size:.85rem;font-weight:600">Advisory Page</div>
+                                <div style="font-size:.7rem;color:var(--g500)">Show Art Advisory page to visitors</div>
+                                <div id="toggle-advisory-status" style="font-size:.65rem;color:var(--g400);margin-top:.25rem"></div>
+                            </div>
+                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                                <input type="checkbox" id="toggle-advisory" style="opacity:0;width:0;height:0">
+                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s;border-radius:0" id="toggle-advisory-track"></span>
+                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-advisory-thumb"></span>
+                            </label>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                                <div style="font-size:.85rem;font-weight:600">Market Index</div>
+                                <div style="font-size:.7rem;color:var(--g500)">Show Art Market Index page to visitors</div>
+                                <div id="toggle-market-status" style="font-size:.65rem;color:var(--g400);margin-top:.25rem"></div>
+                            </div>
+                            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                                <input type="checkbox" id="toggle-market" style="opacity:0;width:0;height:0">
+                                <span style="position:absolute;inset:0;background:var(--g300);transition:.3s;border-radius:0" id="toggle-market-track"></span>
+                                <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;transition:.3s" id="toggle-market-thumb"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
@@ -895,6 +921,38 @@
         this.textContent = 'Upload & Save'; this.disabled = false;
         setTimeout(function(){ msg.style.display = 'none'; }, 3000);
     };
+
+    // ===== ADVISORY & MARKET INDEX TOGGLES =====
+    function setupFeatureToggle(key, checkboxId, trackId, thumbId, statusId, onLabel, offLabel) {
+        var cb = document.getElementById(checkboxId);
+        var track = document.getElementById(trackId);
+        var thumb = document.getElementById(thumbId);
+        var status = document.getElementById(statusId);
+
+        function updateUI(isOn) {
+            track.style.background = isOn ? 'var(--black)' : 'var(--g300)';
+            thumb.style.transform = isOn ? 'translateX(20px)' : 'translateX(0)';
+            status.textContent = isOn ? onLabel : offLabel;
+        }
+
+        // Load initial state
+        (async function() {
+            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
+            var isOn = data && data.value === 'true';
+            cb.checked = isOn;
+            updateUI(isOn);
+        })();
+
+        cb.addEventListener('change', async function() {
+            var isOn = this.checked;
+            updateUI(isOn);
+            var { error } = await db.from('site_settings').upsert({ key: key, value: isOn ? 'true' : 'false', updated_at: new Date().toISOString() }, { onConflict: 'key' });
+            if (error) { this.checked = !isOn; updateUI(!isOn); }
+        });
+    }
+
+    setupFeatureToggle('advisory_enabled', 'toggle-advisory', 'toggle-advisory-track', 'toggle-advisory-thumb', 'toggle-advisory-status', 'Advisory page is live', 'Advisory page is hidden');
+    setupFeatureToggle('market_index_enabled', 'toggle-market', 'toggle-market-track', 'toggle-market-thumb', 'toggle-market-status', 'Market Index page is live', 'Market Index page is hidden');
 
     // ===== LOAD ALL =====
     async function loadAll(){
@@ -2209,7 +2267,9 @@
         b.innerHTML='';
         data.forEach(function(u){
             var roleLabel=u.role==='owner'?'Owner':(u.role==='editor'?'Editor':'Admin');
-            var bc=u.role==='e '+bc+'">'+roleLabel+'</span></td><td>'+dt(u.created_at)+'</td><td></td>';
+            var bc=u.role==='owner'?'b-approved':u.role==='editor'?'b-active':'b-pending';
+            var tr=document.createElement('tr');
+            tr.innerHTML='<td class="tn">'+(u.name||u.email)+'</td><td style="font-size:.8rem">'+u.email+'</td><td><span class="badge '+bc+'">'+roleLabel+'</span></td><td style="font-size:.75rem;color:var(--g500)">'+dt(u.created_at)+'</td><td></td>';
             var td=tr.lastChild;
             // Don't allow removing the primary owner
             if(u.email!==ADM_LEGACY){
