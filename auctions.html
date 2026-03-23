@@ -292,8 +292,10 @@ async function init(){
     var{data:{session}}=await db.auth.getSession();
     if(session){
         currentUser=session.user;
-        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();
-        if(col){collectorId=col.id;// nav handled by standard auth}
+        try{
+            var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
+            if(col){collectorId=col.id;}
+        }catch(e){}
         // Load likes
         if(collectorId){
             var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);
