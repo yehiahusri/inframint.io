@@ -35,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
+        main{padding:0 0 4rem;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -1030,7 +1030,7 @@
             db.from('collectors').select('*').order('created_at',{ascending:false}),
             db.from('partners').select('*,partner_artists(id,artist_id,commission_active)').order('created_at',{ascending:false}),
             db.from('artworks').select('*,artists(artist_name)').order('created_at',{ascending:false}),
-            db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email)').order('created_at',{ascending:false}),
+            db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email),artists(artist_name,email)').order('created_at',{ascending:false}),
             db.from('partner_artists').select('*,partners(first_name,last_name),artists(artist_name,id)').order('created_at',{ascending:false})
         ]);
         allArtists=a.data||[];allCollectors=c.data||[];allPartners=p.data||[];allArtworks=aw.data||[];allOrders=o.data||[];allPArtists=pa.data||[];
@@ -1629,8 +1629,9 @@
         var GRACE_DAYS=7;
 
         allOrders.forEach(function(o,i){
-            var art=o.artworks||{};var col=o.collectors||{};
+            var art=o.artworks||{};var col=o.collectors||{};var artist=o.artists||{};
             var ap=Number(o.artwork_price||o.artwork_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
+            var artistName=artist.artist_name||o.artist_name||'—';
 
             // Calculate days since shipped
             var daysSinceShipped='—';
@@ -1644,7 +1645,9 @@
             }
 
             var statusColors={pending:'b-pending',confirmed:'b-pending',paid:'b-active',shipped:'b-shipped',delivered:'b-approved',cancelled:'b-rejected'};
+            var statusLabels={pending:'Awaiting Quote',confirmed:'Quote Sent',paid:'Paid',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled'};
             var bc=statusColors[o.status]||'b-pending';
+            var statusLabel=statusLabels[o.status]||o.status;
             var timerHTML='—';
             if(o.status==='shipped'){
                 if(graceExpired){
@@ -1658,7 +1661,7 @@
             }
 
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>—</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+(o.status||'pending')+'</span></td><td>'+timerHTML+'</td><td></td>';
+            tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||o.artwork_title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>'+artistName+'</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+statusLabel+'</span></td><td>'+timerHTML+'</td><td></td>';
             var td=tr.lastChild;
 
             // View button for every order
