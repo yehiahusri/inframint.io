@@ -2344,7 +2344,11 @@
             if(u.email!==ADM_LEGACY){
                 mkBtn(td,'Remove','ab-no',async function(){
                     if(!confirm('Remove '+u.name+' from the team?'))return;
-                    await db.from('admin_users').delete().eq('id',u.id);
+                    var{error}=await db.from('admin_users').delete().eq('id',u.id);
+                    if(error){
+                        alert('Could not remove: '+error.message);
+                        return;
+                    }
                     renderTeam();
                 });
             }else{
