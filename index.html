@@ -729,7 +729,15 @@
             footer { padding: 2rem 1.5rem; }
             .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
         }
-    </style>
+    .signin-wrap{position:relative}
+.signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
+.signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
+.signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
+.signin-wrap.open .signin-drop{display:flex;flex-direction:column}
+.signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
+.signin-drop a:last-child{border-bottom:none}
+.signin-drop a:hover{color:#fff;background:#111}
+</style>
 
     <meta name="description" content="A platform where independent artists sell their work directly to collectors. Original art, transparent commissions, and worldwide shipping.">
     <meta property="og:type" content="website">
@@ -766,6 +774,7 @@
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
+            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
             <a href="artist-login.html">Artist Login</a>
             <a href="collector-login.html">Collector Login</a>
             <a href="partner-login.html">Partner Login</a>
@@ -782,10 +791,15 @@
         </div>
 
         <div class="nav-right" id="nav-right">
-            <a href="artist-login.html" class="nav-login" id="artist-login-link">Artist Login</a>
-            <a href="collector-login.html" class="nav-login">Collector Login</a>
-            <a href="partner-login.html" class="nav-login">Partner Login</a>
-            <a href="advisor-login.html" class="nav-login">Advisor Login</a>
+            <div class="signin-wrap">
+                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
+                <div class="signin-drop">
+                    <a href="artist-login.html">Artist</a>
+                    <a href="collector-login.html">Collector</a>
+                    <a href="partner-login.html">Partner</a>
+                    <a href="advisor-login.html">Advisor</a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -951,15 +965,11 @@
                 if (session) {
                     const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).maybeSingle();
                     if (artist) {
-                        document.getElementById('nav-right').innerHTML = 
-                            '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>' +
-                            '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
+                        document.getElementById('nav-right').innerHTML = '<a href="artist-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="sign-out-btn" style="color:#a3a3a3">Sign Out</a>';
                     } else {
                         const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).maybeSingle();
                         if (collector) {
-                            document.getElementById('nav-right').innerHTML = 
-                                '<a href="collector-dashboard.html" class="nav-login">My Account</a>' +
-                                '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
+                            document.getElementById('nav-right').innerHTML = '<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="sign-out-btn" style="color:#a3a3a3">Sign Out</a>';
                         }
                     }
                     var sob = document.getElementById('sign-out-btn');
@@ -1061,5 +1071,6 @@
         })();
     </script>
 
+<script>document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});</script>
 </body>
 </html>

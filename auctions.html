@@ -26,7 +26,7 @@
         .page{padding-top:4.5rem}
 
         /* Hero */
-        .hero{background:var(--black);padding:5rem 3rem 3.5rem;color:var(--white);position:relative;overflow:hidden}
+        .hero{background:var(--black);padding:7rem 3rem 2.5rem;color:var(--white);position:relative;overflow:hidden}
         .hero::before{content:'';position:absolute;right:-60px;top:-40px;width:500px;height:500px;background:radial-gradient(circle at 60% 40%,rgba(200,255,0,.04) 0%,transparent 60%);pointer-events:none}
         .hero::after{content:'';position:absolute;right:60px;top:50%;transform:translateY(-50%);width:300px;height:400px;border:1px solid rgba(255,255,255,.03);pointer-events:none}
         .hero-art{position:absolute;right:80px;top:40px;width:280px;height:350px;pointer-events:none;opacity:.06}
@@ -157,12 +157,47 @@
 
         @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card{grid-template-columns:1fr 140px}.past-card-num-bg{font-size:5rem}.past-lots{padding:1rem}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
-    </style>
+    .signin-wrap{position:relative}
+.signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
+.signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
+.signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
+.signin-wrap.open .signin-drop{display:flex;flex-direction:column}
+.signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
+.signin-drop a:last-child{border-bottom:none}
+.signin-drop a:hover{color:#fff;background:#111}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem}
+.mobile-dropdown{display:none}
+@media(max-width:900px){
+.nav-center{display:none!important}.nav-right{display:none!important}.hamburger{display:block}
+.mobile-dropdown{display:none;position:absolute;top:4.5rem;left:0;right:0;background:#0a0a0a;padding:1rem 2rem 1.5rem;flex-direction:column;border-top:1px solid #222;z-index:200}
+.mobile-dropdown.open{display:flex}
+.mobile-dropdown a{font-size:.9375rem;color:#a3a3a3;text-decoration:none;padding:.6rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
+.mobile-dropdown a:hover{color:#fff}
+.mobile-dropdown a:last-child{border-bottom:none}
+}
+</style>
 </head>
 <body>
 <div class="page">
     <nav>
         <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
+        <button class="hamburger" onclick="document.getElementById('mob-drop').classList.toggle('open')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="mobile-dropdown" id="mob-drop" onclick="this.classList.remove('open')">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html">Auctions</a>
+            <a href="art-advisory.html">Advisory</a>
+            <a href="market-index.html">Market Index</a>
+            <a href="about.html">About</a>
+            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
+            <a href="artist-login.html">Artist Login</a>
+            <a href="collector-login.html">Collector Login</a>
+            <a href="partner-login.html">Partner Login</a>
+            <a href="advisor-login.html">Advisor Login</a>
+        </div>
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
@@ -173,10 +208,15 @@
             <a href="about.html">About</a>
         </div>
         <div class="nav-right" id="nav-right">
-            <a href="artist-login.html" class="nav-login">Artist Login</a>
-            <a href="collector-login.html" class="nav-login">Collector Login</a>
-            <a href="partner-login.html" class="nav-login">Partner Login</a>
-            <a href="advisor-login.html" class="nav-login">Advisor Login</a>
+            <div class="signin-wrap">
+                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
+                <div class="signin-drop">
+                    <a href="artist-login.html">Artist</a>
+                    <a href="collector-login.html">Collector</a>
+                    <a href="partner-login.html">Partner</a>
+                    <a href="advisor-login.html">Advisor</a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -249,7 +289,7 @@ async function init(){
     if(session){
         currentUser=session.user;
         var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
-        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';}
+        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';}
         // Load likes
         if(collectorId){
             var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);
@@ -505,6 +545,11 @@ function startTimer(elId,target,label){
 }
 
 init();
+</script>
+<script>
+var so=document.getElementById('nav-signout');
+if(so)so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
+document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});
 </script>
 </body>
 </html>

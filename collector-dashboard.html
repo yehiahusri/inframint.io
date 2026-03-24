@@ -613,10 +613,28 @@
 
         // Load purchases
         async function loadPurchases() {
-            const { data: orders } = await db.from('orders')
+            // Primary query by collector_id
+            var { data: orders } = await db.from('orders')
                 .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                 .eq('collector_id', collectorData.id)
                 .order('created_at', { ascending: false });
+
+            // Fallback: also check by email if no orders found by ID
+            if ((!orders || orders.length === 0) && currentUser.email) {
+                var { data: emailOrders } = await db.from('orders')
+                    .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
+                    .eq('collector_email', currentUser.email)
+                    .order('created_at', { ascending: false });
+                if (emailOrders && emailOrders.length > 0) {
+                    orders = emailOrders;
+                    // Fix: link these orders to the current collector profile
+                    emailOrders.forEach(async function(o) {
+                        if (o.collector_id !== collectorData.id) {
+                            await db.from('orders').update({ collector_id: collectorData.id }).eq('id', o.id);
+                        }
+                    });
+                }
+            }
 
             var container = document.getElementById('purchases-list');
             if (!orders || orders.length === 0) {

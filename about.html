@@ -123,44 +123,17 @@
 
         /* Page Header */
         .page-header {
-            padding: 7rem 3rem 2.5rem;
-            background: var(--black);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::after {
-            content: 'ABOUT';
-            position: absolute;
-            right: -2%;
-            bottom: -20%;
-            font-size: 18vw;
-            font-weight: 800;
-            color: rgba(255,255,255,.03);
-            letter-spacing: -0.05em;
-            pointer-events: none;
-            font-family: 'Manrope', sans-serif;
+            padding: 8rem 4rem 4rem;
+            background: var(--white);
         }
 
         .page-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.3em;
-            color: #c8ff00;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
             text-transform: uppercase;
-            margin-bottom: 0.75rem;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .page-label::before {
-            content: '';
-            width: 2rem;
-            height: 1px;
-            background: #c8ff00;
+            margin-bottom: 1rem;
         }
 
         .page-title {
@@ -169,9 +142,6 @@
             letter-spacing: -0.03em;
             line-height: 1.1;
             max-width: 700px;
-            color: var(--white);
-            position: relative;
-            z-index: 1;
         }
 
         .page-title strong {
@@ -557,49 +527,54 @@
             padding: 0.25rem;
         }
 
-        
+        .mobile-dropdown {
+            display: none;
+        }
 
         @media (max-width: 1200px) {
             .nav-center { display: none !important; }
             .nav-right { display: none !important; }
             .hamburger { display: block; }
-            
-            
-            
-            
-            
+            .mobile-dropdown {
+                display: none;
+                position: absolute;
+                top: 4.5rem;
+                left: 0;
+                right: 0;
+                background: var(--black);
+                padding: 1rem 2rem 1.5rem;
+                flex-direction: column;
+                gap: 0;
+                border-top: 1px solid #222;
+            }
+            .mobile-dropdown.open {
+                display: flex;
+            }
+            .mobile-dropdown a {
+                font-size: 0.9375rem;
+                font-weight: 400;
+                color: var(--gray-400);
+                text-decoration: none;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid #1a1a1a;
+                transition: color 0.2s;
+            }
+            .mobile-dropdown a:hover {
+                color: var(--white);
+            }
+            .mobile-dropdown a:last-child {
+                border-bottom: none;
+            }
         }
 
-    /* === STANDARD NAV === */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;height:4.5rem}
-.logo{display:flex;align-items:center;gap:.875rem;text-decoration:none;flex-shrink:0}
-.logo-bar{width:3px;height:1.75rem;background:#fff}
-.logo-text{font-size:1.25rem;letter-spacing:-.01em}
-.logo-text span:first-child{font-weight:600;color:#fff}
-.logo-text span:last-child{font-weight:200;color:#555}
-.nav-center{display:flex;gap:1.75rem;align-items:center}
-.nav-center a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;transition:color .2s}
-.nav-center a:hover,.nav-center a.active{color:#fff}
-.nav-right{display:flex;gap:.75rem;align-items:center}
-.nav-login-btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:500;color:#a3a3a3;background:none;border:1px solid #333;padding:.4rem .9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
-.nav-login-btn:hover{color:#fff;border-color:#555}
-.nav-login-btn svg{width:14px;height:14px}
-.nav-login-drop{display:none;position:absolute;top:3.5rem;right:0;background:#111;border:1px solid #222;min-width:180px;z-index:200}
-.nav-login-drop.open{display:flex;flex-direction:column}
-.nav-login-drop a{font-size:.8rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;transition:all .15s;border-bottom:1px solid #1a1a1a}
-.nav-login-drop a:last-child{border-bottom:none}
-.nav-login-drop a:hover{color:#fff;background:rgba(255,255,255,.04)}
-.nav-dash{font-size:.8rem;color:#a3a3a3;text-decoration:none;transition:color .2s;white-space:nowrap}
-.nav-dash:hover{color:#fff}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem;color:#fff}
-.hamburger svg{width:22px;height:22px}
-.mobile-menu{display:none;position:fixed;top:4.5rem;left:0;right:0;bottom:0;background:#0a0a0a;z-index:99;flex-direction:column;padding:1.5rem 2rem;overflow-y:auto}
-.mobile-menu.open{display:flex}
-.mobile-menu a{font-size:1rem;color:#a3a3a3;text-decoration:none;padding:.75rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
-.mobile-menu a:hover,.mobile-menu a.active{color:#fff}
-.mobile-menu .mm-label{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#444;padding:1rem 0 .4rem;border-bottom:none}
-@media(max-width:900px){.nav-center{display:none}.nav-right{display:none}.hamburger{display:block}}
-
+    .signin-wrap{position:relative}
+.signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
+.signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
+.signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
+.signin-wrap.open .signin-drop{display:flex;flex-direction:column}
+.signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
+.signin-drop a:last-child{border-bottom:none}
+.signin-drop a:hover{color:#fff;background:#111}
 </style>
 
     <meta name="description" content="InfraMint is an art marketplace for student and emerging artists. Fair commissions, real shipping, escrow protection.">
@@ -619,34 +594,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;
 
     <!-- Navigation -->
     <nav>
-        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <div class="nav-center"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html" class="active">About</a></div>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+        
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html">Auctions</a>
+            <a href="art-advisory.html">Advisory</a>
+            <a href="market-index.html">Market Index</a>
+            <a href="about.html">About</a>
+            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
+            <a href="artist-login.html">Artist Login</a>
+            <a href="collector-login.html">Collector Login</a>
+            <a href="partner-login.html">Partner Login</a>
+            <a href="advisor-login.html">Advisor Login</a>
+        </div>
+        <div class="nav-center">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html">Auctions</a>
+            <a href="art-advisory.html">Advisory</a>
+            <a href="market-index.html">Market Index</a>
+            <a href="about.html" class="active">About</a>
+        </div>
+
         <div class="nav-right" id="nav-right">
-            <div style="position:relative">
-                <button class="nav-login-btn" id="login-toggle" onclick="document.getElementById('login-drop').classList.toggle('open')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Sign In
-                </button>
-                <div class="nav-login-drop" id="login-drop">
-                    <a href="artist-login.html">Artist Login</a>
-                    <a href="collector-login.html">Collector Login</a>
-                    <a href="partner-login.html">Partner Login</a>
-                    <a href="advisor-login.html">Advisor Login</a>
+            <div class="signin-wrap">
+                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
+                <div class="signin-drop">
+                    <a href="artist-login.html">Artist</a>
+                    <a href="collector-login.html">Collector</a>
+                    <a href="partner-login.html">Partner</a>
+                    <a href="advisor-login.html">Advisor</a>
                 </div>
             </div>
         </div>
-        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open');this.innerHTML=document.getElementById('mobile-menu').classList.contains('open')?'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M18 6L6 18M6 6l12 12&apos;/></svg>':'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M3 12h18M3 6h18M3 18h18&apos;/></svg>'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-        </button>
     </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html" class=active>About</a>
-        <div class="mm-label">Account</div>
-        <a href="artist-login.html">Artist Login</a>
-        <a href="collector-login.html">Collector Login</a>
-        <a href="partner-login.html">Partner Login</a>
-        <a href="advisor-login.html">Advisor Login</a>
-    </div>
 
     <!-- Page Header -->
     <header class="page-header">
@@ -765,5 +758,43 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;
         <div class="footer-copy">© 2026 InfraMint · <a href="admin.html" style="color:var(--gray-400);text-decoration:none;font-size:0.75rem;">Gallery Owner</a></div>
     </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
+</script>
+<!-- Auth check + dropdown close -->
+<script>
+(async function(){
+    try {
+        var{data:{session}}=await db.auth.getSession();
+        if(session){
+            var nr=document.getElementById('nav-right');
+            if(!nr) return;
+            var{data:art}=await db.from('artists').select('id').eq('user_id',session.user.id).maybeSingle();
+            if(art){
+                nr.innerHTML='<a href="artist-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
+            } else {
+                var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
+                if(col){
+                    nr.innerHTML='<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
+                } else {
+                    var{data:par}=await db.from('partners').select('id').eq('user_id',session.user.id).maybeSingle();
+                    if(par){
+                        nr.innerHTML='<a href="partner-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
+                    }
+                }
+            }
+            var so=document.getElementById('nav-signout');
+            if(so) so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
+        }
+    } catch(e){console.log('Auth check:',e);}
+    // Close dropdown on outside click
+    document.addEventListener('click',function(e){
+        var w=document.querySelector('.signin-wrap');
+        if(w&&!w.contains(e.target)) w.classList.remove('open');
+    });
+})();
+</script>
 </body>
 </html>
