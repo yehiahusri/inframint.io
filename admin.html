@@ -2343,13 +2343,29 @@
             // Don't allow removing the primary owner
             if(u.email!==ADM_LEGACY){
                 mkBtn(td,'Remove','ab-no',async function(){
-                    if(!confirm('Remove '+u.name+' from the team?'))return;
-                    var{error}=await db.from('admin_users').delete().eq('id',u.id);
-                    if(error){
-                        alert('Could not remove: '+error.message);
-                        return;
+                    if(!confirm('Remove '+(u.name||u.email)+' from the team?'))return;
+                    this.textContent='Removing...';this.disabled=true;
+                    try{
+                        var{data:delData,error}=await db.from('admin_users').delete().eq('id',u.id).select();
+                        if(error){
+                            alert('Delete error: '+error.message+' (code: '+error.code+')');
+                            this.textContent='Remove';this.disabled=false;
+                            return;
+                        }
+                        if(!delData||delData.length===0){
+                            // delete returned nothing — try by email instead
+                            var{error:e2}=await db.from('admin_users').delete().eq('email',u.email);
+                            if(e2){
+                                alert('Delete by email also failed: '+e2.message);
+                                this.textContent='Remove';this.disabled=false;
+                                return;
+                            }
+                        }
+                        renderTeam();
+                    }catch(ex){
+                        alert('Exception: '+ex.message);
+                        this.textContent='Remove';this.disabled=false;
                     }
-                    renderTeam();
                 });
             }else{
                 td.innerHTML='<span style="font-size:.65rem;color:var(--g400)">Primary owner</span>';
