@@ -503,6 +503,42 @@
             if (!data) { window.location.href = 'collector-login.html'; return; }
             collectorData = data;
             console.log('✅ Using collector:', collectorData.id, collectorData.email);
+
+            // === DEBUG: show diagnostic info on page ===
+            var debugBox = document.createElement('div');
+            debugBox.id = 'debug-box';
+            debugBox.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#111;color:#c8ff00;font-family:monospace;font-size:12px;padding:12px 20px;z-index:9999;max-height:200px;overflow-y:auto;border-top:2px solid #c8ff00';
+            debugBox.innerHTML = '<strong>🔍 DEBUG (temporary — will remove after fixing)</strong><br>';
+            document.body.appendChild(debugBox);
+
+            function addDebug(msg) { debugBox.innerHTML += msg + '<br>'; }
+
+            addDebug('Auth email: ' + currentUser.email);
+            addDebug('Auth user_id: ' + currentUser.id);
+            addDebug('Collector ID: ' + collectorData.id);
+            addDebug('Collector user_id: ' + (collectorData.user_id || 'MISSING'));
+            addDebug('Collector email: ' + (collectorData.email || 'MISSING'));
+
+            // Check orders by collector_id
+            var { data: o1, error: e1 } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').eq('collector_id', collectorData.id);
+            addDebug('Orders by collector_id: ' + (o1 ? o1.length : 'null') + (e1 ? ' ERROR: ' + e1.message : ''));
+
+            // Check orders by email
+            var { data: o2, error: e2 } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').eq('collector_email', currentUser.email);
+            addDebug('Orders by email: ' + (o2 ? o2.length : 'null') + (e2 ? ' ERROR: ' + e2.message : ''));
+
+            // Check ALL orders visible
+            var { data: o3, error: e3 } = await db.from('orders').select('id, collector_id, collector_email, status').limit(10);
+            addDebug('All visible orders: ' + (o3 ? o3.length : 'null') + (e3 ? ' ERROR: ' + e3.message : ''));
+            if (o3 && o3.length > 0) {
+                o3.forEach(function(o) {
+                    addDebug('  → ' + o.id.slice(0,8) + '... | collector_id=' + (o.collector_id || 'null') + ' | email=' + (o.collector_email || 'null') + ' | status=' + o.status);
+                });
+            }
+
+            addDebug('<span style="color:#fff">Screenshot this box and send it to me</span>');
+            // === END DEBUG ===
+
             populate();
         }
 
