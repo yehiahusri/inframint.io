@@ -194,7 +194,7 @@
             if (error) { showMessage(error.message, 'error'); return; }
 
             // Check if partner profile exists
-            const { data: partner } = await db.from('partners').select('*').eq('user_id', data.user.id).single();
+            const { data: partner } = await db.from('partners').select('*').eq('user_id', data.user.id).maybeSingle();
             if (!partner) {
                 // Create one from user metadata
                 const meta = data.user.user_metadata || {};
@@ -258,7 +258,7 @@
             const { data: { session } } = await db.auth.getSession();
             if (session) {
                 // Check if partner profile exists
-                const { data: partner } = await db.from('partners').select('*').eq('user_id', session.user.id).single();
+                const { data: partner } = await db.from('partners').select('*').eq('user_id', session.user.id).maybeSingle();
                 
                 if (partner) {
                     window.location.href = 'partner-dashboard.html';

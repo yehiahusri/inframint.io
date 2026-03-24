@@ -367,7 +367,7 @@
             if (!session) { window.location.href = 'partner-login.html'; return; }
             currentUser = session.user;
 
-            const { data, error } = await db.from('partners').select('*').eq('user_id', currentUser.id).single();
+            const { data, error } = await db.from('partners').select('*').eq('user_id', currentUser.id).maybeSingle();
             if (error || !data) { window.location.href = 'partner-login.html'; return; }
             partnerData = data;
             populateDashboard();
@@ -550,7 +550,7 @@
             }
 
             // Check if artist already exists
-            const { data: existingArtist } = await db.from('artists').select('id').eq('email', email).single();
+            const { data: existingArtist } = await db.from('artists').select('id').eq('email', email).maybeSingle();
 
             if (existingArtist) {
                 // Artist exists — link them

@@ -122,7 +122,7 @@
     async function init() {
         if (!artworkId) { document.getElementById('loading').textContent = 'No artwork specified.'; return; }
 
-        var { data: artwork } = await db.from('artworks').select('*, artists(artist_name, first_name, last_name, city, country)').eq('id', artworkId).single();
+        var { data: artwork } = await db.from('artworks').select('*, artists(artist_name, first_name, last_name, city, country)').eq('id', artworkId).maybeSingle();
         if (!artwork) { document.getElementById('loading').textContent = 'Artwork not found.'; return; }
 
         var artist = artwork.artists || {};

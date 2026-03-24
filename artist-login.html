@@ -454,7 +454,7 @@
             }
 
             // Check if user is an artist
-            const { data: artist } = await db.from('artists').select('*').eq('user_id', data.user.id).single();
+            const { data: artist } = await db.from('artists').select('*').eq('user_id', data.user.id).maybeSingle();
             
             if (!artist) {
                 // Not registered as artist - redirect to full signup
@@ -511,7 +511,7 @@
 
             if (session) {
                 // User is logged in - check if they're an artist
-                const { data: artist } = await db.from('artists').select('*').eq('user_id', session.user.id).single();
+                const { data: artist } = await db.from('artists').select('*').eq('user_id', session.user.id).maybeSingle();
                 
                 if (artist) {
                     // Already an artist - go to dashboard

@@ -298,7 +298,7 @@ let RATES={im:15,tp:15};
 async function init(){
     var{data:{session}}=await db.auth.getSession();
     if(!session){window.location.href='advisor-login.html';return}
-    var{data:adv}=await db.from('advisors').select('*').eq('email',session.user.email).single();
+    var{data:adv}=await db.from('advisors').select('*').eq('email',session.user.email).maybeSingle();
     if(!adv||(adv.status!=='approved'&&adv.status!=='active')){alert('Account not active.');await db.auth.signOut();window.location.href='advisor-login.html';return}
     if(!adv.user_id)await db.from('advisors').update({user_id:session.user.id}).eq('id',adv.id);
     me=adv;

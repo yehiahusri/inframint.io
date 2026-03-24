@@ -45,7 +45,7 @@
         .card { background: var(--white); border: 1px solid var(--gray-200); margin: 0 2rem 1.5rem; padding: 1.5rem; }
         .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 0 2rem 1.5rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0 2rem 1.5rem; }
         .stat-card { background: var(--white); border: 1px solid var(--gray-200); padding: 1.25rem; }
         .stat-value { font-size: 2rem; font-weight: 600; }
         .stat-label { font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem; }
@@ -122,12 +122,14 @@
         @media (max-width: 768px) {
             .layout { grid-template-columns: 1fr; }
             .sidebar { display: none; }
-            .stats-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .form-row { grid-template-columns: 1fr; }
             .art-grid { grid-template-columns: repeat(2, 1fr); }
             .co-body { overflow-x: hidden; grid-template-columns: 1fr; }
             .co-prices { grid-template-columns: repeat(2, 1fr); }
             .mobile-dash-nav { display: flex; }
+            #overview-activity > div { grid-template-columns: 1fr !important; }
+            #featured-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
 
         .mobile-dash-nav {
@@ -162,6 +164,8 @@
             .co-prices { grid-template-columns: repeat(2, 1fr); }
             .co-body { overflow-x: hidden; grid-template-columns: 1fr; }
             .co-btn { font-size: .75rem; padding: .5rem 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            #featured-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
     </style>
 </head>
@@ -234,6 +238,7 @@
                     <a href="blog.html" class="topbar-browse">The Drip</a>
                     <a href="auctions.html" class="topbar-browse">Auctions</a>
                     <a href="art-advisory.html" class="topbar-browse">Advisory</a>
+                    <a href="market-index.html" class="topbar-browse">Market Index</a>
                     <a href="about.html" class="topbar-browse">About</a>
                 </div>
                 <span class="topbar-right" id="user-name">Collector</span>
@@ -243,10 +248,69 @@
                 <!-- Overview -->
                 <div class="section active" id="section-overview">
                     <div class="page-header"><h1 class="page-title">Overview</h1><p class="page-subtitle">Your collection at a glance</p></div>
-                    <div class="stats-grid">
+                    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
                         <div class="stat-card"><div class="stat-value" id="stat-purchased">0</div><div class="stat-label">Artworks Purchased</div></div>
                         <div class="stat-card"><div class="stat-value" id="stat-wishlist">0</div><div class="stat-label">In Wishlist</div></div>
-                        <div class="stat-card"><div class="stat-value" id="stat-spent">$0</div><div class="stat-label">Total Spent</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-offers">0</div><div class="stat-label">Active Offers</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-spent">$0</div><div class="stat-label">Total Invested</div></div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div id="overview-activity" style="padding:0 2rem 1.5rem">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+                            <!-- Recent Orders -->
+                            <div style="background:var(--white);border:1px solid var(--gray-200)">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.25rem .75rem">
+                                    <span style="font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400)">Recent Orders</span>
+                                    <a href="#" class="topbar-browse" style="font-size:.75rem" onclick="event.preventDefault();document.querySelector('[data-section=purchases]').click()">View all →</a>
+                                </div>
+                                <div id="overview-orders" style="padding:0 1.25rem 1.25rem">
+                                    <div style="text-align:center;padding:2rem 1rem">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                        <div style="font-size:.85rem;color:var(--gray-400);font-weight:300">No purchases yet</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Wishlist Preview -->
+                            <div style="background:var(--white);border:1px solid var(--gray-200)">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.25rem .75rem">
+                                    <span style="font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400)">Your Wishlist</span>
+                                    <a href="#" class="topbar-browse" style="font-size:.75rem" onclick="event.preventDefault();document.querySelector('[data-section=wishlist]').click()">View all →</a>
+                                </div>
+                                <div id="overview-wishlist" style="padding:0 1.25rem 1.25rem">
+                                    <div style="text-align:center;padding:2rem 1rem">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                        <div style="font-size:.85rem;color:var(--gray-400);font-weight:300">Save artworks you love</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discover / Featured Artworks -->
+                    <div style="padding:0 2rem 2rem">
+                        <div style="background:var(--white);border:1px solid var(--gray-200)">
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.25rem .75rem">
+                                <span style="font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400)">Discover Artworks</span>
+                                <a href="gallery.html" class="topbar-browse" style="font-size:.75rem">Browse Gallery →</a>
+                            </div>
+                            <div id="overview-featured" style="padding:0 1.25rem 1.25rem">
+                                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem" id="featured-grid">
+                                    <div style="text-align:center;padding:3rem 1rem;grid-column:1/-1;color:var(--gray-300)">Loading artworks...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Banner for empty state -->
+                    <div id="overview-cta" style="display:none;padding:0 2rem 2rem">
+                        <div style="background:var(--black);padding:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem">
+                            <div>
+                                <div style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.5rem">Start Your Collection</div>
+                                <div style="font-size:1.35rem;font-weight:300;color:var(--white);letter-spacing:-.02em;line-height:1.3">Discover original artworks from<br>emerging artists around the world</div>
+                            </div>
+                            <a href="gallery.html" style="display:inline-block;padding:.85rem 2rem;background:#c8ff00;color:var(--black);text-decoration:none;font-size:.85rem;font-weight:600;letter-spacing:.02em;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='#d4ff33'" onmouseout="this.style.background='#c8ff00'">Explore the Gallery</a>
+                        </div>
                     </div>
                 </div>
 
@@ -255,7 +319,14 @@
                     <div class="page-header"><h1 class="page-title">My Purchases</h1><p class="page-subtitle">Track your orders and confirm deliveries</p></div>
                     <div class="message" id="purchase-message"></div>
                     <div id="purchases-list">
-                        <div class="empty-text">No purchases yet. Visit the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> to discover art.</div>
+                        <div style="margin:0 2rem">
+                            <div style="background:var(--white);border:1px solid var(--gray-200);text-align:center;padding:3rem 2rem">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                <div style="font-size:1rem;font-weight:500;color:var(--gray-600);margin-bottom:.35rem">No purchases yet</div>
+                                <div style="font-size:.85rem;color:var(--gray-400);font-weight:300;margin-bottom:1.5rem">When you buy artwork, your orders and tracking will appear here</div>
+                                <a href="gallery.html" style="display:inline-block;padding:.75rem 1.75rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s" onmouseover="this.style.background='#262626'" onmouseout="this.style.background='#000'">Explore the Gallery</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -263,7 +334,12 @@
                 <div class="section" id="section-wishlist">
                     <div class="page-header"><h1 class="page-title">Wishlist</h1><p class="page-subtitle">Artworks you're interested in</p></div>
                     <div class="card" id="wishlist-container">
-                        <div class="empty-text">Your wishlist is empty. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and save artworks you like.</div>
+                        <div style="text-align:center;padding:2.5rem 1rem">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <div style="font-size:1rem;font-weight:500;color:var(--gray-600);margin-bottom:.35rem">Your wishlist is empty</div>
+                            <div style="font-size:.85rem;color:var(--gray-400);font-weight:300;margin-bottom:1.5rem">Browse the gallery and tap the heart icon to save artworks you love</div>
+                            <a href="gallery.html" style="display:inline-block;padding:.75rem 1.75rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s" onmouseover="this.style.background='#262626'" onmouseout="this.style.background='#000'">Browse Gallery</a>
+                        </div>
                     </div>
                 </div>
 
@@ -271,7 +347,11 @@
                 <div class="section" id="section-offers">
                     <div class="page-header"><h1 class="page-title">My Offers</h1><p class="page-subtitle">Track offers you've made to artists</p></div>
                     <div id="my-offers-container">
-                        <div class="card"><div class="empty-text">No offers yet. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and make an offer on artwork you like.</div></div>
+                        <div class="card"><div style="text-align:center;padding:2rem 1rem">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                            <div style="font-size:.9rem;font-weight:500;color:var(--gray-600);margin-bottom:.25rem">No offers yet</div>
+                            <div style="font-size:.8rem;color:var(--gray-400);font-weight:300">Browse the <a href="gallery.html" style="color:var(--black);font-weight:500">Gallery</a> and make an offer on artwork you like</div>
+                        </div></div>
                     </div>
                 </div>
 
@@ -384,7 +464,7 @@
             if (!session) { window.location.href = 'collector-login.html'; return; }
             currentUser = session.user;
 
-            var { data } = await db.from('collectors').select('*').eq('user_id', currentUser.id).single();
+            var { data } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
             
             if (!data) {
                 // Auto-create collector profile
@@ -398,7 +478,7 @@
                 }, { onConflict: 'user_id' }).select().single();
                 
                 if (!newCol) {
-                    var { data: retry } = await db.from('collectors').select('*').eq('user_id', currentUser.id).single();
+                    var { data: retry } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
                     data = retry;
                 } else {
                     data = newCol;
@@ -430,6 +510,105 @@
 
             loadPurchases();
             loadWishlist();
+            loadOverviewData();
+            loadFeaturedArtworks();
+        }
+
+        // ===== OVERVIEW DATA =====
+        async function loadOverviewData() {
+            // Load offers count
+            var { data: offers } = await db.from('offers').select('id, status').eq('collector_id', collectorData.id);
+            var activeOffers = (offers || []).filter(function(o) { return o.status === 'pending'; });
+            document.getElementById('stat-offers').textContent = activeOffers.length;
+        }
+
+        // Populate overview orders preview (called from loadPurchases)
+        function populateOverviewOrders(orders) {
+            var container = document.getElementById('overview-orders');
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem 1rem">' +
+                    '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>' +
+                    '<div style="font-size:.85rem;color:var(--gray-400);font-weight:300">No purchases yet</div></div>';
+                document.getElementById('overview-cta').style.display = 'block';
+                return;
+            }
+            document.getElementById('overview-cta').style.display = 'none';
+            var html = '';
+            var preview = orders.slice(0, 3);
+            preview.forEach(function(order) {
+                var art = order.artworks || {};
+                var artist = art.artists || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var statusColors = { pending: '#f59e0b', confirmed: '#d97706', paid: '#2563eb', shipped: '#2563eb', delivered: '#16a34a' };
+                var statusLabels = { pending: 'Awaiting Quote', confirmed: 'Quote Ready', paid: 'Shipping', shipped: 'In Transit', delivered: 'Delivered' };
+                html += '<div style="display:flex;gap:.75rem;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--gray-100)">' +
+                    (hasImg ? '<img src="' + art.primary_image_url + '" style="width:44px;height:44px;object-fit:cover;flex-shrink:0">' : '<div style="width:44px;height:44px;background:var(--gray-200);flex-shrink:0"></div>') +
+                    '<div style="flex:1;min-width:0"><div style="font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (art.title || 'Artwork') + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--gray-400)">' + (artist.artist_name || 'Artist') + '</div></div>' +
+                    '<div style="font-size:.65rem;font-weight:600;padding:.2rem .5rem;background:' + (statusColors[order.status] || '#a3a3a3') + '15;color:' + (statusColors[order.status] || '#a3a3a3') + '">' + (statusLabels[order.status] || order.status) + '</div>' +
+                    '</div>';
+            });
+            if (orders.length > 3) {
+                html += '<div style="padding:.65rem 0;text-align:center"><a href="#" class="topbar-browse" style="font-size:.75rem" onclick="event.preventDefault();document.querySelector(\'[data-section=purchases]\').click()">+ ' + (orders.length - 3) + ' more</a></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Populate overview wishlist preview (called from loadWishlist)
+        function populateOverviewWishlist(wishes) {
+            var container = document.getElementById('overview-wishlist');
+            if (!wishes || wishes.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem 1rem">' +
+                    '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+                    '<div style="font-size:.85rem;color:var(--gray-400);font-weight:300">Save artworks you love</div></div>';
+                return;
+            }
+            var html = '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem">';
+            var preview = wishes.slice(0, 4);
+            preview.forEach(function(w) {
+                var art = w.artworks || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                html += '<div style="border:1px solid var(--gray-100)">' +
+                    '<div style="aspect-ratio:1;overflow:hidden;background:var(--gray-100)">' +
+                    (hasImg ? '<img src="' + art.primary_image_url + '" style="width:100%;height:100%;object-fit:cover">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg></div>') +
+                    '</div>' +
+                    '<div style="padding:.5rem"><div style="font-size:.7rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (art.title || '') + '</div>' +
+                    '<div style="font-size:.7rem;font-weight:600;color:var(--gray-600)">$' + Number(art.artwork_price || art.price || 0).toLocaleString() + '</div></div></div>';
+            });
+            html += '</div>';
+            if (wishes.length > 4) {
+                html += '<div style="padding:.5rem 0;text-align:center"><a href="#" class="topbar-browse" style="font-size:.75rem" onclick="event.preventDefault();document.querySelector(\'[data-section=wishlist]\').click()">+ ' + (wishes.length - 4) + ' more saved</a></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // Featured artworks for discovery
+        async function loadFeaturedArtworks() {
+            var { data: artworks } = await db.from('artworks')
+                .select('id, title, primary_image_url, artwork_price, price, medium, artists(artist_name)')
+                .eq('status', 'approved')
+                .order('created_at', { ascending: false })
+                .limit(8);
+
+            var grid = document.getElementById('featured-grid');
+            if (!artworks || artworks.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;padding:3rem 1rem;grid-column:1/-1;color:var(--gray-300);font-size:.85rem;font-weight:300">New artworks coming soon</div>';
+                return;
+            }
+            var html = '';
+            artworks.forEach(function(art) {
+                var artist = art.artists || {};
+                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                html += '<div style="cursor:pointer;transition:transform .15s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'none\'" onclick="window.location.href=\'gallery.html?artwork=\'+\'' + art.id + '\'">' +
+                    '<div style="aspect-ratio:1;overflow:hidden;background:var(--gray-100);margin-bottom:.5rem">' +
+                    (hasImg ? '<img src="' + art.primary_image_url + '" style="width:100%;height:100%;object-fit:cover;transition:transform .3s" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'none\'">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg></div>') +
+                    '</div>' +
+                    '<div style="font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (art.title || 'Untitled') + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--gray-400);margin-bottom:.15rem">' + (artist.artist_name || '') + '</div>' +
+                    '<div style="font-size:.8rem;font-weight:600">$' + Number(art.artwork_price || art.price || 0).toLocaleString() + '</div>' +
+                    '</div>';
+            });
+            grid.innerHTML = html;
         }
 
         // Load purchases
@@ -441,13 +620,19 @@
 
             var container = document.getElementById('purchases-list');
             if (!orders || orders.length === 0) {
-                container.innerHTML = '<div class="card"><div class="empty-text">No purchases yet. Visit the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> to discover art.</div></div>';
+                container.innerHTML = '<div style="margin:0 2rem"><div style="background:var(--white);border:1px solid var(--gray-200);text-align:center;padding:3rem 2rem">' +
+                    '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>' +
+                    '<div style="font-size:1rem;font-weight:500;color:var(--gray-600);margin-bottom:.35rem">No purchases yet</div>' +
+                    '<div style="font-size:.85rem;color:var(--gray-400);font-weight:300;margin-bottom:1.5rem">When you buy artwork, your orders and tracking will appear here</div>' +
+                    '<a href="gallery.html" style="display:inline-block;padding:.75rem 1.75rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s" onmouseover="this.style.background=\'#262626\'" onmouseout="this.style.background=\'#000\'">Explore the Gallery</a></div></div>';
                 document.getElementById('stat-purchased').textContent = '0';
                 document.getElementById('stat-spent').textContent = '$0';
+                populateOverviewOrders([]);
                 return;
             }
 
             document.getElementById('stat-purchased').textContent = orders.length;
+            populateOverviewOrders(orders);
             var totalSpent = 0;
             container.innerHTML = '';
 
@@ -603,12 +788,18 @@
 
             var container = document.getElementById('wishlist-container');
             if (!wishes || wishes.length === 0) {
-                container.innerHTML = '<div class="empty-text">Your wishlist is empty. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and save artworks you like.</div>';
+                container.innerHTML = '<div style="text-align:center;padding:2.5rem 1rem">' +
+                    '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+                    '<div style="font-size:1rem;font-weight:500;color:var(--gray-600);margin-bottom:.35rem">Your wishlist is empty</div>' +
+                    '<div style="font-size:.85rem;color:var(--gray-400);font-weight:300;margin-bottom:1.5rem">Browse the gallery and tap the heart icon to save artworks you love</div>' +
+                    '<a href="gallery.html" style="display:inline-block;padding:.75rem 1.75rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s" onmouseover="this.style.background=\'#262626\'" onmouseout="this.style.background=\'#000\'">Browse Gallery</a></div>';
                 document.getElementById('stat-wishlist').textContent = '0';
+                populateOverviewWishlist([]);
                 return;
             }
 
             document.getElementById('stat-wishlist').textContent = wishes.length;
+            populateOverviewWishlist(wishes);
             var html = '<div class="art-grid">';
 
             wishes.forEach(function(w) {

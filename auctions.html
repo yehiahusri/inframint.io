@@ -20,20 +20,19 @@
         .nav-center a{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
         .nav-center a:hover{color:var(--white)}
         .nav-center a.active{color:var(--white);font-weight:600}
-        
-        
-        
+        .nav-right{display:flex;gap:1rem;align-items:center}
+        .nav-login{font-size:.8rem;color:var(--g400);text-decoration:none;transition:color .2s}
+        .nav-login:hover{color:var(--white)}
         .page{padding-top:4.5rem}
 
         /* Hero */
-        .hero{background:var(--black);padding:7rem 3rem 2.5rem;color:var(--white);position:relative;overflow:hidden}
+        .hero{background:var(--black);padding:5rem 3rem 3.5rem;color:var(--white);position:relative;overflow:hidden}
         .hero::before{content:'';position:absolute;right:-60px;top:-40px;width:500px;height:500px;background:radial-gradient(circle at 60% 40%,rgba(200,255,0,.04) 0%,transparent 60%);pointer-events:none}
         .hero::after{content:'';position:absolute;right:60px;top:50%;transform:translateY(-50%);width:300px;height:400px;border:1px solid rgba(255,255,255,.03);pointer-events:none}
         .hero-art{position:absolute;right:80px;top:40px;width:280px;height:350px;pointer-events:none;opacity:.06}
         .hero-art::before{content:'';position:absolute;inset:20px;border:2px solid var(--white)}
         .hero-art::after{content:'';position:absolute;top:60px;right:30px;width:120px;height:160px;border:1px solid var(--white);transform:rotate(6deg)}
-        .hero-ey{font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative;display:flex;align-items:center;gap:.75rem}
-        .hero-ey::before{content:'';width:2rem;height:1px;background:#c8ff00}
+        .hero-ey{font-size:.8rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative}
         .hero-t{font-size:2.75rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem;position:relative}
         .hero-t strong{font-weight:700}
         .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7;position:relative}
@@ -158,69 +157,28 @@
 
         @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card{grid-template-columns:1fr 140px}.past-card-num-bg{font-size:5rem}.past-lots{padding:1rem}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
-    /* === STANDARD NAV === */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;height:4.5rem}
-.logo{display:flex;align-items:center;gap:.875rem;text-decoration:none;flex-shrink:0}
-.logo-bar{width:3px;height:1.75rem;background:#fff}
-.logo-text{font-size:1.25rem;letter-spacing:-.01em}
-.logo-text span:first-child{font-weight:600;color:#fff}
-.logo-text span:last-child{font-weight:200;color:#555}
-.nav-center{display:flex;gap:1.75rem;align-items:center}
-.nav-center a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;transition:color .2s}
-.nav-center a:hover,.nav-center a.active{color:#fff}
-.nav-right{display:flex;gap:.75rem;align-items:center}
-.nav-login-btn{font-family:'Manrope',sans-serif;font-size:.75rem;font-weight:500;color:#a3a3a3;background:none;border:1px solid #333;padding:.4rem .9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
-.nav-login-btn:hover{color:#fff;border-color:#555}
-.nav-login-btn svg{width:14px;height:14px}
-.nav-login-drop{display:none;position:absolute;top:3.5rem;right:0;background:#111;border:1px solid #222;min-width:180px;z-index:200}
-.nav-login-drop.open{display:flex;flex-direction:column}
-.nav-login-drop a{font-size:.8rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;transition:all .15s;border-bottom:1px solid #1a1a1a}
-.nav-login-drop a:last-child{border-bottom:none}
-.nav-login-drop a:hover{color:#fff;background:rgba(255,255,255,.04)}
-.nav-dash{font-size:.8rem;color:#a3a3a3;text-decoration:none;transition:color .2s;white-space:nowrap}
-.nav-dash:hover{color:#fff}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem;color:#fff}
-.hamburger svg{width:22px;height:22px}
-.mobile-menu{display:none;position:fixed;top:4.5rem;left:0;right:0;bottom:0;background:#0a0a0a;z-index:99;flex-direction:column;padding:1.5rem 2rem;overflow-y:auto}
-.mobile-menu.open{display:flex}
-.mobile-menu a{font-size:1rem;color:#a3a3a3;text-decoration:none;padding:.75rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
-.mobile-menu a:hover,.mobile-menu a.active{color:#fff}
-.mobile-menu .mm-label{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#444;padding:1rem 0 .4rem;border-bottom:none}
-@media(max-width:900px){.nav-center{display:none}.nav-right{display:none}.hamburger{display:block}}
-
-</style>
+    </style>
 </head>
 <body>
 <div class="page">
     <nav>
         <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <div class="nav-center"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a><a href="auctions.html" class="active">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a></div>
-        <div class="nav-right" id="nav-right">
-            <div style="position:relative">
-                <button class="nav-login-btn" id="login-toggle" onclick="document.getElementById('login-drop').classList.toggle('open')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Sign In
-                </button>
-                <div class="nav-login-drop" id="login-drop">
-                    <a href="artist-login.html">Artist Login</a>
-                    <a href="collector-login.html">Collector Login</a>
-                    <a href="partner-login.html">Partner Login</a>
-                    <a href="advisor-login.html">Advisor Login</a>
-                </div>
-            </div>
+        <div class="nav-center">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html" class="active">Auctions</a>
+            <a href="art-advisory.html">Advisory</a>
+            <a href="market-index.html">Market Index</a>
+            <a href="about.html">About</a>
         </div>
-        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open');this.innerHTML=document.getElementById('mobile-menu').classList.contains('open')?'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M18 6L6 18M6 6l12 12&apos;/></svg>':'<svg viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;currentColor&apos; stroke-width=&apos;2&apos;><path d=&apos;M3 12h18M3 6h18M3 18h18&apos;/></svg>'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-        </button>
+        <div class="nav-right" id="nav-right">
+            <a href="artist-login.html" class="nav-login">Artist Login</a>
+            <a href="collector-login.html" class="nav-login">Collector Login</a>
+            <a href="partner-login.html" class="nav-login">Partner Login</a>
+            <a href="advisor-login.html" class="nav-login">Advisor Login</a>
+        </div>
     </nav>
-    <div class="mobile-menu" id="mobile-menu">
-        <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a><a href="auctions.html" class=active>Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a>
-        <div class="mm-label">Account</div>
-        <a href="artist-login.html">Artist Login</a>
-        <a href="collector-login.html">Collector Login</a>
-        <a href="partner-login.html">Partner Login</a>
-        <a href="advisor-login.html">Advisor Login</a>
-    </div>
 
     <div class="hero">
         <div class="hero-art"></div>
@@ -281,21 +239,17 @@ var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGc
 var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
-    try{
-        var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').maybeSingle();
-        if(setting&&setting.value==='false'){
-            document.getElementById('coming-soon').style.display='block';
-            document.querySelector('.hero').style.display='none';
-            return;
-        }
-    }catch(e){/* no setting = auctions enabled by default */}
+    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').maybeSingle();
+    if(!setting||setting.value!=='true'){
+        document.getElementById('coming-soon').style.display='block';
+        document.querySelector('.hero').style.display='none';
+        return;
+    }
     var{data:{session}}=await db.auth.getSession();
     if(session){
         currentUser=session.user;
-        try{
-            var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
-            if(col){collectorId=col.id;}
-        }catch(e){}
+        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
+        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';}
         // Load likes
         if(collectorId){
             var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);
@@ -306,8 +260,7 @@ async function init(){
 }
 
 async function loadAuctions(){
-    var{data:auctions,error}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
-    if(error){console.error('Auctions query error:',error);/* Try without visible filter in case column missing */var r=await db.from('auctions').select('*').order('created_at',{ascending:false});auctions=r.data;}
+    var{data:auctions}=await db.from('auctions').select('*').eq('visible',true).order('created_at',{ascending:false});
     if(!auctions||auctions.length===0){document.getElementById('no-auctions').style.display='block';return;}
     var now=new Date();
 
@@ -326,10 +279,6 @@ async function loadAuctions(){
     }else if(upcoming.length>0){
         renderEvent(upcoming[0],false);
         loadAndRenderLots(upcoming[0].id);
-    }else{
-        // No live or upcoming — show a message in the event section
-        document.getElementById('event-section').style.display='block';
-        document.getElementById('event-banner').innerHTML='<div style="text-align:center;padding:2rem"><div style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem">No Live Auctions</div><div style="font-size:1.25rem;font-weight:300;color:var(--g500);margin-bottom:.5rem">Check back soon for our next curated auction event.</div>'+(past.length?'<div style="font-size:.8rem;color:var(--g400)">Scroll down to view past auctions.</div>':'')+'</div>';
     }
     if(past.length>0)renderPast(past);
 }
@@ -556,11 +505,6 @@ function startTimer(elId,target,label){
 }
 
 init();
-
-// === NAV AUTH ===
-document.addEventListener('click',function(e){var d=document.getElementById('login-drop');if(d&&!e.target.closest('.nav-login-btn')&&!e.target.closest('.nav-login-drop'))d.classList.remove('open');var m=document.getElementById('mobile-menu');if(m&&m.classList.contains('open')&&!e.target.closest('.hamburger')&&!e.target.closest('.mobile-menu')){m.classList.remove('open');document.getElementById('hamburger').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';}});
-(async function(){try{var{data:{session}}=await db.auth.getSession();if(!session)return;var e=session.user.email,u=session.user.id;var{data:art}=await db.from('artists').select('id').eq('user_id',u).single();if(art){document.getElementById('nav-right').innerHTML='<a href="artist-dashboard.html" class="nav-dash">Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:col}=await db.from('collectors').select('id').eq('user_id',u).single();if(col){document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-dash">My Account</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:adv}=await db.from('advisors').select('id,status').eq('email',e).single();if(adv&&(adv.status==='approved'||adv.status==='active')){document.getElementById('nav-right').innerHTML='<a href="advisor-dashboard.html" class="nav-dash">Advisor Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}var{data:par}=await db.from('partners').select('id').eq('user_id',u).single();if(par){document.getElementById('nav-right').innerHTML='<a href="partner-dashboard.html" class="nav-dash">Partner Dashboard</a><a href="#" class="nav-dash" onclick="db.auth.signOut().then(()=>location.reload())" style="margin-left:.5rem;font-size:.7rem;color:#555">Sign Out</a>';return}}catch(err){}})();
-
 </script>
 </body>
 </html>

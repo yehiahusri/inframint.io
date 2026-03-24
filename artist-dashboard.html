@@ -1484,7 +1484,7 @@
             const { data, error } = await db.from('artists')
                 .select('*')
                 .eq('user_id', currentUser.id)
-                .single();
+                .maybeSingle();
 
             if (error || !data) {
                 alert('Artist profile not found. Please complete your application.');
@@ -2249,7 +2249,7 @@
             var { data: rel } = await db.from('partner_artists')
                 .select('*, partners(first_name, last_name, company_name, email)')
                 .eq('artist_id', artistData.id)
-                .single();
+                .maybeSingle();
 
             if (!rel || !rel.partners) {
                 card.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)">Partner information not available.</div>';
@@ -2655,17 +2655,17 @@
 
         // ===== EARNINGS =====
         async function loadEarnings() {
-            var { data: orders } = await db.from('orders').select('*, artworks(title, artwork_price)').eq('artist_id', artistData.id);
+            var { data: orders } = await db.from('orders').select('*, artworks(title, artwork_price, price)').eq('artist_id', artistData.id);
             orders = orders || [];
             var total = 0, pending = 0, paid = 0, salesCount = 0;
             var tbody = document.getElementById('earnings-table');
             tbody.innerHTML = '';
             orders.forEach(function(o) {
                 if (o.status === 'cancelled') return;
-                var price = Number(o.artworks?.artwork_price || o.total_amount || 0);
+                var price = Number(o.artwork_price || o.artworks?.artwork_price || o.total_amount || 0);
                 var artistCut = price * 0.65;
                 var isPaid = o.status === 'delivered';
-                var isPending = ['pending_quote','quote_sent','paid','shipped'].includes(o.status);
+                var isPending = ['pending','confirmed','paid','shipped'].includes(o.status);
                 if (isPaid) { paid += artistCut; total += artistCut; salesCount++; }
                 else if (isPending) { pending += artistCut; total += artistCut; salesCount++; }
                 tbody.innerHTML += '<tr style="border-bottom:1px solid var(--gray-100)"><td style="padding:.5rem">' + new Date(o.created_at).toLocaleDateString() + '</td><td style="padding:.5rem">' + (o.artworks?.title || 'Artwork') + '</td><td style="padding:.5rem">$' + price.toLocaleString() + '</td><td style="padding:.5rem;font-weight:600">$' + artistCut.toLocaleString() + '</td><td style="padding:.5rem"><span class="status-badge status-' + (isPaid ? 'active' : 'pending') + '">' + (isPaid ? 'Paid' : 'Pending') + '</span></td></tr>';

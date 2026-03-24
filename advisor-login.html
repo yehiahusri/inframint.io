@@ -452,7 +452,7 @@
         if (error) { showMsg(error.message, 'error'); btn.textContent = 'Sign In'; btn.disabled = false; return; }
 
         // Verify they're an approved advisor
-        const { data: advisor, error: advErr } = await db.from('advisors').select('*').eq('email', email).single();
+        const { data: advisor, error: advErr } = await db.from('advisors').select('*').eq('email', email).maybeSingle();
         if (advErr || !advisor) {
             showMsg('No advisor account found for this email. Apply at our Advisory page.', 'error');
             await db.auth.signOut();
@@ -495,7 +495,7 @@
         btn.textContent = 'Creating...'; btn.disabled = true;
 
         // Check if email exists in advisors table and is approved
-        const { data: advisor } = await db.from('advisors').select('*').eq('email', email).single();
+        const { data: advisor } = await db.from('advisors').select('*').eq('email', email).maybeSingle();
         if (!advisor) {
             showMsg('This email is not in our advisor list. Please apply first on the Advisory page.', 'error');
             btn.textContent = 'Create Account'; btn.disabled = false; return;
@@ -521,7 +521,7 @@
     (async () => {
         const { data: { session } } = await db.auth.getSession();
         if (session) {
-            const { data: advisor } = await db.from('advisors').select('*').eq('email', session.user.email).single();
+            const { data: advisor } = await db.from('advisors').select('*').eq('email', session.user.email).maybeSingle();
             if (advisor && (advisor.status === 'approved' || advisor.status === 'active')) {
                 window.location.href = 'advisor-dashboard.html';
             }

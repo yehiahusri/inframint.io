@@ -35,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh;padding-bottom:4rem}
+        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -768,14 +768,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Change the primary admin email. Requires your current password to confirm.</p>
-                        <div class="form-row2" style="margin-bottom:.6rem">
-                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Current Email</label><input type="email" class="fi" id="admin-current-email" disabled></div>
-                            <div><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">New Email</label><input type="email" class="fi" id="admin-new-email" placeholder="new@example.com"></div>
-                        </div>
-                        <div style="margin-bottom:.6rem"><label style="font-size:.65rem;font-weight:600;display:block;margin-bottom:.3rem">Confirm Password</label><input type="password" class="fi" id="admin-confirm-pass" placeholder="Enter your current password" style="max-width:50%"></div>
-                        <button class="fbtn" id="save-admin-email">Update Email</button>
-                        <span id="admin-email-msg" style="font-size:.75rem;margin-left:.5rem;display:none"></span>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong>yehiahusri@gmail.com</strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -836,7 +829,7 @@
         var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
         if(error){m.textContent=error.message;m.className='lm show';return}
         // Check admin_users table OR legacy email
-        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
         if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
         showDash(adm);
     };
@@ -844,7 +837,7 @@
     async function checkAuth(){
         var{data:{session}}=await db.auth.getSession();
         if(session){
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
             if(adm||session.user.email===ADM_LEGACY)showDash(adm);
         }
     }
@@ -878,73 +871,6 @@
         document.getElementById('set-artist-pct').textContent=(100-g-p)+'%';
     };
 
-    // Save commission rates
-    document.getElementById('save-settings').onclick=async function(){
-        var g=document.getElementById('set-gallery').value;
-        var p=document.getElementById('set-partner').value;
-        this.textContent='Saving...';this.disabled=true;
-        await db.from('site_settings').upsert({key:'gallery_pct',value:g,updated_at:new Date().toISOString()},{onConflict:'key'});
-        await db.from('site_settings').upsert({key:'partner_pct',value:p,updated_at:new Date().toISOString()},{onConflict:'key'});
-        this.textContent='Save Settings';this.disabled=false;
-        alert('Commission rates saved: Gallery '+g+'%, Partner '+p+'%, Artist '+(100-g-p)+'%');
-    };
-
-    // Load saved commission rates
-    (async function(){
-        var{data}=await db.from('site_settings').select('key,value').in('key',['gallery_pct','partner_pct']);
-        if(data)data.forEach(function(s){
-            if(s.key==='gallery_pct'&&s.value){document.getElementById('set-gallery').value=s.value;}
-            if(s.key==='partner_pct'&&s.value){document.getElementById('set-partner').value=s.value;}
-        });
-        var g=parseInt(document.getElementById('set-gallery').value)||0;
-        var p=parseInt(document.getElementById('set-partner').value)||0;
-        document.getElementById('set-artist-pct').textContent=(100-g-p)+'%';
-    })();
-
-    // Admin email — populate current email
-    (async function(){
-        var{data:{session}}=await db.auth.getSession();
-        if(session)document.getElementById('admin-current-email').value=session.user.email;
-    })();
-
-    // Change admin email
-    document.getElementById('save-admin-email').onclick=async function(){
-        var newEmail=document.getElementById('admin-new-email').value.trim();
-        var password=document.getElementById('admin-confirm-pass').value;
-        var msg=document.getElementById('admin-email-msg');
-
-        if(!newEmail){msg.textContent='Enter a new email.';msg.style.color='var(--err)';msg.style.display='inline';return;}
-        if(!password){msg.textContent='Password required to confirm.';msg.style.color='var(--err)';msg.style.display='inline';return;}
-
-        this.textContent='Verifying...';this.disabled=true;
-
-        // Re-authenticate with password to confirm identity
-        var{data:{session}}=await db.auth.getSession();
-        var currentEmail=session.user.email;
-        var{error:authErr}=await db.auth.signInWithPassword({email:currentEmail,password:password});
-        if(authErr){
-            msg.textContent='Incorrect password.';msg.style.color='var(--err)';msg.style.display='inline';
-            this.textContent='Update Email';this.disabled=false;return;
-        }
-
-        // Update email in Supabase Auth
-        var{error:updateErr}=await db.auth.updateUser({email:newEmail});
-        if(updateErr){
-            msg.textContent='Error: '+updateErr.message;msg.style.color='var(--err)';msg.style.display='inline';
-            this.textContent='Update Email';this.disabled=false;return;
-        }
-
-        // Update in admin_users table
-        await db.from('admin_users').update({email:newEmail}).eq('email',currentEmail);
-
-        msg.textContent='Email updated! Check your new email for a confirmation link.';msg.style.color='var(--ok)';msg.style.display='inline';
-        document.getElementById('admin-current-email').value=newEmail;
-        document.getElementById('admin-new-email').value='';
-        document.getElementById('admin-confirm-pass').value='';
-        this.textContent='Update Email';this.disabled=false;
-        setTimeout(function(){msg.style.display='none';},5000);
-    };
-
     // Send message (placeholder — logs to admin_log)
     document.getElementById('send-msg').onclick=async function(){
         var type=document.getElementById('msg-to-type').value;
@@ -967,12 +893,10 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        try{
         var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
-        var isOn = !data || data.value !== 'false';
+        var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
-        }catch(e){auctionToggle.checked=true;updateToggleUI(true);}
     }
 
     function updateToggleUI(isOn) {
@@ -985,7 +909,7 @@
         var isOn = this.checked;
         updateToggleUI(isOn);
         var { error } = await db.from('site_settings').upsert({ key: 'auctions_enabled', value: isOn ? 'true' : 'false', updated_at: new Date().toISOString() }, { onConflict: 'key' });
-        if (error) { console.error('Toggle save error:', error); this.checked = !isOn; updateToggleUI(!isOn); alert('Failed to save: ' + error.message); }
+        if (error) { this.checked = !isOn; updateToggleUI(!isOn); }
     });
 
     // ===== ADVISORY HERO IMAGE =====
@@ -1034,12 +958,10 @@
 
         // Load initial state
         (async function() {
-            try{
             var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
-            }catch(e){updateUI(false);}
         })();
 
         cb.addEventListener('change', async function() {
@@ -2840,15 +2762,6 @@
     async function loadAuctions() {
         var { data } = await db.from('auctions').select('*').order('created_at', { ascending: false });
         allAuctionsList = data || [];
-        // Auto-expire: if end_time passed and still "live", update to "ended"
-        var now = new Date();
-        for (var i = 0; i < allAuctionsList.length; i++) {
-            var a = allAuctionsList[i];
-            if (a.status === 'live' && a.end_time && new Date(a.end_time) <= now) {
-                await db.from('auctions').update({ status: 'ended' }).eq('id', a.id);
-                allAuctionsList[i].status = 'ended';
-            }
-        }
         document.getElementById('n-auctions').textContent = allAuctionsList.length;
         renderAuctionsTable();
         renderAuctionFinance();
