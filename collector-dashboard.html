@@ -350,7 +350,7 @@
                         <div class="card"><div style="text-align:center;padding:2rem 1rem">
                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                             <div style="font-size:.9rem;font-weight:500;color:var(--gray-600);margin-bottom:.25rem">No offers yet</div>
-                            <div style="font-size:.8rem;color:var(--gray-400);font-weight:300">Browse the <a href="gallery.html" style="color:var(--black);font-weight:500">Gallery</a> and make an offer on artwork you like</div>
+                            <div style="font-size:.8rem;color:var(--gray-400);font-weight:300">Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;text-decoration:none">Gallery</a> and make an offer on artwork you like</div>
                         </div></div>
                     </div>
                 </div>
@@ -940,7 +940,7 @@
 
             var container = document.getElementById('my-offers-container');
             if (!offers || offers.length === 0) {
-                container.innerHTML = '<div class="card"><div class="empty-text">No offers yet. Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;">Gallery</a> and make an offer on artwork you like.</div></div>';
+                container.innerHTML = '<div class="card"><div style="text-align:center;padding:2rem 1rem"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:.75rem"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><div style="font-size:.9rem;font-weight:500;color:var(--gray-600);margin-bottom:.25rem">No offers yet</div><div style="font-size:.8rem;color:var(--gray-400);font-weight:300">Browse the <a href="gallery.html" style="color:var(--black);font-weight:500;text-decoration:none">Gallery</a> and make an offer on artwork you like</div></div></div>';
                 return;
             }
             container.innerHTML = '';
