@@ -502,43 +502,6 @@
             
             if (!data) { window.location.href = 'collector-login.html'; return; }
             collectorData = data;
-            console.log('✅ Using collector:', collectorData.id, collectorData.email);
-
-            // === DEBUG: show diagnostic info on page ===
-            var debugBox = document.createElement('div');
-            debugBox.id = 'debug-box';
-            debugBox.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#111;color:#c8ff00;font-family:monospace;font-size:12px;padding:12px 20px;z-index:9999;max-height:200px;overflow-y:auto;border-top:2px solid #c8ff00';
-            debugBox.innerHTML = '<strong>🔍 DEBUG (temporary — will remove after fixing)</strong><br>';
-            document.body.appendChild(debugBox);
-
-            function addDebug(msg) { debugBox.innerHTML += msg + '<br>'; }
-
-            addDebug('Auth email: ' + currentUser.email);
-            addDebug('Auth user_id: ' + currentUser.id);
-            addDebug('Collector ID: ' + collectorData.id);
-            addDebug('Collector user_id: ' + (collectorData.user_id || 'MISSING'));
-            addDebug('Collector email: ' + (collectorData.email || 'MISSING'));
-
-            // Check orders by collector_id
-            var { data: o1, error: e1 } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').eq('collector_id', collectorData.id);
-            addDebug('Orders by collector_id: ' + (o1 ? o1.length : 'null') + (e1 ? ' ERROR: ' + e1.message : ''));
-
-            // Check orders by email
-            var { data: o2, error: e2 } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').eq('collector_email', currentUser.email);
-            addDebug('Orders by email: ' + (o2 ? o2.length : 'null') + (e2 ? ' ERROR: ' + e2.message : ''));
-
-            // Check ALL orders visible
-            var { data: o3, error: e3 } = await db.from('orders').select('id, collector_id, collector_email, status').limit(10);
-            addDebug('All visible orders: ' + (o3 ? o3.length : 'null') + (e3 ? ' ERROR: ' + e3.message : ''));
-            if (o3 && o3.length > 0) {
-                o3.forEach(function(o) {
-                    addDebug('  → ' + o.id.slice(0,8) + '... | collector_id=' + (o.collector_id || 'null') + ' | email=' + (o.collector_email || 'null') + ' | status=' + o.status);
-                });
-            }
-
-            addDebug('<span style="color:#fff">Screenshot this box and send it to me</span>');
-            // === END DEBUG ===
-
             populate();
         }
 
@@ -590,13 +553,16 @@
             preview.forEach(function(order) {
                 var art = order.artworks || {};
                 var artist = art.artists || {};
-                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
+                var imgUrl = art.primary_image_url || order.primary_image_url || '';
+                var hasImg = imgUrl && !imgUrl.includes('placehold');
+                var artTitle = art.title || order.artwork_title || 'Artwork';
+                var artistName = artist.artist_name || order.artist_name || 'Artist';
                 var statusColors = { pending: '#f59e0b', confirmed: '#d97706', paid: '#2563eb', shipped: '#2563eb', delivered: '#16a34a' };
                 var statusLabels = { pending: 'Awaiting Quote', confirmed: 'Quote Ready', paid: 'Shipping', shipped: 'In Transit', delivered: 'Delivered' };
                 html += '<div style="display:flex;gap:.75rem;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--gray-100)">' +
-                    (hasImg ? '<img src="' + art.primary_image_url + '" style="width:44px;height:44px;object-fit:cover;flex-shrink:0">' : '<div style="width:44px;height:44px;background:var(--gray-200);flex-shrink:0"></div>') +
-                    '<div style="flex:1;min-width:0"><div style="font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (art.title || 'Artwork') + '</div>' +
-                    '<div style="font-size:.7rem;color:var(--gray-400)">' + (artist.artist_name || 'Artist') + '</div></div>' +
+                    (hasImg ? '<img src="' + imgUrl + '" style="width:44px;height:44px;object-fit:cover;flex-shrink:0">' : '<div style="width:44px;height:44px;background:var(--gray-200);flex-shrink:0"></div>') +
+                    '<div style="flex:1;min-width:0"><div style="font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + artTitle + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--gray-400)">' + artistName + '</div></div>' +
                     '<div style="font-size:.65rem;font-weight:600;padding:.2rem .5rem;background:' + (statusColors[order.status] || '#a3a3a3') + '15;color:' + (statusColors[order.status] || '#a3a3a3') + '">' + (statusLabels[order.status] || order.status) + '</div>' +
                     '</div>';
             });
@@ -665,37 +631,46 @@
 
         // Load purchases
         async function loadPurchases() {
-            // Primary query by collector_id
+            // Try full join query first
             var { data: orders, error: ordErr } = await db.from('orders')
                 .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                 .eq('collector_id', collectorData.id)
                 .order('created_at', { ascending: false });
 
-            console.log('📦 Orders by collector_id (' + collectorData.id + '):', orders ? orders.length + ' found' : 'null', ordErr || '');
+            // If join query fails, fall back to simple query
+            if (ordErr || orders === null) {
+                console.log('Join query failed:', ordErr ? ordErr.message : 'null result', '— trying simple query');
+                var { data: simpleOrders } = await db.from('orders')
+                    .select('*')
+                    .eq('collector_id', collectorData.id)
+                    .order('created_at', { ascending: false });
+                orders = (simpleOrders || []).map(function(o) { o.artworks = null; return o; });
+            }
 
             // Fallback: also check by email if no orders found by ID
             if ((!orders || orders.length === 0) && currentUser.email) {
-                var { data: emailOrders, error: emErr } = await db.from('orders')
+                var { data: emailOrders } = await db.from('orders')
                     .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                     .eq('collector_email', currentUser.email)
                     .order('created_at', { ascending: false });
-                console.log('📦 Orders by email (' + currentUser.email + '):', emailOrders ? emailOrders.length + ' found' : 'null', emErr || '');
+                
+                // If join fails on email query too, try simple
+                if (!emailOrders) {
+                    var { data: simpleEmail } = await db.from('orders')
+                        .select('*')
+                        .eq('collector_email', currentUser.email)
+                        .order('created_at', { ascending: false });
+                    emailOrders = (simpleEmail || []).map(function(o) { o.artworks = null; return o; });
+                }
+
                 if (emailOrders && emailOrders.length > 0) {
                     orders = emailOrders;
-                    // Fix: link these orders to the current collector profile
                     emailOrders.forEach(async function(o) {
                         if (o.collector_id !== collectorData.id) {
-                            console.log('🔗 Relinking order', o.id, 'from collector', o.collector_id, 'to', collectorData.id);
                             await db.from('orders').update({ collector_id: collectorData.id }).eq('id', o.id);
                         }
                     });
                 }
-            }
-
-            // Last resort: check ALL orders visible to this user
-            if (!orders || orders.length === 0) {
-                var { data: allOrders, error: allErr } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').limit(5);
-                console.log('📦 ALL orders visible (first 5):', allOrders, allErr || '');
             }
 
             var container = document.getElementById('purchases-list');
@@ -719,8 +694,11 @@
             orders.forEach(function(order) {
                 var art = order.artworks || {};
                 var artist = art.artists || {};
-                var hasImg = art.primary_image_url && !art.primary_image_url.includes('placehold');
-                var artPrice = Number(order.artwork_price || art.price || 0);
+                var hasImg = (art.primary_image_url || order.primary_image_url) && !(art.primary_image_url || '').includes('placehold');
+                var imgUrl = art.primary_image_url || order.primary_image_url || '';
+                var artTitle = art.title || order.artwork_title || 'Artwork';
+                var artistName = artist.artist_name || order.artist_name || 'Artist';
+                var artPrice = Number(order.artwork_price || art.artwork_price || art.price || order.total_amount || 0);
                 var shipping = Number(order.shipping_cost || 0);
                 var customs = Number(order.customs_cost || 0);
                 var orderTotal = artPrice + shipping + customs;
@@ -781,10 +759,10 @@
                     '</div>' +
                     stepHTML +
                     '<div class="co-body">' +
-                        (hasImg ? '<img class="co-thumb" src="' + art.primary_image_url + '">' : '<div class="co-thumb"></div>') +
+                        (hasImg ? '<img class="co-thumb" src="' + imgUrl + '">' : '<div class="co-thumb"></div>') +
                         '<div>' +
-                            '<div class="co-title">' + (art.title || 'Artwork') + '</div>' +
-                            '<div class="co-artist">by ' + (artist.artist_name || 'Unknown Artist') + '</div>' +
+                            '<div class="co-title">' + artTitle + '</div>' +
+                            '<div class="co-artist">by ' + artistName + '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="co-prices">' +
