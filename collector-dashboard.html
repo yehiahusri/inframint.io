@@ -463,30 +463,46 @@
             const { data: { session } } = await db.auth.getSession();
             if (!session) { window.location.href = 'collector-login.html'; return; }
             currentUser = session.user;
+            console.log('🔑 Auth user:', currentUser.id, currentUser.email);
 
-            var { data } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
+            var { data, error: colErr } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
+            console.log('👤 Collector lookup by user_id:', data ? 'FOUND id=' + data.id : 'NOT FOUND', colErr || '');
             
             if (!data) {
-                // Auto-create collector profile
-                var meta = currentUser.user_metadata || {};
-                var names = (meta.full_name || '').split(' ');
-                var { data: newCol } = await db.from('collectors').upsert({
-                    user_id: currentUser.id,
-                    email: currentUser.email,
-                    first_name: meta.first_name || names[0] || '',
-                    last_name: meta.last_name || names.slice(1).join(' ') || ''
-                }, { onConflict: 'user_id' }).select().single();
+                // Also try by email
+                var { data: byEmail } = await db.from('collectors').select('*').eq('email', currentUser.email).maybeSingle();
+                console.log('👤 Collector lookup by email:', byEmail ? 'FOUND id=' + byEmail.id + ' user_id=' + byEmail.user_id : 'NOT FOUND');
                 
-                if (!newCol) {
-                    var { data: retry } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
-                    data = retry;
+                if (byEmail) {
+                    // Found by email but user_id doesn't match — link it
+                    if (byEmail.user_id !== currentUser.id) {
+                        console.log('🔗 Linking collector to current user_id...');
+                        await db.from('collectors').update({ user_id: currentUser.id }).eq('id', byEmail.id);
+                    }
+                    data = byEmail;
                 } else {
-                    data = newCol;
+                    // Auto-create collector profile
+                    var meta = currentUser.user_metadata || {};
+                    var names = (meta.full_name || '').split(' ');
+                    var { data: newCol } = await db.from('collectors').upsert({
+                        user_id: currentUser.id,
+                        email: currentUser.email,
+                        first_name: meta.first_name || names[0] || '',
+                        last_name: meta.last_name || names.slice(1).join(' ') || ''
+                    }, { onConflict: 'user_id' }).select().single();
+                    
+                    if (!newCol) {
+                        var { data: retry } = await db.from('collectors').select('*').eq('user_id', currentUser.id).maybeSingle();
+                        data = retry;
+                    } else {
+                        data = newCol;
+                    }
                 }
             }
             
             if (!data) { window.location.href = 'collector-login.html'; return; }
             collectorData = data;
+            console.log('✅ Using collector:', collectorData.id, collectorData.email);
             populate();
         }
 
@@ -614,26 +630,36 @@
         // Load purchases
         async function loadPurchases() {
             // Primary query by collector_id
-            var { data: orders } = await db.from('orders')
+            var { data: orders, error: ordErr } = await db.from('orders')
                 .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                 .eq('collector_id', collectorData.id)
                 .order('created_at', { ascending: false });
 
+            console.log('📦 Orders by collector_id (' + collectorData.id + '):', orders ? orders.length + ' found' : 'null', ordErr || '');
+
             // Fallback: also check by email if no orders found by ID
             if ((!orders || orders.length === 0) && currentUser.email) {
-                var { data: emailOrders } = await db.from('orders')
+                var { data: emailOrders, error: emErr } = await db.from('orders')
                     .select('*, artworks(title, primary_image_url, artwork_price, price, medium, artists(artist_name, email))')
                     .eq('collector_email', currentUser.email)
                     .order('created_at', { ascending: false });
+                console.log('📦 Orders by email (' + currentUser.email + '):', emailOrders ? emailOrders.length + ' found' : 'null', emErr || '');
                 if (emailOrders && emailOrders.length > 0) {
                     orders = emailOrders;
                     // Fix: link these orders to the current collector profile
                     emailOrders.forEach(async function(o) {
                         if (o.collector_id !== collectorData.id) {
+                            console.log('🔗 Relinking order', o.id, 'from collector', o.collector_id, 'to', collectorData.id);
                             await db.from('orders').update({ collector_id: collectorData.id }).eq('id', o.id);
                         }
                     });
                 }
+            }
+
+            // Last resort: check ALL orders visible to this user
+            if (!orders || orders.length === 0) {
+                var { data: allOrders, error: allErr } = await db.from('orders').select('id, collector_id, collector_email, status, artwork_title').limit(5);
+                console.log('📦 ALL orders visible (first 5):', allOrders, allErr || '');
             }
 
             var container = document.getElementById('purchases-list');
