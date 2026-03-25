@@ -772,7 +772,7 @@
     <section class="contact-cta">
         <h2 class="contact-cta-title">Have questions? <strong>Let's talk.</strong></h2>
         <p class="contact-cta-text">We'd love to hear from artists, collectors, and collaborators.</p>
-        <a href="mailto:hello@inframint.io" class="contact-cta-email">hello@inframint.io</a>
+        hello@inframint.io
     </section>
 
     <!-- Footer -->
@@ -822,10 +822,4 @@ var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhb
             var so=document.getElementById('nav-signout');
             if(so) so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
         }
-    } catch(e){console.log('Auth check:',e);}
-    // Close dropdown on outside click
-    document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});
-})();
-</script>
-</body>
-</html>
+    } catch(e){console.log('A
