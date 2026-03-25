@@ -793,7 +793,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong>yehiahusri@gmail.com</strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b425e53525a534e4849527b5c565a525715585456">[email&#160;protected]</a></strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -835,7 +835,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
     const SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
     const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
@@ -2512,8 +2512,28 @@
             return;
         }
 
-        msgEl.textContent=name+' added to the team as '+role+'!';
-        msgEl.className='msg-ok show';
+        // Send invitation email
+        var roleLabel=role==='owner'?'Co-Owner':role==='editor'?'Editor':'Admin';
+        var subject='You\'ve been invited to the InfraMint team';
+        var body='Hi '+name+',%0A%0AYou\'ve been added as '+roleLabel+' on InfraMint (inframint.io).%0A%0ATo get started:%0A1. Go to https://inframint.io/collector-login.html%0A2. Create an account using this email ('+email+')%0A3. Once registered, go to https://inframint.io/admin.html to access the admin panel%0A%0AYour role: '+roleLabel+'%0A%0AWelcome to the team!%0AInfraMint';
+        
+        // Try Resend Edge Function
+        try{
+            var{data:{session}}=await db.auth.getSession();
+            fetch('https://vyibnkztkacifahhlxof.supabase.co/functions/v1/send-notification',{
+                method:'POST',
+                headers:{'Content-Type':'application/json','Authorization':'Bearer '+(session?session.access_token:'')},
+                body:JSON.stringify({event:'team_invite',data:{to_email:email,to_name:name,role:roleLabel}})
+            }).catch(function(){});
+        }catch(e){}
+
+        // Also open email client as backup
+        if(confirm(name+' added! Send them an invitation email?')){
+            window.open('mailto:'+email+'?subject='+encodeURIComponent('You\'ve been invited to the InfraMint team')+'&body='+body,'_blank');
+        }
+
+        msgEl.textContent=name+' added to the team as '+roleLabel+'!';
+        msgEl.className='msg-ok show';msgEl.style.color='var(--ok)';
         document.getElementById('team-email').value='';
         document.getElementById('team-name').value='';
         renderTeam();
@@ -3090,13 +3110,4 @@
             document.getElementById('lot-title').value = ''; document.getElementById('lot-artist').value = '';
             document.getElementById('lot-desc').value = ''; document.getElementById('lot-reserve').value = '';
             document.getElementById('lot-start').value = ''; document.getElementById('lot-preview').style.display = 'none';
-            document.getElementById('lot-upload-text').textContent = 'Click to upload or drag image here';
-            lotImageFile = null;
-            loadLots(selectedAuctionId); loadAuctions();
-        }
-        this.textContent = 'Add Painting to Auction'; this.disabled = false;
-    });
-
-    </script>
-</body>
-</html>
+            document.getElementById('lot-upload-text').textContent = 'Click to upload or dra
