@@ -851,12 +851,26 @@
     // Login — check admin_users table
     document.getElementById('a-login').onclick=async function(){
         var e=document.getElementById('a-email').value,p=document.getElementById('a-pass').value,m=document.getElementById('lm');
-        var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
-        if(error){m.textContent=error.message;m.className='lm show';return}
-        // Check admin_users table OR legacy email
-        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
-        if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
-        showDash(adm);
+        m.textContent='Signing in...';m.className='lm show';m.style.color='#737373';
+        
+        try{
+            var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
+            if(error){m.textContent='Auth error: '+error.message;m.className='lm show';m.style.color='red';return}
+            
+            m.textContent='Auth OK, checking admin access...';
+            
+            // Check admin_users table OR legacy email
+            var{data:adm,error:admErr}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
+            
+            if(admErr){m.textContent='DB error: '+admErr.message;m.className='lm show';m.style.color='red';return}
+            
+            if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized. Email: '+e+' not in admin_users and not legacy.';m.className='lm show';m.style.color='red';await db.auth.signOut();return}
+            
+            m.textContent='Access granted, loading...';
+            showDash(adm);
+        }catch(ex){
+            m.textContent='Exception: '+ex.message;m.className='lm show';m.style.color='red';
+        }
     };
 
     async function checkAuth(){
