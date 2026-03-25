@@ -224,6 +224,24 @@
         // Load collector
         var{data:col}=await db.from('collectors').select('*').eq('user_id',currentUser.id).maybeSingle();
         if(!col){
+            // Auto-create collector profile
+            var meta=currentUser.user_metadata||{};
+            var names=(meta.full_name||'').split(' ');
+            var{data:newCol}=await db.from('collectors').upsert({
+                user_id:currentUser.id,
+                email:currentUser.email,
+                first_name:meta.first_name||names[0]||'',
+                last_name:meta.last_name||names.slice(1).join(' ')||''
+            },{onConflict:'user_id'}).select().single();
+            if(newCol){
+                col=newCol;
+            }else{
+                // Try one more time
+                var{data:retry}=await db.from('collectors').select('*').eq('user_id',currentUser.id).maybeSingle();
+                col=retry;
+            }
+        }
+        if(!col){
             document.getElementById('login-prompt').style.display='flex';
             return;
         }
