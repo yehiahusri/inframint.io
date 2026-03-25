@@ -177,6 +177,7 @@
         <button data-ms="offers">Offers</button>
         <button data-ms="reviews">Reviews</button>
         <button data-ms="disputes">Disputes</button>
+        <button data-ms="exhibition">Exhibition</button>
         <button data-ms="profile">Profile</button>
         <button data-ms="shipping">Shipping</button>
     </div>
@@ -213,6 +214,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     Disputes
                 </a>
+                <a class="sidebar-link" data-section="exhibition">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>
+                    Exhibition
+                </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-label">Settings</div>
@@ -237,6 +242,7 @@
                     <a href="artists.html" class="topbar-browse">Artists</a>
                     <a href="blog.html" class="topbar-browse">The Drip</a>
                     <a href="auctions.html" class="topbar-browse">Auctions</a>
+                    <a href="vernissage.html" class="topbar-browse">Vernissage</a>
                     <a href="art-advisory.html" class="topbar-browse">Advisory</a>
                     <a href="market-index.html" class="topbar-browse">Market Index</a>
                     <a href="about.html" class="topbar-browse">About</a>
@@ -369,6 +375,44 @@
                     <div class="message" id="dispute-message"></div>
                     <div id="disputes-container">
                         <div class="card"><div class="empty-text">No disputes.</div></div>
+                    </div>
+                </div>
+
+                <!-- Exhibition -->
+                <div class="section" id="section-exhibition">
+                    <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase artwork from your collection in a virtual vernissage</p></div>
+                    <div class="message" id="exh-message"></div>
+                    <div id="my-exhibitions-list"></div>
+                    <div class="card">
+                        <div class="card-title">Request an Exhibition</div>
+                        <p style="font-size:.8rem;color:var(--gray-500);margin-bottom:1rem;line-height:1.6">Submit your exhibition for admin approval. Add artwork details including high-resolution images and dimensions.</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                            <div class="form-group"><label class="form-label">Exhibition Title</label><input type="text" class="form-input" id="exh-title" placeholder="e.g. My Private Collection"></div>
+                            <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" id="exh-name"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="exh-desc" rows="3" placeholder="Tell visitors about this exhibition..." style="resize:vertical"></textarea></div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                            <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" id="exh-start"></div>
+                            <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-input" id="exh-end"></div>
+                        </div>
+                        <div style="border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:.5rem">
+                            <div style="font-weight:600;font-size:.85rem;margin-bottom:.75rem">Add Artworks</div>
+                            <div style="background:var(--gray-100);padding:1rem;margin-bottom:1rem">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                                    <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input" id="exh-aw-title"></div>
+                                    <div class="form-group"><label class="form-label">Artist Name</label><input type="text" class="form-input" id="exh-aw-artist"></div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+                                    <div class="form-group"><label class="form-label">Width (cm)</label><input type="number" class="form-input" id="exh-aw-w" placeholder="80"></div>
+                                    <div class="form-group"><label class="form-label">Height (cm)</label><input type="number" class="form-input" id="exh-aw-h" placeholder="60"></div>
+                                    <div class="form-group"><label class="form-label">Medium</label><input type="text" class="form-input" id="exh-aw-med"></div>
+                                </div>
+                                <div class="form-group"><label class="form-label">Image URL (high resolution)</label><input type="text" class="form-input" id="exh-aw-img" placeholder="https://..."></div>
+                                <button class="btn btn-primary" id="exh-add-aw" style="font-size:.8rem;padding:.5rem 1rem;background:var(--gray-600)">+ Add Artwork</button>
+                            </div>
+                            <div id="exh-aw-list"></div>
+                        </div>
+                        <button class="btn btn-primary" id="exh-submit" style="margin-top:.5rem">Submit Exhibition Request</button>
                     </div>
                 </div>
 
@@ -1125,10 +1169,57 @@
             }
         }
 
+        // ===== EXHIBITIONS =====
+        var collExhArtworks = [];
+
+        async function loadCollectorExhibitions() {
+            var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(*)').eq('exhibitor_user_id', currentUser.id).order('created_at', { ascending: false });
+            var container = document.getElementById('my-exhibitions-list');
+            if (exhs && exhs.length > 0) {
+                var html = '';
+                exhs.forEach(function(e) {
+                    var sc = { pending:'background:#fef3c7;color:#92400e', approved:'background:#dbeafe;color:#1e40af', live:'background:#f0fdf4;color:#16a34a', ended:'background:#e5e5e5;color:#525252', rejected:'background:#fef2f2;color:#dc2626' };
+                    html += '<div class="card" style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:600">' + (e.title||'Exhibition') + '</div><span style="font-size:.65rem;font-weight:600;padding:.2rem .6rem;' + (sc[e.status]||'background:#f7f7f7;color:#525252') + '">' + e.status + '</span></div><div style="font-size:.75rem;color:var(--gray-400);margin-top:.25rem">' + ((e.exhibition_artworks||[]).length) + ' artworks</div></div>';
+                });
+                container.innerHTML = html;
+            } else { container.innerHTML = ''; }
+            document.getElementById('exh-name').value = (collectorData.first_name||'') + ' ' + (collectorData.last_name||'');
+        }
+
+        document.getElementById('exh-add-aw').addEventListener('click', function() {
+            var t = document.getElementById('exh-aw-title').value.trim();
+            var img = document.getElementById('exh-aw-img').value.trim();
+            if (!t||!img) { alert('Title and image URL required.'); return; }
+            collExhArtworks.push({ title:t, artist_name:document.getElementById('exh-aw-artist').value.trim(), width_cm:Number(document.getElementById('exh-aw-w').value)||60, height_cm:Number(document.getElementById('exh-aw-h').value)||40, medium:document.getElementById('exh-aw-med').value.trim(), image_url:img });
+            ['exh-aw-title','exh-aw-artist','exh-aw-w','exh-aw-h','exh-aw-med','exh-aw-img'].forEach(function(id){document.getElementById(id).value='';});
+            var html = collExhArtworks.map(function(a,i){ return '<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--gray-100);font-size:.85rem"><span>' + a.title + '</span><button onclick="collExhArtworks.splice('+i+',1);this.closest(\'div\').remove()" style="font-family:Manrope;font-size:.7rem;color:var(--error);background:none;border:none;cursor:pointer">Remove</button></div>'; }).join('');
+            document.getElementById('exh-aw-list').innerHTML = '<div style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">' + collExhArtworks.length + ' artwork(s)</div>' + html;
+        });
+
+        document.getElementById('exh-submit').addEventListener('click', async function() {
+            var title = document.getElementById('exh-title').value.trim();
+            var name = document.getElementById('exh-name').value.trim();
+            if (!title||!name) { alert('Title and name required.'); return; }
+            if (collExhArtworks.length === 0) { alert('Add at least one artwork.'); return; }
+            this.textContent = 'Submitting...'; this.disabled = true;
+            var { data: exh, error } = await db.from('exhibitions').insert({ exhibitor_type:'collector', exhibitor_user_id:currentUser.id, exhibitor_name:name, exhibitor_email:currentUser.email, title:title, description:document.getElementById('exh-desc').value.trim(), start_date:document.getElementById('exh-start').value||null, end_date:document.getElementById('exh-end').value||null, status:'pending' }).select().single();
+            if (error) { alert('Error: ' + error.message); this.textContent='Submit Exhibition Request'; this.disabled=false; return; }
+            var inserts = collExhArtworks.map(function(a,i){ return { exhibition_id:exh.id, title:a.title, artist_name:a.artist_name, width_cm:a.width_cm, height_cm:a.height_cm, medium:a.medium, image_url:a.image_url, display_order:i }; });
+            await db.from('exhibition_artworks').insert(inserts);
+            showMsg('exh-message', 'Exhibition submitted for review!', true);
+            this.textContent='Submit Exhibition Request'; this.disabled=false;
+            collExhArtworks = [];
+            document.getElementById('exh-aw-list').innerHTML = '';
+            document.getElementById('exh-title').value = '';
+            document.getElementById('exh-desc').value = '';
+            loadCollectorExhibitions();
+        });
+
         // Load new sections
         loadMyOffers();
         loadReviews();
         loadDisputes();
+        loadCollectorExhibitions();
 
         checkAuth();
     </script>

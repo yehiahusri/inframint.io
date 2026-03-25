@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard — InfraMint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b}
+        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        .layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+        .sidebar{background:var(--white);border-right:1px solid var(--g200);padding-top:1.5rem;display:flex;flex-direction:column}
+        .sidebar-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;text-decoration:none;border-bottom:1px solid var(--g200)}
+        .sidebar-logo .bar{width:2px;height:1.25rem;background:var(--black)}
+        .sidebar-logo .text{font-size:1.125rem;letter-spacing:-.01em}
+        .sidebar-logo .text span:first-child{font-weight:600}
+        .sidebar-logo .text span:last-child{font-weight:200;color:var(--g400)}
+        .sidebar-section{padding:1rem 0}
+        .sidebar-label{font-size:.625rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:0 1.5rem;margin-bottom:.5rem}
+        .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;font-size:.875rem;color:var(--g500);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
+        .sidebar-link:hover{color:var(--black);background:var(--g100)}
+        .sidebar-link.active{color:var(--black);font-weight:500;border-left-color:var(--black);background:var(--g100)}
+        .sidebar-link svg{width:18px;height:18px;flex-shrink:0}
+        .sidebar-bottom{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--g200)}
+        #sign-out{font-family:'Manrope',sans-serif;font-size:.8125rem;color:var(--g500);background:none;border:none;cursor:pointer}
+        #sign-out:hover{color:var(--err)}
+        .topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.875rem}
+        .topbar a{font-size:.8125rem;color:var(--g500);text-decoration:none;transition:color .2s}
+        .topbar a:hover{color:var(--black)}
+        main{padding:0 0 4rem}
+        .section{display:none}
+        .section.active{display:block}
+        .page-header{padding:2rem 2rem 1rem}
+        .page-title{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
+        .page-subtitle{font-size:.875rem;color:var(--g500);font-weight:300;margin-top:.25rem}
+        .card{background:var(--white);border:1px solid var(--g200);margin:0 2rem 1.5rem;padding:1.5rem}
+        .card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--g200)}
+        .form-group{margin-bottom:1rem}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .form-label{display:block;font-size:.8125rem;font-weight:500;margin-bottom:.4rem}
+        .form-input{width:100%;padding:.75rem;font-size:.875rem;font-family:'Manrope',sans-serif;border:1px solid var(--g300);background:var(--white)}
+        .form-input:focus{outline:none;border-color:var(--black)}
+        .btn{padding:.75rem 1.5rem;font-size:.875rem;font-weight:500;font-family:'Manrope',sans-serif;cursor:pointer;border:none;transition:all .2s}
+        .btn-primary{background:var(--black);color:var(--white)}
+        .btn-primary:hover{background:var(--g800)}
+        .btn-secondary{background:var(--g600);color:var(--white)}
+        .message{padding:.75rem 1rem;font-size:.8125rem;margin:0 2rem 1rem;display:none}
+        .message.show{display:block}
+        .mobile-dash-nav{display:none;overflow-x:auto;gap:.25rem;padding:.5rem 1rem;background:var(--white);border-bottom:1px solid var(--g200);position:sticky;top:0;z-index:10}
+        .mobile-dash-nav button{font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:500;padding:.4rem .75rem;border:1px solid var(--g200);background:var(--white);color:var(--g500);white-space:nowrap;cursor:pointer}
+        .mobile-dash-nav button.active{background:var(--black);color:var(--white);border-color:var(--black)}
+        @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{display:none}.mobile-dash-nav{display:flex}.form-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="mobile-dash-nav">
+        <button class="active" data-ms="overview">Overview</button>
+        <button data-ms="exhibition">Exhibition</button>
+        <button data-ms="profile">Profile</button>
+    </div>
+    <div class="layout">
+        <div class="sidebar">
+            <a href="index.html" class="sidebar-logo"><div class="bar"></div><div class="text"><span>Infra</span><span>Mint</span></div></a>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Dashboard</div>
+                <a class="sidebar-link active" data-section="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Overview
+                </a>
+                <a class="sidebar-link" data-section="exhibition">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>
+                    Exhibition
+                </a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Settings</div>
+                <a class="sidebar-link" data-section="profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profile
+                </a>
+            </div>
+            <div class="sidebar-bottom"><button id="sign-out">Sign Out</button></div>
+        </div>
+        <div>
+            <div class="topbar">
+                <div style="display:flex;gap:1.5rem"><a href="gallery.html">Gallery</a><a href="vernissage.html">Vernissage</a><a href="auctions.html">Auctions</a><a href="about.html">About</a></div>
+                <span id="user-name" style="color:var(--g600)">Seller</span>
+            </div>
+            <main>
+                <!-- Overview -->
+                <div class="section active" id="section-overview">
+                    <div class="page-header"><h1 class="page-title">Welcome</h1><p class="page-subtitle">Your private seller dashboard</p></div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:0 2rem 1.5rem">
+                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-exh">0</div><div style="font-size:.75rem;color:var(--g500)">Exhibitions</div></div>
+                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-art">0</div><div style="font-size:.75rem;color:var(--g500)">Artworks</div></div>
+                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-live">0</div><div style="font-size:.75rem;color:var(--g500)">Live Now</div></div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align:center;padding:1.5rem">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                            <div style="font-size:1rem;font-weight:500;color:var(--g600);margin-bottom:.25rem">Showcase your collection</div>
+                            <div style="font-size:.85rem;color:var(--g400);font-weight:300;margin-bottom:1.25rem">Request a virtual exhibition to display artwork on InfraMint's gallery walls</div>
+                            <button class="btn btn-primary" onclick="document.querySelector('[data-section=exhibition]').click()">Request Exhibition</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition -->
+                <div class="section" id="section-exhibition">
+                    <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase your artwork in a virtual vernissage</p></div>
+                    <div class="message" id="sexh-message"></div>
+                    <div id="seller-exh-list"></div>
+                    <div class="card">
+                        <div class="card-title">Request an Exhibition</div>
+                        <p style="font-size:.8rem;color:var(--g500);margin-bottom:1rem;line-height:1.6">Provide exhibition details and add your artworks with high-resolution images and exact dimensions.</p>
+                        <div class="form-row" style="margin-bottom:1rem">
+                            <div class="form-group"><label class="form-label">Exhibition Title</label><input type="text" class="form-input" id="sexh-title" placeholder="e.g. Light & Shadow"></div>
+                            <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" id="sexh-name"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Description / Statement</label><textarea class="form-input" id="sexh-desc" rows="3" style="resize:vertical" placeholder="About this exhibition..."></textarea></div>
+                        <div class="form-row" style="margin-bottom:1rem">
+                            <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" id="sexh-start"></div>
+                            <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-input" id="sexh-end"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Profile Photo URL (optional)</label><input type="text" class="form-input" id="sexh-photo" placeholder="https://..."></div>
+                        <div style="border-top:1px solid var(--g200);padding-top:1rem;margin-top:.5rem">
+                            <div style="font-weight:600;font-size:.85rem;margin-bottom:.75rem">Add Artworks</div>
+                            <div style="background:var(--g100);padding:1rem;margin-bottom:1rem">
+                                <div class="form-row">
+                                    <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input" id="sexh-aw-title"></div>
+                                    <div class="form-group"><label class="form-label">Artist Name</label><input type="text" class="form-input" id="sexh-aw-artist"></div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+                                    <div class="form-group"><label class="form-label">Width (cm)</label><input type="number" class="form-input" id="sexh-aw-w"></div>
+                                    <div class="form-group"><label class="form-label">Height (cm)</label><input type="number" class="form-input" id="sexh-aw-h"></div>
+                                    <div class="form-group"><label class="form-label">Medium</label><input type="text" class="form-input" id="sexh-aw-med"></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label class="form-label">Year</label><input type="text" class="form-input" id="sexh-aw-year"></div>
+                                    <div class="form-group"><label class="form-label">Price (0 = not for sale)</label><input type="number" class="form-input" id="sexh-aw-price" placeholder="0"></div>
+                                </div>
+                                <div class="form-group"><label class="form-label">Image URL (high resolution required)</label><input type="text" class="form-input" id="sexh-aw-img" placeholder="https://..."></div>
+                                <button class="btn btn-secondary" id="sexh-add-aw" style="font-size:.8rem;padding:.5rem 1rem">+ Add Artwork</button>
+                            </div>
+                            <div id="sexh-aw-list"></div>
+                        </div>
+                        <button class="btn btn-primary" id="sexh-submit">Submit Exhibition Request</button>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div class="section" id="section-profile">
+                    <div class="page-header"><h1 class="page-title">Profile</h1><p class="page-subtitle">Your account details</p></div>
+                    <div class="card">
+                        <div class="message" id="profile-msg"></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="p-first"></div>
+                            <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="p-last"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="p-email" disabled></div>
+                        <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="p-phone"></div>
+                        <div class="form-group"><label class="form-label">Bio</label><textarea class="form-input" id="p-bio" rows="3" style="resize:vertical"></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="p-city"></div>
+                            <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="p-country"></div>
+                        </div>
+                        <button class="btn btn-primary" id="save-profile">Save Changes</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
+        var currentUser = null, sellerData = null;
+
+        function showMsg(id, text, ok) { var el=document.getElementById(id);if(!el)return;el.textContent=text;el.style.display='block';el.style.padding='.75rem';el.style.fontSize='.85rem';el.style.background=ok?'#f0fdf4':'#fef2f2';el.style.color=ok?'#16a34a':'#dc2626';el.style.border='1px solid '+(ok?'#bbf7d0':'#fecaca'); }
+
+        async function checkAuth() {
+            var { data:{session} } = await db.auth.getSession();
+            if (!session) { window.location.href = 'seller-login.html'; return; }
+            currentUser = session.user;
+            var { data } = await db.from('private_sellers').select('*').eq('user_id', currentUser.id).maybeSingle();
+            if (!data) {
+                var meta = currentUser.user_metadata || {};
+                await db.from('private_sellers').upsert({ user_id: currentUser.id, email: currentUser.email, first_name: meta.first_name||'', last_name: meta.last_name||'' }, { onConflict: 'user_id' });
+                var { data: retry } = await db.from('private_sellers').select('*').eq('user_id', currentUser.id).maybeSingle();
+                data = retry;
+            }
+            if (!data) { window.location.href = 'seller-login.html'; return; }
+            sellerData = data;
+            populate();
+        }
+
+        function populate() {
+            document.getElementById('user-name').textContent = (sellerData.first_name||'') + ' ' + (sellerData.last_name||'');
+            document.getElementById('p-first').value = sellerData.first_name||'';
+            document.getElementById('p-last').value = sellerData.last_name||'';
+            document.getElementById('p-email').value = sellerData.email||'';
+            document.getElementById('p-phone').value = sellerData.phone||'';
+            document.getElementById('p-bio').value = sellerData.bio||'';
+            document.getElementById('p-city').value = sellerData.city||'';
+            document.getElementById('p-country').value = sellerData.country||'';
+            document.getElementById('sexh-name').value = (sellerData.first_name||'') + ' ' + (sellerData.last_name||'');
+            loadExhibitions();
+        }
+
+        // Nav
+        document.querySelectorAll('.sidebar-link').forEach(function(l){l.addEventListener('click',function(){document.querySelectorAll('.sidebar-link').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('section-'+this.dataset.section).classList.add('active');})});
+        document.querySelectorAll('.mobile-dash-nav button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mobile-dash-nav button').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('section-'+this.dataset.ms).classList.add('active');document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});var sl=document.querySelector('.sidebar-link[data-section="'+this.dataset.ms+'"]');if(sl)sl.classList.add('active');})});
+
+        // Sign out
+        document.getElementById('sign-out').addEventListener('click', async function() { await db.auth.signOut(); window.location.href = 'index.html'; });
+
+        // Save profile
+        document.getElementById('save-profile').addEventListener('click', async function() {
+            var { error } = await db.from('private_sellers').update({ first_name:document.getElementById('p-first').value, last_name:document.getElementById('p-last').value, phone:document.getElementById('p-phone').value, bio:document.getElementById('p-bio').value, city:document.getElementById('p-city').value, country:document.getElementById('p-country').value }).eq('id', sellerData.id);
+            showMsg('profile-msg', error ? 'Error: '+error.message : 'Profile saved!', !error);
+        });
+
+        // Exhibition
+        var sellerArts = [];
+        async function loadExhibitions() {
+            var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(*)').eq('exhibitor_user_id', currentUser.id).order('created_at', { ascending: false });
+            exhs = exhs || [];
+            document.getElementById('s-exh').textContent = exhs.length;
+            var totalArt = 0; var liveCount = 0;
+            exhs.forEach(function(e) { totalArt += (e.exhibition_artworks||[]).length; if(e.status==='live') liveCount++; });
+            document.getElementById('s-art').textContent = totalArt;
+            document.getElementById('s-live').textContent = liveCount;
+
+            var c = document.getElementById('seller-exh-list');
+            if (exhs.length > 0) {
+                var html = '';
+                exhs.forEach(function(e) {
+                    var sc = {pending:'background:#fef3c7;color:#92400e',approved:'background:#dbeafe;color:#1e40af',live:'background:#f0fdf4;color:#16a34a',ended:'background:#e5e5e5;color:#525252',rejected:'background:#fef2f2;color:#dc2626'};
+                    html += '<div class="card" style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:600">' + (e.title||'Exhibition') + '</div><div style="font-size:.75rem;color:var(--g400);margin-top:.15rem">' + (e.exhibition_artworks||[]).length + ' artworks</div></div><span style="font-size:.65rem;font-weight:600;padding:.2rem .6rem;' + (sc[e.status]||'') + '">' + e.status + '</span></div>';
+                    if(e.status==='live') html += '<a href="vernissage.html?exhibition=' + e.id + '" style="font-size:.8rem;font-weight:500;color:var(--black);display:block;margin-top:.5rem">View live →</a>';
+                    html += '</div>';
+                });
+                c.innerHTML = html;
+            } else { c.innerHTML = ''; }
+        }
+
+        document.getElementById('sexh-add-aw').addEventListener('click', function() {
+            var t = document.getElementById('sexh-aw-title').value.trim(), img = document.getElementById('sexh-aw-img').value.trim();
+            if (!t||!img) { alert('Title and image URL required.'); return; }
+            sellerArts.push({ title:t, artist_name:document.getElementById('sexh-aw-artist').value.trim(), width_cm:Number(document.getElementById('sexh-aw-w').value)||60, height_cm:Number(document.getElementById('sexh-aw-h').value)||40, medium:document.getElementById('sexh-aw-med').value.trim(), year:document.getElementById('sexh-aw-year').value.trim(), price:Number(document.getElementById('sexh-aw-price').value)||0, image_url:img });
+            ['sexh-aw-title','sexh-aw-artist','sexh-aw-w','sexh-aw-h','sexh-aw-med','sexh-aw-year','sexh-aw-price','sexh-aw-img'].forEach(function(id){document.getElementById(id).value='';});
+            document.getElementById('sexh-aw-list').innerHTML = '<div style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">' + sellerArts.length + ' artwork(s)</div>' + sellerArts.map(function(a,i){ return '<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--g200);font-size:.85rem"><span>' + a.title + ' (' + a.width_cm + '×' + a.height_cm + ' cm)</span><button onclick="sellerArts.splice('+i+',1);this.parentElement.remove()" style="font-family:Manrope;font-size:.7rem;color:var(--err);background:none;border:none;cursor:pointer">Remove</button></div>'; }).join('');
+        });
+
+        document.getElementById('sexh-submit').addEventListener('click', async function() {
+            var title = document.getElementById('sexh-title').value.trim(), name = document.getElementById('sexh-name').value.trim();
+            if (!title||!name) { alert('Title and name required.'); return; }
+            if (sellerArts.length === 0) { alert('Add at least one artwork.'); return; }
+            this.textContent = 'Submitting...'; this.disabled = true;
+            var { data: exh, error } = await db.from('exhibitions').insert({ exhibitor_type:'private_seller', exhibitor_user_id:currentUser.id, exhibitor_name:name, exhibitor_bio:document.getElementById('sexh-desc').value.trim(), exhibitor_photo_url:document.getElementById('sexh-photo').value.trim()||null, exhibitor_email:currentUser.email, title:title, description:document.getElementById('sexh-desc').value.trim(), start_date:document.getElementById('sexh-start').value||null, end_date:document.getElementById('sexh-end').value||null, status:'pending' }).select().single();
+            if (error) { alert('Error: '+error.message); this.textContent='Submit Exhibition Request'; this.disabled=false; return; }
+            await db.from('exhibition_artworks').insert(sellerArts.map(function(a,i){ return { exhibition_id:exh.id, title:a.title, artist_name:a.artist_name, width_cm:a.width_cm, height_cm:a.height_cm, medium:a.medium, year:a.year, price:a.price||null, is_for_sale:a.price>0, image_url:a.image_url, display_order:i }; }));
+            showMsg('sexh-message', 'Exhibition request submitted! We will review and get back to you.', true);
+            this.textContent='Submit Exhibition Request'; this.disabled=false;
+            sellerArts = []; document.getElementById('sexh-aw-list').innerHTML = '';
+            document.getElementById('sexh-title').value = ''; document.getElementById('sexh-desc').value = '';
+            loadExhibitions();
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>
