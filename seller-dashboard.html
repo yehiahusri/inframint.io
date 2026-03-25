@@ -81,12 +81,16 @@
                     Profile
                 </a>
             </div>
-            <div class="sidebar-bottom"><button id="sign-out">Sign Out</button></div>
+            <div class="sidebar-bottom"></div>
         </div>
         <div>
             <div class="topbar">
                 <div style="display:flex;gap:1.5rem"><a href="gallery.html">Gallery</a><a href="vernissage.html">Vernissage</a><a href="auctions.html">Auctions</a><a href="about.html">About</a></div>
-                <span id="user-name" style="color:var(--g600)">Seller</span>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                    <span style="font-size:.65rem;font-weight:600;padding:.2rem .5rem;background:#fef3c7;color:#92400e" id="seller-status">Unverified</span>
+                    <span id="user-name" style="color:var(--g600)">Seller</span>
+                    <a href="#" id="sign-out" style="font-size:.8125rem;color:#737373;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
+                </div>
             </div>
             <main>
                 <!-- Overview -->
@@ -111,6 +115,36 @@
                 <div class="section" id="section-exhibition">
                     <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase your artwork in a virtual vernissage</p></div>
                     <div class="message" id="sexh-message"></div>
+
+                    <!-- Verification Notice -->
+                    <div class="card" id="verify-card" style="border-left:3px solid #f59e0b">
+                        <div style="display:flex;gap:1rem;align-items:start">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <div>
+                                <div style="font-weight:600;font-size:.9rem;margin-bottom:.35rem">Verification Required</div>
+                                <div style="font-size:.8rem;color:var(--g500);line-height:1.6;margin-bottom:1rem">To protect artists and collectors, private sellers must verify their identity and prove ownership of artworks before exhibitions can go live. Please provide:</div>
+                                <div style="font-size:.8rem;color:var(--g600);line-height:1.8">
+                                    1. Government-issued ID (passport, national ID, or driver's license)<br>
+                                    2. Proof of artwork ownership (purchase receipts, certificates of authenticity, provenance documents, or notarized declaration)<br>
+                                    3. A photo of yourself holding the artwork(s)
+                                </div>
+                                <div style="margin-top:1rem">
+                                    <div class="form-group"><label class="form-label">ID Document URL</label><input type="text" class="form-input" id="verify-id" placeholder="Upload to cloud storage and paste link"></div>
+                                    <div class="form-group"><label class="form-label">Proof of Ownership URL</label><input type="text" class="form-input" id="verify-proof" placeholder="Purchase receipt, COA, or provenance doc"></div>
+                                    <div class="form-group"><label class="form-label">Photo holding artwork URL</label><input type="text" class="form-input" id="verify-photo" placeholder="You holding the artwork(s)"></div>
+                                    <button class="btn btn-primary" id="submit-verify" style="font-size:.85rem">Submit Verification</button>
+                                    <div id="verify-msg" style="font-size:.8rem;margin-top:.5rem"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Slots Calendar -->
+                    <div class="card">
+                        <div class="card-title">Available Exhibition Slots</div>
+                        <div id="slots-calendar" style="font-size:.85rem;color:var(--g500)">Loading slots...</div>
+                    </div>
+
                     <div id="seller-exh-list"></div>
                     <div class="card">
                         <div class="card-title">Request an Exhibition</div>
@@ -214,7 +248,7 @@
         document.querySelectorAll('.mobile-dash-nav button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mobile-dash-nav button').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('section-'+this.dataset.ms).classList.add('active');document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});var sl=document.querySelector('.sidebar-link[data-section="'+this.dataset.ms+'"]');if(sl)sl.classList.add('active');})});
 
         // Sign out
-        document.getElementById('sign-out').addEventListener('click', async function() { await db.auth.signOut(); window.location.href = 'index.html'; });
+        document.getElementById('sign-out').addEventListener('click', async function(e) { e.preventDefault(); await db.auth.signOut(); window.location.href = 'index.html'; });
 
         // Save profile
         document.getElementById('save-profile').addEventListener('click', async function() {
@@ -245,6 +279,58 @@
                 c.innerHTML = html;
             } else { c.innerHTML = ''; }
         }
+
+        // Verification
+        document.getElementById('submit-verify').addEventListener('click', async function() {
+            var idDoc = document.getElementById('verify-id').value.trim();
+            var proof = document.getElementById('verify-proof').value.trim();
+            var photo = document.getElementById('verify-photo').value.trim();
+            if (!idDoc || !proof) { document.getElementById('verify-msg').innerHTML = '<span style="color:#dc2626">Please provide at least an ID and proof of ownership.</span>'; return; }
+            this.textContent = 'Submitting...'; this.disabled = true;
+            var { error } = await db.from('private_sellers').update({
+                verification_id_url: idDoc,
+                verification_proof_url: proof,
+                verification_photo_url: photo,
+                verification_status: 'pending',
+                updated_at: new Date().toISOString()
+            }).eq('id', sellerData.id);
+            if (error) { document.getElementById('verify-msg').innerHTML = '<span style="color:#dc2626">Error: ' + error.message + '</span>'; this.textContent = 'Submit Verification'; this.disabled = false; return; }
+            document.getElementById('verify-msg').innerHTML = '<span style="color:#16a34a">Verification documents submitted. We will review within 48 hours.</span>';
+            document.getElementById('seller-status').textContent = 'Pending Review';
+            document.getElementById('seller-status').style.background = '#dbeafe';
+            document.getElementById('seller-status').style.color = '#1e40af';
+            this.textContent = 'Submitted ✓'; this.disabled = true;
+        });
+
+        // Load calendar slots
+        async function loadSlots() {
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var container = document.getElementById('slots-calendar');
+            if (!slots || slots.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--g400)">No slots have been published yet. Check back soon or pick your preferred dates in the form below.</div>';
+                return;
+            }
+            var now = new Date().toISOString().split('T')[0];
+            var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem">';
+            slots.forEach(function(s) {
+                var isPast = s.end_date < now;
+                var isTaken = !s.is_available;
+                var bg = isPast ? 'var(--g100)' : isTaken ? '#fef2f2' : '#f0fdf4';
+                var border = isPast ? 'var(--g200)' : isTaken ? '#fecaca' : '#bbf7d0';
+                var color = isPast ? 'var(--g400)' : isTaken ? '#dc2626' : '#16a34a';
+                var label = isPast ? 'Past' : isTaken ? 'Booked' : 'Available';
+                var startStr = new Date(s.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                var endStr = new Date(s.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';padding:1rem">' +
+                    '<div style="font-weight:600;font-size:.85rem;margin-bottom:.25rem">' + (s.label || startStr + ' — ' + endStr) + '</div>' +
+                    '<div style="font-size:.75rem;color:var(--g500)">' + startStr + ' — ' + endStr + '</div>' +
+                    '<div style="font-size:.7rem;font-weight:600;color:' + color + ';margin-top:.5rem">' + label + '</div>' +
+                    '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        loadSlots();
 
         document.getElementById('sexh-add-aw').addEventListener('click', function() {
             var t = document.getElementById('sexh-aw-title').value.trim(), img = document.getElementById('sexh-aw-img').value.trim();

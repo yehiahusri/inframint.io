@@ -231,7 +231,6 @@
                 </a>
             </div>
             <div class="sidebar-bottom">
-                <button id="sign-out">Sign Out</button>
             </div>
         </div>
 
@@ -247,7 +246,11 @@
                     <a href="market-index.html" class="topbar-browse">Market Index</a>
                     <a href="about.html" class="topbar-browse">About</a>
                 </div>
-                <span class="topbar-right" id="user-name">Collector</span>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                    <span style="font-size:.65rem;font-weight:600;padding:.2rem .5rem;background:#f0fdf4;color:#16a34a">Approved</span>
+                    <span class="topbar-right" id="user-name">Collector</span>
+                    <a href="#" id="sign-out" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none;transition:color .2s" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
+                </div>
             </div>
 
             <main>
@@ -382,6 +385,13 @@
                 <div class="section" id="section-exhibition">
                     <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase artwork from your collection in a virtual vernissage</p></div>
                     <div class="message" id="exh-message"></div>
+
+                    <!-- Available Slots Calendar -->
+                    <div class="card">
+                        <div class="card-title">Available Exhibition Slots</div>
+                        <div id="coll-slots-calendar" style="font-size:.85rem;color:var(--gray-400)">Loading slots...</div>
+                    </div>
+
                     <div id="my-exhibitions-list"></div>
                     <div class="card">
                         <div class="card-title">Request an Exhibition</div>
@@ -946,7 +956,8 @@
         });
 
         // Sign out
-        document.getElementById('sign-out').addEventListener('click', async function() {
+        document.getElementById('sign-out').addEventListener('click', async function(e) {
+            e.preventDefault();
             await db.auth.signOut();
             window.location.href = 'index.html';
         });
@@ -1173,6 +1184,29 @@
         var collExhArtworks = [];
 
         async function loadCollectorExhibitions() {
+            // Load slots calendar
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var calC = document.getElementById('coll-slots-calendar');
+            if (!slots || slots.length === 0) {
+                calC.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)">No slots published yet. Pick your preferred dates below.</div>';
+            } else {
+                var now = new Date().toISOString().split('T')[0];
+                var ch = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem">';
+                slots.forEach(function(s) {
+                    var isPast = s.end_date < now, isTaken = !s.is_available;
+                    var bg = isPast ? 'var(--gray-100)' : isTaken ? '#fef2f2' : '#f0fdf4';
+                    var border = isPast ? 'var(--gray-200)' : isTaken ? '#fecaca' : '#bbf7d0';
+                    var color = isPast ? 'var(--gray-400)' : isTaken ? '#dc2626' : '#16a34a';
+                    var label = isPast ? 'Past' : isTaken ? 'Booked' : 'Available';
+                    var st = new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+                    var en = new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+                    ch += '<div style="background:'+bg+';border:1px solid '+border+';padding:.85rem"><div style="font-weight:600;font-size:.8rem;margin-bottom:.2rem">'+(s.label||st+' — '+en)+'</div><div style="font-size:.7rem;color:var(--gray-500)">'+st+' — '+en+'</div><div style="font-size:.65rem;font-weight:600;color:'+color+';margin-top:.4rem">'+label+'</div></div>';
+                });
+                ch += '</div>';
+                calC.innerHTML = ch;
+            }
+
+            // Load exhibitions
             var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(*)').eq('exhibitor_user_id', currentUser.id).order('created_at', { ascending: false });
             var container = document.getElementById('my-exhibitions-list');
             if (exhs && exhs.length > 0) {

@@ -204,7 +204,7 @@
                 </a>
             </div>
             <div class="sidebar-bottom">
-                <button id="sign-out">Sign Out</button>
+            </div>
             </div>
         </div>
 
@@ -220,6 +220,7 @@
                 <div>
                     <span id="user-name">Partner</span>&nbsp;&nbsp;
                     <span class="status-badge status-pending" id="account-status">Pending</span>
+                    <a href="#" id="sign-out" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none;margin-left:1rem" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
                 </div>
             </div>
 
@@ -275,6 +276,13 @@
                 <div class="section" id="section-exhibition">
                     <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase artwork from your network in a virtual vernissage</p></div>
                     <div class="message" id="pexh-message"></div>
+
+                    <!-- Available Slots Calendar -->
+                    <div class="card">
+                        <div style="font-weight:600;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--gray-200)">Available Exhibition Slots</div>
+                        <div id="part-slots-calendar" style="font-size:.85rem;color:var(--gray-400)">Loading slots...</div>
+                    </div>
+
                     <div id="p-exhibitions-list"></div>
                     <div class="card">
                         <div style="font-weight:600;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--gray-200)">Request an Exhibition</div>
@@ -519,7 +527,8 @@
         });
 
         // Sign out
-        document.getElementById('sign-out').addEventListener('click', async function() {
+        document.getElementById('sign-out').addEventListener('click', async function(e) {
+            e.preventDefault();
             await db.auth.signOut();
             window.location.href = 'index.html';
         });
@@ -631,6 +640,23 @@
         // ===== EXHIBITIONS =====
         var partExhArtworks = [];
         async function loadPartnerExhibitions() {
+            // Load slots calendar
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var calC = document.getElementById('part-slots-calendar');
+            if (!slots || slots.length === 0) {
+                calC.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)">No slots published yet. Pick your preferred dates below.</div>';
+            } else {
+                var now = new Date().toISOString().split('T')[0];
+                var ch = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem">';
+                slots.forEach(function(s) {
+                    var isPast = s.end_date < now, isTaken = !s.is_available;
+                    ch += '<div style="background:'+(isPast?'var(--gray-100)':isTaken?'#fef2f2':'#f0fdf4')+';border:1px solid '+(isPast?'var(--gray-200)':isTaken?'#fecaca':'#bbf7d0')+';padding:.85rem"><div style="font-weight:600;font-size:.8rem;margin-bottom:.2rem">'+(s.label||new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'})+' — '+new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}))+'</div><div style="font-size:.65rem;font-weight:600;color:'+(isPast?'var(--gray-400)':isTaken?'#dc2626':'#16a34a')+';margin-top:.4rem">'+(isPast?'Past':isTaken?'Booked':'Available')+'</div></div>';
+                });
+                ch += '</div>';
+                calC.innerHTML = ch;
+            }
+
+            // Load exhibitions
             var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(*)').eq('exhibitor_user_id', currentUser.id).order('created_at', { ascending: false });
             var c = document.getElementById('p-exhibitions-list');
             if (exhs && exhs.length > 0) {

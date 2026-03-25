@@ -1330,8 +1330,6 @@
                     <button class="btn btn-primary" id="save-payout-btn">Save Changes</button>
                 </div>
             </div>
-        </main>
-    </div>
 
     <!-- Partner Info Section -->
             <div class="section" id="section-partner-info">
@@ -1355,6 +1353,12 @@
                 </div>
 
                 <div class="message" id="exhibition-message"></div>
+
+                <!-- Available Slots Calendar -->
+                <div class="card">
+                    <div class="card-header"><span style="font-weight:600">Available Exhibition Slots</span></div>
+                    <div id="exh-slots-calendar" style="font-size:.85rem;color:var(--gray-400)">Loading slots...</div>
+                </div>
 
                 <!-- Existing Exhibitions -->
                 <div id="my-exhibitions">
@@ -1411,6 +1415,9 @@
                     <button class="btn btn-primary" id="submit-exhibition" style="margin-top:1rem">Submit Exhibition Request</button>
                 </div>
             </div>
+
+        </main>
+    </div>
 
     <!-- Artwork Modal (Add / Edit) -->
     <div class="modal-overlay" id="artwork-modal">
@@ -2936,6 +2943,29 @@
         var exhSelectedArtworks = [];
 
         async function loadExhibitions() {
+            // Load available slots calendar
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var calContainer = document.getElementById('exh-slots-calendar');
+            if (!slots || slots.length === 0) {
+                calContainer.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--gray-400)">No slots published yet. Pick your preferred dates below.</div>';
+            } else {
+                var now = new Date().toISOString().split('T')[0];
+                var calHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem">';
+                slots.forEach(function(s) {
+                    var isPast = s.end_date < now;
+                    var isTaken = !s.is_available;
+                    var bg = isPast ? 'var(--gray-100)' : isTaken ? '#fef2f2' : '#f0fdf4';
+                    var border = isPast ? 'var(--gray-200)' : isTaken ? '#fecaca' : '#bbf7d0';
+                    var color = isPast ? 'var(--gray-400)' : isTaken ? '#dc2626' : '#16a34a';
+                    var label = isPast ? 'Past' : isTaken ? 'Booked' : 'Available';
+                    var startStr = new Date(s.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    var endStr = new Date(s.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    calHtml += '<div style="background:' + bg + ';border:1px solid ' + border + ';padding:.85rem"><div style="font-weight:600;font-size:.8rem;margin-bottom:.2rem">' + (s.label || startStr + ' — ' + endStr) + '</div><div style="font-size:.7rem;color:var(--gray-500)">' + startStr + ' — ' + endStr + '</div><div style="font-size:.65rem;font-weight:600;color:' + color + ';margin-top:.4rem">' + label + '</div></div>';
+                });
+                calHtml += '</div>';
+                calContainer.innerHTML = calHtml;
+            }
+
             // Load user's exhibitions
             var { data: exhibitions } = await db.from('exhibitions')
                 .select('*, exhibition_artworks(*)')

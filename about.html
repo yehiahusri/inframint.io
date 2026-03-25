@@ -164,7 +164,7 @@
         }
 
         .page-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: 2.5rem;
             font-weight: 300;
             letter-spacing: -0.03em;
             line-height: 1.1;
@@ -774,7 +774,7 @@
     <section class="contact-cta">
         <h2 class="contact-cta-title">Have questions? <strong>Let's talk.</strong></h2>
         <p class="contact-cta-text">We'd love to hear from artists, collectors, and collaborators.</p>
-        <a href="mailto:hello@inframint.io" class="contact-cta-email">hello@inframint.io</a>
+        <a href="/cdn-cgi/l/email-protection#bfd7dad3d3d0ffd6d1d9cdded2d6d1cb91d6d0" class="contact-cta-email"><span class="__cf_email__" data-cfemail="a8c0cdc4c4c7e8c1c6cedac9c5c1c6dc86c1c7">[email&#160;protected]</span></a>
     </section>
 
     <!-- Footer -->
@@ -795,7 +795,7 @@
     </footer>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
 </script>
@@ -826,10 +826,7 @@ var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhb
         }
     } catch(e){console.log('Auth check:',e);}
     // Close dropdown on outside click
-    document.addEventListener('click',function(e){
-        var w=document.querySelector('.signin-wrap');
-        if(w&&!w.contains(e.target)) w.classList.remove('open');
-    });
+    document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});
 })();
 </script>
 </body>
