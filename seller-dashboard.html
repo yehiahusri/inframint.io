@@ -3,204 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard — InfraMint</title>
+    <title>Private Seller Dashboard — InfraMint</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b}
-        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-        .layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-        .sidebar{background:var(--white);border-right:1px solid var(--g200);padding-top:1.5rem;display:flex;flex-direction:column}
-        .sidebar-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;text-decoration:none;border-bottom:1px solid var(--g200)}
-        .sidebar-logo .bar{width:2px;height:1.25rem;background:var(--black)}
-        .sidebar-logo .text{font-size:1.125rem;letter-spacing:-.01em}
-        .sidebar-logo .text span:first-child{font-weight:600}
-        .sidebar-logo .text span:last-child{font-weight:200;color:var(--g400)}
-        .sidebar-section{padding:1rem 0}
-        .sidebar-label{font-size:.625rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);padding:0 1.5rem;margin-bottom:.5rem}
-        .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.5rem;font-size:.875rem;color:var(--g500);cursor:pointer;transition:all .15s;text-decoration:none;border-left:3px solid transparent}
-        .sidebar-link:hover{color:var(--black);background:var(--g100)}
-        .sidebar-link.active{color:var(--black);font-weight:500;border-left-color:var(--black);background:var(--g100)}
-        .sidebar-link svg{width:18px;height:18px;flex-shrink:0}
-        .sidebar-bottom{margin-top:auto;padding:1rem 1.5rem;border-top:1px solid var(--g200)}
-        #sign-out{font-family:'Manrope',sans-serif;font-size:.8125rem;color:var(--g500);background:none;border:none;cursor:pointer}
-        #sign-out:hover{color:var(--err)}
-        .topbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.875rem}
-        .topbar a{font-size:.8125rem;color:var(--g500);text-decoration:none;transition:color .2s}
-        .topbar a:hover{color:var(--black)}
-        main{padding:0 0 4rem}
-        .section{display:none}
-        .section.active{display:block}
-        .page-header{padding:2rem 2rem 1rem}
-        .page-title{font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
-        .page-subtitle{font-size:.875rem;color:var(--g500);font-weight:300;margin-top:.25rem}
-        .card{background:var(--white);border:1px solid var(--g200);margin:0 2rem 1.5rem;padding:1.5rem}
-        .card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--g200)}
-        .form-group{margin-bottom:1rem}
-        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-        .form-label{display:block;font-size:.8125rem;font-weight:500;margin-bottom:.4rem}
-        .form-input{width:100%;padding:.75rem;font-size:.875rem;font-family:'Manrope',sans-serif;border:1px solid var(--g300);background:var(--white)}
-        .form-input:focus{outline:none;border-color:var(--black)}
-        .btn{padding:.75rem 1.5rem;font-size:.875rem;font-weight:500;font-family:'Manrope',sans-serif;cursor:pointer;border:none;transition:all .2s}
-        .btn-primary{background:var(--black);color:var(--white)}
-        .btn-primary:hover{background:var(--g800)}
-        .btn-secondary{background:var(--g600);color:var(--white)}
-        .message{padding:.75rem 1rem;font-size:.8125rem;margin:0 2rem 1rem;display:none}
-        .message.show{display:block}
-        .mobile-dash-nav{display:none;overflow-x:auto;gap:.25rem;padding:.5rem 1rem;background:var(--white);border-bottom:1px solid var(--g200);position:sticky;top:0;z-index:10}
-        .mobile-dash-nav button{font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:500;padding:.4rem .75rem;border:1px solid var(--g200);background:var(--white);color:var(--g500);white-space:nowrap;cursor:pointer}
-        .mobile-dash-nav button.active{background:var(--black);color:var(--white);border-color:var(--black)}
-        @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{display:none}.mobile-dash-nav{display:flex}.form-row{grid-template-columns:1fr}}
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root { --black:#000;--white:#fff;--gray-100:#f7f7f7;--gray-200:#e5e5e5;--gray-300:#d4d4d4;--gray-400:#a3a3a3;--gray-500:#737373;--gray-600:#525252;--gray-800:#262626;--neon:#c8ff00;--olive:#4a7c00; }
+        body { font-family:'Manrope',sans-serif; background:var(--gray-100); color:var(--black); line-height:1.6; -webkit-font-smoothing:antialiased; }
+        .layout { display:flex; min-height:100vh; }
+        .sidebar { width:240px; background:var(--white); border-right:1px solid var(--gray-200); padding-top:1.5rem; position:fixed; top:0; bottom:0; overflow-y:auto; }
+        .sidebar-logo { display:flex; align-items:center; gap:.75rem; padding:0 1.5rem; margin-bottom:2rem; text-decoration:none; }
+        .sidebar-logo .bar { width:3px; height:1.5rem; background:var(--black); }
+        .sidebar-logo .text { font-size:1.1rem; letter-spacing:-0.01em; }
+        .sidebar-logo .text span:first-child { font-weight:600; color:var(--black); }
+        .sidebar-logo .text span:last-child { font-weight:200; color:var(--gray-400); }
+        .sidebar-section { margin-bottom:1.5rem; }
+        .sidebar-label { font-size:.625rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--gray-400); padding:0 1.5rem; margin-bottom:.5rem; }
+        .sidebar-link { display:flex; align-items:center; gap:.75rem; padding:.6rem 1.5rem; font-size:.875rem; color:var(--gray-500); cursor:pointer; transition:all .15s; text-decoration:none; border-left:3px solid transparent; }
+        .sidebar-link:hover { color:var(--black); background:var(--gray-100); }
+        .sidebar-link.active { color:var(--black); font-weight:500; border-left-color:var(--black); background:var(--gray-100); }
+        .sidebar-link svg { width:18px; height:18px; flex-shrink:0; }
+        .sidebar-bottom { position:absolute; bottom:0; left:0; right:0; padding:1rem 1.5rem; border-top:1px solid var(--gray-200); }
+        .sidebar-bottom button { background:none; border:none; font-family:inherit; font-size:.8rem; color:var(--gray-400); cursor:pointer; }
+        .content-wrap { margin-left:240px; flex:1; }
+        .topbar { display:flex; justify-content:space-between; align-items:center; padding:.75rem 2rem; border-bottom:1px solid var(--gray-200); background:var(--white); }
+        .topbar-browse { font-size:.8rem; color:var(--gray-400); text-decoration:none; transition:color .2s; }
+        .topbar-browse:hover { color:var(--black); }
+        .topbar-right { font-size:.8rem; color:var(--gray-500); display:flex; align-items:center; gap:1rem; }
+        .topbar-right button { background:none; border:none; font-family:inherit; font-size:.8rem; color:var(--gray-400); cursor:pointer; }
+        .topbar-right button:hover { color:var(--black); }
+        main { padding:2rem; max-width:900px; }
+        .section { display:none; }
+        .section.active { display:block; }
+        .page-header { margin-bottom:1.5rem; }
+        .page-title { font-size:1.5rem; font-weight:300; letter-spacing:-0.02em; }
+        .page-title strong { font-weight:600; }
+        .page-subtitle { font-size:.85rem; color:var(--gray-500); font-weight:300; }
+        .card { background:var(--white); padding:1.5rem; margin-bottom:1rem; }
+        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+        .card-title { font-size:.95rem; font-weight:600; }
+        .form-group { margin-bottom:1rem; }
+        .form-label { display:block; font-size:.7rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--gray-600); margin-bottom:.35rem; }
+        .form-input { width:100%; padding:.6rem .85rem; border:1px solid var(--gray-200); font-family:inherit; font-size:.85rem; outline:none; transition:border-color .2s; }
+        .form-input:focus { border-color:var(--black); }
+        .btn { padding:.7rem 1.25rem; font-family:inherit; font-size:.8rem; font-weight:500; cursor:pointer; transition:all .2s; border:none; }
+        .btn-primary { background:var(--black); color:var(--white); }
+        .btn-primary:hover { background:var(--gray-800); }
+        .message { font-size:.8rem; padding:.5rem 0; }
+        .status-badge { font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:.25rem .6rem; }
+        @media(max-width:768px) {
+            .sidebar { display:none; }
+            .content-wrap { margin-left:0; }
+        }
     </style>
 </head>
 <body>
-    <div class="mobile-dash-nav">
-        <button class="active" data-ms="overview">Overview</button>
-        <button data-ms="exhibition">Exhibition</button>
-        <button data-ms="profile">Profile</button>
-    </div>
     <div class="layout">
         <div class="sidebar">
-            <a href="index.html" class="sidebar-logo"><div class="bar"></div><div class="text"><span>Infra</span><span>Mint</span></div></a>
+            <a href="index.html" class="sidebar-logo">
+                <div class="bar"></div>
+                <div class="text"><span>Infra</span><span>Mint</span></div>
+            </a>
             <div class="sidebar-section">
                 <div class="sidebar-label">Dashboard</div>
                 <a class="sidebar-link active" data-section="overview">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                     Overview
                 </a>
-                <a class="sidebar-link" data-section="exhibition">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>
-                    Exhibition
+                <a class="sidebar-link" data-section="verification">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verification
+                </a>
+                <a class="sidebar-link" data-section="exhibitions">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Exhibitions
                 </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-label">Settings</div>
                 <a class="sidebar-link" data-section="profile">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Profile
                 </a>
             </div>
-            <div class="sidebar-bottom"></div>
         </div>
-        <div>
+
+        <div class="content-wrap">
             <div class="topbar">
-                <div style="display:flex;gap:1.5rem"><a href="gallery.html">Gallery</a><a href="vernissage.html">Vernissage</a><a href="auctions.html">Auctions</a><a href="about.html">About</a></div>
-                <div style="display:flex;align-items:center;gap:.75rem">
-                    <span style="font-size:.65rem;font-weight:600;padding:.2rem .5rem;background:#fef3c7;color:#92400e" id="seller-status">Unverified</span>
-                    <span id="user-name" style="color:var(--g600)">Seller</span>
-                    <a href="#" id="sign-out" style="font-size:.8125rem;color:#737373;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
+                <div style="display:flex;gap:1.5rem;align-items:center">
+                    <a href="gallery.html" class="topbar-browse">Gallery</a>
+                    <a href="vernissage.html" class="topbar-browse">Vernissage</a>
+                    <a href="about.html" class="topbar-browse">About</a>
+                </div>
+                <div class="topbar-right">
+                    <span id="user-name">Private Seller</span>
+                    <button id="sign-out">Sign Out</button>
                 </div>
             </div>
+
             <main>
                 <!-- Overview -->
                 <div class="section active" id="section-overview">
-                    <div class="page-header"><h1 class="page-title">Welcome</h1><p class="page-subtitle">Your private seller dashboard</p></div>
-                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:0 2rem 1.5rem">
-                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-exh">0</div><div style="font-size:.75rem;color:var(--g500)">Exhibitions</div></div>
-                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-art">0</div><div style="font-size:.75rem;color:var(--g500)">Artworks</div></div>
-                        <div class="card" style="margin:0;text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:600" id="s-live">0</div><div style="font-size:.75rem;color:var(--g500)">Live Now</div></div>
+                    <div class="page-header">
+                        <h1 class="page-title">Welcome, <strong id="seller-name-display">Seller</strong></h1>
+                        <p class="page-subtitle">Manage your private art sales and exhibitions</p>
                     </div>
                     <div class="card">
-                        <div style="text-align:center;padding:1.5rem">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1.5" style="margin-bottom:1rem"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                            <div style="font-size:1rem;font-weight:500;color:var(--g600);margin-bottom:.25rem">Showcase your collection</div>
-                            <div style="font-size:.85rem;color:var(--g400);font-weight:300;margin-bottom:1.25rem">Request a virtual exhibition to display artwork on InfraMint's gallery walls</div>
-                            <button class="btn btn-primary" onclick="document.querySelector('[data-section=exhibition]').click()">Request Exhibition</button>
+                        <div class="card-header">
+                            <h2 class="card-title">Account Status</h2>
+                            <span class="status-badge" id="verification-badge" style="background:var(--gray-300);color:var(--black)">Unverified</span>
+                        </div>
+                        <p style="font-size:.85rem;color:var(--gray-500)" id="status-text">Complete your verification to request exhibitions and list artwork.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Quick Actions</h2></div>
+                        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                            <button class="btn btn-primary" onclick="switchTo('verification')">Complete Verification</button>
+                            <button class="btn" style="background:var(--gray-100);color:var(--black);border:1px solid var(--gray-200)" onclick="switchTo('exhibitions')">Request Exhibition</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Exhibition -->
-                <div class="section" id="section-exhibition">
-                    <div class="page-header"><h1 class="page-title">Virtual Exhibition</h1><p class="page-subtitle">Showcase your artwork in a virtual vernissage</p></div>
-                    <div class="message" id="sexh-message"></div>
+                <!-- Verification -->
+                <div class="section" id="section-verification">
+                    <div class="page-header">
+                        <h1 class="page-title">Identity <strong>Verification</strong></h1>
+                        <p class="page-subtitle">Upload documents to verify your identity and ownership of artwork</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Verification Status</h2>
+                            <span class="status-badge" id="verify-badge-2" style="background:var(--gray-300);color:var(--black)">Unverified</span>
+                        </div>
+                        <p style="font-size:.8rem;color:var(--gray-500);margin-bottom:1.5rem">We require three documents to verify private sellers: a government-issued ID, proof of artwork ownership (purchase receipt, provenance certificate, or insurance document), and a photo of you with one of the artworks.</p>
 
-                    <!-- Verification Notice -->
-                    <div class="card" id="verify-card" style="border-left:3px solid #f59e0b">
-                        <div style="display:flex;gap:1rem;align-items:start">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            <div>
-                                <div style="font-weight:600;font-size:.9rem;margin-bottom:.35rem">Verification Required</div>
-                                <div style="font-size:.8rem;color:var(--g500);line-height:1.6;margin-bottom:1rem">To protect artists and collectors, private sellers must verify their identity and prove ownership of artworks before exhibitions can go live. Please provide:</div>
-                                <div style="font-size:.8rem;color:var(--g600);line-height:1.8">
-                                    1. Government-issued ID (passport, national ID, or driver's license)<br>
-                                    2. Proof of artwork ownership (purchase receipts, certificates of authenticity, provenance documents, or notarized declaration)<br>
-                                    3. A photo of yourself holding the artwork(s)
+                        <div class="form-group">
+                            <label class="form-label">Government-Issued ID</label>
+                            <input type="file" id="v-id-doc" accept="image/*,.pdf" style="font-size:.8rem">
+                            <p style="font-size:.7rem;color:var(--gray-400);margin-top:.25rem" id="v-id-status"></p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Proof of Ownership</label>
+                            <input type="file" id="v-ownership" accept="image/*,.pdf" style="font-size:.8rem">
+                            <p style="font-size:.7rem;color:var(--gray-400);margin-top:.25rem" id="v-own-status"></p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Photo with Artwork</label>
+                            <input type="file" id="v-photo" accept="image/*" style="font-size:.8rem">
+                            <p style="font-size:.7rem;color:var(--gray-400);margin-top:.25rem" id="v-photo-status"></p>
+                        </div>
+                        <div class="message" id="v-message"></div>
+                        <button class="btn btn-primary" onclick="submitVerification()">Submit for Verification</button>
+                    </div>
+                </div>
+
+                <!-- Exhibitions -->
+                <div class="section" id="section-exhibitions">
+                    <div class="page-header">
+                        <h1 class="page-title">My <strong>Exhibitions</strong></h1>
+                        <p class="page-subtitle">Request virtual exhibition slots to showcase your private collection</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Exhibition History</h2></div>
+                        <div id="seller-exh-list"><p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">Loading...</p></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Available Slots</h2></div>
+                        <div id="seller-slots-list"><p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">Loading...</p></div>
+                    </div>
+                    <div class="card" id="exh-request-card">
+                        <div class="card-header"><h2 class="card-title">Request Exhibition</h2></div>
+                        <p style="font-size:.8rem;color:var(--gray-500);margin-bottom:1rem" id="exh-gate-msg">You must be verified to request an exhibition.</p>
+                        <div id="exh-form-wrap" style="display:none">
+                            <div style="display:flex;flex-direction:column;gap:1rem">
+                                <div class="form-group">
+                                    <label class="form-label">Exhibition Title</label>
+                                    <input type="text" class="form-input" id="s-exh-title" placeholder="e.g. Private Collection: Impressionist Works">
                                 </div>
-                                <div style="margin-top:1rem">
-                                    <div class="form-group"><label class="form-label">ID Document URL</label><input type="text" class="form-input" id="verify-id" placeholder="Upload to cloud storage and paste link"></div>
-                                    <div class="form-group"><label class="form-label">Proof of Ownership URL</label><input type="text" class="form-input" id="verify-proof" placeholder="Purchase receipt, COA, or provenance doc"></div>
-                                    <div class="form-group"><label class="form-label">Photo holding artwork URL</label><input type="text" class="form-input" id="verify-photo" placeholder="You holding the artwork(s)"></div>
-                                    <button class="btn btn-primary" id="submit-verify" style="font-size:.85rem">Submit Verification</button>
-                                    <div id="verify-msg" style="font-size:.8rem;margin-top:.5rem"></div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-input" id="s-exh-desc" rows="3" style="resize:vertical" placeholder="Describe your exhibition..."></textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-label">Preferred Slot</label>
+                                    <select class="form-input" id="s-exh-slot" style="padding:.6rem">
+                                        <option value="">Select a slot...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Cover Image</label>
+                                    <input type="file" id="s-exh-cover" accept="image/*" style="font-size:.8rem">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Artworks</label>
+                                    <p style="font-size:.75rem;color:var(--gray-400);margin-bottom:.5rem">Add artworks with dimensions for real-scale gallery display.</p>
+                                    <div id="s-exh-artworks"></div>
+                                    <button class="btn" style="background:var(--gray-100);color:var(--black);font-size:.8rem;padding:.5rem 1rem;margin-top:.5rem;border:1px dashed var(--gray-300)" onclick="addSellerArt()">+ Add Artwork</button>
+                                </div>
+                                <div class="message" id="s-exh-msg"></div>
+                                <button class="btn btn-primary" onclick="submitSellerExhibition()">Submit Exhibition Request</button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Available Slots Calendar -->
-                    <div class="card">
-                        <div class="card-title">Available Exhibition Slots</div>
-                        <div id="slots-calendar" style="font-size:.85rem;color:var(--g500)">Loading slots...</div>
-                    </div>
-
-                    <div id="seller-exh-list"></div>
-                    <div class="card">
-                        <div class="card-title">Request an Exhibition</div>
-                        <p style="font-size:.8rem;color:var(--g500);margin-bottom:1rem;line-height:1.6">Provide exhibition details and add your artworks with high-resolution images and exact dimensions.</p>
-                        <div class="form-row" style="margin-bottom:1rem">
-                            <div class="form-group"><label class="form-label">Exhibition Title</label><input type="text" class="form-input" id="sexh-title" placeholder="e.g. Light & Shadow"></div>
-                            <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" id="sexh-name"></div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Description / Statement</label><textarea class="form-input" id="sexh-desc" rows="3" style="resize:vertical" placeholder="About this exhibition..."></textarea></div>
-                        <div class="form-row" style="margin-bottom:1rem">
-                            <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" id="sexh-start"></div>
-                            <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-input" id="sexh-end"></div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Profile Photo URL (optional)</label><input type="text" class="form-input" id="sexh-photo" placeholder="https://..."></div>
-                        <div style="border-top:1px solid var(--g200);padding-top:1rem;margin-top:.5rem">
-                            <div style="font-weight:600;font-size:.85rem;margin-bottom:.75rem">Add Artworks</div>
-                            <div style="background:var(--g100);padding:1rem;margin-bottom:1rem">
-                                <div class="form-row">
-                                    <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input" id="sexh-aw-title"></div>
-                                    <div class="form-group"><label class="form-label">Artist Name</label><input type="text" class="form-input" id="sexh-aw-artist"></div>
-                                </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
-                                    <div class="form-group"><label class="form-label">Width (cm)</label><input type="number" class="form-input" id="sexh-aw-w"></div>
-                                    <div class="form-group"><label class="form-label">Height (cm)</label><input type="number" class="form-input" id="sexh-aw-h"></div>
-                                    <div class="form-group"><label class="form-label">Medium</label><input type="text" class="form-input" id="sexh-aw-med"></div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group"><label class="form-label">Year</label><input type="text" class="form-input" id="sexh-aw-year"></div>
-                                    <div class="form-group"><label class="form-label">Price (0 = not for sale)</label><input type="number" class="form-input" id="sexh-aw-price" placeholder="0"></div>
-                                </div>
-                                <div class="form-group"><label class="form-label">Image URL (high resolution required)</label><input type="text" class="form-input" id="sexh-aw-img" placeholder="https://..."></div>
-                                <button class="btn btn-secondary" id="sexh-add-aw" style="font-size:.8rem;padding:.5rem 1rem">+ Add Artwork</button>
-                            </div>
-                            <div id="sexh-aw-list"></div>
-                        </div>
-                        <button class="btn btn-primary" id="sexh-submit">Submit Exhibition Request</button>
                     </div>
                 </div>
 
                 <!-- Profile -->
                 <div class="section" id="section-profile">
-                    <div class="page-header"><h1 class="page-title">Profile</h1><p class="page-subtitle">Your account details</p></div>
+                    <div class="page-header">
+                        <h1 class="page-title">My <strong>Profile</strong></h1>
+                        <p class="page-subtitle">Update your personal information</p>
+                    </div>
                     <div class="card">
-                        <div class="message" id="profile-msg"></div>
-                        <div class="form-row">
-                            <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="p-first"></div>
-                            <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="p-last"></div>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="p-name">
                         </div>
-                        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="p-email" disabled></div>
-                        <div class="form-group"><label class="form-label">Phone</label><input type="text" class="form-input" id="p-phone"></div>
-                        <div class="form-group"><label class="form-label">Bio</label><textarea class="form-input" id="p-bio" rows="3" style="resize:vertical"></textarea></div>
-                        <div class="form-row">
-                            <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="p-city"></div>
-                            <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="p-country"></div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="p-email" disabled style="background:var(--gray-100);color:var(--gray-500)">
                         </div>
-                        <button class="btn btn-primary" id="save-profile">Save Changes</button>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="p-phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            <textarea class="form-input" id="p-bio" rows="3" style="resize:vertical" placeholder="Tell us about your collection..."></textarea>
+                        </div>
+                        <div class="message" id="p-msg"></div>
+                        <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
                     </div>
                 </div>
             </main>
@@ -209,151 +242,264 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
-        var currentUser = null, sellerData = null;
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function showMsg(id, text, ok) { var el=document.getElementById(id);if(!el)return;el.textContent=text;el.style.display='block';el.style.padding='.75rem';el.style.fontSize='.85rem';el.style.background=ok?'#f0fdf4':'#fef2f2';el.style.color=ok?'#16a34a':'#dc2626';el.style.border='1px solid '+(ok?'#bbf7d0':'#fecaca'); }
+        let currentUser = null;
+        let sellerData = null;
+        let sArtCount = 0;
 
+        // Navigation
+        document.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                var section = this.dataset.section;
+                document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+                document.getElementById('section-' + section).classList.add('active');
+            });
+        });
+
+        function switchTo(section) {
+            document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); if(l.dataset.section===section) l.classList.add('active'); });
+            document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+            document.getElementById('section-' + section).classList.add('active');
+        }
+
+        // Sign out
+        document.getElementById('sign-out').addEventListener('click', async function() {
+            await db.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        // Auth check
         async function checkAuth() {
-            var { data:{session} } = await db.auth.getSession();
+            var { data: { session } } = await db.auth.getSession();
             if (!session) { window.location.href = 'seller-login.html'; return; }
             currentUser = session.user;
+
             var { data } = await db.from('private_sellers').select('*').eq('user_id', currentUser.id).maybeSingle();
             if (!data) {
                 var meta = currentUser.user_metadata || {};
-                await db.from('private_sellers').upsert({ user_id: currentUser.id, email: currentUser.email, first_name: meta.first_name||'', last_name: meta.last_name||'' }, { onConflict: 'user_id' });
-                var { data: retry } = await db.from('private_sellers').select('*').eq('user_id', currentUser.id).maybeSingle();
-                data = retry;
+                var { data: newSeller } = await db.from('private_sellers').upsert({
+                    user_id: currentUser.id,
+                    email: currentUser.email,
+                    full_name: meta.full_name || ''
+                }, { onConflict: 'user_id' }).select().single();
+                data = newSeller;
             }
             if (!data) { window.location.href = 'seller-login.html'; return; }
             sellerData = data;
             populate();
+            loadSellerExhibitions();
         }
 
         function populate() {
-            document.getElementById('user-name').textContent = (sellerData.first_name||'') + ' ' + (sellerData.last_name||'');
-            document.getElementById('p-first').value = sellerData.first_name||'';
-            document.getElementById('p-last').value = sellerData.last_name||'';
-            document.getElementById('p-email').value = sellerData.email||'';
-            document.getElementById('p-phone').value = sellerData.phone||'';
-            document.getElementById('p-bio').value = sellerData.bio||'';
-            document.getElementById('p-city').value = sellerData.city||'';
-            document.getElementById('p-country').value = sellerData.country||'';
-            document.getElementById('sexh-name').value = (sellerData.first_name||'') + ' ' + (sellerData.last_name||'');
-            loadExhibitions();
+            var name = sellerData.full_name || currentUser.email;
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('seller-name-display').textContent = name.split(' ')[0];
+
+            // Profile
+            document.getElementById('p-name').value = sellerData.full_name || '';
+            document.getElementById('p-email').value = sellerData.email || '';
+            document.getElementById('p-phone').value = sellerData.phone || '';
+            document.getElementById('p-bio').value = sellerData.bio || '';
+
+            // Verification status
+            var vs = sellerData.verification_status || 'unverified';
+            var colors = { unverified: '#a3a3a3', pending: '#f59e0b', verified: '#22c55e', rejected: '#ef4444' };
+            var texts = {
+                unverified: 'Complete your verification to request exhibitions.',
+                pending: 'Your documents are under review. We will notify you by email.',
+                verified: 'You are verified. You can now request exhibitions and list artwork.',
+                rejected: 'Your verification was rejected. Please resubmit your documents.'
+            };
+            ['verification-badge', 'verify-badge-2'].forEach(function(id) {
+                var el = document.getElementById(id);
+                el.textContent = vs.charAt(0).toUpperCase() + vs.slice(1);
+                el.style.background = colors[vs] || '#a3a3a3';
+                el.style.color = vs === 'verified' ? '#fff' : (vs === 'pending' ? '#000' : '#fff');
+            });
+            document.getElementById('status-text').textContent = texts[vs] || '';
+
+            // Show existing doc statuses
+            if (sellerData.id_document_url) document.getElementById('v-id-status').innerHTML = '<span style="color:#22c55e">✓ Uploaded</span>';
+            if (sellerData.ownership_proof_url) document.getElementById('v-own-status').innerHTML = '<span style="color:#22c55e">✓ Uploaded</span>';
+            if (sellerData.photo_with_art_url) document.getElementById('v-photo-status').innerHTML = '<span style="color:#22c55e">✓ Uploaded</span>';
+
+            // Exhibition form gate
+            if (vs === 'verified') {
+                document.getElementById('exh-gate-msg').style.display = 'none';
+                document.getElementById('exh-form-wrap').style.display = 'block';
+            }
         }
 
-        // Nav
-        document.querySelectorAll('.sidebar-link').forEach(function(l){l.addEventListener('click',function(){document.querySelectorAll('.sidebar-link').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('section-'+this.dataset.section).classList.add('active');})});
-        document.querySelectorAll('.mobile-dash-nav button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mobile-dash-nav button').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('section-'+this.dataset.ms).classList.add('active');document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});var sl=document.querySelector('.sidebar-link[data-section="'+this.dataset.ms+'"]');if(sl)sl.classList.add('active');})});
+        // Upload verification docs
+        async function submitVerification() {
+            var msg = document.getElementById('v-message');
+            msg.textContent = 'Uploading documents...'; msg.style.color = 'var(--gray-500)';
 
-        // Sign out
-        document.getElementById('sign-out').addEventListener('click', async function(e) { e.preventDefault(); await db.auth.signOut(); window.location.href = 'index.html'; });
+            try {
+                var updates = { verification_status: 'pending' };
+                var idFile = document.getElementById('v-id-doc').files[0];
+                var ownFile = document.getElementById('v-ownership').files[0];
+                var photoFile = document.getElementById('v-photo').files[0];
+
+                if (idFile) {
+                    var p = currentUser.id + '/id-' + Date.now() + '.' + idFile.name.split('.').pop();
+                    await db.storage.from('exhibition-images').upload(p, idFile);
+                    updates.id_document_url = db.storage.from('exhibition-images').getPublicUrl(p).data.publicUrl;
+                }
+                if (ownFile) {
+                    var p2 = currentUser.id + '/own-' + Date.now() + '.' + ownFile.name.split('.').pop();
+                    await db.storage.from('exhibition-images').upload(p2, ownFile);
+                    updates.ownership_proof_url = db.storage.from('exhibition-images').getPublicUrl(p2).data.publicUrl;
+                }
+                if (photoFile) {
+                    var p3 = currentUser.id + '/photo-' + Date.now() + '.' + photoFile.name.split('.').pop();
+                    await db.storage.from('exhibition-images').upload(p3, photoFile);
+                    updates.photo_with_art_url = db.storage.from('exhibition-images').getPublicUrl(p3).data.publicUrl;
+                }
+
+                await db.from('private_sellers').update(updates).eq('id', sellerData.id);
+                msg.textContent = 'Documents submitted for review!'; msg.style.color = '#22c55e';
+
+                // Refresh
+                var { data } = await db.from('private_sellers').select('*').eq('user_id', currentUser.id).maybeSingle();
+                if (data) { sellerData = data; populate(); }
+            } catch(e) {
+                msg.textContent = 'Error: ' + (e.message || 'Upload failed'); msg.style.color = '#dc2626';
+            }
+        }
 
         // Save profile
-        document.getElementById('save-profile').addEventListener('click', async function() {
-            var { error } = await db.from('private_sellers').update({ first_name:document.getElementById('p-first').value, last_name:document.getElementById('p-last').value, phone:document.getElementById('p-phone').value, bio:document.getElementById('p-bio').value, city:document.getElementById('p-city').value, country:document.getElementById('p-country').value }).eq('id', sellerData.id);
-            showMsg('profile-msg', error ? 'Error: '+error.message : 'Profile saved!', !error);
-        });
-
-        // Exhibition
-        var sellerArts = [];
-        async function loadExhibitions() {
-            var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(*)').eq('exhibitor_user_id', currentUser.id).order('created_at', { ascending: false });
-            exhs = exhs || [];
-            document.getElementById('s-exh').textContent = exhs.length;
-            var totalArt = 0; var liveCount = 0;
-            exhs.forEach(function(e) { totalArt += (e.exhibition_artworks||[]).length; if(e.status==='live') liveCount++; });
-            document.getElementById('s-art').textContent = totalArt;
-            document.getElementById('s-live').textContent = liveCount;
-
-            var c = document.getElementById('seller-exh-list');
-            if (exhs.length > 0) {
-                var html = '';
-                exhs.forEach(function(e) {
-                    var sc = {pending:'background:#fef3c7;color:#92400e',approved:'background:#dbeafe;color:#1e40af',live:'background:#f0fdf4;color:#16a34a',ended:'background:#e5e5e5;color:#525252',rejected:'background:#fef2f2;color:#dc2626'};
-                    html += '<div class="card" style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:600">' + (e.title||'Exhibition') + '</div><div style="font-size:.75rem;color:var(--g400);margin-top:.15rem">' + (e.exhibition_artworks||[]).length + ' artworks</div></div><span style="font-size:.65rem;font-weight:600;padding:.2rem .6rem;' + (sc[e.status]||'') + '">' + e.status + '</span></div>';
-                    if(e.status==='live') html += '<a href="vernissage.html?exhibition=' + e.id + '" style="font-size:.8rem;font-weight:500;color:var(--black);display:block;margin-top:.5rem">View live →</a>';
-                    html += '</div>';
-                });
-                c.innerHTML = html;
-            } else { c.innerHTML = ''; }
-        }
-
-        // Verification
-        document.getElementById('submit-verify').addEventListener('click', async function() {
-            var idDoc = document.getElementById('verify-id').value.trim();
-            var proof = document.getElementById('verify-proof').value.trim();
-            var photo = document.getElementById('verify-photo').value.trim();
-            if (!idDoc || !proof) { document.getElementById('verify-msg').innerHTML = '<span style="color:#dc2626">Please provide at least an ID and proof of ownership.</span>'; return; }
-            this.textContent = 'Submitting...'; this.disabled = true;
-            var { error } = await db.from('private_sellers').update({
-                verification_id_url: idDoc,
-                verification_proof_url: proof,
-                verification_photo_url: photo,
-                verification_status: 'pending',
-                updated_at: new Date().toISOString()
-            }).eq('id', sellerData.id);
-            if (error) { document.getElementById('verify-msg').innerHTML = '<span style="color:#dc2626">Error: ' + error.message + '</span>'; this.textContent = 'Submit Verification'; this.disabled = false; return; }
-            document.getElementById('verify-msg').innerHTML = '<span style="color:#16a34a">Verification documents submitted. We will review within 48 hours.</span>';
-            document.getElementById('seller-status').textContent = 'Pending Review';
-            document.getElementById('seller-status').style.background = '#dbeafe';
-            document.getElementById('seller-status').style.color = '#1e40af';
-            this.textContent = 'Submitted ✓'; this.disabled = true;
-        });
-
-        // Load calendar slots
-        async function loadSlots() {
-            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
-            var container = document.getElementById('slots-calendar');
-            if (!slots || slots.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--g400)">No slots have been published yet. Check back soon or pick your preferred dates in the form below.</div>';
-                return;
+        async function saveProfile() {
+            var msg = document.getElementById('p-msg');
+            try {
+                await db.from('private_sellers').update({
+                    full_name: document.getElementById('p-name').value.trim(),
+                    phone: document.getElementById('p-phone').value.trim(),
+                    bio: document.getElementById('p-bio').value.trim()
+                }).eq('id', sellerData.id);
+                msg.textContent = 'Profile saved!'; msg.style.color = '#22c55e';
+            } catch(e) {
+                msg.textContent = 'Error: ' + (e.message || 'Failed'); msg.style.color = '#dc2626';
             }
-            var now = new Date().toISOString().split('T')[0];
-            var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem">';
-            slots.forEach(function(s) {
-                var isPast = s.end_date < now;
-                var isTaken = !s.is_available;
-                var bg = isPast ? 'var(--g100)' : isTaken ? '#fef2f2' : '#f0fdf4';
-                var border = isPast ? 'var(--g200)' : isTaken ? '#fecaca' : '#bbf7d0';
-                var color = isPast ? 'var(--g400)' : isTaken ? '#dc2626' : '#16a34a';
-                var label = isPast ? 'Past' : isTaken ? 'Booked' : 'Available';
-                var startStr = new Date(s.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                var endStr = new Date(s.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';padding:1rem">' +
-                    '<div style="font-weight:600;font-size:.85rem;margin-bottom:.25rem">' + (s.label || startStr + ' — ' + endStr) + '</div>' +
-                    '<div style="font-size:.75rem;color:var(--g500)">' + startStr + ' — ' + endStr + '</div>' +
-                    '<div style="font-size:.7rem;font-weight:600;color:' + color + ';margin-top:.5rem">' + label + '</div>' +
-                    '</div>';
-            });
-            html += '</div>';
-            container.innerHTML = html;
         }
-        loadSlots();
 
-        document.getElementById('sexh-add-aw').addEventListener('click', function() {
-            var t = document.getElementById('sexh-aw-title').value.trim(), img = document.getElementById('sexh-aw-img').value.trim();
-            if (!t||!img) { alert('Title and image URL required.'); return; }
-            sellerArts.push({ title:t, artist_name:document.getElementById('sexh-aw-artist').value.trim(), width_cm:Number(document.getElementById('sexh-aw-w').value)||60, height_cm:Number(document.getElementById('sexh-aw-h').value)||40, medium:document.getElementById('sexh-aw-med').value.trim(), year:document.getElementById('sexh-aw-year').value.trim(), price:Number(document.getElementById('sexh-aw-price').value)||0, image_url:img });
-            ['sexh-aw-title','sexh-aw-artist','sexh-aw-w','sexh-aw-h','sexh-aw-med','sexh-aw-year','sexh-aw-price','sexh-aw-img'].forEach(function(id){document.getElementById(id).value='';});
-            document.getElementById('sexh-aw-list').innerHTML = '<div style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">' + sellerArts.length + ' artwork(s)</div>' + sellerArts.map(function(a,i){ return '<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--g200);font-size:.85rem"><span>' + a.title + ' (' + a.width_cm + '×' + a.height_cm + ' cm)</span><button onclick="sellerArts.splice('+i+',1);this.parentElement.remove()" style="font-family:Manrope;font-size:.7rem;color:var(--err);background:none;border:none;cursor:pointer">Remove</button></div>'; }).join('');
-        });
+        // Exhibitions
+        async function loadSellerExhibitions() {
+            try {
+                var { data: exhs } = await db.from('exhibitions').select('*')
+                    .eq('exhibitor_id', currentUser.id).order('created_at', { ascending: false });
+                var list = document.getElementById('seller-exh-list');
+                if (!exhs || !exhs.length) {
+                    list.innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">No exhibitions yet.</p>';
+                } else {
+                    list.innerHTML = '';
+                    exhs.forEach(function(ex) {
+                        var sc = { pending:'#f59e0b', approved:'#22c55e', rejected:'#ef4444', live:'#c8ff00', ended:'#737373' };
+                        var d = document.createElement('div');
+                        d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--gray-100)';
+                        d.innerHTML = '<div><div style="font-weight:500;font-size:.9rem">' + (ex.title||'') + '</div><div style="font-size:.75rem;color:var(--gray-400)">' + (ex.start_date?new Date(ex.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD') + ' — ' + (ex.end_date?new Date(ex.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD') + '</div></div><span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;background:' + (sc[ex.status]||'#d4d4d4') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>';
+                        list.appendChild(d);
+                    });
+                }
+            } catch(e) { console.error(e); }
 
-        document.getElementById('sexh-submit').addEventListener('click', async function() {
-            var title = document.getElementById('sexh-title').value.trim(), name = document.getElementById('sexh-name').value.trim();
-            if (!title||!name) { alert('Title and name required.'); return; }
-            if (sellerArts.length === 0) { alert('Add at least one artwork.'); return; }
-            this.textContent = 'Submitting...'; this.disabled = true;
-            var { data: exh, error } = await db.from('exhibitions').insert({ exhibitor_type:'private_seller', exhibitor_user_id:currentUser.id, exhibitor_name:name, exhibitor_bio:document.getElementById('sexh-desc').value.trim(), exhibitor_photo_url:document.getElementById('sexh-photo').value.trim()||null, exhibitor_email:currentUser.email, title:title, description:document.getElementById('sexh-desc').value.trim(), start_date:document.getElementById('sexh-start').value||null, end_date:document.getElementById('sexh-end').value||null, status:'pending' }).select().single();
-            if (error) { alert('Error: '+error.message); this.textContent='Submit Exhibition Request'; this.disabled=false; return; }
-            await db.from('exhibition_artworks').insert(sellerArts.map(function(a,i){ return { exhibition_id:exh.id, title:a.title, artist_name:a.artist_name, width_cm:a.width_cm, height_cm:a.height_cm, medium:a.medium, year:a.year, price:a.price||null, is_for_sale:a.price>0, image_url:a.image_url, display_order:i }; }));
-            showMsg('sexh-message', 'Exhibition request submitted! We will review and get back to you.', true);
-            this.textContent='Submit Exhibition Request'; this.disabled=false;
-            sellerArts = []; document.getElementById('sexh-aw-list').innerHTML = '';
-            document.getElementById('sexh-title').value = ''; document.getElementById('sexh-desc').value = '';
-            loadExhibitions();
-        });
+            // Slots
+            try {
+                var { data: slots } = await db.from('exhibition_slots').select('*')
+                    .eq('is_available', true).gte('start_date', new Date().toISOString().split('T')[0]).order('start_date');
+                var sl = document.getElementById('seller-slots-list');
+                var sel = document.getElementById('s-exh-slot');
+                if (!slots || !slots.length) {
+                    sl.innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">No available slots.</p>';
+                } else {
+                    sl.innerHTML = '';
+                    slots.forEach(function(s) {
+                        var sf = new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+                        var ef = new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+                        var d = document.createElement('div');
+                        d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--gray-100)';
+                        d.innerHTML = '<div><div style="font-weight:500;font-size:.85rem">' + (s.label||'Slot') + '</div><div style="font-size:.75rem;color:var(--gray-400)">' + sf + ' — ' + ef + '</div></div><span style="font-size:.7rem;color:#4a7c00;font-weight:500">Available</span>';
+                        sl.appendChild(d);
+                        var opt = document.createElement('option'); opt.value = s.id; opt.textContent = (s.label||'Slot') + ' (' + sf + ' — ' + ef + ')'; sel.appendChild(opt);
+                    });
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function addSellerArt() {
+            sArtCount++;
+            var c = document.getElementById('s-exh-artworks');
+            var d = document.createElement('div');
+            d.style.cssText = 'border:1px solid var(--gray-200);padding:1rem;margin-bottom:.75rem;position:relative';
+            d.innerHTML = '<button onclick="this.parentElement.remove()" style="position:absolute;top:.5rem;right:.5rem;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--gray-400)">&times;</button>' +
+                '<div style="font-size:.8rem;font-weight:600;margin-bottom:.75rem">Artwork #' + sArtCount + '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+                '<div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input se-title"></div>' +
+                '<div class="form-group"><label class="form-label">Artist</label><input type="text" class="form-input se-artist"></div>' +
+                '<div class="form-group"><label class="form-label">Medium</label><input type="text" class="form-input se-medium"></div>' +
+                '<div class="form-group"><label class="form-label">Year</label><input type="number" class="form-input se-year"></div>' +
+                '<div class="form-group"><label class="form-label">Width (cm)</label><input type="number" class="form-input se-width"></div>' +
+                '<div class="form-group"><label class="form-label">Height (cm)</label><input type="number" class="form-input se-height"></div>' +
+                '</div>' +
+                '<div class="form-group" style="margin-top:.5rem"><label class="form-label">Image</label><input type="file" class="se-file" accept="image/*" style="font-size:.8rem"></div>';
+            c.appendChild(d);
+        }
+
+        async function submitSellerExhibition() {
+            var title = document.getElementById('s-exh-title').value.trim();
+            var msg = document.getElementById('s-exh-msg');
+            if (!title) { msg.textContent = 'Please enter a title.'; msg.style.color = '#dc2626'; return; }
+            msg.textContent = 'Submitting...'; msg.style.color = 'var(--gray-500)';
+            try {
+                var coverFile = document.getElementById('s-exh-cover').files[0];
+                var coverUrl = '';
+                if (coverFile) {
+                    var cp = currentUser.id + '/' + Date.now() + '-cover.' + coverFile.name.split('.').pop();
+                    await db.storage.from('exhibition-images').upload(cp, coverFile);
+                    coverUrl = db.storage.from('exhibition-images').getPublicUrl(cp).data.publicUrl;
+                }
+                var { data: exh, error } = await db.from('exhibitions').insert({
+                    exhibitor_type: 'private_seller', exhibitor_id: currentUser.id,
+                    exhibitor_name: sellerData.full_name || currentUser.email,
+                    exhibitor_email: currentUser.email,
+                    title: title, description: document.getElementById('s-exh-desc').value.trim(),
+                    cover_image_url: coverUrl, slot_id: document.getElementById('s-exh-slot').value || null,
+                    status: 'pending'
+                }).select().single();
+                if (error) throw error;
+
+                var arts = document.querySelectorAll('#s-exh-artworks > div');
+                for (var i = 0; i < arts.length; i++) {
+                    var a = arts[i], f = a.querySelector('.se-file').files[0], imgUrl = '';
+                    if (f) {
+                        var p = currentUser.id + '/' + Date.now() + '-' + i + '.' + f.name.split('.').pop();
+                        await db.storage.from('exhibition-images').upload(p, f);
+                        imgUrl = db.storage.from('exhibition-images').getPublicUrl(p).data.publicUrl;
+                    }
+                    await db.from('exhibition_artworks').insert({
+                        exhibition_id: exh.id, title: a.querySelector('.se-title').value.trim() || 'Untitled',
+                        artist_name: a.querySelector('.se-artist').value.trim(),
+                        medium: a.querySelector('.se-medium').value.trim(),
+                        year: parseInt(a.querySelector('.se-year').value) || null,
+                        width_cm: parseFloat(a.querySelector('.se-width').value) || null,
+                        height_cm: parseFloat(a.querySelector('.se-height').value) || null,
+                        image_url: imgUrl, display_order: i
+                    });
+                }
+                msg.textContent = 'Exhibition request submitted!'; msg.style.color = '#22c55e';
+                document.getElementById('s-exh-title').value = '';
+                document.getElementById('s-exh-desc').value = '';
+                document.getElementById('s-exh-artworks').innerHTML = '';
+                loadSellerExhibitions();
+            } catch(e) {
+                msg.textContent = 'Error: ' + (e.message || 'Failed'); msg.style.color = '#dc2626';
+            }
+        }
 
         checkAuth();
     </script>

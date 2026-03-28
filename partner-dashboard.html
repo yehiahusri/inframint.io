@@ -14,7 +14,7 @@
         body { overflow-x: hidden; font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
 
         /* Layout */
-        .layout { display: grid; grid-template-columns: 220px 1fr; height: 100vh; overflow: hidden; }
+        .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
 
         /* Sidebar */
         .sidebar { background: var(--white); border-right: 1px solid var(--gray-200); padding-top: 1.5rem; display: flex; flex-direction: column; }
@@ -37,7 +37,7 @@
         .topbar { display: flex; justify-content: flex-end; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--gray-200); background: var(--white); font-size: 0.875rem; color: var(--gray-600); }
 
         /* Main content */
-        main { padding: 0 0 4rem; overflow-y: auto; }
+        main { padding: 0; }
         .section { display: none; }
         .section.active { display: block; }
         .page-header { padding: 2rem 2rem 1rem; }
@@ -183,6 +183,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     Notifications
                 </a>
+                <a class="sidebar-link" data-section="exhibitions">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Exhibitions
+                </a>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-label">Settings</div>
@@ -200,10 +204,11 @@
                 </a>
             </div>
             <div class="sidebar-bottom">
+                <button id="sign-out">Sign Out</button>
             </div>
         </div>
 
-        <div style="overflow-y:auto;height:100vh">
+        <div>
             <div class="topbar" style="justify-content:space-between">
                 <div style="display:flex;gap:1.5rem;align-items:center">
                     <a href="gallery.html" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none">Gallery</a>
@@ -212,10 +217,9 @@
                     <a href="auctions.html" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none">Auctions</a>
                     <a href="art-advisory.html" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none">Advisory</a>
                 </div>
-                <div style="display:flex;align-items:center;gap:.75rem">
-                    <span id="user-name">Partner</span>
+                <div>
+                    <span id="user-name">Partner</span>&nbsp;&nbsp;
                     <span class="status-badge status-pending" id="account-status">Pending</span>
-                    <a href="#" id="sign-out" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
                 </div>
             </div>
 
@@ -342,6 +346,62 @@
                         <button class="btn btn-primary" id="accept-terms">Accept Terms</button>
                     </div>
                 </div>
+
+                <!-- Exhibitions Section -->
+                <div class="section" id="section-exhibitions">
+                    <div class="page-header"><h1 class="page-title">Exhibitions</h1><p class="page-subtitle">Request virtual exhibition slots for your artists</p></div>
+
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Exhibition Requests</h2></div>
+                        <div id="partner-exh-list">
+                            <p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Available Slots</h2></div>
+                        <div id="partner-slots-list">
+                            <p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">Loading slots...</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title">Request Exhibition</h2></div>
+                        <div style="display:flex;flex-direction:column;gap:1rem">
+                            <div class="form-group">
+                                <label class="form-label">Exhibition Title</label>
+                                <input type="text" class="form-input" id="p-exh-title" placeholder="e.g. New Voices: Emerging Talent">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Exhibiting Artist Name</label>
+                                <input type="text" class="form-input" id="p-exh-artist" placeholder="Artist's full name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-input" id="p-exh-desc" rows="3" placeholder="Describe the exhibition concept..." style="resize:vertical"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Preferred Slot</label>
+                                <select class="form-input" id="p-exh-slot" style="padding:.65rem;font-family:inherit;font-size:.85rem;border:1px solid var(--gray-200)">
+                                    <option value="">Select a slot...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cover Image</label>
+                                <input type="file" id="p-exh-cover" accept="image/*" style="font-size:.8rem">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Artworks</label>
+                                <p style="font-size:.75rem;color:var(--gray-400);margin-bottom:.5rem">Add artworks with dimensions for real-scale display.</p>
+                                <div id="p-exh-artworks"></div>
+                                <button class="btn" style="background:var(--gray-100);color:var(--black);font-size:.8rem;padding:.5rem 1rem;margin-top:.5rem;border:1px dashed var(--gray-300)" onclick="addPartnerExhArt()">+ Add Artwork</button>
+                            </div>
+                            <div class="message" id="p-exh-msg"></div>
+                            <button class="btn btn-primary" onclick="submitPartnerExhibition()">Submit Exhibition Request</button>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
@@ -367,7 +427,7 @@
             if (!session) { window.location.href = 'partner-login.html'; return; }
             currentUser = session.user;
 
-            const { data, error } = await db.from('partners').select('*').eq('user_id', currentUser.id).maybeSingle();
+            const { data, error } = await db.from('partners').select('*').eq('user_id', currentUser.id).single();
             if (error || !data) { window.location.href = 'partner-login.html'; return; }
             partnerData = data;
             populateDashboard();
@@ -477,8 +537,7 @@
         });
 
         // Sign out
-        document.getElementById('sign-out').addEventListener('click', async function(e) {
-            e.preventDefault();
+        document.getElementById('sign-out').addEventListener('click', async function() {
             await db.auth.signOut();
             window.location.href = 'index.html';
         });
@@ -551,7 +610,7 @@
             }
 
             // Check if artist already exists
-            const { data: existingArtist } = await db.from('artists').select('id').eq('email', email).maybeSingle();
+            const { data: existingArtist } = await db.from('artists').select('id').eq('email', email).single();
 
             if (existingArtist) {
                 // Artist exists — link them
@@ -587,7 +646,129 @@
             loadMyArtists();
         });
 
+        // ═══════ EXHIBITIONS ═══════
+        let pExhCount = 0;
+
+        async function loadPartnerExhibitions() {
+            if (!currentUser) return;
+            try {
+                var { data: exhs } = await db.from('exhibitions').select('*')
+                    .eq('exhibitor_id', currentUser.id).order('created_at', { ascending: false });
+                var list = document.getElementById('partner-exh-list');
+                if (!exhs || !exhs.length) {
+                    list.innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">No exhibitions yet.</p>';
+                } else {
+                    list.innerHTML = '';
+                    exhs.forEach(function(ex) {
+                        var sc = { pending:'#f59e0b', approved:'#22c55e', rejected:'#ef4444', live:'#c8ff00', ended:'#737373' };
+                        var d = document.createElement('div');
+                        d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--gray-100)';
+                        d.innerHTML = '<div><div style="font-weight:500;font-size:.9rem">' + (ex.title||'') + '</div><div style="font-size:.75rem;color:var(--gray-400)">' + (ex.exhibitor_name||'') + ' · ' + (ex.start_date?new Date(ex.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD') + '</div></div><span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;background:' + (sc[ex.status]||'#d4d4d4') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>';
+                        list.appendChild(d);
+                    });
+                }
+            } catch(e) { console.error(e); }
+
+            try {
+                var { data: slots } = await db.from('exhibition_slots').select('*')
+                    .eq('is_available', true).gte('start_date', new Date().toISOString().split('T')[0]).order('start_date');
+                var sl = document.getElementById('partner-slots-list');
+                var sel = document.getElementById('p-exh-slot');
+                if (!slots || !slots.length) {
+                    sl.innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;text-align:center;padding:1.5rem">No available slots.</p>';
+                } else {
+                    sl.innerHTML = '';
+                    slots.forEach(function(s) {
+                        var sf = new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+                        var ef = new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+                        var d = document.createElement('div');
+                        d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--gray-100)';
+                        d.innerHTML = '<div><div style="font-weight:500;font-size:.85rem">' + (s.label||'Slot') + '</div><div style="font-size:.75rem;color:var(--gray-400)">' + sf + ' — ' + ef + '</div></div><span style="font-size:.7rem;color:#4a7c00;font-weight:500">Available</span>';
+                        sl.appendChild(d);
+                        var opt = document.createElement('option'); opt.value = s.id; opt.textContent = (s.label||'Slot') + ' (' + sf + ' — ' + ef + ')'; sel.appendChild(opt);
+                    });
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        function addPartnerExhArt() {
+            pExhCount++;
+            var c = document.getElementById('p-exh-artworks');
+            var d = document.createElement('div');
+            d.style.cssText = 'border:1px solid var(--gray-200);padding:1rem;margin-bottom:.75rem;position:relative';
+            d.innerHTML = '<button onclick="this.parentElement.remove()" style="position:absolute;top:.5rem;right:.5rem;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--gray-400)">&times;</button>' +
+                '<div style="font-size:.8rem;font-weight:600;margin-bottom:.75rem">Artwork #' + pExhCount + '</div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">' +
+                '<div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input pe-title"></div>' +
+                '<div class="form-group"><label class="form-label">Artist</label><input type="text" class="form-input pe-artist"></div>' +
+                '<div class="form-group"><label class="form-label">Medium</label><input type="text" class="form-input pe-medium"></div>' +
+                '<div class="form-group"><label class="form-label">Year</label><input type="number" class="form-input pe-year"></div>' +
+                '<div class="form-group"><label class="form-label">Width (cm)</label><input type="number" class="form-input pe-width"></div>' +
+                '<div class="form-group"><label class="form-label">Height (cm)</label><input type="number" class="form-input pe-height"></div>' +
+                '</div>' +
+                '<div class="form-group" style="margin-top:.5rem"><label class="form-label">Image</label><input type="file" class="pe-file" accept="image/*" style="font-size:.8rem"></div>';
+            c.appendChild(d);
+        }
+
+        async function submitPartnerExhibition() {
+            var title = document.getElementById('p-exh-title').value.trim();
+            var msg = document.getElementById('p-exh-msg');
+            if (!title) { msg.textContent = 'Please enter a title.'; msg.style.color = '#dc2626'; return; }
+            msg.textContent = 'Submitting...'; msg.style.color = 'var(--gray-500)';
+            try {
+                var coverFile = document.getElementById('p-exh-cover').files[0];
+                var coverUrl = '';
+                if (coverFile) {
+                    var cp = currentUser.id + '/' + Date.now() + '-cover.' + coverFile.name.split('.').pop();
+                    await db.storage.from('exhibition-images').upload(cp, coverFile);
+                    coverUrl = db.storage.from('exhibition-images').getPublicUrl(cp).data.publicUrl;
+                }
+                var artistName = document.getElementById('p-exh-artist').value.trim();
+                var { data: exh, error } = await db.from('exhibitions').insert({
+                    exhibitor_type: 'partner', exhibitor_id: currentUser.id,
+                    exhibitor_name: artistName || (partnerData ? partnerData.name : ''),
+                    exhibitor_email: currentUser.email,
+                    title: title, description: document.getElementById('p-exh-desc').value.trim(),
+                    cover_image_url: coverUrl, slot_id: document.getElementById('p-exh-slot').value || null,
+                    status: 'pending'
+                }).select().single();
+                if (error) throw error;
+
+                var arts = document.querySelectorAll('#p-exh-artworks > div');
+                for (var i = 0; i < arts.length; i++) {
+                    var a = arts[i], f = a.querySelector('.pe-file').files[0], imgUrl = '';
+                    if (f) {
+                        var p = currentUser.id + '/' + Date.now() + '-' + i + '.' + f.name.split('.').pop();
+                        await db.storage.from('exhibition-images').upload(p, f);
+                        imgUrl = db.storage.from('exhibition-images').getPublicUrl(p).data.publicUrl;
+                    }
+                    await db.from('exhibition_artworks').insert({
+                        exhibition_id: exh.id, title: a.querySelector('.pe-title').value.trim() || 'Untitled',
+                        artist_name: a.querySelector('.pe-artist').value.trim() || artistName,
+                        medium: a.querySelector('.pe-medium').value.trim(),
+                        year: parseInt(a.querySelector('.pe-year').value) || null,
+                        width_cm: parseFloat(a.querySelector('.pe-width').value) || null,
+                        height_cm: parseFloat(a.querySelector('.pe-height').value) || null,
+                        image_url: imgUrl, display_order: i
+                    });
+                }
+                msg.textContent = 'Exhibition request submitted!'; msg.style.color = '#22c55e';
+                document.getElementById('p-exh-title').value = '';
+                document.getElementById('p-exh-artist').value = '';
+                document.getElementById('p-exh-desc').value = '';
+                document.getElementById('p-exh-artworks').innerHTML = '';
+                loadPartnerExhibitions();
+            } catch(e) {
+                msg.textContent = 'Error: ' + (e.message || 'Failed'); msg.style.color = '#dc2626';
+            }
+        }
+
         // Init
+        var _origCheckAuthP = checkAuth;
+        checkAuth = async function() {
+            await _origCheckAuthP();
+            loadPartnerExhibitions();
+        };
         checkAuth();
     </script>
 </body>

@@ -35,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0 0 6rem;overflow-y:auto;overflow-x:hidden;height:100vh}
+        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -176,6 +176,8 @@
                 <a class="sb-lk" data-s="finance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
                 <a class="sb-lk" data-s="commissions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Commissions</a>
                 <a class="sb-lk" data-s="auctions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>Auctions <span class="ct" id="n-auctions">0</span></a>
+                <a class="sb-lk" data-s="exhibitions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Exhibitions <span class="ct" id="n-exhibitions">0</span></a>
+                <a class="sb-lk" data-s="private-sellers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="17"/></svg>Private Sellers <span class="ct" id="n-sellers">0</span></a>
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Communication</div>
@@ -192,26 +194,14 @@
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Settings</div>
-                <a class="sb-lk" data-s="exhibitions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>Exhibitions <span class="ct" id="n-exh"></span></a>
                 <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
-            <div class="sb-bot"></div>
+            <div class="sb-bot"><button id="sign-out">Sign Out</button></div>
         </div>
 
         <div>
-            <div class="topbar">
-                <div style="display:flex;gap:1.25rem;align-items:center">
-                    <span style="font-weight:500">InfraMint Admin</span>
-                    <a href="gallery.html" style="color:var(--g400);text-decoration:none;font-size:.7rem">Gallery</a>
-                    <a href="vernissage.html" style="color:var(--g400);text-decoration:none;font-size:.7rem">Vernissage</a>
-                    <a href="index.html" style="color:var(--g400);text-decoration:none;font-size:.7rem">Home</a>
-                </div>
-                <div style="display:flex;align-items:center;gap:1rem">
-                    <span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span>
-                    <a href="#" id="sign-out" style="font-size:.75rem;color:var(--g500);text-decoration:none" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
-                </div>
-            </div>
+            <div class="topbar"><span>InfraMint Admin</span><span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span></div>
             <main>
                 <!-- Dashboard -->
                 <div class="sec active" id="section-overview">
@@ -645,26 +635,6 @@
                     </div>
                 </div>
 
-                <!-- Exhibitions -->
-                <div class="sec" id="section-exhibitions">
-                    <div class="ph"><h1>Exhibitions</h1><p>Manage virtual exhibition requests and live shows</p></div>
-                    <div class="card">
-                        <div class="ch"><span class="ct2">Exhibition Requests</span></div>
-                        <div class="tw"><table><thead><tr><th>Title</th><th>Exhibitor</th><th>Type</th><th>Dates</th><th>Artworks</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-exh"></tbody></table></div>
-                    </div>
-                    <div class="card">
-                        <div class="ch"><span class="ct2">Create Exhibition Slot</span></div>
-                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Create time slots that artists/collectors can request for their exhibitions.</p>
-                        <div class="form-row2">
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Start Date</label><input type="date" class="fi" id="slot-start"></div>
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">End Date</label><input type="date" class="fi" id="slot-end"></div>
-                        </div>
-                        <div style="margin-top:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Label</label><input type="text" class="fi" id="slot-label" placeholder="e.g. Week 14 — April 2026"></div>
-                        <button class="fbtn" id="add-slot" style="margin-top:.6rem">Create Slot</button>
-                        <div class="msg-ok" id="slot-msg"></div>
-                    </div>
-                </div>
-
                 <!-- Team / Co-Owners -->
                 <div class="sec" id="section-team">
                     <div class="ph"><h1>Team / Co-Owners</h1><p>Manage who has admin access to the gallery</p></div>
@@ -786,6 +756,47 @@
                     </div>
                 </div>
 
+                <!-- Exhibitions -->
+                <div class="sec" id="section-exhibitions">
+                    <div class="ph"><h1>Exhibitions</h1><p>Manage virtual exhibition requests</p></div>
+
+                    <!-- Create Slot -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Create Exhibition Slot</span></div>
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Label</label><input type="text" class="fi" id="slot-label" placeholder="e.g. July 2026"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Max Exhibitions</label><input type="number" class="fi" id="slot-max" value="1"></div>
+                        </div>
+                        <div class="form-row2" style="margin-top:.5rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Start Date</label><input type="date" class="fi" id="slot-start"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">End Date</label><input type="date" class="fi" id="slot-end"></div>
+                        </div>
+                        <div id="slot-msg" style="font-size:.75rem;margin:.5rem 0"></div>
+                        <button class="fbtn" onclick="createSlot()">Create Slot</button>
+                    </div>
+
+                    <!-- Existing Slots -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Exhibition Slots</span></div>
+                        <div id="admin-slots-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+
+                    <!-- Exhibition Requests -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Exhibition Requests</span></div>
+                        <div id="admin-exh-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+                </div>
+
+                <!-- Private Sellers -->
+                <div class="sec" id="section-private-sellers">
+                    <div class="ph"><h1>Private Sellers</h1><p>Review and verify private seller accounts</p></div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">All Private Sellers</span></div>
+                        <div id="admin-sellers-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+                </div>
+
                 <!-- Settings -->
                 <div class="sec" id="section-settings">
                     <div class="ph"><h1>Settings</h1><p>Platform configuration</p></div>
@@ -844,40 +855,34 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-    console.log('Admin JS loaded');
-    var SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
-    var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
-    var db=supabase.createClient(SB_URL,SB_KEY);
-    var CN={AE:'UAE',US:'US',UK:'UK',DE:'DE',FR:'FR',LB:'LB',SA:'SA',QA:'QA',other:'Other'};
-    var CAT={painting:'Painting',photography:'Photography',digital:'Digital',sculpture:'Sculpture',mixed:'Mixed Media',illustration:'Illustration',other:'Other'};
-    var MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photo',mixed:'Mixed',other:'Other'};
+    const SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
+    const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+    const db=supabase.createClient(SB_URL,SB_KEY);
+    const CN={AE:'UAE',US:'US',UK:'UK',DE:'DE',FR:'FR',LB:'LB',SA:'SA',QA:'QA',other:'Other'};
+    const CAT={painting:'Painting',photography:'Photography',digital:'Digital',sculpture:'Sculpture',mixed:'Mixed Media',illustration:'Illustration',other:'Other'};
+    const MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photo',mixed:'Mixed',other:'Other'};
 
-    var allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
+    let allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
 
-    var ADM_LEGACY='yehiahusri@gmail.com';
+    const ADM_LEGACY='yehiahusri@gmail.com';
 
-    // Login
+    // Login — check admin_users table
     document.getElementById('a-login').onclick=async function(){
         var e=document.getElementById('a-email').value,p=document.getElementById('a-pass').value,m=document.getElementById('lm');
-        m.textContent='Signing in...';m.className='lm show';m.style.color='#737373';
-        try{
-            var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
-            if(error){m.textContent='Error: '+error.message;m.style.color='red';return}
-            m.textContent='Checking admin access...';
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
-            if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.style.color='red';await db.auth.signOut();return}
-            showDash(adm);
-        }catch(ex){m.textContent='Error: '+ex.message;m.style.color='red';}
+        var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
+        if(error){m.textContent=error.message;m.className='lm show';return}
+        // Check admin_users table OR legacy email
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
+        if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
+        showDash(adm);
     };
 
     async function checkAuth(){
-        try{
-            var{data:{session}}=await db.auth.getSession();
-            if(session){
-                var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
-                if(adm||session.user.email===ADM_LEGACY)showDash(adm);
-            }
-        }catch(ex){console.log('checkAuth error:',ex);}
+        var{data:{session}}=await db.auth.getSession();
+        if(session){
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
+            if(adm||session.user.email===ADM_LEGACY)showDash(adm);
+        }
     }
     checkAuth();
 
@@ -897,7 +902,7 @@
         document.getElementById('section-'+this.dataset.s).classList.add('active');
     })});
 
-    document.getElementById('sign-out').onclick=async function(e){e.preventDefault();await db.auth.signOut();window.location.href='index.html'};
+    document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};
 
     // Commission calculator
     document.getElementById('set-gallery').oninput=function(){
@@ -931,7 +936,7 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
         var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
@@ -952,7 +957,7 @@
 
     // ===== ADVISORY HERO IMAGE =====
     (async function(){
-        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').maybeSingle();
+        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').single();
         if (setting && setting.value) {
             document.getElementById('adv-hero-preview').innerHTML = '<img src="' + setting.value + '" style="width:100%;max-width:400px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--g200)">';
         }
@@ -996,7 +1001,7 @@
 
         // Load initial state
         (async function() {
-            var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
+            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
@@ -1116,7 +1121,6 @@
         loadAdvisors();
         load3rdParty();
         loadCollections();
-        loadExhibitions();
     }
 
     // ===== FINANCE =====
@@ -2997,93 +3001,189 @@
         this.textContent = 'Add Painting to Auction'; this.disabled = false;
     });
 
-    // ===== EXHIBITIONS =====
-    async function loadExhibitions() {
-        var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(id, title, image_url, width_cm, height_cm)').order('created_at', { ascending: false });
-        var pending = (exhs || []).filter(function(e) { return e.status === 'pending'; });
-        var el = document.getElementById('n-exh');
-        if (el) el.textContent = pending.length || '';
+    // ═══════ EXHIBITIONS ADMIN ═══════
+    async function loadAdminExhibitions() {
+        try {
+            var { data: exhs } = await db.from('exhibitions').select('*').order('created_at', { ascending: false });
+            var el = document.getElementById('n-exhibitions');
+            if (el) el.textContent = exhs ? exhs.filter(function(e){ return e.status === 'pending'; }).length : 0;
 
-        var b = document.getElementById('tb-exh');
-        if (!exhs || exhs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="7">No exhibition requests yet</td></tr>'; return; }
-        b.innerHTML = '';
+            var list = document.getElementById('admin-exh-list');
+            if (!exhs || !exhs.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No exhibition requests.</p>'; return; }
+            list.innerHTML = '';
 
-        exhs.forEach(function(e) {
-            var arts = e.exhibition_artworks || [];
-            var startStr = e.start_date ? new Date(e.start_date).toLocaleDateString() : '—';
-            var endStr = e.end_date ? new Date(e.end_date).toLocaleDateString() : '—';
-            var statusCls = { pending:'b-pending', approved:'b-active', live:'b-approved', ended:'b-shipped', rejected:'b-rejected', archived:'b-shipped', draft:'b-pending' };
+            exhs.forEach(function(ex) {
+                var sc = { pending:'#f59e0b', approved:'#22c55e', rejected:'#ef4444', live:'#c8ff00', ended:'#737373', archived:'#a3a3a3', draft:'#d4d4d4' };
+                var d = document.createElement('div');
+                d.style.cssText = 'padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                var btns = '';
+                if (ex.status === 'pending') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;margin-right:.3rem" onclick="updateExhStatus(\'' + ex.id + '\',\'approved\')">Approve</button>' +
+                           '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#ef4444" onclick="updateExhStatus(\'' + ex.id + '\',\'rejected\')">Reject</button>';
+                } else if (ex.status === 'approved') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#c8ff00;color:#000" onclick="updateExhStatus(\'' + ex.id + '\',\'live\')">Go Live</button>';
+                } else if (ex.status === 'live') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#737373" onclick="updateExhStatus(\'' + ex.id + '\',\'ended\')">End</button>';
+                } else if (ex.status === 'ended') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#a3a3a3" onclick="updateExhStatus(\'' + ex.id + '\',\'archived\')">Archive</button>';
+                }
 
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td class="tn">' + (e.title||'—').substring(0,25) + '</td>' +
-                '<td>' + (e.exhibitor_name || '—') + '<br><span class="te">' + (e.exhibitor_email || '') + '</span></td>' +
-                '<td style="font-size:.7rem;text-transform:capitalize">' + (e.exhibitor_type || '—') + '</td>' +
-                '<td style="font-size:.75rem">' + startStr + '<br>' + endStr + '</td>' +
-                '<td>' + arts.length + '</td>' +
-                '<td><span class="badge ' + (statusCls[e.status] || 'b-pending') + '">' + (e.status || 'draft') + '</span></td>' +
-                '<td id="exh-act-' + e.id + '"></td>';
-            b.appendChild(tr);
-
-            var td = document.getElementById('exh-act-' + e.id);
-
-            if (arts.length > 0) {
-                mkBtn(td, 'View Art', 'ab-grey', function() {
-                    var imgs = arts.map(function(a) { return '<div style="margin-bottom:1rem;text-align:center"><img src="' + a.image_url + '" style="max-width:100%;max-height:300px;object-fit:contain"><div style="font-size:.8rem;margin-top:.5rem">' + (a.title || '') + ' (' + (a.width_cm || '?') + '×' + (a.height_cm || '?') + ' cm)</div></div>'; }).join('');
-                    var w = window.open('', '_blank', 'width=600,height=800');
-                    w.document.write('<html><head><title>Exhibition Artworks</title><style>body{font-family:Manrope,sans-serif;padding:2rem;background:#f7f7f7}</style></head><body><h2>' + (e.title || 'Exhibition') + '</h2><p style="color:#737373;margin-bottom:1.5rem">by ' + (e.exhibitor_name || '') + ' · ' + arts.length + ' artworks</p>' + imgs + '</body></html>');
-                });
-            }
-
-            if (e.status === 'pending') {
-                mkBtn(td, 'Approve', 'ab-ok', async function() {
-                    await db.from('exhibitions').update({ status: 'approved', approved_by: 'admin', approved_at: new Date().toISOString() }).eq('id', e.id);
-                    loadExhibitions();
-                });
-                mkBtn(td, 'Reject', 'ab-no', async function() {
-                    var reason = prompt('Rejection reason:');
-                    if (!reason) return;
-                    await db.from('exhibitions').update({ status: 'rejected', admin_notes: reason }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-            if (e.status === 'approved') {
-                mkBtn(td, 'Go Live', 'ab-feat', async function() {
-                    if (!confirm('Set "' + e.title + '" live on the Vernissage page?')) return;
-                    await db.from('exhibitions').update({ status: 'live' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-            if (e.status === 'live') {
-                mkBtn(td, 'End', 'ab-grey', async function() {
-                    if (!confirm('End this exhibition?')) return;
-                    await db.from('exhibitions').update({ status: 'ended' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-                mkBtn(td, 'View', 'ab-list', function() { window.open('vernissage.html?exhibition=' + e.id, '_blank'); });
-            }
-            if (e.status === 'ended' || e.status === 'rejected') {
-                mkBtn(td, 'Archive', 'ab-grey', async function() {
-                    await db.from('exhibitions').update({ status: 'archived' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-        });
+                d.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                    '<div>' +
+                        '<div style="font-weight:500;font-size:.85rem;color:#fff">' + (ex.title || 'Untitled') + '</div>' +
+                        '<div style="font-size:.7rem;color:var(--g500)">' + (ex.exhibitor_name || '') + ' (' + (ex.exhibitor_type || '') + ') · ' + (ex.exhibitor_email || '') + '</div>' +
+                        '<div style="font-size:.7rem;color:var(--g500);margin-top:.2rem">' +
+                            (ex.start_date ? new Date(ex.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'No dates') +
+                            ' — ' + (ex.end_date ? new Date(ex.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '') +
+                            ' · ' + (ex.view_count || 0) + ' views' +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:.5rem">' +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#333" onclick="viewExhArt(\'' + ex.id + '\')">View Art</button>' +
+                        btns +
+                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .5rem;background:' + (sc[ex.status]||'#555') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>' +
+                    '</div></div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error('loadAdminExhibitions error:', e); }
     }
 
-    // Slot creation
-    document.getElementById('add-slot').addEventListener('click', async function() {
+    async function updateExhStatus(id, status) {
+        try {
+            await db.from('exhibitions').update({ status: status, updated_at: new Date().toISOString() }).eq('id', id);
+            loadAdminExhibitions();
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    async function viewExhArt(exhId) {
+        try {
+            var { data: arts } = await db.from('exhibition_artworks').select('*').eq('exhibition_id', exhId).order('display_order');
+            if (!arts || !arts.length) { alert('No artworks in this exhibition.'); return; }
+
+            var html = '<html><head><title>Exhibition Artworks</title><style>body{font-family:Manrope,sans-serif;background:#111;color:#fff;padding:2rem}' +
+                '.art{display:inline-block;margin:1rem;text-align:center;vertical-align:top}' +
+                '.art img{max-width:280px;max-height:280px;object-fit:contain;border:4px solid #fff;box-shadow:0 4px 20px rgba(0,0,0,.4)}' +
+                '.art h3{font-size:.85rem;margin-top:.5rem;font-weight:500}.art p{font-size:.7rem;color:#999}</style></head><body>';
+            html += '<h2 style="font-size:1.2rem;font-weight:300;margin-bottom:1.5rem">' + arts.length + ' Artwork' + (arts.length>1?'s':'') + '</h2>';
+            arts.forEach(function(a) {
+                html += '<div class="art">' +
+                    (a.image_url ? '<img src="' + a.image_url + '">' : '<div style="width:200px;height:200px;background:#333;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#666">No image</div>') +
+                    '<h3>' + (a.title || 'Untitled') + '</h3>' +
+                    '<p>' + (a.artist_name || '') + '</p>' +
+                    '<p>' + (a.medium || '') + (a.year ? ', ' + a.year : '') + '</p>' +
+                    '<p>' + (a.width_cm || '?') + ' × ' + (a.height_cm || '?') + ' cm</p>' +
+                    (a.price ? '<p style="color:#c8ff00">$' + Number(a.price).toLocaleString() + '</p>' : '') +
+                    '</div>';
+            });
+            html += '</body></html>';
+            var w = window.open('', '_blank', 'width=900,height=600');
+            w.document.write(html); w.document.close();
+        } catch(e) { alert('Error loading artworks: ' + e.message); }
+    }
+
+    async function createSlot() {
+        var label = document.getElementById('slot-label').value.trim();
         var start = document.getElementById('slot-start').value;
         var end = document.getElementById('slot-end').value;
-        var label = document.getElementById('slot-label').value.trim();
+        var max = parseInt(document.getElementById('slot-max').value) || 1;
         var msg = document.getElementById('slot-msg');
-        if (!start || !end) { msg.textContent = 'Please set start and end dates.'; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
-        var { error } = await db.from('exhibition_slots').insert({ start_date: start, end_date: end, label: label || null });
-        if (error) { msg.textContent = 'Error: ' + error.message; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
-        msg.textContent = 'Slot created!'; msg.className = 'msg-ok show'; msg.style.color = 'var(--ok)';
-        document.getElementById('slot-start').value = '';
-        document.getElementById('slot-end').value = '';
-        document.getElementById('slot-label').value = '';
-    });
+
+        if (!start || !end) { msg.textContent = 'Please set dates.'; msg.style.color = '#ef4444'; return; }
+        if (new Date(end) <= new Date(start)) { msg.textContent = 'End date must be after start.'; msg.style.color = '#ef4444'; return; }
+
+        try {
+            await db.from('exhibition_slots').insert({
+                label: label || 'Exhibition Slot',
+                start_date: start, end_date: end,
+                max_exhibitions: max, is_available: true
+            });
+            msg.textContent = 'Slot created!'; msg.style.color = '#22c55e';
+            document.getElementById('slot-label').value = '';
+            document.getElementById('slot-start').value = '';
+            document.getElementById('slot-end').value = '';
+            loadAdminSlots();
+        } catch(e) { msg.textContent = 'Error: ' + e.message; msg.style.color = '#ef4444'; }
+    }
+
+    async function loadAdminSlots() {
+        try {
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var list = document.getElementById('admin-slots-list');
+            if (!slots || !slots.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No slots created.</p>'; return; }
+            list.innerHTML = '';
+            slots.forEach(function(s) {
+                var d = document.createElement('div');
+                d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                d.innerHTML = '<div>' +
+                    '<span style="font-weight:500;font-size:.85rem;color:#fff">' + (s.label || 'Slot') + '</span>' +
+                    '<span style="font-size:.75rem;color:var(--g500);margin-left:.75rem">' +
+                        new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' — ' +
+                        new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) +
+                    '</span></div>' +
+                    '<div style="display:flex;gap:.5rem;align-items:center">' +
+                        '<span style="font-size:.7rem;color:' + (s.is_available?'#22c55e':'#ef4444') + '">' + (s.is_available?'Available':'Taken') + '</span>' +
+                        '<button class="fbtn" style="font-size:.6rem;padding:.2rem .5rem;background:#ef4444" onclick="deleteSlot(\'' + s.id + '\')">Delete</button>' +
+                    '</div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    async function deleteSlot(id) {
+        if (!confirm('Delete this slot?')) return;
+        await db.from('exhibition_slots').delete().eq('id', id);
+        loadAdminSlots();
+    }
+
+    // ═══════ PRIVATE SELLERS ADMIN ═══════
+    async function loadAdminSellers() {
+        try {
+            var { data: sellers } = await db.from('private_sellers').select('*').order('created_at', { ascending: false });
+            var el = document.getElementById('n-sellers');
+            if (el) el.textContent = sellers ? sellers.length : 0;
+
+            var list = document.getElementById('admin-sellers-list');
+            if (!sellers || !sellers.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No private sellers registered.</p>'; return; }
+            list.innerHTML = '';
+            sellers.forEach(function(s) {
+                var vc = { unverified:'#a3a3a3', pending:'#f59e0b', verified:'#22c55e', rejected:'#ef4444' };
+                var d = document.createElement('div');
+                d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                var btns = '';
+                if (s.verification_status === 'pending') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;margin-right:.3rem" onclick="verifySeller(\'' + s.id + '\',\'verified\')">Verify</button>' +
+                           '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#ef4444" onclick="verifySeller(\'' + s.id + '\',\'rejected\')">Reject</button>';
+                }
+                var docs = '';
+                if (s.id_document_url) docs += '<a href="' + s.id_document_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00;margin-right:.5rem">ID</a>';
+                if (s.ownership_proof_url) docs += '<a href="' + s.ownership_proof_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00;margin-right:.5rem">Proof</a>';
+                if (s.photo_with_art_url) docs += '<a href="' + s.photo_with_art_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00">Photo</a>';
+
+                d.innerHTML = '<div>' +
+                    '<div style="font-weight:500;font-size:.85rem;color:#fff">' + (s.full_name || 'Unknown') + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--g500)">' + (s.email || '') + (s.phone ? ' · ' + s.phone : '') + '</div>' +
+                    (docs ? '<div style="margin-top:.2rem">' + docs + '</div>' : '') +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:.5rem">' +
+                        btns +
+                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .5rem;background:' + (vc[s.verification_status]||'#555') + ';color:#fff">' + (s.verification_status || 'unknown') + '</span>' +
+                    '</div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error('loadAdminSellers error:', e); }
+    }
+
+    async function verifySeller(id, status) {
+        try {
+            var updates = { verification_status: status };
+            if (status === 'verified') updates.verified_at = new Date().toISOString();
+            await db.from('private_sellers').update(updates).eq('id', id);
+            loadAdminSellers();
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    // Load exhibitions and sellers on init
+    setTimeout(function() { loadAdminExhibitions(); loadAdminSlots(); loadAdminSellers(); }, 1500);
 
     </script>
 </body>

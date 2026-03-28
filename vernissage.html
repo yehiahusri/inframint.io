@@ -4,499 +4,1123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vernissage — InfraMint</title>
+    <meta name="description" content="Virtual exhibitions by emerging artists. Immersive gallery experience on InfraMint.">
+    <meta property="og:title" content="Vernissage — InfraMint">
+    <meta property="og:description" content="Step inside our virtual gallery. Emerging art, exhibited with intention.">
+    <meta property="og:image" content="https://inframint.io/ogimage.png">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <meta property="og:title" content="Vernissage — InfraMint">
-    <meta property="og:description" content="Immersive virtual exhibitions from emerging artists worldwide.">
-    <meta property="og:image" content="https://inframint.io/ogimage.png">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{--black:#0a0a0a;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--accent:#c8ff00;--wall:#f5f3ef;--shadow:rgba(0,0,0,.12)}
-        body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* NAV */
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
-        .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
-        .logo-bar{width:3px;height:1.75rem;background:var(--white)}
-        .logo-text{font-size:1.25rem;letter-spacing:-.01em}
-        .logo-text span:first-child{font-weight:600;color:var(--white)}
-        .logo-text span:last-child{font-weight:200;color:var(--g500)}
-        .nav-center{display:flex;gap:2.5rem;align-items:center}
-        .nav-center a{font-size:.9375rem;font-weight:400;color:var(--g400);text-decoration:none;transition:color .2s}
-        .nav-center a:hover{color:var(--white)}
-        .nav-center a.active{color:var(--accent)}
-        .nav-right{display:flex;gap:1.5rem;align-items:center}
-        .nav-login{font-size:.875rem;font-weight:400;color:var(--g400);text-decoration:none;transition:color .2s}
-        .nav-login:hover{color:var(--white)}
-        .signin-wrap{position:relative}
-        .signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
-        .signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
-        .signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
-        .signin-wrap.open .signin-drop{display:flex;flex-direction:column}
-        .signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
-        .signin-drop a:last-child{border-bottom:none}
-        .signin-drop a:hover{color:#fff;background:#111}
-        .hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem}
-        .mobile-dropdown{display:none}
-        @media(max-width:900px){
-            nav{padding:0 1.5rem}
-            .nav-center{display:none!important}.nav-right{display:none!important}.hamburger{display:block}
-            .mobile-dropdown{display:none;position:absolute;top:4.5rem;left:0;right:0;background:#0a0a0a;padding:1rem 2rem 1.5rem;flex-direction:column;border-top:1px solid #222;z-index:200}
-            .mobile-dropdown.open{display:flex}
-            .mobile-dropdown a{font-size:.9375rem;color:#a3a3a3;text-decoration:none;padding:.6rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
-            .mobile-dropdown a:hover{color:#fff}
-            .mobile-dropdown a:last-child{border-bottom:none}
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-100: #f7f7f7;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --cream: #f5f0e8;
+            --wall: #ece7dc;
+            --wall-shadow: #d9d3c7;
+            --neon: #c8ff00;
+            --olive: #4a7c00;
         }
 
-        /* HERO — dark immersive entry */
-        .hero{background:var(--black);padding:7rem 3rem 2.5rem;position:relative;overflow:hidden}
-        .hero::after{content:'VERNISSAGE';position:absolute;right:-2%;bottom:-20%;font-size:18vw;font-weight:800;color:rgba(255,255,255,.02);letter-spacing:-.05em;pointer-events:none;font-family:'Manrope',sans-serif;line-height:1}
-        .hero-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;position:relative;z-index:1}
-        .hero-eyebrow::before{content:'';width:2rem;height:1px;background:var(--accent)}
-        .hero-title{font-size:2.5rem;font-weight:300;color:var(--white);letter-spacing:-.03em;line-height:1.1;position:relative;z-index:1;margin-bottom:.5rem}
-        .hero-title strong{font-weight:600}
-        .hero-sub{font-size:.9375rem;color:var(--g400);font-weight:300;margin-top:.5rem;line-height:1.7;max-width:500px;position:relative;z-index:1}
-        .hero-meta{display:flex;gap:3rem;margin-top:2.5rem;position:relative;z-index:1}
-        .hero-meta-item{text-align:left}
-        .hero-meta-val{font-size:1.5rem;font-weight:600;color:var(--white);font-variant-numeric:tabular-nums}
-        .hero-meta-lbl{font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--g500);margin-top:.25rem}
+        html { font-size: 16px; }
 
-        /* CURRENT EXHIBITION */
-        .current-exhibition{padding:0}
-        .exhibition-header{background:var(--black);padding:3rem;border-bottom:1px solid #222}
-        .exh-badge{display:inline-block;padding:.35rem .85rem;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;background:var(--accent);color:var(--black);margin-bottom:1rem}
-        .exh-title{font-size:2.5rem;font-weight:300;color:var(--white);letter-spacing:-.03em;margin-bottom:.5rem}
-        .exh-title strong{font-weight:700}
-        .exh-artist{font-size:1.1rem;color:var(--g400);font-weight:300}
-        .exh-dates{font-size:.75rem;color:var(--g500);margin-top:.75rem;letter-spacing:.05em}
-
-        /* GALLERY WALLS */
-        .gallery{background:var(--wall);position:relative}
-        .gallery-room{max-width:1400px;margin:0 auto;padding:5rem 3rem 4rem}
-        
-        /* Artist statement band */
-        .artist-band{background:var(--black);padding:3rem 3rem;position:relative}
-        .artist-band-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:160px 1fr;gap:2.5rem;align-items:start}
-        .artist-photo{width:160px;height:160px;object-fit:cover;filter:grayscale(30%)}
-        .artist-photo-placeholder{width:160px;height:160px;background:#1a1a1a;display:flex;align-items:center;justify-content:center}
-        .artist-bio-name{font-size:1.25rem;font-weight:600;color:var(--white);margin-bottom:.75rem}
-        .artist-bio-text{font-size:.9rem;color:var(--g400);line-height:1.9;font-weight:300}
-
-        /* Painting on wall */
-        .wall-painting{margin-bottom:5rem;display:flex;flex-direction:column;align-items:center}
-        .painting-frame{position:relative;background:var(--white);padding:3px;box-shadow:0 4px 20px var(--shadow),0 1px 3px rgba(0,0,0,.08);transition:transform .4s ease}
-        .painting-frame:hover{transform:translateY(-2px)}
-        .painting-frame img{display:block;width:100%;height:auto}
-        .painting-shadow{position:absolute;bottom:-8px;left:10%;right:10%;height:8px;background:linear-gradient(to bottom,rgba(0,0,0,.06),transparent);pointer-events:none}
-        
-        /* Placard */
-        .placard{margin-top:1.5rem;text-align:center;max-width:400px}
-        .placard-title{font-size:1.1rem;font-weight:500;letter-spacing:-.01em;margin-bottom:.25rem}
-        .placard-artist{font-size:.85rem;color:var(--g500);font-weight:300;margin-bottom:.5rem}
-        .placard-details{font-size:.75rem;color:var(--g400);font-weight:400;line-height:1.6}
-        .placard-price{font-size:.9rem;font-weight:600;margin-top:.5rem}
-        .placard-dims{font-size:.7rem;color:var(--g400);margin-top:.2rem;font-variant-numeric:tabular-nums}
-
-        /* Two-up layout for smaller works */
-        .wall-pair{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-bottom:5rem;align-items:end}
-        .wall-pair .wall-painting{margin-bottom:0}
-
-        /* Inquiry button */
-        .inquire-btn{display:inline-block;margin-top:.75rem;padding:.5rem 1.25rem;font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--black);color:var(--white);border:none;cursor:pointer;transition:all .2s}
-        .inquire-btn:hover{background:var(--g800)}
-
-        /* Scroll reveal */
-        .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
-        .reveal.visible{opacity:1;transform:translateY(0)}
-
-        /* Exhibition grid (list of all exhibitions) */
-        .exhibitions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2rem;padding:0 3rem 4rem;max-width:1400px;margin:0 auto}
-        .exh-card{background:var(--white);border:1px solid var(--g200);overflow:hidden;transition:transform .2s}
-        .exh-card:hover{transform:translateY(-3px)}
-        .exh-card-img{aspect-ratio:16/10;overflow:hidden;background:var(--g200);position:relative}
-        .exh-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-        .exh-card:hover .exh-card-img img{transform:scale(1.03)}
-        .exh-card-live{position:absolute;top:.75rem;left:.75rem;padding:.25rem .6rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:var(--accent);color:var(--black)}
-        .exh-card-body{padding:1.25rem}
-        .exh-card-title{font-size:1.1rem;font-weight:500;margin-bottom:.25rem}
-        .exh-card-artist{font-size:.85rem;color:var(--g500);font-weight:300;margin-bottom:.5rem}
-        .exh-card-date{font-size:.7rem;color:var(--g400)}
-        .exh-card-link{display:inline-block;margin-top:.75rem;font-size:.75rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:.03em;transition:color .2s}
-        .exh-card-link:hover{color:var(--accent)}
-
-        /* No exhibitions state */
-        .no-exhibitions{text-align:center;padding:5rem 2rem}
-        .no-exhibitions-title{font-size:1.5rem;font-weight:300;color:var(--g600);margin-bottom:.5rem}
-        .no-exhibitions-sub{font-size:.9rem;color:var(--g400);font-weight:300;margin-bottom:2rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7}
-        .no-exhibitions-cta{display:inline-block;padding:.85rem 2rem;background:var(--black);color:var(--white);text-decoration:none;font-size:.85rem;font-weight:500;transition:background .2s}
-        .no-exhibitions-cta:hover{background:var(--g800)}
-
-        /* Footer */
-        footer{background:var(--black);padding:2.5rem 3rem;text-align:center}
-        footer a{color:var(--g500);text-decoration:none;font-size:.8rem;margin:0 1rem;transition:color .2s}
-        footer a:hover{color:var(--white)}
-        footer .copy{color:var(--g600);font-size:.7rem;margin-top:1rem}
-
-        /* Responsive */
-        @media(max-width:768px){
-            .hero{padding:6.5rem 1.5rem 2rem}
-            .hero-title{font-size:1.75rem}
-            .hero-meta{gap:1.5rem;flex-wrap:wrap}
-            .gallery-room{padding:3rem 1.5rem 2rem}
-            .wall-pair{grid-template-columns:1fr;gap:3rem}
-            .artist-band{padding:2rem 1.5rem}
-            .artist-band-inner{grid-template-columns:100px 1fr;gap:1.5rem}
-            .artist-photo,.artist-photo-placeholder{width:100px;height:100px}
-            .exhibition-header{padding:2rem 1.5rem}
-            .exh-title{font-size:1.75rem}
-            .exhibitions-grid{grid-template-columns:1fr;padding:0 1.5rem 3rem}
+        body {
+            overflow-x: hidden;
+            font-family: 'Manrope', sans-serif;
+            background: var(--gray-100);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        body{padding-bottom:0}
+        /* ═══════ NAVIGATION ═══════ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
+
+        .logo-bar { width: 3px; height: 1.75rem; background: var(--white); }
+
+        .logo-text { font-size: 1.25rem; letter-spacing: -0.01em; }
+        .logo-text span:first-child { font-weight: 600; color: var(--white); }
+        .logo-text span:last-child { font-weight: 200; color: var(--gray-500); }
+
+        .nav-center { display: flex; gap: 2.5rem; align-items: center; }
+        .nav-center a {
+            font-size: 0.9375rem; font-weight: 400; color: var(--gray-400);
+            text-decoration: none; letter-spacing: 0.01em; transition: color 0.2s ease;
+        }
+        .nav-center a:hover, .nav-center a.active { color: var(--white); }
+
+        .nav-right { display: flex; gap: 1.5rem; align-items: center; position: relative; }
+
+        /* Sign In Dropdown */
+        .signin-btn {
+            font-size: 0.875rem; font-weight: 400; color: var(--gray-400);
+            background: none; border: 1px solid var(--gray-800); padding: 0.5rem 1.25rem;
+            cursor: pointer; font-family: inherit; transition: all 0.2s;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .signin-btn:hover { color: var(--white); border-color: var(--gray-600); }
+        .signin-btn svg { transition: transform 0.2s; }
+        .signin-btn.open svg { transform: rotate(180deg); }
+
+        .signin-dropdown {
+            display: none; position: absolute; top: calc(100% + 0.5rem); right: 0;
+            background: var(--black); border: 1px solid var(--gray-800);
+            min-width: 180px; z-index: 200;
+        }
+        .signin-dropdown.open { display: block; }
+        .signin-dropdown a {
+            display: block; padding: 0.65rem 1.25rem; font-size: 0.8rem;
+            color: var(--gray-400); text-decoration: none; transition: all 0.15s;
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+        .signin-dropdown a:last-child { border-bottom: none; }
+        .signin-dropdown a:hover { color: var(--white); background: var(--gray-900); }
+        .signin-dropdown .dropdown-sep {
+            padding: 0.4rem 1.25rem 0.2rem; font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 0.15em; color: var(--gray-600); text-transform: uppercase;
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none; background: none; border: none; cursor: pointer; padding: 0.5rem;
+        }
+        .mobile-dropdown {
+            display: none; position: fixed; top: 4.5rem; left: 0; right: 0;
+            background: var(--black); border-top: 1px solid var(--gray-800);
+            flex-direction: column; z-index: 99; max-height: calc(100vh - 4.5rem); overflow-y: auto;
+        }
+        .mobile-dropdown.open { display: flex; }
+        .mobile-dropdown a {
+            padding: 0.85rem 2rem; font-size: 0.9rem; color: var(--gray-400);
+            text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+        .mobile-dropdown a:hover { color: var(--white); }
+        .mobile-dropdown .mob-sep {
+            padding: 0.6rem 2rem 0.3rem; font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 0.15em; color: var(--gray-600); text-transform: uppercase;
+        }
+
+        /* ═══════ HERO ═══════ */
+        .page-header {
+            background: var(--black);
+            padding: 7rem 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::after {
+            content: 'VERNISSAGE';
+            position: absolute; right: -2%; bottom: -20%;
+            font-size: 14vw; font-weight: 800;
+            color: rgba(255,255,255,.03);
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            font-family: 'Manrope', sans-serif;
+        }
+        .page-eyebrow {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--neon);
+            margin-bottom: 0.75rem; position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .page-eyebrow::before {
+            content: ''; width: 2rem; height: 1px; background: var(--neon);
+        }
+        .page-title {
+            font-size: 2.5rem; font-weight: 300; letter-spacing: -0.03em;
+            margin-bottom: 0.5rem; color: var(--white);
+            position: relative; z-index: 1;
+        }
+        .page-title strong { font-weight: 600; }
+        .page-subtitle {
+            font-size: 0.9375rem; color: var(--gray-400); font-weight: 300;
+            position: relative; z-index: 1;
+        }
+
+        /* ═══════ LIVE EXHIBITION BANNER ═══════ */
+        .live-banner {
+            background: var(--black); padding: 1.5rem 3rem;
+            border-top: 1px solid var(--gray-800);
+            display: none; align-items: center; gap: 1.5rem;
+        }
+        .live-banner.visible { display: flex; }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .live-banner-title {
+            font-size: 0.9rem; font-weight: 500; color: var(--white); flex: 1;
+        }
+        .live-banner-title span { color: var(--gray-400); font-weight: 300; margin-left: 0.75rem; }
+        .live-banner-btn {
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--black); background: var(--neon);
+            padding: 0.6rem 1.5rem; text-decoration: none; transition: opacity 0.2s;
+        }
+        .live-banner-btn:hover { opacity: 0.85; }
+
+        /* ═══════ IMMERSIVE GALLERY ═══════ */
+        .gallery-room {
+            display: none;
+            background: var(--cream);
+            min-height: 100vh;
+            position: relative;
+        }
+        .gallery-room.visible { display: block; }
+
+        /* Artist bio band */
+        .artist-band {
+            background: var(--black);
+            padding: 3rem 4rem;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+        .artist-band-photo {
+            width: 80px; height: 80px;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+        .artist-band-info h2 {
+            font-size: 1.5rem; font-weight: 300; color: var(--white);
+            letter-spacing: -0.02em;
+        }
+        .artist-band-info h2 strong { font-weight: 600; }
+        .artist-band-info p {
+            font-size: 0.85rem; color: var(--gray-400); font-weight: 300;
+            max-width: 600px; margin-top: 0.35rem;
+        }
+        .artist-band-meta {
+            margin-left: auto; text-align: right;
+        }
+        .artist-band-meta .meta-label {
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray-600);
+        }
+        .artist-band-meta .meta-value {
+            font-size: 0.85rem; color: var(--gray-300); font-weight: 300;
+        }
+
+        /* Gallery wall */
+        .gallery-wall {
+            background: var(--cream);
+            padding: 4rem 3rem 6rem;
+            position: relative;
+        }
+
+        /* Subtle wall texture */
+        .gallery-wall::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 200px,
+                rgba(0,0,0,.008) 200px,
+                rgba(0,0,0,.008) 201px
+            );
+            pointer-events: none;
+        }
+
+        /* Wall title strip */
+        .wall-title-strip {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        .wall-title-strip h3 {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.4em;
+            text-transform: uppercase; color: var(--gray-500);
+            display: inline-flex; align-items: center; gap: 1.5rem;
+        }
+        .wall-title-strip h3::before,
+        .wall-title-strip h3::after {
+            content: ''; width: 60px; height: 1px; background: var(--gray-300);
+        }
+
+        /* Paintings container — centered flex with realistic spacing */
+        .paintings-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 5vw;
+            flex-wrap: wrap;
+            min-height: 400px;
+            padding: 0 2rem;
+        }
+
+        /* Individual painting */
+        .painting-frame {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .painting-frame:hover { transform: translateY(-4px); }
+
+        /* The painting image — shadow gives depth against cream wall */
+        .painting-img-wrap {
+            position: relative;
+            background: var(--white);
+            padding: 6px;
+            box-shadow:
+                0 4px 20px rgba(0,0,0,.12),
+                0 1px 4px rgba(0,0,0,.08),
+                inset 0 0 0 1px rgba(0,0,0,.04);
+        }
+        .painting-img-wrap img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Shadow beneath painting on wall */
+        .painting-shadow {
+            height: 12px;
+            background: linear-gradient(to bottom, rgba(0,0,0,.06), transparent);
+            margin: 0 8px;
+        }
+
+        /* Museum placard — appears on hover */
+        .painting-placard {
+            position: absolute;
+            bottom: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            padding: 0.6rem 1rem;
+            min-width: 180px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-50%) translateY(8px);
+            pointer-events: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            border-left: 2px solid var(--black);
+        }
+        .painting-frame:hover .painting-placard {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .placard-title {
+            font-size: 0.75rem; font-weight: 600; color: var(--black);
+            letter-spacing: -0.01em;
+        }
+        .placard-artist {
+            font-size: 0.65rem; color: var(--gray-500); font-weight: 400;
+            margin-top: 0.1rem;
+        }
+        .placard-details {
+            font-size: 0.6rem; color: var(--gray-400); font-weight: 300;
+            margin-top: 0.25rem;
+        }
+        .placard-price {
+            font-size: 0.7rem; font-weight: 500; color: var(--olive);
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        /* Exhibition info footer */
+        .exhibition-info-bar {
+            background: var(--white);
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--gray-200);
+        }
+        .exhibition-dates {
+            font-size: 0.8rem; color: var(--gray-500); font-weight: 300;
+        }
+        .exhibition-dates strong { font-weight: 500; color: var(--black); }
+        .exhibition-view-count {
+            font-size: 0.75rem; color: var(--gray-400); font-weight: 300;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        /* ═══════ CHAT BOX (live exhibitions) ═══════ */
+        .chat-toggle {
+            position: fixed;
+            bottom: 2rem; right: 2rem;
+            width: 52px; height: 52px;
+            background: var(--black);
+            border: none; cursor: pointer;
+            display: none; align-items: center; justify-content: center;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0,0,0,.2);
+            transition: background 0.2s;
+        }
+        .chat-toggle.visible { display: flex; }
+        .chat-toggle:hover { background: var(--gray-800); }
+        .chat-toggle .notif-dot {
+            position: absolute; top: -3px; right: -3px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--neon); display: none;
+        }
+
+        .chat-panel {
+            position: fixed;
+            bottom: 5.5rem; right: 2rem;
+            width: 340px;
+            max-height: 450px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 8px 40px rgba(0,0,0,.12);
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+        }
+        .chat-panel.open { display: flex; }
+
+        .chat-header {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .chat-header-title {
+            font-size: 0.8rem; font-weight: 600;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .chat-header-title .live-indicator {
+            width: 6px; height: 6px; border-radius: 50%; background: #22c55e;
+        }
+        .chat-close {
+            background: none; border: none; cursor: pointer;
+            font-size: 1.1rem; color: var(--gray-400);
+        }
+
+        .chat-messages {
+            flex: 1; overflow-y: auto;
+            padding: 1rem;
+            max-height: 300px;
+            display: flex; flex-direction: column; gap: 0.65rem;
+        }
+        .chat-msg {
+            font-size: 0.78rem; line-height: 1.5;
+        }
+        .chat-msg-name {
+            font-weight: 600; font-size: 0.7rem; margin-bottom: 0.1rem;
+        }
+        .chat-msg-text { color: var(--gray-600); }
+        .chat-msg-time { font-size: 0.6rem; color: var(--gray-400); margin-top: 0.1rem; }
+
+        .chat-input-wrap {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex; gap: 0.5rem;
+        }
+        .chat-input {
+            flex: 1; border: 1px solid var(--gray-200); padding: 0.5rem 0.75rem;
+            font-size: 0.8rem; font-family: inherit; outline: none;
+        }
+        .chat-input:focus { border-color: var(--black); }
+        .chat-send {
+            background: var(--black); color: var(--white); border: none;
+            padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; font-family: inherit; transition: background 0.2s;
+        }
+        .chat-send:hover { background: var(--gray-800); }
+
+        /* ═══════ EXHIBITIONS GRID (past + upcoming) ═══════ */
+        .exhibitions-section {
+            padding: 4rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .exhibitions-section-title {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--olive);
+            margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .exhibitions-section-title::before {
+            content: ''; width: 1.5rem; height: 1px; background: var(--olive);
+        }
+        .exhibitions-section-heading {
+            font-size: 1.75rem; font-weight: 300; letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+        }
+        .exhibitions-section-heading strong { font-weight: 600; }
+
+        .exhibitions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .exhibition-card {
+            background: var(--white);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .exhibition-card:hover {
+            box-shadow: 0 4px 24px rgba(0,0,0,.06);
+        }
+
+        .exhibition-card-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .exhibition-card-img img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .exhibition-card:hover .exhibition-card-img img {
+            transform: scale(1.03);
+        }
+        .exhibition-card-status {
+            position: absolute; top: 0.75rem; left: 0.75rem;
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; padding: 0.3rem 0.75rem;
+        }
+        .status-live { background: var(--neon); color: var(--black); }
+        .status-upcoming { background: var(--white); color: var(--black); border: 1px solid var(--gray-200); }
+        .status-ended { background: var(--gray-800); color: var(--gray-400); }
+
+        .exhibition-card-body {
+            padding: 1.25rem;
+        }
+        .exhibition-card-artist {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--gray-400); margin-bottom: 0.3rem;
+        }
+        .exhibition-card-title {
+            font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em;
+            margin-bottom: 0.4rem;
+        }
+        .exhibition-card-dates {
+            font-size: 0.75rem; color: var(--gray-500); font-weight: 300;
+        }
+        .exhibition-card-count {
+            font-size: 0.7rem; color: var(--gray-400); font-weight: 300;
+            margin-top: 0.5rem;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 4rem 2rem;
+            color: var(--gray-400);
+        }
+        .empty-state svg { margin-bottom: 1rem; }
+        .empty-state h3 { font-size: 1rem; font-weight: 500; color: var(--gray-600); margin-bottom: 0.5rem; }
+        .empty-state p { font-size: 0.85rem; font-weight: 300; }
+
+        /* ═══════ FOOTER ═══════ */
+        footer {
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--gray-200);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-logo { display: flex; align-items: center; gap: 0.75rem; }
+        .footer-bar { width: 3px; height: 1.25rem; background: var(--black); }
+        .footer-text { font-size: 1rem; letter-spacing: -0.01em; }
+        .footer-text span:first-child { font-weight: 600; color: var(--black); }
+        .footer-text span:last-child { font-weight: 200; color: var(--gray-400); }
+        .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .footer-links a {
+            font-size: 0.8rem; color: var(--gray-500); text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--black); }
+        .footer-copy { font-size: 0.75rem; color: var(--gray-400); }
+
+        /* ═══════ LOADING ═══════ */
+        .loading {
+            text-align: center; padding: 4rem; font-size: 0.9rem;
+            color: var(--gray-400); font-weight: 300;
+        }
+
+        /* ═══════ MOBILE ═══════ */
+        @media (max-width: 900px) {
+            .nav-center, .nav-right { display: none; }
+            .hamburger { display: block; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 1.5rem; }
+            .page-header { padding: 6.5rem 1.5rem 2rem; }
+            .page-title { font-size: 1.75rem; }
+            .page-header::after { font-size: 22vw; }
+
+            .live-banner { padding: 1rem 1.5rem; flex-wrap: wrap; gap: 0.75rem; }
+
+            .artist-band { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .artist-band-meta { margin-left: 0; text-align: left; }
+
+            .gallery-wall { padding: 2rem 1rem 4rem; }
+            .paintings-row { gap: 2rem; padding: 0 0.5rem; }
+
+            .exhibition-info-bar { padding: 1.5rem; flex-direction: column; gap: 0.75rem; }
+
+            .exhibitions-section { padding: 2.5rem 1.5rem; }
+            .exhibitions-grid { grid-template-columns: 1fr; }
+
+            .chat-panel { width: calc(100vw - 2rem); right: 1rem; bottom: 5rem; }
+            .chat-toggle { bottom: 1.5rem; right: 1.5rem; }
+
+            footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+            .footer-links { gap: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .paintings-row { flex-direction: column; align-items: center; }
+            .painting-placard { position: relative; bottom: auto; left: auto; transform: none; opacity: 1; margin-top: 0.5rem; }
+            .painting-frame:hover .painting-placard { transform: none; }
+        }
     </style>
 </head>
 <body>
-    <!-- NAV -->
+
+    <!-- ═══════ NAV ═══════ -->
     <nav>
-        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <button class="hamburger" onclick="document.getElementById('mob-drop').classList.toggle('open')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text"><span>Infra</span><span>Mint</span></div>
+        </a>
+
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
         </button>
-        <div class="mobile-dropdown" id="mob-drop" onclick="this.classList.remove('open')">
+        <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
+            <a href="vernissage.html">Vernissage</a>
             <a href="blog.html">The Drip</a>
             <a href="auctions.html">Auctions</a>
-            <a href="vernissage.html">Vernissage</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
-            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
-            <a href="artist-login.html">Artist Login</a>
-            <a href="collector-login.html">Collector Login</a>
-            <a href="partner-login.html">Partner Login</a>
-            <a href="advisor-login.html">Advisor Login</a>
+            <div class="mob-sep">Account</div>
+            <a href="artist-login.html">Artist</a>
+            <a href="collector-login.html">Collector</a>
+            <a href="partner-login.html">Partner</a>
+            <a href="advisor-login.html">Advisor</a>
             <a href="seller-login.html">Private Seller</a>
         </div>
+
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
+            <a href="vernissage.html" class="active">Vernissage</a>
             <a href="blog.html">The Drip</a>
             <a href="auctions.html">Auctions</a>
-            <a href="vernissage.html" class="active">Vernissage</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
         </div>
-        <div class="nav-right" id="nav-right">
-            <div class="signin-wrap">
-                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
-                <div class="signin-drop">
-                    <a href="artist-login.html">Artist</a>
-                    <a href="collector-login.html">Collector</a>
-                    <a href="partner-login.html">Partner</a>
-                    <a href="advisor-login.html">Advisor</a>
-                    <a href="seller-login.html">Private Seller</a>
-                </div>
+
+        <div class="nav-right">
+            <button class="signin-btn" id="signin-btn" onclick="document.getElementById('signin-dropdown').classList.toggle('open'); this.classList.toggle('open')">
+                Sign In
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="signin-dropdown" id="signin-dropdown">
+                <a href="artist-login.html">Artist</a>
+                <a href="collector-login.html">Collector</a>
+                <a href="partner-login.html">Partner</a>
+                <a href="advisor-login.html">Advisor</a>
+                <a href="seller-login.html">Private Seller</a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <div class="hero" id="hero">
-        <div class="hero-eyebrow">Virtual Exhibitions</div>
-        <h1 class="hero-title">The <strong>Vernissage</strong></h1>
-        <p class="hero-sub">Immersive virtual exhibitions from emerging artists. Walk through curated shows, discover new talent, experience art at scale.</p>
-        <div class="hero-meta" id="hero-stats">
-            <div class="hero-meta-item"><div class="hero-meta-val" id="stat-live">—</div><div class="hero-meta-lbl">Live Now</div></div>
-            <div class="hero-meta-item"><div class="hero-meta-val" id="stat-upcoming">—</div><div class="hero-meta-lbl">Upcoming</div></div>
-            <div class="hero-meta-item"><div class="hero-meta-val" id="stat-artworks">—</div><div class="hero-meta-lbl">Artworks</div></div>
+    <!-- ═══════ HERO ═══════ -->
+    <div class="page-header">
+        <div class="page-eyebrow">Virtual Exhibitions</div>
+        <h1 class="page-title">The <strong>Vernissage</strong></h1>
+        <p class="page-subtitle">Step into the gallery. Experience art as it was meant to be seen.</p>
+    </div>
+
+    <!-- ═══════ LIVE EXHIBITION BANNER ═══════ -->
+    <div class="live-banner" id="live-banner">
+        <div class="live-dot"></div>
+        <div class="live-banner-title" id="live-banner-title">
+            Now Showing <span id="live-banner-artist"></span>
+        </div>
+        <a href="#gallery-room" class="live-banner-btn" onclick="scrollToGallery()">Enter Gallery</a>
+    </div>
+
+    <!-- ═══════ IMMERSIVE GALLERY ROOM ═══════ -->
+    <div class="gallery-room" id="gallery-room">
+        <div class="loading" id="gallery-loading">Preparing the gallery...</div>
+
+        <!-- Artist bio band -->
+        <div class="artist-band" id="artist-band" style="display:none">
+            <img class="artist-band-photo" id="artist-band-photo" src="" alt="">
+            <div class="artist-band-info">
+                <h2 id="artist-band-name"></h2>
+                <p id="artist-band-bio"></p>
+            </div>
+            <div class="artist-band-meta">
+                <div class="meta-label">Exhibition</div>
+                <div class="meta-value" id="exhibition-title-display"></div>
+                <div class="meta-label" style="margin-top:0.5rem">Duration</div>
+                <div class="meta-value" id="exhibition-dates-display"></div>
+            </div>
+        </div>
+
+        <!-- Gallery wall -->
+        <div class="gallery-wall" id="gallery-wall" style="display:none">
+            <div class="wall-title-strip">
+                <h3 id="wall-label">Exhibition Works</h3>
+            </div>
+            <div class="paintings-row" id="paintings-row"></div>
+        </div>
+
+        <!-- Exhibition info -->
+        <div class="exhibition-info-bar" id="exhibition-info-bar" style="display:none">
+            <div class="exhibition-dates" id="exhibition-footer-dates"></div>
+            <div class="exhibition-view-count" id="exhibition-view-count">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span id="view-count-num">0</span> views
+            </div>
         </div>
     </div>
 
-    <!-- CURRENT LIVE EXHIBITION (dynamically loaded) -->
-    <div id="live-exhibition"></div>
-
-    <!-- UPCOMING + PAST EXHIBITIONS -->
-    <div style="max-width:1400px;margin:0 auto;padding:4rem 3rem 1rem">
-        <div style="font-size:.65rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--g400);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem">
-            <span style="width:2rem;height:1px;background:var(--g300);display:inline-block"></span>
-            All Exhibitions
-        </div>
-    </div>
-    <div class="exhibitions-grid" id="exhibitions-grid">
-        <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--g300)">Loading exhibitions...</div>
-    </div>
-
-    <!-- NO EXHIBITIONS FALLBACK -->
-    <div id="no-exhibitions" style="display:none">
-        <div class="no-exhibitions">
-            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4" stroke-width="1" style="margin-bottom:1.5rem"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <div class="no-exhibitions-title">No exhibitions yet</div>
-            <div class="no-exhibitions-sub">Virtual exhibitions are coming soon. Artists, collectors, and partners can request exhibition slots from their dashboard.</div>
-            <a href="gallery.html" class="no-exhibitions-cta">Browse the Gallery</a>
+    <!-- ═══════ EXHIBITIONS GRID ═══════ -->
+    <div class="exhibitions-section" id="exhibitions-grid-section">
+        <div class="exhibitions-section-title">Archive & Upcoming</div>
+        <h2 class="exhibitions-section-heading">Past <strong>Exhibitions</strong></h2>
+        <div class="exhibitions-grid" id="exhibitions-grid">
+            <div class="loading">Loading exhibitions...</div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer style="border-top:1px solid #e5e5e5;padding:3rem;display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto">
-        <div style="display:flex;align-items:center;gap:.75rem">
-            <div style="width:2px;height:1.25rem;background:#000"></div>
-            <div style="font-size:1.125rem;letter-spacing:-.01em"><span style="font-weight:600">Infra</span><span style="font-weight:200;color:#a3a3a3">Mint</span></div>
+    <!-- ═══════ CHAT TOGGLE & PANEL ═══════ -->
+    <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <div class="notif-dot" id="chat-notif"></div>
+    </button>
+
+    <div class="chat-panel" id="chat-panel">
+        <div class="chat-header">
+            <div class="chat-header-title">
+                <div class="live-indicator"></div>
+                Gallery Chat
+            </div>
+            <button class="chat-close" onclick="toggleChat()">&times;</button>
         </div>
-        <div style="display:flex;gap:2rem;flex-wrap:wrap">
-            <a href="gallery.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Gallery</a>
-            <a href="artists.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Artists</a>
-            <a href="vernissage.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Vernissage</a>
-            <a href="about.html" style="font-size:.8125rem;color:#737373;text-decoration:none">About</a>
-            <a href="terms.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Terms</a>
-            <a href="privacy.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Privacy</a>
+        <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg">
+                <div class="chat-msg-name">InfraMint</div>
+                <div class="chat-msg-text">Welcome to the gallery. Share your thoughts on the exhibition.</div>
+                <div class="chat-msg-time">now</div>
+            </div>
         </div>
-        <div style="font-size:.75rem;color:#a3a3a3">© 2026 InfraMint · <a href="admin.html" style="color:#a3a3a3;text-decoration:none;font-size:.7rem">Gallery Owner</a></div>
+        <div class="chat-input-wrap">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Say something..." onkeydown="if(event.key==='Enter')sendChatMsg()">
+            <button class="chat-send" onclick="sendChatMsg()">Send</button>
+        </div>
+    </div>
+
+    <!-- ═══════ FOOTER ═══════ -->
+    <footer>
+        <div class="footer-logo">
+            <div class="footer-bar"></div>
+            <div class="footer-text"><span>Infra</span><span>Mint</span></div>
+        </div>
+        <div class="footer-links">
+            <a href="gallery.html">Gallery</a>
+            <a href="artists.html">Artists</a>
+            <a href="vernissage.html">Vernissage</a>
+            <a href="about.html">About</a>
+            <a href="terms.html">Terms</a>
+            <a href="privacy.html">Privacy</a>
+        </div>
+        <div class="footer-copy">© 2026 InfraMint · <a href="admin.html" style="color:var(--gray-400);text-decoration:none;font-size:0.75rem;">Gallery Owner</a></div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- ═══════ JAVASCRIPT ═══════ -->
     <script>
-        var db = supabase.createClient(
-            'https://vyibnkztkacifahhlxof.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4'
-        );
+        const SUPABASE_URL = 'https://vyibnkztkacifahhlxof.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
 
-        var liveExhibitions = [];
-        var allExhibitions = [];
+        let currentExhibition = null;
+        let chatOpen = false;
 
-        async function init() {
-            // Load all exhibitions
-            var { data: exhibitions } = await db.from('exhibitions')
-                .select('*, exhibition_artworks(*)')
-                .in('status', ['live', 'approved', 'ended'])
-                .order('start_date', { ascending: false });
-
-            allExhibitions = exhibitions || [];
-            liveExhibitions = allExhibitions.filter(function(e) { return e.status === 'live'; });
-            var upcoming = allExhibitions.filter(function(e) { return e.status === 'approved'; });
-            var totalArtworks = 0;
-            allExhibitions.forEach(function(e) { totalArtworks += (e.exhibition_artworks || []).length; });
-
-            // Update hero stats
-            document.getElementById('stat-live').textContent = liveExhibitions.length;
-            document.getElementById('stat-upcoming').textContent = upcoming.length;
-            document.getElementById('stat-artworks').textContent = totalArtworks;
-
-            // Render live exhibition gallery
-            if (liveExhibitions.length > 0) {
-                renderGalleryExperience(liveExhibitions[0]);
+        // ── Close dropdown on outside click ──
+        document.addEventListener('click', function(e) {
+            const btn = document.getElementById('signin-btn');
+            const dd = document.getElementById('signin-dropdown');
+            if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
+                dd.classList.remove('open');
+                btn.classList.remove('open');
             }
+        });
 
-            // Render exhibition grid
-            renderExhibitionsGrid();
-
-            // Check URL for specific exhibition
-            var params = new URLSearchParams(window.location.search);
-            var exhId = params.get('exhibition');
-            if (exhId) {
-                var target = allExhibitions.find(function(e) { return e.id === exhId; });
-                if (target) renderGalleryExperience(target);
-            }
-
-            // Increment view count for live
-            if (liveExhibitions.length > 0) {
-                db.from('exhibitions').update({ view_count: (liveExhibitions[0].view_count || 0) + 1 }).eq('id', liveExhibitions[0].id);
-            }
-        }
-
-        function renderGalleryExperience(exhibition) {
-            var artworks = (exhibition.exhibition_artworks || []).sort(function(a, b) { return (a.display_order || 0) - (b.display_order || 0); });
-            if (!artworks.length) return;
-
-            var isLive = exhibition.status === 'live';
-            var startStr = exhibition.start_date ? new Date(exhibition.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
-            var endStr = exhibition.end_date ? new Date(exhibition.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
-
-            var html = '<div class="current-exhibition">';
-
-            // Exhibition header
-            html += '<div class="exhibition-header">';
-            if (isLive) html += '<div class="exh-badge">Now Showing</div>';
-            html += '<div class="exh-title">' + (exhibition.title || 'Exhibition') + '</div>';
-            html += '<div class="exh-artist">by ' + (exhibition.exhibitor_name || 'Artist') + '</div>';
-            if (startStr) html += '<div class="exh-dates">' + startStr + (endStr ? ' — ' + endStr : '') + '</div>';
-            html += '</div>';
-
-            // Artist statement band
-            html += '<div class="artist-band"><div class="artist-band-inner">';
-            if (exhibition.exhibitor_photo_url) {
-                html += '<img class="artist-photo" src="' + exhibition.exhibitor_photo_url + '" alt="' + (exhibition.exhibitor_name || '') + '">';
-            } else {
-                html += '<div class="artist-photo-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>';
-            }
-            html += '<div><div class="artist-bio-name">' + (exhibition.exhibitor_name || '') + '</div>';
-            html += '<div class="artist-bio-text">' + (exhibition.description || exhibition.exhibitor_bio || 'No artist statement provided.') + '</div>';
-            html += '</div></div></div>';
-
-            // Gallery walls
-            html += '<div class="gallery"><div class="gallery-room">';
-
-            // Layout artworks — large ones solo, smaller ones paired
-            var i = 0;
-            while (i < artworks.length) {
-                var art = artworks[i];
-                var w = Number(art.width_cm || 60);
-                var h = Number(art.height_cm || 40);
-                var isLarge = w > 80 || h > 80;
-
-                // Check if next artwork exists and both are small enough to pair
-                var next = artworks[i + 1];
-                var nextW = next ? Number(next.width_cm || 60) : 999;
-                var nextH = next ? Number(next.height_cm || 40) : 999;
-                var canPair = !isLarge && next && nextW <= 80 && nextH <= 80;
-
-                if (canPair) {
-                    html += '<div class="wall-pair reveal">';
-                    html += buildPaintingHTML(art);
-                    html += buildPaintingHTML(next);
-                    html += '</div>';
-                    i += 2;
-                } else {
-                    html += buildPaintingHTML(art);
-                    i++;
+        // ── Supabase helper ──
+        async function supaFetch(table, query) {
+            const url = SUPABASE_URL + '/rest/v1/' + table + '?' + query;
+            const res = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY,
+                    'Content-Type': 'application/json'
                 }
-            }
-
-            html += '</div></div>'; // close gallery-room + gallery
-            html += '</div>'; // close current-exhibition
-
-            document.getElementById('live-exhibition').innerHTML = html;
-
-            // Activate scroll reveal
-            setTimeout(initReveal, 100);
+            });
+            if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+            return res.json();
         }
 
-        function buildPaintingHTML(art) {
-            var w = Number(art.width_cm || 60);
-            var h = Number(art.height_cm || 40);
-            
-            // Scale: 1cm = ~3.5px on screen, max 700px wide
-            var scale = 3.5;
-            var maxW = 700;
-            var displayW = Math.min(w * scale, maxW);
-            var displayH = (h / w) * displayW;
-            
-            // Cap height too
-            if (displayH > 600) {
-                displayH = 600;
-                displayW = (w / h) * displayH;
+        async function supaRpc(fn, body) {
+            const url = SUPABASE_URL + '/rest/v1/rpc/' + fn;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body || {})
+            });
+            return res.json();
+        }
+
+        // ── Init ──
+        async function init() {
+            try {
+                // Check if exhibitions feature is enabled
+                let enabled = true;
+                try {
+                    const settings = await supaFetch('site_settings', 'key=eq.exhibitions_enabled&select=value');
+                    if (settings && settings.length > 0 && settings[0].value === 'false') enabled = false;
+                } catch(e) { /* default enabled */ }
+
+                // Load live exhibition
+                const liveExhibitions = await supaFetch('exhibitions',
+                    'status=eq.live&select=*&order=start_date.desc&limit=1');
+
+                if (liveExhibitions && liveExhibitions.length > 0) {
+                    currentExhibition = liveExhibitions[0];
+                    await renderLiveExhibition(currentExhibition);
+                    incrementViewCount(currentExhibition.id);
+                } else {
+                    document.getElementById('gallery-room').style.display = 'none';
+                }
+
+                // Load all exhibitions for grid
+                await loadExhibitionsGrid();
+
+            } catch(err) {
+                console.error('Init error:', err);
+                document.getElementById('gallery-loading').textContent = 'Unable to load exhibitions.';
             }
+        }
 
-            var hasImg = art.image_url && !art.image_url.includes('placehold');
-            var priceStr = art.price ? '$' + Number(art.price).toLocaleString() : '';
-            var dimsStr = w + ' × ' + h + (art.depth_cm ? ' × ' + art.depth_cm : '') + ' cm';
+        // ── Render live exhibition ──
+        async function renderLiveExhibition(exhibition) {
+            const room = document.getElementById('gallery-room');
+            room.classList.add('visible');
 
-            var html = '<div class="wall-painting reveal" style="max-width:' + (displayW + 6) + 'px">';
-            html += '<div class="painting-frame" style="max-width:' + displayW + 'px">';
-            if (hasImg) {
-                html += '<img src="' + art.image_url + '" alt="' + (art.title || '') + '" style="aspect-ratio:' + w + '/' + h + ';width:100%">';
+            // Live banner
+            const banner = document.getElementById('live-banner');
+            banner.classList.add('visible');
+            document.getElementById('live-banner-title').innerHTML =
+                'Now Showing: <strong>' + escHtml(exhibition.title) + '</strong>' +
+                '<span>by ' + escHtml(exhibition.exhibitor_name || 'Artist') + '</span>';
+
+            // Artist band
+            const band = document.getElementById('artist-band');
+            band.style.display = 'flex';
+            document.getElementById('artist-band-name').innerHTML =
+                '<strong>' + escHtml((exhibition.exhibitor_name || '').split(' ')[0]) + '</strong> ' +
+                escHtml((exhibition.exhibitor_name || '').split(' ').slice(1).join(' '));
+            document.getElementById('artist-band-bio').textContent = exhibition.description || '';
+            document.getElementById('exhibition-title-display').textContent = exhibition.title || '';
+            document.getElementById('exhibition-dates-display').textContent =
+                formatDate(exhibition.start_date) + ' — ' + formatDate(exhibition.end_date);
+
+            // Profile photo
+            const photo = document.getElementById('artist-band-photo');
+            if (exhibition.exhibitor_photo_url) {
+                photo.src = exhibition.exhibitor_photo_url;
             } else {
-                html += '<div style="aspect-ratio:' + w + '/' + h + ';background:var(--g200);display:flex;align-items:center;justify-content:center;min-height:200px"><svg width="40" height="40" viewBox="0 0 24 24" fill="#d4d4d4"><rect x="4" y="3" width="2" height="18"/><rect x="10" y="7" width="2" height="10"/><rect x="16" y="5" width="2" height="14"/></svg></div>';
+                photo.style.display = 'none';
             }
-            html += '<div class="painting-shadow"></div>';
-            html += '</div>';
 
-            // Placard
-            html += '<div class="placard">';
-            html += '<div class="placard-title">' + (art.title || 'Untitled') + '</div>';
-            if (art.artist_name) html += '<div class="placard-artist">' + art.artist_name + '</div>';
-            var details = [];
-            if (art.medium) details.push(art.medium);
-            if (art.year) details.push(art.year);
-            if (details.length) html += '<div class="placard-details">' + details.join(' · ') + '</div>';
-            html += '<div class="placard-dims">' + dimsStr + '</div>';
-            if (priceStr && art.is_for_sale) html += '<div class="placard-price">' + priceStr + '</div>';
-            if (art.is_for_sale) html += '<button class="inquire-btn" onclick="inquire(\'' + art.id + '\',\'' + (art.title || '').replace(/'/g, "\\'") + '\')">Inquire</button>';
-            html += '</div>';
-            html += '</div>';
+            // Load artworks
+            const artworks = await supaFetch('exhibition_artworks',
+                'exhibition_id=eq.' + exhibition.id + '&select=*&order=display_order.asc');
 
-            return html;
+            const wall = document.getElementById('gallery-wall');
+            wall.style.display = 'block';
+            document.getElementById('gallery-loading').style.display = 'none';
+
+            renderPaintings(artworks, exhibition.status === 'live');
+
+            // Exhibition info bar
+            const infoBar = document.getElementById('exhibition-info-bar');
+            infoBar.style.display = 'flex';
+            document.getElementById('exhibition-footer-dates').innerHTML =
+                '<strong>' + escHtml(exhibition.title) + '</strong> · ' +
+                formatDate(exhibition.start_date) + ' — ' + formatDate(exhibition.end_date);
+            document.getElementById('view-count-num').textContent = exhibition.view_count || 0;
+
+            // Show chat for live exhibitions
+            if (exhibition.status === 'live') {
+                document.getElementById('chat-toggle').classList.add('visible');
+            }
         }
 
-        function inquire(artworkId, title) {
-            window.location.href = 'mailto:hello@inframint.io?subject=Inquiry: ' + encodeURIComponent(title) + '&body=Hi InfraMint,%0A%0AI am interested in "' + encodeURIComponent(title) + '" from the current exhibition.%0A%0APlease provide more details.%0A%0AThank you';
-        }
+        // ── Render paintings on the wall ──
+        function renderPaintings(artworks, isLive) {
+            const row = document.getElementById('paintings-row');
+            row.innerHTML = '';
 
-        function renderExhibitionsGrid() {
-            var grid = document.getElementById('exhibitions-grid');
-
-            if (allExhibitions.length === 0) {
-                grid.style.display = 'none';
-                document.getElementById('no-exhibitions').style.display = 'block';
+            if (!artworks || artworks.length === 0) {
+                row.innerHTML = '<div class="empty-state"><h3>No artworks yet</h3><p>The exhibition is being prepared.</p></div>';
                 return;
             }
 
-            var html = '';
-            allExhibitions.forEach(function(e) {
-                var arts = e.exhibition_artworks || [];
-                var coverImg = arts.length > 0 ? arts[0].image_url : '';
-                var isLive = e.status === 'live';
-                var startStr = e.start_date ? new Date(e.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-                var endStr = e.end_date ? new Date(e.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+            artworks.forEach(function(art) {
+                // Calculate display size — scale cm to pixels
+                // Base: 1cm ≈ 2.5px for gallery display, max 350px height
+                const widthCm = art.width_cm || 60;
+                const heightCm = art.height_cm || 80;
+                const scale = Math.min(2.5, 350 / heightCm, 400 / widthCm);
+                const displayW = Math.round(widthCm * scale);
+                const displayH = Math.round(heightCm * scale);
 
-                html += '<a href="vernissage.html?exhibition=' + e.id + '" class="exh-card" style="text-decoration:none;color:inherit">';
-                html += '<div class="exh-card-img">';
-                if (coverImg) html += '<img src="' + coverImg + '" alt="' + (e.title || '') + '">';
-                if (isLive) html += '<div class="exh-card-live">Live Now</div>';
-                html += '</div>';
-                html += '<div class="exh-card-body">';
-                html += '<div class="exh-card-title">' + (e.title || 'Exhibition') + '</div>';
-                html += '<div class="exh-card-artist">' + (e.exhibitor_name || '') + ' · ' + arts.length + ' work' + (arts.length !== 1 ? 's' : '') + '</div>';
-                if (startStr) html += '<div class="exh-card-date">' + startStr + (endStr ? ' — ' + endStr : '') + '</div>';
-                html += '<span class="exh-card-link">View Exhibition →</span>';
-                html += '</div></a>';
-            });
+                const frame = document.createElement('div');
+                frame.className = 'painting-frame';
+                frame.style.width = displayW + 'px';
 
-            grid.innerHTML = html;
-        }
+                // Dimensions text
+                let dimsText = widthCm + ' × ' + heightCm + ' cm';
+                if (art.depth_cm) dimsText += ' × ' + art.depth_cm + ' cm';
 
-        // Scroll reveal
-        function initReveal() {
-            var els = document.querySelectorAll('.reveal');
-            var obs = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        obs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.15 });
-            els.forEach(function(el) { obs.observe(el); });
-        }
-
-        init();
-    </script>
-
-    <!-- Auth check -->
-    <script>
-    (async function(){
-        try {
-            var{data:{session}}=await db.auth.getSession();
-            if(session){
-                var nr=document.getElementById('nav-right');
-                var{data:art}=await db.from('artists').select('id').eq('user_id',session.user.id).maybeSingle();
-                if(art){
-                    nr.innerHTML='<a href="artist-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
-                } else {
-                    var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
-                    if(col){
-                        nr.innerHTML='<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
-                    }
+                // Price display (hidden during live exhibition — no selling)
+                let priceHtml = '';
+                if (!isLive && art.is_for_sale && art.price) {
+                    priceHtml = '<div class="placard-price" style="display:block">$' +
+                        Number(art.price).toLocaleString() + '</div>';
                 }
-                var so=document.getElementById('nav-signout');
-                if(so) so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
+
+                frame.innerHTML =
+                    '<div class="painting-img-wrap" style="width:' + displayW + 'px;height:' + displayH + 'px">' +
+                        '<img src="' + escHtml(art.image_url || '') + '" alt="' + escHtml(art.title || '') + '" loading="lazy">' +
+                    '</div>' +
+                    '<div class="painting-shadow"></div>' +
+                    '<div class="painting-placard">' +
+                        '<div class="placard-title">' + escHtml(art.title || 'Untitled') + '</div>' +
+                        '<div class="placard-artist">' + escHtml(art.artist_name || '') + '</div>' +
+                        '<div class="placard-details">' +
+                            escHtml(art.medium || '') +
+                            (art.year ? ', ' + art.year : '') +
+                            '<br>' + dimsText +
+                        '</div>' +
+                        priceHtml +
+                    '</div>';
+
+                row.appendChild(frame);
+            });
+        }
+
+        // ── Load exhibitions grid ──
+        async function loadExhibitionsGrid() {
+            const grid = document.getElementById('exhibitions-grid');
+
+            try {
+                const exhibitions = await supaFetch('exhibitions',
+                    'status=in.(ended,archived,approved,live)&select=*&order=start_date.desc');
+
+                if (!exhibitions || exhibitions.length === 0) {
+                    grid.innerHTML =
+                        '<div class="empty-state">' +
+                            '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.5">' +
+                                '<rect x="3" y="3" width="18" height="18" rx="2"/>' +
+                                '<circle cx="8.5" cy="8.5" r="1.5"/>' +
+                                '<polyline points="21 15 16 10 5 21"/>' +
+                            '</svg>' +
+                            '<h3>No exhibitions yet</h3>' +
+                            '<p>Exhibitions will appear here once they go live.</p>' +
+                        '</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                exhibitions.forEach(function(ex) {
+                    // Skip the current live one (shown above in full gallery)
+                    if (currentExhibition && ex.id === currentExhibition.id) return;
+
+                    const statusClass = ex.status === 'live' ? 'status-live' :
+                                       (ex.status === 'approved' ? 'status-upcoming' : 'status-ended');
+                    const statusLabel = ex.status === 'live' ? 'Live' :
+                                       (ex.status === 'approved' ? 'Upcoming' :
+                                       (ex.status === 'ended' ? 'Ended' : 'Archived'));
+
+                    // Use first artwork image as card thumbnail
+                    const coverImg = ex.cover_image_url || '';
+
+                    const card = document.createElement('div');
+                    card.className = 'exhibition-card';
+                    card.onclick = function() {
+                        if (ex.status === 'live') {
+                            window.location.href = 'vernissage.html?id=' + ex.id;
+                        }
+                    };
+                    card.innerHTML =
+                        '<div class="exhibition-card-img">' +
+                            (coverImg ? '<img src="' + escHtml(coverImg) + '" alt="' + escHtml(ex.title) + '">' :
+                            '<div style="width:100%;height:100%;background:var(--gray-200);display:flex;align-items:center;justify-content:center;color:var(--gray-400);font-size:0.8rem">No preview</div>') +
+                            '<div class="exhibition-card-status ' + statusClass + '">' + statusLabel + '</div>' +
+                        '</div>' +
+                        '<div class="exhibition-card-body">' +
+                            '<div class="exhibition-card-artist">' + escHtml(ex.exhibitor_name || 'Artist') + '</div>' +
+                            '<div class="exhibition-card-title">' + escHtml(ex.title || 'Untitled Exhibition') + '</div>' +
+                            '<div class="exhibition-card-dates">' +
+                                formatDate(ex.start_date) + ' — ' + formatDate(ex.end_date) +
+                            '</div>' +
+                            '<div class="exhibition-card-count">' +
+                                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+                                (ex.view_count || 0) + ' views' +
+                            '</div>' +
+                        '</div>';
+
+                    grid.appendChild(card);
+                });
+
+                if (grid.children.length === 0) {
+                    grid.innerHTML =
+                        '<div class="empty-state"><h3>No past exhibitions</h3><p>Check back soon for new shows.</p></div>';
+                }
+
+            } catch(err) {
+                console.error('Grid error:', err);
+                grid.innerHTML = '<div class="empty-state"><h3>Could not load exhibitions</h3></div>';
             }
-        } catch(e){}
-        document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});
-    })();
+        }
+
+        // ── Increment view count ──
+        async function incrementViewCount(exhibitionId) {
+            try {
+                await fetch(SUPABASE_URL + '/rest/v1/rpc/increment_exhibition_views', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ exhibition_id_input: exhibitionId })
+                });
+            } catch(e) { /* silent */ }
+        }
+
+        // ── Chat ──
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+            document.getElementById('chat-notif').style.display = 'none';
+        }
+
+        function sendChatMsg() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = 'chat-msg';
+            div.innerHTML =
+                '<div class="chat-msg-name">You</div>' +
+                '<div class="chat-msg-text">' + escHtml(msg) + '</div>' +
+                '<div class="chat-msg-time">just now</div>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            input.value = '';
+
+            // TODO: Connect to Supabase realtime for multi-user chat
+        }
+
+        // ── Utilities ──
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function scrollToGallery() {
+            document.getElementById('gallery-room').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ── Check URL params for specific exhibition ──
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                // Load specific exhibition by ID
+                loadSpecificExhibition(id);
+            }
+        }
+
+        async function loadSpecificExhibition(id) {
+            try {
+                const exhibitions = await supaFetch('exhibitions',
+                    'id=eq.' + id + '&select=*');
+                if (exhibitions && exhibitions.length > 0) {
+                    currentExhibition = exhibitions[0];
+                    await renderLiveExhibition(currentExhibition);
+                    scrollToGallery();
+                }
+            } catch(e) {
+                console.error('Load specific exhibition error:', e);
+            }
+        }
+
+        // ── Boot ──
+        init();
+        checkUrlParams();
     </script>
 </body>
 </html>
