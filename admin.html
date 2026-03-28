@@ -197,11 +197,11 @@
                 <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
-            <div class="sb-bot"><button id="sign-out">Sign Out</button></div>
+            <div class="sb-bot"></div>
         </div>
 
         <div>
-            <div class="topbar"><span>InfraMint Admin</span><span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span></div>
+            <div class="topbar"><span>InfraMint Admin</span><div style="display:flex;align-items:center;gap:1.5rem"><span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span><button id="sign-out" style="font-family:'Manrope',sans-serif;font-size:.75rem;color:#999;background:none;border:1px solid #ddd;padding:.3rem .75rem;cursor:pointer">Sign Out</button></div></div>
             <main>
                 <!-- Dashboard -->
                 <div class="sec active" id="section-overview">
@@ -3041,6 +3041,7 @@
                     '<div style="display:flex;align-items:center;gap:.5rem">' +
                         '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#333" onclick="viewExhArt(\'' + ex.id + '\')">View Art</button>' +
                         btns +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#7f1d1d" onclick="deleteExh(\'' + ex.id + '\',\'' + (ex.title||'').replace(/'/g,'') + '\')">Delete</button>' +
                         '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .5rem;background:' + (sc[ex.status]||'#555') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>' +
                     '</div></div>';
                 list.appendChild(d);
@@ -3053,6 +3054,17 @@
             await db.from('exhibitions').update({ status: status, updated_at: new Date().toISOString() }).eq('id', id);
             loadAdminExhibitions();
         } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    async function deleteExh(id, title) {
+        if (!confirm('Delete exhibition "' + title + '"? This will also delete all its artworks. This cannot be undone.')) return;
+        try {
+            // Delete artworks first (cascade should handle it but be safe)
+            await db.from('exhibition_artworks').delete().eq('exhibition_id', id);
+            await db.from('exhibition_chat_messages').delete().eq('exhibition_id', id);
+            await db.from('exhibitions').delete().eq('id', id);
+            loadAdminExhibitions();
+        } catch(e) { alert('Error deleting: ' + e.message); }
     }
 
     async function viewExhArt(exhId) {
