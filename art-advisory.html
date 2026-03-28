@@ -36,6 +36,37 @@ footer{border-top:1px solid var(--g200);padding:2rem;text-align:center}footer a{
 
         @media (max-width: 900px) { .nav-center, .nav-right { display: none; } .hamburger { display: block; } }
     </style>
+
+    <!-- STANDARDIZED NAV CSS — identical on all pages -->
+    <style id="nav-standard">
+        nav { position:fixed!important; top:0!important; left:0!important; right:0!important; z-index:100!important; padding:0 3rem!important; display:flex!important; justify-content:space-between!important; align-items:center!important; background:#000!important; height:4.5rem!important; }
+        .logo { display:flex!important; align-items:center!important; gap:0.875rem!important; text-decoration:none!important; }
+        .logo-bar { width:3px!important; height:1.75rem!important; background:#fff!important; }
+        .logo-text { font-size:1.25rem!important; letter-spacing:-0.01em!important; }
+        .logo-text span:first-child { font-weight:600!important; color:#fff!important; }
+        .logo-text span:last-child { font-weight:200!important; color:#737373!important; }
+        .nav-center { display:flex!important; gap:2.5rem!important; align-items:center!important; }
+        .nav-center a { font-size:0.9375rem!important; font-weight:400!important; color:#a3a3a3!important; text-decoration:none!important; letter-spacing:0.01em!important; transition:color 0.2s ease!important; background:none!important; padding:0!important; border:none!important; }
+        .nav-center a:hover { color:#fff!important; }
+        .nav-center a.active { color:#fff!important; }
+        .nav-right { display:flex!important; gap:1.5rem!important; align-items:center!important; position:relative!important; }
+        .signin-btn { font-size:0.875rem!important; font-weight:400!important; color:#a3a3a3!important; background:none!important; border:1px solid #262626!important; padding:0.5rem 1.25rem!important; cursor:pointer!important; font-family:'Manrope',sans-serif!important; transition:all 0.2s!important; display:flex!important; align-items:center!important; gap:0.5rem!important; }
+        .signin-btn:hover { color:#fff!important; border-color:#525252!important; }
+        .signin-btn svg { transition:transform 0.2s!important; }
+        .signin-btn.open svg { transform:rotate(180deg)!important; }
+        .signin-dropdown { display:none!important; position:absolute!important; top:calc(100% + 0.5rem)!important; right:0!important; background:#000!important; border:1px solid #262626!important; min-width:180px!important; z-index:200!important; }
+        .signin-dropdown.open { display:block!important; }
+        .signin-dropdown a { display:block!important; padding:0.65rem 1.25rem!important; font-size:0.8rem!important; color:#a3a3a3!important; text-decoration:none!important; transition:all 0.15s!important; border-bottom:1px solid rgba(255,255,255,.05)!important; background:none!important; }
+        .signin-dropdown a:last-child { border-bottom:none!important; }
+        .signin-dropdown a:hover { color:#fff!important; background:#171717!important; }
+        .hamburger { display:none!important; background:none!important; border:none!important; cursor:pointer!important; padding:0.5rem!important; }
+        .mobile-dropdown { display:none; position:fixed!important; top:4.5rem!important; left:0!important; right:0!important; background:#000!important; border-top:1px solid #262626!important; flex-direction:column!important; z-index:99!important; max-height:calc(100vh - 4.5rem)!important; overflow-y:auto!important; }
+        .mobile-dropdown.open { display:flex!important; }
+        .mobile-dropdown a { padding:0.85rem 2rem!important; font-size:0.9rem!important; color:#a3a3a3!important; text-decoration:none!important; border-bottom:1px solid rgba(255,255,255,.05)!important; }
+        .mobile-dropdown a:hover { color:#fff!important; }
+        @media (max-width:900px) { .nav-center { display:none!important; } .nav-right { display:none!important; } .hamburger { display:block!important; } }
+    </style>
+
 </head>
 <body style="opacity:0;transition:opacity .3s">
 <script>document.body.style.opacity='0';</script>
