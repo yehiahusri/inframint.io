@@ -13,19 +13,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{
-            --black:#000;--white:#fff;
-            --g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;
-            --g500:#737373;--g600:#525252;--g800:#262626;--g900:#171717;
-            --neon:#c8ff00;--olive:#4a7c00;
-            --gallery-wall:#f4f1ec;
-            --gallery-floor:#c4b8a6;
-            --gallery-ceil:rgba(0,0,0,.02);
-        }
+        :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--g900:#171717;--neon:#c8ff00;--olive:#4a7c00}
         html{font-size:16px;scroll-behavior:smooth}
         body{font-family:'Manrope',sans-serif;background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-        /* ═══ NAV ═══ */
+        /* NAV */
         nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
         .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
         .logo-bar{width:3px;height:1.75rem;background:var(--white)}
@@ -45,12 +37,12 @@
         .signin-dd a:last-child{border:none}
         .signin-dd a:hover{color:var(--white);background:var(--g900)}
         .hamburger{display:none;background:none;border:none;cursor:pointer;padding:.5rem}
-        .mob-dd{display:none;position:fixed;top:4.5rem;left:0;right:0;background:var(--black);border-top:1px solid var(--g800);flex-direction:column;z-index:99}
+        .mob-dd{display:none;position:fixed;top:4.5rem;left:0;right:0;background:var(--black);flex-direction:column;z-index:99}
         .mob-dd.open{display:flex}
         .mob-dd a{padding:.85rem 2rem;font-size:.9rem;color:var(--g400);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05)}
         .mob-dd .sep{padding:.6rem 2rem .3rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:var(--g600);text-transform:uppercase}
 
-        /* ═══ SPLIT HERO (advisory style) ═══ */
+        /* HERO — split layout */
         .hero{padding-top:4.5rem;background:var(--black);position:relative;overflow:hidden}
         .hero-inner{display:grid;grid-template-columns:1fr 1fr;min-height:75vh}
         .hero-left{padding:5rem 3rem 4rem;display:flex;flex-direction:column;justify-content:center;z-index:2}
@@ -60,15 +52,15 @@
         .hero-t strong{font-weight:700}
         .hero-s{font-size:.95rem;color:var(--g400);line-height:1.85;max-width:440px;margin-bottom:2.5rem}
         .hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
-        .hero-btn-primary{display:inline-block;padding:.85rem 2rem;background:var(--neon);color:var(--black);font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:all .2s}
-        .hero-btn-primary:hover{background:var(--white)}
-        .hero-btn-secondary{display:inline-block;padding:.85rem 2rem;background:transparent;color:var(--white);font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;border:1px solid var(--g600);transition:all .2s}
-        .hero-btn-secondary:hover{border-color:var(--white)}
+        .btn-p{display:inline-block;padding:.85rem 2rem;background:var(--neon);color:var(--black);font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:all .2s}
+        .btn-p:hover{background:var(--white)}
+        .btn-s{display:inline-block;padding:.85rem 2rem;background:transparent;color:var(--white);font-family:'Manrope',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;border:1px solid var(--g600);transition:all .2s}
+        .btn-s:hover{border-color:var(--white)}
         .hero-right{position:relative;overflow:hidden}
         .hero-img{width:100%;height:100%;object-fit:cover;opacity:.6}
         .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,var(--black) 0%,transparent 50%)}
 
-        /* ═══ LIVE BANNER ═══ */
+        /* LIVE BANNER */
         .live-strip{background:var(--black);padding:1.25rem 3rem;border-top:1px solid var(--g800);display:none;align-items:center;gap:1.25rem}
         .live-strip.on{display:flex}
         .live-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;animation:puls 2s infinite}
@@ -76,274 +68,95 @@
         .live-strip-text{font-size:.9rem;font-weight:400;color:var(--white);flex:1}
         .live-strip-text span{color:var(--g400);font-weight:300;margin-left:.5rem}
         .live-strip-btn{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--neon);padding:.6rem 1.5rem;text-decoration:none;transition:opacity .2s}
-        .live-strip-btn:hover{opacity:.85}
 
-        /* ═══════════════════════════════════════════
-           THE GALLERY ROOM — Physical space feel
-           ═══════════════════════════════════════════ */
-
-        .gallery-room{display:none}
+        /* GALLERY ROOM */
+        .gallery-room{display:none;background:var(--g900)}
         .gallery-room.on{display:block}
-
-        /* --- Artist info strip --- */
         .artist-strip{background:var(--g900);padding:2.5rem 4rem;display:flex;align-items:center;gap:2.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
         .artist-strip img{width:72px;height:72px;object-fit:cover;filter:grayscale(1);opacity:.8}
         .artist-strip h2{font-size:1.4rem;font-weight:300;color:var(--white)}
         .artist-strip h2 strong{font-weight:600}
         .artist-strip p{font-size:.8rem;color:var(--g400);font-weight:300;max-width:500px;margin-top:.3rem;line-height:1.7}
-        .artist-strip-meta{margin-left:auto;text-align:right}
-        .artist-strip-meta .am-l{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g600)}
-        .artist-strip-meta .am-v{font-size:.8rem;color:var(--g300);font-weight:300;margin-top:.1rem}
+        .as-meta{margin-left:auto;text-align:right}
+        .as-meta .ml{font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--g600)}
+        .as-meta .mv{font-size:.8rem;color:var(--g300);font-weight:300;margin-top:.1rem}
 
-        /* --- THE WALL --- 
-           This simulates a physical gallery wall.
-           White/warm surface, subtle ceiling shadow at top,
-           wooden floor gradient at bottom. */
-        .the-wall{
-            background:var(--gallery-wall);
-            position:relative;
-            padding:0;
-            min-height:70vh;
-        }
-        /* Ceiling shadow */
-        .the-wall::before{
-            content:'';position:absolute;top:0;left:0;right:0;height:80px;
-            background:linear-gradient(to bottom,rgba(0,0,0,.035),transparent);
-            pointer-events:none;z-index:1;
-        }
-        /* Floor */
-        .the-wall::after{
-            content:'';position:absolute;bottom:0;left:0;right:0;height:100px;
-            background:linear-gradient(to bottom,var(--gallery-wall) 0%,#d9cebb 30%,var(--gallery-floor) 100%);
-            pointer-events:none;
-        }
+        /* ═══ THE GALLERY SLIDER ═══ */
+        .gallery-slider-wrap{position:relative}
+        .gallery-slider{display:flex;overflow-x:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+        .gallery-slider::-webkit-scrollbar{display:none}
 
-        /* Section label on wall */
-        .wall-section{padding:3.5rem 0 0;text-align:center}
-        .wall-section span{font-size:.5rem;font-weight:700;letter-spacing:.6em;text-transform:uppercase;color:rgba(0,0,0,.18);display:inline-flex;align-items:center;gap:2rem}
-        .wall-section span::before,.wall-section span::after{content:'';width:50px;height:1px;background:rgba(0,0,0,.08)}
+        /* Each wall = one photo-based room */
+        .wall{position:relative;flex-shrink:0;width:100vw;height:70vh;min-height:500px;overflow:hidden;background:#2a2a2a}
+        .wall-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+        /* Artwork overlaid on frame area */
+        .wall-art{position:absolute;cursor:pointer;overflow:hidden;transition:transform .3s}
+        .wall-art:hover{transform:scale(1.02)}
+        .wall-art img{width:100%;height:100%;object-fit:cover;display:block}
+        /* Placard on wall */
+        .wall-placard{position:absolute;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);padding:.35rem .55rem;cursor:pointer;z-index:10;max-width:120px;transition:all .2s;border-left:2px solid var(--black)}
+        .wall-placard:hover{background:var(--white);transform:translateX(2px)}
+        .wall-placard .wp-t{font-size:.5rem;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .wall-placard .wp-s{font-size:.4rem;color:var(--g500);margin-top:.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-        /* --- PAINTINGS SLIDER --- */
-        .paintings-slider-wrap{
-            position:relative;z-index:2;
-            padding:2rem 0 1rem;
-        }
-        /* Arrow buttons */
-        .slider-arrow{
-            position:absolute;top:50%;transform:translateY(-50%);
-            width:44px;height:44px;
-            background:var(--white);border:1px solid var(--g200);
-            display:flex;align-items:center;justify-content:center;
-            cursor:pointer;z-index:10;
-            box-shadow:0 2px 12px rgba(0,0,0,.06);
-            transition:all .2s;
-        }
-        .slider-arrow:hover{background:var(--black);border-color:var(--black)}
-        .slider-arrow:hover svg{stroke:var(--white)}
-        .slider-arrow svg{stroke:var(--black);transition:stroke .2s}
-        .slider-arrow.left{left:1.5rem}
-        .slider-arrow.right{right:1.5rem}
+        /* Slider arrows */
+        .sl-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;transition:all .2s;backdrop-filter:blur(4px)}
+        .sl-arrow:hover{background:rgba(0,0,0,.9);border-color:var(--neon)}
+        .sl-arrow:hover svg{stroke:var(--neon)}
+        .sl-arrow svg{stroke:var(--white);transition:stroke .2s}
+        .sl-arrow.left{left:1rem}
+        .sl-arrow.right{right:1rem}
 
-        .paintings-row{
-            display:flex;
-            align-items:center;
-            gap:clamp(3rem,5vw,6rem);
-            padding:3rem 5rem 3rem;
-            overflow-x:auto;
-            scroll-behavior:smooth;
-            -webkit-overflow-scrolling:touch;
-            scrollbar-width:none; /* hide default, we use custom */
-            min-height:350px;
-        }
-        .paintings-row::-webkit-scrollbar{display:none}
+        /* Progress track */
+        .sl-track{height:3px;background:var(--g800);position:relative;margin:0}
+        .sl-thumb{height:3px;background:var(--neon);position:absolute;top:0;left:0;transition:width .15s,left .15s;min-width:30px}
+        /* Wall counter */
+        .sl-counter{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:.7rem;font-weight:600;color:var(--white);background:rgba(0,0,0,.6);padding:.3rem .8rem;letter-spacing:.15em;z-index:20;backdrop-filter:blur(4px)}
 
-        /* Custom scroll track bar */
-        .slider-track{
-            margin:0 5rem 5rem;
-            height:2px;
-            background:var(--g200);
-            position:relative;z-index:2;
-        }
-        .slider-thumb{
-            height:2px;
-            background:var(--black);
-            min-width:40px;
-            transition:width .1s,left .1s;
-            position:absolute;top:0;left:0;
-        }
-        /* Drag handle area — invisible but taller for easier grab */
-        .slider-track-grab{
-            position:absolute;top:-8px;left:0;right:0;height:18px;
-            cursor:grab;z-index:3;
-        }
-        .slider-track-grab:active{cursor:grabbing}
+        /* Info bar */
+        .info-bar{background:var(--g900);padding:1.5rem 4rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.06)}
+        .info-bar .ib-d{font-size:.8rem;color:var(--g400);font-weight:300}
+        .info-bar .ib-d strong{font-weight:500;color:var(--white)}
+        .info-bar .ib-v{font-size:.75rem;color:var(--g500);display:flex;align-items:center;gap:.5rem}
 
-        /* Single painting unit */
-        .painting{
-            position:relative;
-            display:inline-flex;
-            flex-direction:column;
-            align-items:center;
-            flex-shrink:0;
-        }
+        /* DETAIL OVERLAY */
+        .dt-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+        .dt-overlay.open{display:flex}
+        .dt-card{background:var(--white);max-width:520px;width:92%;color:var(--black);position:relative;animation:dtIn .25s ease}
+        @keyframes dtIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .dt-img{width:100%;max-height:320px;object-fit:contain;background:var(--g100);display:block}
+        .dt-body{padding:2rem}
+        .dt-close{position:absolute;top:.75rem;right:.75rem;background:var(--white);border:1px solid var(--g200);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--g500);z-index:2}
+        .dt-close:hover{color:var(--black);border-color:var(--g400)}
+        .dt-title{font-size:1.5rem;font-weight:300;letter-spacing:-0.02em}
+        .dt-title strong{font-weight:600}
+        .dt-artist{font-size:.85rem;font-weight:500;color:var(--g600);margin-top:.25rem}
+        .dt-div{height:1px;background:var(--g200);margin:1.25rem 0}
+        .dt-row{display:flex;justify-content:space-between;font-size:.8rem;padding:.25rem 0}
+        .dt-row span{color:var(--g500)}.dt-row strong{font-weight:600;color:var(--black)}
+        .dt-desc{font-size:.85rem;color:var(--g600);line-height:1.7;margin-top:1rem}
+        .dt-price{font-size:1.1rem;font-weight:600;color:var(--olive);margin-top:1rem;display:none}
+        .dt-inq{display:none;margin-top:1rem;padding:.8rem;background:var(--black);color:var(--white);border:none;font-family:inherit;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;width:100%}
 
-        /* Spotlight cone from above */
-        .painting .spotlight{
-            position:absolute;
-            top:-60px;left:50%;transform:translateX(-50%);
-            width:250%;height:80px;
-            background:radial-gradient(ellipse at center bottom,rgba(255,252,240,.2) 0%,transparent 65%);
-            pointer-events:none;
-        }
-
-        /* Frame = thick white border + shadow against wall */
-        .painting .frame{
-            position:relative;z-index:1;
-            background:var(--white);
-            padding:6px;
-            box-shadow:
-                0 3px 15px rgba(0,0,0,.08),
-                0 8px 30px rgba(0,0,0,.05),
-                0 1px 3px rgba(0,0,0,.1);
-            transition:transform .35s ease;
-        }
-        .painting:hover .frame{transform:translateY(-2px)}
-        .painting .frame img{
-            display:block;
-            width:100%;height:100%;
-            object-fit:cover;
-            background:var(--g200);
-        }
-
-        /* Drop shadow on wall below frame */
-        .painting .wall-shadow{
-            width:85%;height:8px;margin:3px auto 0;
-            background:radial-gradient(ellipse,rgba(0,0,0,.05) 0%,transparent 70%);
-        }
-
-        /* ═══ MUSEUM PLACARD — small label next to painting ═══ 
-           Like a real gallery: small white card with thin left border,
-           sits to the lower-right of the painting */
-        .museum-label{
-            position:absolute;
-            right:-12px;
-            bottom:16px;
-            background:var(--white);
-            border-left:2px solid var(--black);
-            padding:.35rem .6rem;
-            max-width:130px;
-            cursor:pointer;
-            z-index:10;
-            box-shadow:0 1px 6px rgba(0,0,0,.04);
-            transition:all .25s ease;
-        }
-        .museum-label:hover{
-            box-shadow:0 2px 12px rgba(0,0,0,.08);
-            transform:translateX(2px);
-        }
-        .museum-label .ml-title{
-            font-size:.6rem;font-weight:600;color:var(--black);
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-            letter-spacing:.01em;
-        }
-        .museum-label .ml-sub{
-            font-size:.48rem;color:var(--g500);font-weight:400;margin-top:.05rem;
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-        }
-        .museum-label .ml-tap{
-            font-size:.4rem;color:var(--g400);font-weight:300;margin-top:.15rem;
-            letter-spacing:.05em;text-transform:uppercase;
-        }
-
-        /* ═══ SCULPTURE SECTION ═══ */
-        .sculpture-area{
-            background:var(--gallery-wall);
-            position:relative;
-            padding:0 0 6rem;
-        }
-        .sculpture-area::after{
-            content:'';position:absolute;bottom:0;left:0;right:0;height:100px;
-            background:linear-gradient(to bottom,var(--gallery-wall) 0%,#d9cebb 30%,var(--gallery-floor) 100%);
-            pointer-events:none;
-        }
-        .sculptures-row{
-            display:flex;justify-content:center;gap:clamp(2rem,5vw,6rem);
-            flex-wrap:wrap;padding:3rem 4rem 5rem;position:relative;z-index:2;
-        }
-        .sculpture{display:flex;flex-direction:column;align-items:center;max-width:260px}
-
-        /* Pedestal */
-        .pedestal{
-            background:var(--white);
-            padding:1.5rem;
-            box-shadow:0 2px 15px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.08);
-        }
-        .pedestal img{display:block;width:100%;max-height:320px;object-fit:contain;background:var(--g100)}
-        .pedestal-base{
-            width:100%;height:4px;
-            background:linear-gradient(to right,transparent,rgba(0,0,0,.03),var(--g200),rgba(0,0,0,.03),transparent);
-            margin-top:2px;
-        }
-        .sculpture .museum-label{
-            position:relative;right:auto;bottom:auto;
-            margin-top:.6rem;max-width:200px;text-align:center;
-            border-left:none;border-top:2px solid var(--black);
-        }
-
-        /* ═══ INFO BAR ═══ */
-        .info-bar{background:var(--white);padding:1.75rem 4rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--g200)}
-        .info-bar .ib-d{font-size:.8rem;color:var(--g500);font-weight:300}
-        .info-bar .ib-d strong{font-weight:500;color:var(--black)}
-        .info-bar .ib-v{font-size:.75rem;color:var(--g400);display:flex;align-items:center;gap:.5rem}
-
-        /* ═══ ARTWORK DETAIL OVERLAY ═══ */
-        .detail-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px)}
-        .detail-overlay.open{display:flex}
-        .detail-card{
-            background:var(--white);max-width:520px;width:92%;
-            color:var(--black);position:relative;
-            animation:dcIn .25s ease;
-        }
-        @keyframes dcIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-        .dc-img{width:100%;max-height:320px;object-fit:contain;background:var(--g100);display:block}
-        .dc-body{padding:2rem}
-        .dc-close{position:absolute;top:.75rem;right:.75rem;background:var(--white);border:1px solid var(--g200);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--g500);transition:all .15s;z-index:2}
-        .dc-close:hover{color:var(--black);border-color:var(--g400)}
-        .dc-title{font-size:1.5rem;font-weight:300;letter-spacing:-0.02em}
-        .dc-title strong{font-weight:600}
-        .dc-artist{font-size:.85rem;font-weight:500;color:var(--g600);margin-top:.25rem}
-        .dc-divider{height:1px;background:var(--g200);margin:1.25rem 0}
-        .dc-row{display:flex;justify-content:space-between;font-size:.8rem;padding:.25rem 0}
-        .dc-row span{color:var(--g500)}
-        .dc-row strong{font-weight:600;color:var(--black)}
-        .dc-desc{font-size:.85rem;color:var(--g600);line-height:1.7;margin-top:1rem}
-        .dc-price{font-size:1.1rem;font-weight:600;color:var(--olive);margin-top:1rem;display:none}
-        .dc-inquire{display:none;margin-top:1rem;padding:.8rem;background:var(--black);color:var(--white);border:none;font-family:inherit;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;width:100%;transition:background .2s}
-        .dc-inquire:hover{background:var(--g800)}
-
-        /* ═══ CHAT ═══ */
-        .chat-fab{position:fixed;bottom:2rem;right:2rem;width:54px;height:54px;background:var(--black);border:none;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:200;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:all .2s}
+        /* CHAT */
+        .chat-fab{position:fixed;bottom:2rem;right:2rem;width:54px;height:54px;background:var(--black);border:1px solid rgba(255,255,255,.15);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:200;box-shadow:0 6px 24px rgba(0,0,0,.25)}
         .chat-fab.on{display:flex}
-        .chat-fab:hover{background:var(--g800)}
         .chat-panel{position:fixed;bottom:5.5rem;right:2rem;width:350px;max-height:470px;background:var(--white);border:1px solid var(--g200);box-shadow:0 12px 50px rgba(0,0,0,.15);display:none;flex-direction:column;z-index:200}
         .chat-panel.open{display:flex}
-        .chat-hdr{padding:.85rem 1rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
-        .chat-hdr-title{font-size:.85rem;font-weight:600;color:var(--black);display:flex;align-items:center;gap:.5rem}
-        .chat-hdr-title .cdot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:puls 2s infinite}
-        .chat-hdr-sub{font-size:.6rem;color:var(--g400)}
-        .chat-x{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--g400)}
-        .chat-msgs{flex:1;overflow-y:auto;padding:1rem;max-height:310px;display:flex;flex-direction:column;gap:.6rem}
-        .msg{max-width:82%}.msg.me{align-self:flex-end}
-        .msg.me .msg-b{background:var(--black);color:var(--white)}
-        .msg .msg-n{font-size:.55rem;font-weight:600;color:var(--g400);margin-bottom:.15rem;text-transform:uppercase;letter-spacing:.05em}
-        .msg .msg-b{background:var(--g100);color:var(--black);padding:.55rem .8rem;font-size:.8rem;line-height:1.5}
-        .msg .msg-t{font-size:.5rem;color:var(--g400);margin-top:.15rem}
-        .chat-inp{padding:.65rem .85rem;border-top:1px solid var(--g200);display:flex;gap:.4rem}
-        .chat-inp input{flex:1;border:1px solid var(--g200);padding:.5rem .7rem;font-size:.8rem;font-family:inherit;outline:none}
-        .chat-inp input:focus{border-color:var(--black)}
-        .chat-inp button{background:var(--black);color:var(--white);border:none;padding:.5rem .85rem;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit}
+        .ch-hdr{padding:.85rem 1rem;border-bottom:1px solid var(--g200);display:flex;justify-content:space-between;align-items:center}
+        .ch-hdr-t{font-size:.85rem;font-weight:600;color:var(--black);display:flex;align-items:center;gap:.5rem}
+        .ch-hdr-t .cdot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:puls 2s infinite}
+        .ch-msgs{flex:1;overflow-y:auto;padding:1rem;max-height:310px;display:flex;flex-direction:column;gap:.6rem}
+        .cm{max-width:82%}.cm.me{align-self:flex-end}.cm.me .cm-b{background:var(--black);color:var(--white)}
+        .cm .cm-n{font-size:.55rem;font-weight:600;color:var(--g400);margin-bottom:.15rem;text-transform:uppercase;letter-spacing:.05em}
+        .cm .cm-b{background:var(--g100);color:var(--black);padding:.55rem .8rem;font-size:.8rem;line-height:1.5}
+        .cm .cm-ti{font-size:.5rem;color:var(--g400);margin-top:.15rem}
+        .ch-inp{padding:.65rem .85rem;border-top:1px solid var(--g200);display:flex;gap:.4rem}
+        .ch-inp input{flex:1;border:1px solid var(--g200);padding:.5rem .7rem;font-size:.8rem;font-family:inherit;outline:none}
+        .ch-inp input:focus{border-color:var(--black)}
+        .ch-inp button{background:var(--black);color:var(--white);border:none;padding:.5rem .85rem;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit}
 
-        /* ═══ ARCHIVE ═══ */
+        /* ARCHIVE */
         .archive{background:var(--g100);padding:4rem 3rem}
         .arc-eye{font-size:.55rem;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--olive);margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem}
         .arc-eye::before{content:'';width:2rem;height:1px;background:var(--olive)}
@@ -355,172 +168,115 @@
         .arc-card-img{height:200px;overflow:hidden;position:relative}
         .arc-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
         .arc-card:hover img{transform:scale(1.03)}
-        .arc-card-st{position:absolute;top:.65rem;left:.65rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem}
-        .st-live{background:var(--neon);color:var(--black)}
-        .st-up{background:var(--white);color:var(--black);border:1px solid var(--g200)}
-        .st-end{background:var(--g800);color:var(--g400)}
+        .arc-st{position:absolute;top:.65rem;left:.65rem;font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem}
+        .st-l{background:var(--neon);color:var(--black)}.st-u{background:var(--white);color:var(--black);border:1px solid var(--g200)}.st-e{background:var(--g800);color:var(--g400)}
         .arc-card-body{padding:1.25rem}
-        .arc-card-a{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);margin-bottom:.25rem}
-        .arc-card-t{font-size:1.05rem;font-weight:500;letter-spacing:-0.01em;color:var(--black);margin-bottom:.35rem}
-        .arc-card-d{font-size:.75rem;color:var(--g500);font-weight:300}
+        .arc-ca{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--g400);margin-bottom:.25rem}
+        .arc-ct{font-size:1.05rem;font-weight:500;color:var(--black);margin-bottom:.35rem}
+        .arc-cd{font-size:.75rem;color:var(--g500);font-weight:300}
 
-        /* ═══ FOOTER ═══ */
+        /* FOOTER */
         footer{padding:3rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--g200);background:var(--g100);flex-wrap:wrap;gap:1rem}
         .f-logo{display:flex;align-items:center;gap:.75rem}
         .f-bar{width:3px;height:1.25rem;background:var(--black)}
         .f-text{font-size:1rem}.f-text span:first-child{font-weight:600;color:var(--black)}.f-text span:last-child{font-weight:200;color:var(--g400)}
         .f-links{display:flex;gap:2rem;flex-wrap:wrap}
-        .f-links a{font-size:.8rem;color:var(--g500);text-decoration:none;transition:color .2s}
-        .f-links a:hover{color:var(--black)}
+        .f-links a{font-size:.8rem;color:var(--g500);text-decoration:none}
         .f-copy{font-size:.75rem;color:var(--g400)}
 
-        .loading{text-align:center;padding:4rem;font-size:.85rem;color:rgba(0,0,0,.3);font-weight:300}
+        .loading{text-align:center;padding:4rem;font-size:.85rem;color:var(--g400)}
         .empty{text-align:center;padding:4rem;color:var(--g400)}
-        .empty h3{font-size:1rem;font-weight:500;color:var(--g600);margin-bottom:.5rem}
 
         @media(max-width:900px){.nav-center,.nav-right{display:none}.hamburger{display:block}}
         @media(max-width:768px){
             nav{padding:0 1.5rem}
             .hero-inner{grid-template-columns:1fr}.hero-right{display:none}.hero-left{padding:4rem 1.5rem 3rem}.hero-t{font-size:2.25rem}
             .live-strip{padding:1rem 1.5rem;flex-wrap:wrap;gap:.65rem}
-            .artist-strip{padding:1.5rem;flex-direction:column;align-items:flex-start;gap:.75rem}
-            .artist-strip-meta{margin-left:0;text-align:left}
-            .paintings-row{padding:2rem 2rem 2rem;gap:2.5rem}
-            .slider-track{margin:0 2rem 4rem}
-            .slider-arrow{display:none}
-            .sculptures-row{padding:2rem 1rem 4rem;gap:2rem}
+            .artist-strip{padding:1.5rem;flex-direction:column;align-items:flex-start;gap:.75rem}.as-meta{margin-left:0;text-align:left}
+            .wall{height:50vh;min-height:350px}
             .info-bar{padding:1.25rem 1.5rem;flex-direction:column;gap:.5rem}
-            .archive{padding:2.5rem 1.5rem}
-            .arc-grid{grid-template-columns:1fr}
+            .archive{padding:2.5rem 1.5rem}.arc-grid{grid-template-columns:1fr}
             .chat-panel{width:calc(100vw - 2rem);right:1rem;bottom:5rem}
-            .chat-fab{bottom:1.5rem;right:1.5rem}
             footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}
-        }
-        @media(max-width:480px){
-            .museum-label{position:relative;right:auto;bottom:auto;margin-top:.5rem;max-width:200px;text-align:center;border-left:none;border-top:2px solid var(--black)}
-            .museum-label::before{display:none}
-            .museum-label .ml-tap{display:none}
-            .slider-track{margin:0 1rem 3rem}
         }
     </style>
 </head>
 <body>
-    <!-- NAV -->
     <nav>
         <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <button class="hamburger" onclick="document.getElementById('mob-dd').classList.toggle('open')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <div class="mob-dd" id="mob-dd" onclick="this.classList.remove('open')"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a><div class="sep">Account</div><a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a><a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a><a href="seller-login.html">Private Seller</a></div>
+        <button class="hamburger" onclick="document.getElementById('mdd').classList.toggle('open')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="mob-dd" id="mdd" onclick="this.classList.remove('open')"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a><div class="sep">Account</div><a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a><a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a><a href="seller-login.html">Private Seller</a></div>
         <div class="nav-center"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html" class="active">Vernissage</a><a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a><a href="market-index.html">Market Index</a><a href="about.html">About</a></div>
         <div class="nav-right">
-            <button class="signin-btn" id="si-btn" onclick="document.getElementById('si-dd').classList.toggle('open');this.classList.toggle('open')">Sign In <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="signin-dd" id="si-dd"><a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a><a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a><a href="seller-login.html">Private Seller</a></div>
+            <button class="signin-btn" id="sib" onclick="document.getElementById('sid').classList.toggle('open');this.classList.toggle('open')">Sign In <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="signin-dd" id="sid"><a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a><a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a><a href="seller-login.html">Private Seller</a></div>
         </div>
     </nav>
 
-    <!-- HERO — split layout like advisory -->
-    <div class="hero">
-        <div class="hero-inner">
-            <div class="hero-left">
-                <div class="hero-ey">Virtual Exhibitions</div>
-                <div class="hero-t">The <strong>Vernissage</strong></div>
-                <div class="hero-s">Step inside our virtual gallery. Curated exhibitions by emerging artists — paintings, sculptures, and installations displayed in an immersive space.</div>
-                <div class="hero-btns">
-                    <a href="#gallery-room" class="hero-btn-primary" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a>
-                    <a href="#archive" class="hero-btn-secondary">Past Exhibitions</a>
-                </div>
-            </div>
-            <div class="hero-right">
-                <img class="hero-img" id="hero-img" src="vernissage-hero.png" alt="Gallery exhibition opening night" onerror="this.src='advisoryhero.png'">
-                <div class="hero-overlay"></div>
-            </div>
+    <div class="hero"><div class="hero-inner">
+        <div class="hero-left">
+            <div class="hero-ey">Virtual Exhibitions</div>
+            <div class="hero-t">The <strong>Vernissage</strong></div>
+            <div class="hero-s">Step inside our virtual gallery. Curated exhibitions by emerging artists — paintings, sculptures, and installations displayed in an immersive space.</div>
+            <div class="hero-btns"><a href="#gallery-room" class="btn-p" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a><a href="#archive" class="btn-s">Past Exhibitions</a></div>
         </div>
-    </div>
+        <div class="hero-right"><img class="hero-img" id="hero-img" src="AG13.png" alt="Gallery hallway" onerror="this.src='advisoryhero.png'"><div class="hero-overlay"></div></div>
+    </div></div>
 
-    <!-- LIVE BANNER -->
-    <div class="live-strip" id="live-strip">
-        <div class="live-dot"></div>
-        <div class="live-strip-text" id="live-text">Now Showing</div>
-        <a href="#gallery-room" class="live-strip-btn" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a>
-    </div>
+    <div class="live-strip" id="live-strip"><div class="live-dot"></div><div class="live-strip-text" id="live-text">Now Showing</div><a href="#gallery-room" class="live-strip-btn" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a></div>
 
-    <!-- GALLERY ROOM -->
     <div class="gallery-room" id="gallery-room">
         <div class="loading" id="g-load">Preparing the gallery...</div>
-
         <div class="artist-strip" id="a-strip" style="display:none">
             <img id="as-photo" src="" alt="">
-            <div>
-                <h2 id="as-name"></h2>
-                <p id="as-bio"></p>
-            </div>
-            <div class="artist-strip-meta">
-                <div class="am-l">Exhibition</div><div class="am-v" id="as-title"></div>
-                <div class="am-l" style="margin-top:.4rem">Duration</div><div class="am-v" id="as-dates"></div>
-            </div>
+            <div><h2 id="as-name"></h2><p id="as-bio"></p></div>
+            <div class="as-meta"><div class="ml">Exhibition</div><div class="mv" id="as-title"></div><div class="ml" style="margin-top:.4rem">Duration</div><div class="mv" id="as-dates"></div></div>
         </div>
-
-        <!-- THE WALL — paintings -->
-        <div class="the-wall" id="the-wall" style="display:none">
-            <div class="wall-section"><span>Paintings</span></div>
-            <div class="paintings-slider-wrap">
-                <button class="slider-arrow left" onclick="slideLeft()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-                <div class="paintings-row" id="pw" onscroll="updateTrack()"></div>
-                <button class="slider-arrow right" onclick="slideRight()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
-            </div>
-            <div class="slider-track" id="slider-track">
-                <div class="slider-thumb" id="slider-thumb"></div>
-                <div class="slider-track-grab" id="slider-grab"></div>
-            </div>
+        <div class="gallery-slider-wrap" id="gs-wrap" style="display:none">
+            <button class="sl-arrow left" onclick="slideL()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div class="gallery-slider" id="gs" onscroll="updTrack()"></div>
+            <button class="sl-arrow right" onclick="slideR()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
+            <div class="sl-counter" id="sl-cnt">1 / 1</div>
         </div>
-
-        <!-- SCULPTURE AREA -->
-        <div class="sculpture-area" id="s-area" style="display:none">
-            <div class="wall-section"><span>Sculptures</span></div>
-            <div class="sculptures-row" id="sr"></div>
-        </div>
-
+        <div class="sl-track" id="sl-track"><div class="sl-thumb" id="sl-thumb"></div></div>
         <div class="info-bar" id="i-bar" style="display:none">
             <div class="ib-d" id="ib-d"></div>
             <div class="ib-v"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span id="vc">0</span> views</div>
         </div>
     </div>
 
-    <!-- ARTWORK DETAIL -->
-    <div class="detail-overlay" id="dto" onclick="if(event.target===this)closeDt()">
-        <div class="detail-card">
-            <button class="dc-close" onclick="closeDt()">&times;</button>
-            <img class="dc-img" id="dc-img" src="">
-            <div class="dc-body">
-                <div class="dc-title" id="dc-title"></div>
-                <div class="dc-artist" id="dc-artist"></div>
-                <div class="dc-divider"></div>
-                <div class="dc-row"><span>Medium</span><strong id="dc-med"></strong></div>
-                <div class="dc-row"><span>Year</span><strong id="dc-year"></strong></div>
-                <div class="dc-row"><span>Dimensions</span><strong id="dc-dims"></strong></div>
-                <div class="dc-row"><span>Type</span><strong id="dc-type"></strong></div>
-                <div class="dc-desc" id="dc-desc"></div>
-                <div class="dc-price" id="dc-price"></div>
-                <button class="dc-inquire" id="dc-inq" onclick="inquireFromDt()">Inquire About This Work</button>
+    <div class="dt-overlay" id="dto" onclick="if(event.target===this)closeDt()">
+        <div class="dt-card">
+            <button class="dt-close" onclick="closeDt()">&times;</button>
+            <img class="dt-img" id="dc-img" src="">
+            <div class="dt-body">
+                <div class="dt-title" id="dc-t"></div>
+                <div class="dt-artist" id="dc-a"></div>
+                <div class="dt-div"></div>
+                <div class="dt-row"><span>Medium</span><strong id="dc-m"></strong></div>
+                <div class="dt-row"><span>Year</span><strong id="dc-y"></strong></div>
+                <div class="dt-row"><span>Dimensions</span><strong id="dc-d"></strong></div>
+                <div class="dt-row"><span>Type</span><strong id="dc-tp"></strong></div>
+                <div class="dt-desc" id="dc-ds"></div>
+                <div class="dt-price" id="dc-p"></div>
+                <button class="dt-inq" id="dc-inq" onclick="inqFromDt()">Inquire About This Work</button>
             </div>
         </div>
     </div>
 
-    <!-- ARCHIVE -->
     <section class="archive" id="archive">
         <div class="arc-eye">Archive & Upcoming</div>
         <h2 class="arc-h">Past <strong>Exhibitions</strong></h2>
         <div class="arc-grid" id="ag"><div class="loading">Loading exhibitions...</div></div>
     </section>
 
-    <!-- CHAT -->
-    <button class="chat-fab" id="cf" onclick="togChat()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+    <button class="chat-fab" id="cf" onclick="togC()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
     <div class="chat-panel" id="cp">
-        <div class="chat-hdr"><div><div class="chat-hdr-title"><div class="cdot"></div><span id="ch-name">Chat with Exhibitor</span></div><div class="chat-hdr-sub">Messages sent to the exhibitor</div></div><button class="chat-x" onclick="togChat()">&times;</button></div>
-        <div class="chat-msgs" id="cms"></div>
-        <div class="chat-inp"><input id="ci" placeholder="Say something..." onkeydown="if(event.key==='Enter')sendC()"><button onclick="sendC()">Send</button></div>
+        <div class="ch-hdr"><div><div class="ch-hdr-t"><div class="cdot"></div><span id="ch-n">Chat with Exhibitor</span></div><div style="font-size:.6rem;color:var(--g400)">Messages sent to exhibitor</div></div><button style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--g400)" onclick="togC()">&times;</button></div>
+        <div class="ch-msgs" id="cms"></div>
+        <div class="ch-inp"><input id="ci" placeholder="Say something..." onkeydown="if(event.key==='Enter')sendC()"><button onclick="sendC()">Send</button></div>
     </div>
 
-    <!-- FOOTER -->
     <footer>
         <div class="f-logo"><div class="f-bar"></div><div class="f-text"><span>Infra</span><span>Mint</span></div></div>
         <div class="f-links"><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a><a href="about.html">About</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></div>
@@ -528,14 +284,30 @@
     </footer>
 
     <script>
-    var SB='https://vyibnkztkacifahhlxof.supabase.co';
-    var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+    var SB='https://vyibnkztkacifahhlxof.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
     var curExh=null,chatOn=false,curArt=null,allArts=[];
 
-    document.addEventListener('click',function(e){
-        var b=document.getElementById('si-btn'),d=document.getElementById('si-dd');
-        if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}
-    });
+    // Gallery wall definitions — frame positions as % of image
+    // Each wall: {img, slots: [{left,top,width,height,type}]}
+    var WALLS=[
+        {img:'AG2.png',slots:[{l:22,t:12,w:50,h:48,tp:'painting'}]},
+        {img:'AG3.png',slots:[{l:17,t:16,w:56,h:48,tp:'painting'}]},
+        {img:'AG4.png',slots:[{l:10,t:16,w:34,h:52,tp:'painting'},{l:53,t:14,w:36,h:54,tp:'painting'}]},
+        {img:'AG5.png',slots:[{l:30,t:6,w:28,h:70,tp:'painting'}]},
+        {img:'AG6.png',slots:[{l:30,t:13,w:34,h:46,tp:'painting'}]},
+        {img:'AG1.png',slots:[{l:7,t:17,w:25,h:50,tp:'painting'},{l:35,t:14,w:29,h:48,tp:'painting'},{l:68,t:17,w:24,h:48,tp:'painting'}]},
+        {img:'AG7.png',slots:[{l:35,t:10,w:28,h:50,tp:'sculpture'}]},
+        {img:'AG9.png',slots:[{l:14,t:15,w:38,h:48,tp:'painting'},{l:62,t:15,w:18,h:48,tp:'sculpture'}]},
+        {img:'AG8.png',slots:[{l:13,t:14,w:22,h:46,tp:'sculpture'},{l:63,t:14,w:22,h:46,tp:'sculpture'}]},
+        {img:'AG10.png',slots:[{l:8,t:13,w:38,h:54,tp:'painting'},{l:56,t:13,w:36,h:52,tp:'painting'}]},
+        {img:'AG11.png',slots:[{l:8,t:8,w:30,h:58,tp:'painting'},{l:62,t:18,w:18,h:42,tp:'sculpture'}]},
+        {img:'AG12.png',slots:[{l:14,t:24,w:62,h:28,tp:'painting'}]},
+        {img:'AG14.png',slots:[{l:14,t:12,w:20,h:28,tp:'painting'},{l:36,t:6,w:28,h:58,tp:'painting'},{l:67,t:36,w:20,h:32,tp:'painting'}]},
+        {img:'AG13.png',slots:[{l:5,t:12,w:14,h:52,tp:'painting'},{l:22,t:12,w:14,h:52,tp:'painting'},{l:65,t:12,w:26,h:50,tp:'painting'}]},
+        {img:'AG15.png',slots:[{l:30,t:24,w:34,h:28,tp:'painting'}]}
+    ];
+
+    document.addEventListener('click',function(e){var b=document.getElementById('sib'),d=document.getElementById('sid');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
 
     async function sbG(t,q){var r=await fetch(SB+'/rest/v1/'+t+'?'+q,{headers:{'apikey':SK,'Authorization':'Bearer '+SK}});if(!r.ok)throw new Error(r.status);return r.json()}
     async function sbP(t,b){return(await fetch(SB+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(b)})).json()}
@@ -543,196 +315,193 @@
     function fd(d){return d?new Date(d).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'—'}
     function fs(d){return d?new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—'}
 
-    // ─── INIT ───
     async function init(){
         try{
             var live=await sbG('exhibitions','status=eq.live&select=*&order=start_date.desc&limit=1');
-            if(live&&live.length){curExh=live[0];showLive(curExh);await buildGallery(curExh);incViews(curExh.id)}
-            await loadArchive();
+            if(live&&live.length){curExh=live[0];showLive(curExh);await buildGallery(curExh);incV(curExh.id)}
+            await loadArc();
         }catch(e){console.error(e);document.getElementById('g-load').textContent='Unable to load exhibitions.'}
     }
 
     function showLive(x){
-        var s=document.getElementById('live-strip');s.classList.add('on');
+        document.getElementById('live-strip').classList.add('on');
         document.getElementById('live-text').innerHTML='Now Showing: <strong>'+E(x.title)+'</strong><span>by '+E(x.exhibitor_name||'Artist')+'</span>';
-        // Use exhibition cover image in hero if available
-        if(x.cover_image_url){document.getElementById('hero-img').src=x.cover_image_url}
+        if(x.cover_image_url)document.getElementById('hero-img').src=x.cover_image_url;
     }
 
-    // ─── BUILD THE GALLERY ───
     async function buildGallery(x){
         document.getElementById('gallery-room').classList.add('on');
-
-        // Artist strip
         var strip=document.getElementById('a-strip');strip.style.display='flex';
         var n=x.exhibitor_name||'';
         document.getElementById('as-name').innerHTML='<strong>'+E(n.split(' ')[0])+'</strong> '+E(n.split(' ').slice(1).join(' '));
         document.getElementById('as-bio').textContent=x.description||'';
         document.getElementById('as-title').textContent=x.title||'';
         document.getElementById('as-dates').textContent=fs(x.start_date)+' — '+fs(x.end_date);
-        var ph=document.getElementById('as-photo');
-        if(x.exhibitor_photo_url){ph.src=x.exhibitor_photo_url}else{ph.style.display='none'}
+        var ph=document.getElementById('as-photo');if(x.exhibitor_photo_url){ph.src=x.exhibitor_photo_url}else{ph.style.display='none'}
 
-        // Load artworks
         var arts=await sbG('exhibition_artworks','exhibition_id=eq.'+x.id+'&select=*&order=display_order.asc');
         document.getElementById('g-load').style.display='none';
         allArts=arts||[];
 
-        var paintings=allArts.filter(function(a){return(a.artwork_type||'painting')!=='sculpture'});
-        var sculptures=allArts.filter(function(a){return a.artwork_type==='sculpture'});
+        // Build gallery walls
+        buildWalls(allArts,x.status==='live');
 
-        if(paintings.length){document.getElementById('the-wall').style.display='block';renderPaintings(paintings);setTimeout(updateTrack,200)}
-        if(sculptures.length){document.getElementById('s-area').style.display='block';renderSculptures(sculptures)}
-
-        // Info bar
         document.getElementById('i-bar').style.display='flex';
         document.getElementById('ib-d').innerHTML='<strong>'+E(x.title)+'</strong> &middot; '+fs(x.start_date)+' — '+fs(x.end_date);
         document.getElementById('vc').textContent=x.view_count||0;
 
-        // Chat
-        if(x.status==='live'){
-            document.getElementById('cf').classList.add('on');
-            document.getElementById('ch-name').textContent='Chat with '+(x.exhibitor_name||'Exhibitor');
-            loadChat(x.id);
+        if(x.status==='live'){document.getElementById('cf').classList.add('on');document.getElementById('ch-n').textContent='Chat with '+(x.exhibitor_name||'Exhibitor');loadChat(x.id)}
+    }
+
+    // ─── BUILD WALLS WITH ARTWORKS ───
+    function buildWalls(arts,isLive){
+        var slider=document.getElementById('gs');
+        slider.innerHTML='';
+        document.getElementById('gs-wrap').style.display='block';
+
+        // Assign artworks to wall slots
+        var artIdx=0;
+        var usedWalls=[];
+
+        for(var w=0;w<WALLS.length&&artIdx<arts.length;w++){
+            var wall=WALLS[w];
+            var hasMatch=false;
+            var wallArts=[];
+
+            for(var s=0;s<wall.slots.length&&artIdx<arts.length;s++){
+                var slot=wall.slots[s];
+                var art=arts[artIdx];
+                var artType=(art.artwork_type||'painting');
+                // Match sculpture slots to sculpture art, else painting
+                if(slot.tp==='sculpture'&&artType!=='sculpture'){
+                    // Try to find a sculpture in remaining arts
+                    var found=false;
+                    for(var k=artIdx;k<arts.length;k++){
+                        if((arts[k].artwork_type||'painting')==='sculpture'){
+                            wallArts.push({slot:slot,art:arts[k],idx:k});
+                            arts.splice(k,1);found=true;break;
+                        }
+                    }
+                    if(!found) wallArts.push({slot:slot,art:arts[artIdx++],idx:artIdx-1});
+                    else hasMatch=true;
+                }else{
+                    wallArts.push({slot:slot,art:art,idx:artIdx});
+                    artIdx++;hasMatch=true;
+                }
+            }
+
+            if(wallArts.length>0){
+                usedWalls.push({wall:wall,arts:wallArts});
+            }
         }
-    }
 
-    // ─── PAINTINGS ───
-    function renderPaintings(arts){
-        var w=document.getElementById('pw');w.innerHTML='';
-        arts.forEach(function(a){
-            var wc=a.width_cm||60,hc=a.height_cm||80;
-            var sc=Math.min(3,400/hc,440/wc);
-            var dw=Math.round(wc*sc),dh=Math.round(hc*sc);
-            var idx=allArts.indexOf(a);
-            var u=document.createElement('div');u.className='painting';u.style.width=(dw+28)+'px';
-            u.innerHTML=
-                '<div class="spotlight"></div>'+
-                '<div class="frame" style="width:'+(dw+12)+'px;height:'+(dh+12)+'px">'+
-                    '<img src="'+E(a.image_url||'')+'" alt="'+E(a.title||'')+'" loading="lazy" style="width:'+dw+'px;height:'+dh+'px" onerror="this.parentElement.style.background=\'#e8e4dc\';this.style.display=\'none\'">'+
-                '</div>'+
-                '<div class="wall-shadow"></div>'+
-                '<div class="museum-label" onclick="openDt('+idx+')">'+
-                    '<div class="ml-title">'+E(a.title||'Untitled')+'</div>'+
-                    '<div class="ml-sub">'+E(a.artist_name||'')+'</div>'+
-                    '<div class="ml-tap">tap for details</div>'+
-                '</div>';
-            w.appendChild(u);
+        // If still artworks left, cycle through single-frame walls
+        var singleWalls=[WALLS[0],WALLS[1],WALLS[3],WALLS[4]];
+        var si=0;
+        while(artIdx<arts.length){
+            var sw=singleWalls[si%singleWalls.length];
+            usedWalls.push({wall:sw,arts:[{slot:sw.slots[0],art:arts[artIdx],idx:artIdx}]});
+            artIdx++;si++;
+        }
+
+        // Render walls
+        // Reset allArts for placard clicks
+        allArts=arts;
+
+        usedWalls.forEach(function(uw,wi){
+            var div=document.createElement('div');
+            div.className='wall';
+            var html='<img class="wall-bg" src="'+uw.wall.img+'" alt="Gallery wall" loading="lazy">';
+
+            uw.arts.forEach(function(wa){
+                var a=wa.art,sl=wa.slot;
+                var imgUrl=a.image_url||'';
+                // Artwork overlay
+                html+='<div class="wall-art" style="left:'+sl.l+'%;top:'+sl.t+'%;width:'+sl.w+'%;height:'+sl.h+'%" onclick="openDt(\''+a.id+'\')">';
+                if(imgUrl){
+                    html+='<img src="'+E(imgUrl)+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.opacity=0">';
+                }
+                html+='</div>';
+                // Placard
+                var plL=sl.l+sl.w+1;
+                var plT=sl.t+sl.h-12;
+                if(plL>85)plL=sl.l-12;
+                html+='<div class="wall-placard" style="left:'+plL+'%;top:'+plT+'%" onclick="openDt(\''+a.id+'\')">';
+                html+='<div class="wp-t">'+E(a.title||'Untitled')+'</div>';
+                html+='<div class="wp-s">'+E(a.artist_name||'')+'</div>';
+                html+='</div>';
+            });
+
+            div.innerHTML=html;
+            slider.appendChild(div);
         });
+
+        // Store all arts globally for detail lookup
+        allArts=[];
+        usedWalls.forEach(function(uw){uw.arts.forEach(function(wa){allArts.push(wa.art)})});
+
+        // Update counter
+        updTrack();
+        updCounter();
     }
 
-    // ─── SLIDER CONTROLS ───
-    function slideLeft(){
-        var pw=document.getElementById('pw');
-        pw.scrollBy({left:-400,behavior:'smooth'});
+    // ─── SLIDER ───
+    function slideL(){document.getElementById('gs').scrollBy({left:-window.innerWidth,behavior:'smooth'})}
+    function slideR(){document.getElementById('gs').scrollBy({left:window.innerWidth,behavior:'smooth'})}
+    function updTrack(){
+        var gs=document.getElementById('gs'),tr=document.getElementById('sl-track'),th=document.getElementById('sl-thumb');
+        if(!gs||!tr||!th)return;
+        var sw=gs.scrollWidth-gs.clientWidth;
+        if(sw<=0){th.style.width='100%';th.style.left='0';return}
+        var pct=gs.scrollLeft/sw;
+        var tw=tr.offsetWidth;
+        var thw=Math.max(30,tw*(gs.clientWidth/gs.scrollWidth));
+        th.style.width=thw+'px';th.style.left=Math.round(pct*(tw-thw))+'px';
+        updCounter();
     }
-    function slideRight(){
-        var pw=document.getElementById('pw');
-        pw.scrollBy({left:400,behavior:'smooth'});
-    }
-    function updateTrack(){
-        var pw=document.getElementById('pw');
-        var track=document.getElementById('slider-track');
-        var thumb=document.getElementById('slider-thumb');
-        if(!pw||!track||!thumb)return;
-        var scrollW=pw.scrollWidth-pw.clientWidth;
-        if(scrollW<=0){thumb.style.width='100%';thumb.style.left='0';return}
-        var pct=pw.scrollLeft/scrollW;
-        var trackW=track.offsetWidth;
-        var thumbW=Math.max(40,trackW*(pw.clientWidth/pw.scrollWidth));
-        thumb.style.width=thumbW+'px';
-        thumb.style.left=Math.round(pct*(trackW-thumbW))+'px';
-    }
-    // Drag the track bar
-    (function(){
-        var dragging=false,startX=0,startScroll=0;
-        document.addEventListener('DOMContentLoaded',function(){
-            var grab=document.getElementById('slider-grab');
-            var pw=document.getElementById('pw');
-            if(!grab||!pw)return;
-            grab.addEventListener('mousedown',function(e){dragging=true;startX=e.clientX;startScroll=pw.scrollLeft;e.preventDefault()});
-            document.addEventListener('mousemove',function(e){if(!dragging)return;var track=document.getElementById('slider-track');var ratio=pw.scrollWidth/track.offsetWidth;pw.scrollLeft=startScroll+(e.clientX-startX)*ratio});
-            document.addEventListener('mouseup',function(){dragging=false});
-            // Touch support
-            grab.addEventListener('touchstart',function(e){dragging=true;startX=e.touches[0].clientX;startScroll=pw.scrollLeft},{passive:true});
-            document.addEventListener('touchmove',function(e){if(!dragging)return;var track=document.getElementById('slider-track');var ratio=pw.scrollWidth/track.offsetWidth;pw.scrollLeft=startScroll+(e.touches[0].clientX-startX)*ratio},{passive:true});
-            document.addEventListener('touchend',function(){dragging=false});
-        });
-        // Also init track position after gallery builds
-        setTimeout(updateTrack,500);
-    })();
-
-    // ─── SCULPTURES ───
-    function renderSculptures(arts){
-        var r=document.getElementById('sr');r.innerHTML='';
-        arts.forEach(function(a){
-            var idx=allArts.indexOf(a);
-            var u=document.createElement('div');u.className='sculpture';
-            u.innerHTML=
-                '<div class="pedestal">'+
-                    '<img src="'+E(a.image_url||'')+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.background=\'#e8e4dc\';this.style.minHeight=\'120px\';this.style.display=\'none\'">'+
-                '</div>'+
-                '<div class="pedestal-base"></div>'+
-                '<div class="museum-label" onclick="openDt('+idx+')">'+
-                    '<div class="ml-title">'+E(a.title||'Untitled')+'</div>'+
-                    '<div class="ml-sub">'+E(a.artist_name||'')+'</div>'+
-                    '<div class="ml-tap">tap for details</div>'+
-                '</div>';
-            r.appendChild(u);
-        });
+    function updCounter(){
+        var gs=document.getElementById('gs');if(!gs)return;
+        var walls=gs.querySelectorAll('.wall');
+        var cur=Math.round(gs.scrollLeft/window.innerWidth)+1;
+        var total=walls.length;
+        document.getElementById('sl-cnt').textContent=cur+' / '+total;
     }
 
-    // ─── DETAIL OVERLAY ───
-    function openDt(idx){
-        var a=allArts[idx];if(!a)return;curArt=a;
+    // ─── DETAIL ───
+    function openDt(id){
+        var a=allArts.find(function(x){return x.id===id});
+        if(!a)return;curArt=a;
         document.getElementById('dc-img').src=a.image_url||'';
         document.getElementById('dc-img').onerror=function(){this.style.display='none'};
-        document.getElementById('dc-title').innerHTML=E(a.title||'Untitled');
-        document.getElementById('dc-artist').textContent=a.artist_name||'';
-        document.getElementById('dc-med').textContent=a.medium||'—';
-        document.getElementById('dc-year').textContent=a.year||'—';
-        var dims=(a.width_cm||'?')+' × '+(a.height_cm||'?')+' cm';
-        if(a.depth_cm)dims+=' × '+a.depth_cm+' cm';
-        document.getElementById('dc-dims').textContent=dims;
-        document.getElementById('dc-type').textContent=((a.artwork_type||'painting').charAt(0).toUpperCase()+(a.artwork_type||'painting').slice(1));
-        document.getElementById('dc-desc').textContent=a.description||'';
-        document.getElementById('dc-desc').style.display=a.description?'block':'none';
+        document.getElementById('dc-t').innerHTML=E(a.title||'Untitled');
+        document.getElementById('dc-a').textContent=a.artist_name||'';
+        document.getElementById('dc-m').textContent=a.medium||'—';
+        document.getElementById('dc-y').textContent=a.year||'—';
+        var dims=(a.width_cm||'?')+' × '+(a.height_cm||'?')+' cm';if(a.depth_cm)dims+=' × '+a.depth_cm+' cm';
+        document.getElementById('dc-d').textContent=dims;
+        document.getElementById('dc-tp').textContent=((a.artwork_type||'painting').charAt(0).toUpperCase()+(a.artwork_type||'painting').slice(1));
+        document.getElementById('dc-ds').textContent=a.description||'';
+        document.getElementById('dc-ds').style.display=a.description?'block':'none';
         var isLive=curExh&&curExh.status==='live';
-        var pe=document.getElementById('dc-price'),be=document.getElementById('dc-inq');
+        var pe=document.getElementById('dc-p'),be=document.getElementById('dc-inq');
         if(!isLive&&a.is_for_sale&&a.price){pe.textContent='$'+Number(a.price).toLocaleString();pe.style.display='block';be.style.display='block'}
         else{pe.style.display='none';be.style.display='none'}
         document.getElementById('dto').classList.add('open');
     }
     function closeDt(){document.getElementById('dto').classList.remove('open');curArt=null}
-    function inquireFromDt(){closeDt();if(!chatOn)togChat();if(curArt){var i=document.getElementById('ci');i.value='Hi, I\'m interested in "'+curArt.title+'"';i.focus()}}
+    function inqFromDt(){closeDt();if(!chatOn)togC();if(curArt){var i=document.getElementById('ci');i.value='Hi, I\'m interested in "'+curArt.title+'"';i.focus()}}
 
-    // ─── CHAT (saves to DB → exhibitor sees in dashboard) ───
-    async function loadChat(id){
-        try{var msgs=await sbG('exhibition_chat_messages','exhibition_id=eq.'+id+'&select=*&order=created_at.asc&limit=50');
-        var c=document.getElementById('cms');
-        c.innerHTML='<div class="msg"><div class="msg-n">InfraMint</div><div class="msg-b">Welcome. Your messages go directly to the exhibitor.</div></div>';
-        if(msgs&&msgs.length)msgs.forEach(function(m){addBub(m.user_name||'Guest',m.message,m.is_from_exhibitor,m.created_at)})}catch(e){console.error(e)}
-    }
-    function addBub(n,t,isEx,time){var c=document.getElementById('cms');var d=document.createElement('div');d.className='msg'+(isEx?'':' me');d.innerHTML='<div class="msg-n">'+E(isEx?n+' (Exhibitor)':n)+'</div><div class="msg-b">'+E(t)+'</div><div class="msg-t">'+(time?new Date(time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'now')+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight}
-    async function sendC(){var i=document.getElementById('ci'),m=i.value.trim();if(!m||!curExh)return;i.value='';addBub('You',m,false,null);try{await sbP('exhibition_chat_messages',{exhibition_id:curExh.id,user_name:'Visitor',message:m,is_from_exhibitor:false})}catch(e){console.error(e)}}
-    function togChat(){chatOn=!chatOn;document.getElementById('cp').classList.toggle('open',chatOn)}
+    // ─── CHAT ───
+    async function loadChat(id){try{var msgs=await sbG('exhibition_chat_messages','exhibition_id=eq.'+id+'&select=*&order=created_at.asc&limit=50');var c=document.getElementById('cms');c.innerHTML='<div class="cm"><div class="cm-n">InfraMint</div><div class="cm-b">Welcome. Your messages go directly to the exhibitor.</div></div>';if(msgs&&msgs.length)msgs.forEach(function(m){addB(m.user_name||'Guest',m.message,m.is_from_exhibitor,m.created_at)})}catch(e){console.error(e)}}
+    function addB(n,t,isEx,time){var c=document.getElementById('cms');var d=document.createElement('div');d.className='cm'+(isEx?'':' me');d.innerHTML='<div class="cm-n">'+E(isEx?n+' (Exhibitor)':n)+'</div><div class="cm-b">'+E(t)+'</div><div class="cm-ti">'+(time?new Date(time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'now')+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight}
+    async function sendC(){var i=document.getElementById('ci'),m=i.value.trim();if(!m||!curExh)return;i.value='';addB('You',m,false,null);try{await sbP('exhibition_chat_messages',{exhibition_id:curExh.id,user_name:'Visitor',message:m,is_from_exhibitor:false})}catch(e){console.error(e)}}
+    function togC(){chatOn=!chatOn;document.getElementById('cp').classList.toggle('open',chatOn)}
 
     // ─── ARCHIVE ───
-    async function loadArchive(){
-        var g=document.getElementById('ag');
-        try{var exhs=await sbG('exhibitions','status=in.(ended,archived,approved,live)&select=*&order=start_date.desc');
-        if(!exhs||!exhs.length){g.innerHTML='<div class="empty"><h3>No exhibitions yet</h3><p style="font-size:.85rem;font-weight:300">Exhibitions will appear here once they go live.</p></div>';return}
-        g.innerHTML='';exhs.forEach(function(x){if(curExh&&x.id===curExh.id)return;
-        var sc=x.status==='live'?'st-live':(x.status==='approved'?'st-up':'st-end');
-        var sl=x.status==='live'?'Live Now':(x.status==='approved'?'Upcoming':'Past');
-        var c=document.createElement('div');c.className='arc-card';
-        if(x.status==='live')c.onclick=function(){location.href='vernissage.html?id='+x.id};
-        c.innerHTML='<div class="arc-card-img">'+(x.cover_image_url?'<img src="'+E(x.cover_image_url)+'" alt="">':'<div style="width:100%;height:100%;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--g400)">No preview</div>')+'<div class="arc-card-st '+sc+'">'+sl+'</div></div><div class="arc-card-body"><div class="arc-card-a">'+E(x.exhibitor_name||'')+'</div><div class="arc-card-t">'+E(x.title||'Untitled')+'</div><div class="arc-card-d">'+fs(x.start_date)+' — '+fs(x.end_date)+'</div></div>';
-        g.appendChild(c)});if(!g.children.length)g.innerHTML='<div class="empty"><h3>No past exhibitions</h3></div>'}catch(e){console.error(e)}}
+    async function loadArc(){var g=document.getElementById('ag');try{var exhs=await sbG('exhibitions','status=in.(ended,archived,approved,live)&select=*&order=start_date.desc');if(!exhs||!exhs.length){g.innerHTML='<div class="empty"><h3 style="font-size:1rem;color:var(--g600)">No exhibitions yet</h3></div>';return}g.innerHTML='';exhs.forEach(function(x){if(curExh&&x.id===curExh.id)return;var sc=x.status==='live'?'st-l':(x.status==='approved'?'st-u':'st-e');var sl=x.status==='live'?'Live Now':(x.status==='approved'?'Upcoming':'Past');var c=document.createElement('div');c.className='arc-card';if(x.status==='live')c.onclick=function(){location.href='vernissage.html?id='+x.id};c.innerHTML='<div class="arc-card-img">'+(x.cover_image_url?'<img src="'+E(x.cover_image_url)+'" alt="">':'<div style="width:100%;height:100%;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--g400)">No preview</div>')+'<div class="arc-st '+sc+'">'+sl+'</div></div><div class="arc-card-body"><div class="arc-ca">'+E(x.exhibitor_name||'')+'</div><div class="arc-ct">'+E(x.title||'Untitled')+'</div><div class="arc-cd">'+fs(x.start_date)+' — '+fs(x.end_date)+'</div></div>';g.appendChild(c)});if(!g.children.length)g.innerHTML='<div class="empty"><h3>No past exhibitions</h3></div>'}catch(e){console.error(e)}}
 
-    async function incViews(id){try{await fetch(SB+'/rest/v1/rpc/increment_exhibition_views',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'},body:JSON.stringify({exhibition_id_input:id})})}catch(e){}}
+    async function incV(id){try{await fetch(SB+'/rest/v1/rpc/increment_exhibition_views',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'},body:JSON.stringify({exhibition_id_input:id})})}catch(e){}}
 
-    // URL params
     (function(){var p=new URLSearchParams(location.search),id=p.get('id');if(id){sbG('exhibitions','id=eq.'+id+'&select=*').then(function(x){if(x&&x.length){curExh=x[0];showLive(curExh);buildGallery(curExh);setTimeout(function(){document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})},500)}}).catch(console.error)}})();
     init();
     </script>
