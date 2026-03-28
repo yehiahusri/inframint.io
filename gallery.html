@@ -39,84 +39,29 @@
         }
 
         /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--black);
-            height: 4.5rem;
-        }
+        
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            text-decoration: none;
-        }
+        
 
-        .logo-bar {
-            width: 3px;
-            height: 1.75rem;
-            background: var(--white);
-        }
+        
 
-        .logo-text {
-            font-size: 1.25rem;
-            letter-spacing: -0.01em;
-        }
+        
 
-        .logo-text span:first-child {
-            font-weight: 600;
-            color: var(--white);
-        }
+        
 
-        .logo-text span:last-child {
-            font-weight: 200;
-            color: var(--gray-500);
-        }
+        
 
-        .nav-center {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
+        
 
-        .nav-center a {
-            font-size: 0.9375rem;
-            font-weight: 400;
-            color: var(--gray-400);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
+        
 
-        .nav-center a:hover,
-        .nav-center a.active {
-            color: var(--white);
-        }
+        
 
-        .nav-right {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
+        
 
-        .nav-login {
-            font-size: 0.875rem;
-            font-weight: 400;
-            color: var(--gray-400);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
+        
 
-        .nav-login:hover {
-            color: var(--white);
-        }
+        
 
         /* Page Header */
         .page-header {
@@ -595,22 +540,6 @@
         }
 
         /* Responsive */
-        /* Sign In Dropdown */
-        .signin-btn { font-size:.875rem; font-weight:400; color:var(--gray-400); background:none; border:1px solid var(--gray-800); padding:.5rem 1.25rem; cursor:pointer; font-family:inherit; transition:all .2s; display:flex; align-items:center; gap:.5rem; }
-        .signin-btn:hover { color:var(--white); border-color:var(--gray-600); }
-        .signin-btn svg { transition:transform .2s; }
-        .signin-btn.open svg { transform:rotate(180deg); }
-        .signin-dropdown { display:none; position:absolute; top:calc(100% + .5rem); right:0; background:var(--black); border:1px solid var(--gray-800); min-width:180px; z-index:200; }
-        .signin-dropdown.open { display:block; }
-        .signin-dropdown a { display:block; padding:.65rem 1.25rem; font-size:.8rem; color:var(--gray-400); text-decoration:none; transition:all .15s; border-bottom:1px solid rgba(255,255,255,.05); }
-        .signin-dropdown a:last-child { border-bottom:none; }
-        .signin-dropdown a:hover { color:var(--white); background:var(--gray-900); }
-        .hamburger { display:none; background:none; border:none; cursor:pointer; padding:.5rem; }
-        .mobile-dropdown { display:none; position:fixed; top:4.5rem; left:0; right:0; background:var(--black); border-top:1px solid var(--gray-800); flex-direction:column; z-index:99; max-height:calc(100vh - 4.5rem); overflow-y:auto; }
-        .mobile-dropdown.open { display:flex; }
-        .mobile-dropdown a { padding:.85rem 2rem; font-size:.9rem; color:var(--gray-400); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.05); }
-        .mobile-dropdown a:hover { color:var(--white); }
-
         @media (max-width: 1024px) {
             .gallery-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -627,13 +556,9 @@
         }
 
         @media (max-width: 768px) {
-            nav {
-                padding: 0 1.5rem;
-            }
+            
 
-            .nav-center {
-                display: none;
-            }
+            
 
             .page-header {
                 padding: 6.5rem 1.5rem 1.5rem;
@@ -697,52 +622,19 @@
         }
     
         /* Hamburger Mobile Menu */
-        .hamburger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.25rem;
-        }
+        
 
-        .mobile-dropdown {
-            display: none;
-        }
+        
 
         @media (max-width: 1200px) {
-            .nav-center { display: none !important; }
-            .nav-right { display: none !important; }
-            .hamburger { display: block; }
-            .mobile-dropdown {
-                display: none;
-                position: absolute;
-                top: 4.5rem;
-                left: 0;
-                right: 0;
-                background: var(--black);
-                padding: 1rem 2rem 1.5rem;
-                flex-direction: column;
-                gap: 0;
-                border-top: 1px solid #222;
-            }
-            .mobile-dropdown.open {
-                display: flex;
-            }
-            .mobile-dropdown a {
-                font-size: 0.9375rem;
-                font-weight: 400;
-                color: var(--gray-400);
-                text-decoration: none;
-                padding: 0.6rem 0;
-                border-bottom: 1px solid #1a1a1a;
-                transition: color 0.2s;
-            }
-            .mobile-dropdown a:hover {
-                color: var(--white);
-            }
-            .mobile-dropdown a:last-child {
-                border-bottom: none;
-            }
+            
+            
+            
+            
+            
+            
+            
+            
         }
 
     </style>
@@ -759,37 +651,36 @@
     <meta name="twitter:description" content="Browse and buy original artwork from emerging artists worldwide. Oil, acrylic, digital, photography, and mixed media.">
     <meta name="twitter:image" content="https://inframint.io/og-image.png">
     <meta name="theme-color" content="#000000">
-
-    <!-- STANDARDIZED NAV CSS — identical on all pages -->
     <style id="nav-standard">
-        nav { position:fixed!important; top:0!important; left:0!important; right:0!important; z-index:100!important; padding:0 3rem!important; display:flex!important; justify-content:space-between!important; align-items:center!important; background:#000!important; height:4.5rem!important; }
-        .logo { display:flex!important; align-items:center!important; gap:0.875rem!important; text-decoration:none!important; }
-        .logo-bar { width:3px!important; height:1.75rem!important; background:#fff!important; }
-        .logo-text { font-size:1.25rem!important; letter-spacing:-0.01em!important; }
-        .logo-text span:first-child { font-weight:600!important; color:#fff!important; }
-        .logo-text span:last-child { font-weight:200!important; color:#737373!important; }
-        .nav-center { display:flex!important; gap:2.5rem!important; align-items:center!important; }
-        .nav-center a { font-size:0.9375rem!important; font-weight:400!important; color:#a3a3a3!important; text-decoration:none!important; letter-spacing:0.01em!important; transition:color 0.2s ease!important; background:none!important; padding:0!important; border:none!important; }
-        .nav-center a:hover { color:#fff!important; }
-        .nav-center a.active { color:#fff!important; }
-        .nav-right { display:flex!important; gap:1.5rem!important; align-items:center!important; position:relative!important; }
-        .signin-btn { font-size:0.875rem!important; font-weight:400!important; color:#a3a3a3!important; background:none!important; border:1px solid #262626!important; padding:0.5rem 1.25rem!important; cursor:pointer!important; font-family:'Manrope',sans-serif!important; transition:all 0.2s!important; display:flex!important; align-items:center!important; gap:0.5rem!important; }
-        .signin-btn:hover { color:#fff!important; border-color:#525252!important; }
-        .signin-btn svg { transition:transform 0.2s!important; }
-        .signin-btn.open svg { transform:rotate(180deg)!important; }
-        .signin-dropdown { display:none!important; position:absolute!important; top:calc(100% + 0.5rem)!important; right:0!important; background:#000!important; border:1px solid #262626!important; min-width:180px!important; z-index:200!important; }
-        .signin-dropdown.open { display:block!important; }
-        .signin-dropdown a { display:block!important; padding:0.65rem 1.25rem!important; font-size:0.8rem!important; color:#a3a3a3!important; text-decoration:none!important; transition:all 0.15s!important; border-bottom:1px solid rgba(255,255,255,.05)!important; background:none!important; }
-        .signin-dropdown a:last-child { border-bottom:none!important; }
-        .signin-dropdown a:hover { color:#fff!important; background:#171717!important; }
-        .hamburger { display:none!important; background:none!important; border:none!important; cursor:pointer!important; padding:0.5rem!important; }
-        .mobile-dropdown { display:none; position:fixed!important; top:4.5rem!important; left:0!important; right:0!important; background:#000!important; border-top:1px solid #262626!important; flex-direction:column!important; z-index:99!important; max-height:calc(100vh - 4.5rem)!important; overflow-y:auto!important; }
-        .mobile-dropdown.open { display:flex!important; }
-        .mobile-dropdown a { padding:0.85rem 2rem!important; font-size:0.9rem!important; color:#a3a3a3!important; text-decoration:none!important; border-bottom:1px solid rgba(255,255,255,.05)!important; }
-        .mobile-dropdown a:hover { color:#fff!important; }
-        @media (max-width:900px) { .nav-center { display:none!important; } .nav-right { display:none!important; } .hamburger { display:block!important; } }
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:#000;height:4.5rem;border:none;margin:0}
+        nav *{box-sizing:border-box}
+        .logo{display:flex;align-items:center;gap:0.875rem;text-decoration:none;padding:0;margin:0;border:none;background:none}
+        .logo-bar{width:3px;height:1.75rem;background:#fff;flex-shrink:0}
+        .logo-text{font-size:1.25rem;letter-spacing:-0.01em;line-height:1}
+        .logo-text span:first-child{font-weight:600;color:#fff}
+        .logo-text span:last-child{font-weight:200;color:#737373}
+        .nav-center{display:flex;gap:2.5rem;align-items:center;margin:0;padding:0}
+        .nav-center a{font-size:0.9375rem;font-weight:400;color:#a3a3a3;text-decoration:none;letter-spacing:0.01em;transition:color 0.2s;padding:0;margin:0;border:none;background:none;line-height:4.5rem}
+        .nav-center a:hover{color:#fff}
+        .nav-center a.active{color:#c8ff00;font-weight:500}
+        .nav-right{display:flex;gap:1.5rem;align-items:center;position:relative;margin:0;padding:0}
+        .signin-btn{font-size:0.875rem;font-weight:400;color:#a3a3a3;background:none;border:1px solid #262626;padding:0.5rem 1.25rem;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:0.5rem;line-height:1;margin:0}
+        .signin-btn:hover{color:#fff;border-color:#525252}
+        .signin-btn svg{transition:transform 0.2s}
+        .signin-btn.open svg{transform:rotate(180deg)}
+        .signin-dropdown{display:none;position:absolute;top:calc(100% + 0.5rem);right:0;background:#000;border:1px solid #262626;min-width:180px;z-index:200}
+        .signin-dropdown.open{display:block}
+        .signin-dropdown a{display:block;padding:0.65rem 1.25rem;font-size:0.8rem;color:#a3a3a3;text-decoration:none;transition:all 0.15s;border-bottom:1px solid rgba(255,255,255,.05);background:none;line-height:1.5}
+        .signin-dropdown a:last-child{border-bottom:none}
+        .signin-dropdown a:hover{color:#fff;background:#171717}
+        .hamburger{display:none;background:none;border:none;cursor:pointer;padding:0.5rem}
+        .mobile-dropdown,.mob-dd{display:none;position:fixed;top:4.5rem;left:0;right:0;background:#000;border-top:1px solid #262626;flex-direction:column;z-index:99;max-height:calc(100vh - 4.5rem);overflow-y:auto}
+        .mobile-dropdown.open,.mob-dd.open{display:flex}
+        .mobile-dropdown a,.mob-dd a{padding:0.85rem 2rem;font-size:0.9rem;color:#a3a3a3;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05)}
+        .mobile-dropdown a:hover,.mob-dd a:hover{color:#fff}
+        .nav-login{display:none}
+        @media(max-width:900px){.nav-center{display:none!important}.nav-right{display:none!important}.hamburger{display:block!important}}
     </style>
-
 </head>
 <body>
 
@@ -797,31 +688,20 @@
         <nav>
         <a href="index.html" class="logo">
             <div class="logo-bar"></div>
-            <div class="logo-text">
-                <span>Infra</span><span>Mint</span>
-            </div>
+            <div class="logo-text"><span>Infra</span><span>Mint</span></div>
         </a>
-
         <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
-            <a href="gallery.html">Gallery</a>
-            <a href="artists.html">Artists</a>
-            <a href="vernissage.html">Vernissage</a>
-            <a href="blog.html">The Drip</a>
-            <a href="auctions.html">Auctions</a>
-            <a href="art-advisory.html">Advisory</a>
-            <a href="market-index.html">Market Index</a>
-            <a href="about.html">About</a>
+            <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a>
+            <a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a>
+            <a href="market-index.html">Market Index</a><a href="about.html">About</a>
             <div style="padding:.6rem 2rem .3rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:#525252;text-transform:uppercase">Account</div>
-            <a href="artist-login.html">Artist</a>
-            <a href="collector-login.html">Collector</a>
-            <a href="partner-login.html">Partner</a>
-            <a href="advisor-login.html">Advisor</a>
+            <a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a>
+            <a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a>
             <a href="seller-login.html">Private Seller</a>
         </div>
-
         <div class="nav-center">
             <a href="gallery.html" class=active>Gallery</a>
             <a href="artists.html">Artists</a>
@@ -832,17 +712,14 @@
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
         </div>
-
         <div class="nav-right" id="nav-right">
             <button class="signin-btn" id="signin-btn" onclick="document.getElementById('signin-dropdown').classList.toggle('open');this.classList.toggle('open')">
                 Sign In
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="signin-dropdown" id="signin-dropdown">
-                <a href="artist-login.html">Artist</a>
-                <a href="collector-login.html">Collector</a>
-                <a href="partner-login.html">Partner</a>
-                <a href="advisor-login.html">Advisor</a>
+                <a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a>
+                <a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a>
                 <a href="seller-login.html">Private Seller</a>
             </div>
         </div>
@@ -1238,14 +1115,7 @@
         loadGallery();
         checkNav();
     
-    document.addEventListener('click', function(e) {
-        var btn = document.getElementById('signin-btn');
-        var dd = document.getElementById('signin-dropdown');
-        if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
-            dd.classList.remove('open'); btn.classList.remove('open');
-        }
-    });
-
+    document.addEventListener('click',function(e){var b=document.getElementById('signin-btn'),d=document.getElementById('signin-dropdown');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
     </script>
 
 </body>
