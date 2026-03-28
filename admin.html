@@ -192,6 +192,7 @@
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Settings</div>
+                <a class="sb-lk" data-s="exhibitions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>Exhibitions <span class="ct" id="n-exh"></span></a>
                 <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
@@ -641,6 +642,26 @@
                             <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                             <tbody id="tb-blog"></tbody>
                         </table></div>
+                    </div>
+                </div>
+
+                <!-- Exhibitions -->
+                <div class="sec" id="section-exhibitions">
+                    <div class="ph"><h1>Exhibitions</h1><p>Manage virtual exhibition requests and live shows</p></div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Exhibition Requests</span></div>
+                        <div class="tw"><table><thead><tr><th>Title</th><th>Exhibitor</th><th>Type</th><th>Dates</th><th>Artworks</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tb-exh"></tbody></table></div>
+                    </div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Create Exhibition Slot</span></div>
+                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Create time slots that artists/collectors can request for their exhibitions.</p>
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Start Date</label><input type="date" class="fi" id="slot-start"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">End Date</label><input type="date" class="fi" id="slot-end"></div>
+                        </div>
+                        <div style="margin-top:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Label</label><input type="text" class="fi" id="slot-label" placeholder="e.g. Week 14 — April 2026"></div>
+                        <button class="fbtn" id="add-slot" style="margin-top:.6rem">Create Slot</button>
+                        <div class="msg-ok" id="slot-msg"></div>
                     </div>
                 </div>
 
@@ -1095,6 +1116,7 @@
         loadAdvisors();
         load3rdParty();
         loadCollections();
+        loadExhibitions();
     }
 
     // ===== FINANCE =====
@@ -2973,6 +2995,94 @@
             loadLots(selectedAuctionId); loadAuctions();
         }
         this.textContent = 'Add Painting to Auction'; this.disabled = false;
+    });
+
+    // ===== EXHIBITIONS =====
+    async function loadExhibitions() {
+        var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(id, title, image_url, width_cm, height_cm)').order('created_at', { ascending: false });
+        var pending = (exhs || []).filter(function(e) { return e.status === 'pending'; });
+        var el = document.getElementById('n-exh');
+        if (el) el.textContent = pending.length || '';
+
+        var b = document.getElementById('tb-exh');
+        if (!exhs || exhs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="7">No exhibition requests yet</td></tr>'; return; }
+        b.innerHTML = '';
+
+        exhs.forEach(function(e) {
+            var arts = e.exhibition_artworks || [];
+            var startStr = e.start_date ? new Date(e.start_date).toLocaleDateString() : '—';
+            var endStr = e.end_date ? new Date(e.end_date).toLocaleDateString() : '—';
+            var statusCls = { pending:'b-pending', approved:'b-active', live:'b-approved', ended:'b-shipped', rejected:'b-rejected', archived:'b-shipped', draft:'b-pending' };
+
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td class="tn">' + (e.title||'—').substring(0,25) + '</td>' +
+                '<td>' + (e.exhibitor_name || '—') + '<br><span class="te">' + (e.exhibitor_email || '') + '</span></td>' +
+                '<td style="font-size:.7rem;text-transform:capitalize">' + (e.exhibitor_type || '—') + '</td>' +
+                '<td style="font-size:.75rem">' + startStr + '<br>' + endStr + '</td>' +
+                '<td>' + arts.length + '</td>' +
+                '<td><span class="badge ' + (statusCls[e.status] || 'b-pending') + '">' + (e.status || 'draft') + '</span></td>' +
+                '<td id="exh-act-' + e.id + '"></td>';
+            b.appendChild(tr);
+
+            var td = document.getElementById('exh-act-' + e.id);
+
+            if (arts.length > 0) {
+                mkBtn(td, 'View Art', 'ab-grey', function() {
+                    var imgs = arts.map(function(a) { return '<div style="margin-bottom:1rem;text-align:center"><img src="' + a.image_url + '" style="max-width:100%;max-height:300px;object-fit:contain"><div style="font-size:.8rem;margin-top:.5rem">' + (a.title || '') + ' (' + (a.width_cm || '?') + '×' + (a.height_cm || '?') + ' cm)</div></div>'; }).join('');
+                    var w = window.open('', '_blank', 'width=600,height=800');
+                    w.document.write('<html><head><title>Exhibition Artworks</title><style>body{font-family:Manrope,sans-serif;padding:2rem;background:#f7f7f7}</style></head><body><h2>' + (e.title || 'Exhibition') + '</h2><p style="color:#737373;margin-bottom:1.5rem">by ' + (e.exhibitor_name || '') + ' · ' + arts.length + ' artworks</p>' + imgs + '</body></html>');
+                });
+            }
+
+            if (e.status === 'pending') {
+                mkBtn(td, 'Approve', 'ab-ok', async function() {
+                    await db.from('exhibitions').update({ status: 'approved', approved_by: 'admin', approved_at: new Date().toISOString() }).eq('id', e.id);
+                    loadExhibitions();
+                });
+                mkBtn(td, 'Reject', 'ab-no', async function() {
+                    var reason = prompt('Rejection reason:');
+                    if (!reason) return;
+                    await db.from('exhibitions').update({ status: 'rejected', admin_notes: reason }).eq('id', e.id);
+                    loadExhibitions();
+                });
+            }
+            if (e.status === 'approved') {
+                mkBtn(td, 'Go Live', 'ab-feat', async function() {
+                    if (!confirm('Set "' + e.title + '" live on the Vernissage page?')) return;
+                    await db.from('exhibitions').update({ status: 'live' }).eq('id', e.id);
+                    loadExhibitions();
+                });
+            }
+            if (e.status === 'live') {
+                mkBtn(td, 'End', 'ab-grey', async function() {
+                    if (!confirm('End this exhibition?')) return;
+                    await db.from('exhibitions').update({ status: 'ended' }).eq('id', e.id);
+                    loadExhibitions();
+                });
+                mkBtn(td, 'View', 'ab-list', function() { window.open('vernissage.html?exhibition=' + e.id, '_blank'); });
+            }
+            if (e.status === 'ended' || e.status === 'rejected') {
+                mkBtn(td, 'Archive', 'ab-grey', async function() {
+                    await db.from('exhibitions').update({ status: 'archived' }).eq('id', e.id);
+                    loadExhibitions();
+                });
+            }
+        });
+    }
+
+    // Slot creation
+    document.getElementById('add-slot').addEventListener('click', async function() {
+        var start = document.getElementById('slot-start').value;
+        var end = document.getElementById('slot-end').value;
+        var label = document.getElementById('slot-label').value.trim();
+        var msg = document.getElementById('slot-msg');
+        if (!start || !end) { msg.textContent = 'Please set start and end dates.'; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
+        var { error } = await db.from('exhibition_slots').insert({ start_date: start, end_date: end, label: label || null });
+        if (error) { msg.textContent = 'Error: ' + error.message; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
+        msg.textContent = 'Slot created!'; msg.className = 'msg-ok show'; msg.style.color = 'var(--ok)';
+        document.getElementById('slot-start').value = '';
+        document.getElementById('slot-end').value = '';
+        document.getElementById('slot-label').value = '';
     });
 
     </script>
