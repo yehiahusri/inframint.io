@@ -26,15 +26,14 @@
         .page{padding-top:4.5rem}
 
         /* Hero */
-        .hero{background:var(--black);padding:7rem 3rem 2.5rem;color:var(--white);position:relative;overflow:hidden}
+        .hero{background:var(--black);padding:5rem 3rem 3.5rem;color:var(--white);position:relative;overflow:hidden}
         .hero::before{content:'';position:absolute;right:-60px;top:-40px;width:500px;height:500px;background:radial-gradient(circle at 60% 40%,rgba(200,255,0,.04) 0%,transparent 60%);pointer-events:none}
         .hero::after{content:'';position:absolute;right:60px;top:50%;transform:translateY(-50%);width:300px;height:400px;border:1px solid rgba(255,255,255,.03);pointer-events:none}
         .hero-art{position:absolute;right:80px;top:40px;width:280px;height:350px;pointer-events:none;opacity:.06}
         .hero-art::before{content:'';position:absolute;inset:20px;border:2px solid var(--white)}
         .hero-art::after{content:'';position:absolute;top:60px;right:30px;width:120px;height:160px;border:1px solid var(--white);transform:rotate(6deg)}
-        .hero-ey{font-size:.7rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative;display:flex;align-items:center;gap:.75rem}
-        .hero-ey::before{content:'';width:2rem;height:1px;background:#c8ff00}
-        .hero-t{font-size:2.5rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem;position:relative;color:var(--white)}
+        .hero-ey{font-size:.8rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#c8ff00;margin-bottom:.75rem;position:relative}
+        .hero-t{font-size:2.75rem;font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem;position:relative}
         .hero-t strong{font-weight:700}
         .hero-s{font-size:.875rem;color:var(--g500);max-width:440px;line-height:1.7;position:relative}
 
@@ -155,73 +154,81 @@
         footer a{color:var(--g500);text-decoration:none;margin:0 .75rem;font-size:.75rem}
         footer a:hover{color:var(--black)}
         .footer-copy{font-size:.7rem;color:var(--g400);margin-top:1rem}
+        /* Sign In Dropdown */
+        .signin-btn { font-size:.875rem; font-weight:400; color:var(--gray-400); background:none; border:1px solid var(--gray-800); padding:.5rem 1.25rem; cursor:pointer; font-family:inherit; transition:all .2s; display:flex; align-items:center; gap:.5rem; }
+        .signin-btn:hover { color:var(--white); border-color:var(--gray-600); }
+        .signin-btn svg { transition:transform .2s; }
+        .signin-btn.open svg { transform:rotate(180deg); }
+        .signin-dropdown { display:none; position:absolute; top:calc(100% + .5rem); right:0; background:var(--black); border:1px solid var(--gray-800); min-width:180px; z-index:200; }
+        .signin-dropdown.open { display:block; }
+        .signin-dropdown a { display:block; padding:.65rem 1.25rem; font-size:.8rem; color:var(--gray-400); text-decoration:none; transition:all .15s; border-bottom:1px solid rgba(255,255,255,.05); }
+        .signin-dropdown a:last-child { border-bottom:none; }
+        .signin-dropdown a:hover { color:var(--white); background:var(--gray-900); }
+        .hamburger { display:none; background:none; border:none; cursor:pointer; padding:.5rem; }
+        .mobile-dropdown { display:none; position:fixed; top:4.5rem; left:0; right:0; background:var(--black); border-top:1px solid var(--gray-800); flex-direction:column; z-index:99; max-height:calc(100vh - 4.5rem); overflow-y:auto; }
+        .mobile-dropdown.open { display:flex; }
+        .mobile-dropdown a { padding:.85rem 2rem; font-size:.9rem; color:var(--gray-400); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.05); }
+        .mobile-dropdown a:hover { color:var(--white); }
+
 
         @media(max-width:768px){nav{padding:0 1.5rem}.nav-center{gap:1rem}.hero{padding:3rem 1.5rem 2.5rem}.hero-t{font-size:1.75rem}.hero::before{font-size:6rem}.event-banner{padding:1.5rem}.event-top{flex-direction:column;gap:1rem}.lots-section{padding:1.5rem}.lots-grid{grid-template-columns:1fr 1fr}.ld-card{grid-template-columns:1fr}.ld-img{min-height:250px}.past-section{padding:1.5rem}.past-grid{grid-template-columns:1fr}.past-card{grid-template-columns:1fr 140px}.past-card-num-bg{font-size:5rem}.past-lots{padding:1rem}}
         @media(max-width:480px){.lots-grid{grid-template-columns:1fr}.nav-center{display:none}}
-    .signin-wrap{position:relative}
-.signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
-.signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
-.signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
-.signin-wrap.open .signin-drop{display:flex;flex-direction:column}
-.signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
-.signin-drop a:last-child{border-bottom:none}
-.signin-drop a:hover{color:#fff;background:#111}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:.25rem}
-.mobile-dropdown{display:none}
-@media(max-width:900px){
-.nav-center{display:none!important}.nav-right{display:none!important}.hamburger{display:block}
-.mobile-dropdown{display:none;position:absolute;top:4.5rem;left:0;right:0;background:#0a0a0a;padding:1rem 2rem 1.5rem;flex-direction:column;border-top:1px solid #222;z-index:200}
-.mobile-dropdown.open{display:flex}
-.mobile-dropdown a{font-size:.9375rem;color:#a3a3a3;text-decoration:none;padding:.6rem 0;border-bottom:1px solid #1a1a1a;transition:color .2s}
-.mobile-dropdown a:hover{color:#fff}
-.mobile-dropdown a:last-child{border-bottom:none}
-}
-.page{padding-bottom:4rem}
-</style>
+    
+        @media (max-width: 900px) { .nav-center, .nav-right { display: none; } .hamburger { display: block; } }
+    </style>
 </head>
 <body>
 <div class="page">
-    <nav>
-        <a href="index.html" class="logo"><div class="logo-bar"></div><div class="logo-text"><span>Infra</span><span>Mint</span></div></a>
-        <button class="hamburger" onclick="document.getElementById('mob-drop').classList.toggle('open')">
+        <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-bar"></div>
+            <div class="logo-text">
+                <span>Infra</span><span>Mint</span>
+            </div>
+        </a>
+
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <div class="mobile-dropdown" id="mob-drop" onclick="this.classList.remove('open')">
+        <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
+            <a href="vernissage.html">Vernissage</a>
             <a href="blog.html">The Drip</a>
             <a href="auctions.html">Auctions</a>
-            <a href="vernissage.html">Vernissage</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
-            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
-            <a href="artist-login.html">Artist Login</a>
-            <a href="collector-login.html">Collector Login</a>
-            <a href="partner-login.html">Partner Login</a>
-            <a href="advisor-login.html">Advisor Login</a>
+            <div style="padding:.6rem 2rem .3rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:#525252;text-transform:uppercase">Account</div>
+            <a href="artist-login.html">Artist</a>
+            <a href="collector-login.html">Collector</a>
+            <a href="partner-login.html">Partner</a>
+            <a href="advisor-login.html">Advisor</a>
             <a href="seller-login.html">Private Seller</a>
         </div>
+
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
-            <a href="blog.html">The Drip</a>
-            <a href="auctions.html" class="active">Auctions</a>
             <a href="vernissage.html">Vernissage</a>
+            <a href="blog.html">The Drip</a>
+            <a href="auctions.html" class=active>Auctions</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
         </div>
+
         <div class="nav-right" id="nav-right">
-            <div class="signin-wrap">
-                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
-                <div class="signin-drop">
-                    <a href="artist-login.html">Artist</a>
-                    <a href="collector-login.html">Collector</a>
-                    <a href="partner-login.html">Partner</a>
-                    <a href="advisor-login.html">Advisor</a>
-                    <a href="seller-login.html">Private Seller</a>
-                </div>
+            <button class="signin-btn" id="signin-btn" onclick="document.getElementById('signin-dropdown').classList.toggle('open');this.classList.toggle('open')">
+                Sign In
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="signin-dropdown" id="signin-dropdown">
+                <a href="artist-login.html">Artist</a>
+                <a href="collector-login.html">Collector</a>
+                <a href="partner-login.html">Partner</a>
+                <a href="advisor-login.html">Advisor</a>
+                <a href="seller-login.html">Private Seller</a>
             </div>
         </div>
     </nav>
@@ -273,20 +280,9 @@
         <div class="ld-card" id="lot-modal-content"></div>
     </div>
 
-    <footer style="border-top:1px solid #e5e5e5;padding:3rem;display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto">
-        <div style="display:flex;align-items:center;gap:.75rem">
-            <div style="width:2px;height:1.25rem;background:#000"></div>
-            <div style="font-size:1.125rem;letter-spacing:-.01em"><span style="font-weight:600">Infra</span><span style="font-weight:200;color:#a3a3a3">Mint</span></div>
-        </div>
-        <div style="display:flex;gap:2rem;flex-wrap:wrap">
-            <a href="gallery.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Gallery</a>
-            <a href="artists.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Artists</a>
-            <a href="vernissage.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Vernissage</a>
-            <a href="about.html" style="font-size:.8125rem;color:#737373;text-decoration:none">About</a>
-            <a href="terms.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Terms</a>
-            <a href="privacy.html" style="font-size:.8125rem;color:#737373;text-decoration:none">Privacy</a>
-        </div>
-        <div style="font-size:.75rem;color:#a3a3a3">© 2026 InfraMint · <a href="admin.html" style="color:#a3a3a3;text-decoration:none;font-size:.7rem">Gallery Owner</a></div>
+    <footer>
+        <a href="index.html">Home</a><a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="auction-terms.html">Auction Terms</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+        <div class="footer-copy">&copy; 2026 InfraMint · <a href="admin.html" style="color:var(--g400);text-decoration:none;font-size:.7rem">Gallery Owner</a></div>
     </footer>
 </div>
 
@@ -296,7 +292,7 @@ var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGc
 var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
-    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').maybeSingle();
+    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').single();
     if(!setting||setting.value!=='true'){
         document.getElementById('coming-soon').style.display='block';
         document.querySelector('.hero').style.display='none';
@@ -305,8 +301,8 @@ async function init(){
     var{data:{session}}=await db.auth.getSession();
     if(session){
         currentUser=session.user;
-        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
-        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';}
+        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();
+        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';}
         // Load likes
         if(collectorId){
             var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);
@@ -562,11 +558,15 @@ function startTimer(elId,target,label){
 }
 
 init();
-</script>
-<script>
-var so=document.getElementById('nav-signout');
-if(so)so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
-document.addEventListener('click',function(e){var w=document.querySelector('.signin-wrap');if(w&&!w.contains(e.target))w.classList.remove('open');});
-</script>
+
+    document.addEventListener('click', function(e) {
+        var btn = document.getElementById('signin-btn');
+        var dd = document.getElementById('signin-dropdown');
+        if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
+            dd.classList.remove('open'); btn.classList.remove('open');
+        }
+    });
+
+    </script>
 </body>
 </html>

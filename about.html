@@ -123,55 +123,25 @@
 
         /* Page Header */
         .page-header {
-            padding: 7rem 3rem 2.5rem;
-            background: var(--black);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::after {
-            content: 'ABOUT';
-            position: absolute;
-            right: -2%;
-            bottom: -20%;
-            font-size: 18vw;
-            font-weight: 800;
-            color: rgba(255,255,255,.03);
-            letter-spacing: -0.05em;
-            pointer-events: none;
-            font-family: 'Manrope', sans-serif;
+            padding: 8rem 4rem 4rem;
+            background: var(--white);
         }
 
         .page-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.3em;
-            color: #c8ff00;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
             text-transform: uppercase;
-            margin-bottom: 0.75rem;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .page-label::before {
-            content: '';
-            width: 2rem;
-            height: 1px;
-            background: #c8ff00;
+            margin-bottom: 1rem;
         }
 
         .page-title {
-            font-size: 2.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 300;
             letter-spacing: -0.03em;
             line-height: 1.1;
             max-width: 700px;
-            color: var(--white);
-            position: relative;
-            z-index: 1;
         }
 
         .page-title strong {
@@ -470,6 +440,22 @@
         }
 
         /* Mobile */
+        /* Sign In Dropdown */
+        .signin-btn { font-size:.875rem; font-weight:400; color:var(--gray-400); background:none; border:1px solid var(--gray-800); padding:.5rem 1.25rem; cursor:pointer; font-family:inherit; transition:all .2s; display:flex; align-items:center; gap:.5rem; }
+        .signin-btn:hover { color:var(--white); border-color:var(--gray-600); }
+        .signin-btn svg { transition:transform .2s; }
+        .signin-btn.open svg { transform:rotate(180deg); }
+        .signin-dropdown { display:none; position:absolute; top:calc(100% + .5rem); right:0; background:var(--black); border:1px solid var(--gray-800); min-width:180px; z-index:200; }
+        .signin-dropdown.open { display:block; }
+        .signin-dropdown a { display:block; padding:.65rem 1.25rem; font-size:.8rem; color:var(--gray-400); text-decoration:none; transition:all .15s; border-bottom:1px solid rgba(255,255,255,.05); }
+        .signin-dropdown a:last-child { border-bottom:none; }
+        .signin-dropdown a:hover { color:var(--white); background:var(--gray-900); }
+        .hamburger { display:none; background:none; border:none; cursor:pointer; padding:.5rem; }
+        .mobile-dropdown { display:none; position:fixed; top:4.5rem; left:0; right:0; background:var(--black); border-top:1px solid var(--gray-800); flex-direction:column; z-index:99; max-height:calc(100vh - 4.5rem); overflow-y:auto; }
+        .mobile-dropdown.open { display:flex; }
+        .mobile-dropdown a { padding:.85rem 2rem; font-size:.9rem; color:var(--gray-400); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.05); }
+        .mobile-dropdown a:hover { color:var(--white); }
+
         @media (max-width: 768px) {
             nav {
                 padding: 0 1.5rem;
@@ -480,7 +466,7 @@
             }
 
             .page-header {
-                padding: 6.5rem 1.5rem 2rem;
+                padding: 6rem 1.5rem 3rem;
             }
 
             .mission {
@@ -597,15 +583,7 @@
             }
         }
 
-    .signin-wrap{position:relative}
-.signin-btn{font-family:'Manrope',sans-serif;font-size:.8125rem;font-weight:500;color:#fff;background:transparent;border:1px solid #444;padding:.5rem 1.25rem;cursor:pointer;letter-spacing:.03em;transition:all .2s}
-.signin-btn:hover{border-color:#c8ff00;color:#c8ff00}
-.signin-drop{display:none;position:absolute;top:calc(100% + .5rem);right:0;background:#0a0a0a;border:1px solid #333;min-width:160px;z-index:200}
-.signin-wrap.open .signin-drop{display:flex;flex-direction:column}
-.signin-drop a{font-size:.8125rem;color:#a3a3a3;text-decoration:none;padding:.65rem 1rem;border-bottom:1px solid #1a1a1a;transition:all .15s}
-.signin-drop a:last-child{border-bottom:none}
-.signin-drop a:hover{color:#fff;background:#111}
-</style>
+    </style>
 
     <meta name="description" content="InfraMint is an art marketplace for student and emerging artists. Fair commissions, real shipping, escrow protection.">
     <meta property="og:type" content="website">
@@ -623,54 +601,56 @@
 <body>
 
     <!-- Navigation -->
-    <nav>
+        <nav>
         <a href="index.html" class="logo">
             <div class="logo-bar"></div>
             <div class="logo-text">
                 <span>Infra</span><span>Mint</span>
             </div>
         </a>
-        
+
         <button class="hamburger" id="hamburger" onclick="document.getElementById('mobile-dropdown').classList.toggle('open')">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
+            <a href="vernissage.html">Vernissage</a>
             <a href="blog.html">The Drip</a>
             <a href="auctions.html">Auctions</a>
-            <a href="vernissage.html">Vernissage</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
             <a href="about.html">About</a>
-            <div style="border-top:1px solid #333;margin-top:.35rem;padding-top:.35rem"></div>
-            <a href="artist-login.html">Artist Login</a>
-            <a href="collector-login.html">Collector Login</a>
-            <a href="partner-login.html">Partner Login</a>
-            <a href="advisor-login.html">Advisor Login</a>
+            <div style="padding:.6rem 2rem .3rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:#525252;text-transform:uppercase">Account</div>
+            <a href="artist-login.html">Artist</a>
+            <a href="collector-login.html">Collector</a>
+            <a href="partner-login.html">Partner</a>
+            <a href="advisor-login.html">Advisor</a>
             <a href="seller-login.html">Private Seller</a>
         </div>
+
         <div class="nav-center">
             <a href="gallery.html">Gallery</a>
             <a href="artists.html">Artists</a>
+            <a href="vernissage.html">Vernissage</a>
             <a href="blog.html">The Drip</a>
             <a href="auctions.html">Auctions</a>
-            <a href="vernissage.html">Vernissage</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
-            <a href="about.html" class="active">About</a>
+            <a href="about.html" class=active>About</a>
         </div>
 
         <div class="nav-right" id="nav-right">
-            <div class="signin-wrap">
-                <button class="signin-btn" onclick="this.parentElement.classList.toggle('open')">Sign In</button>
-                <div class="signin-drop">
-                    <a href="artist-login.html">Artist</a>
-                    <a href="collector-login.html">Collector</a>
-                    <a href="partner-login.html">Partner</a>
-                    <a href="advisor-login.html">Advisor</a>
-                    <a href="seller-login.html">Private Seller</a>
-                </div>
+            <button class="signin-btn" id="signin-btn" onclick="document.getElementById('signin-dropdown').classList.toggle('open');this.classList.toggle('open')">
+                Sign In
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="signin-dropdown" id="signin-dropdown">
+                <a href="artist-login.html">Artist</a>
+                <a href="collector-login.html">Collector</a>
+                <a href="partner-login.html">Partner</a>
+                <a href="advisor-login.html">Advisor</a>
+                <a href="seller-login.html">Private Seller</a>
             </div>
         </div>
     </nav>
@@ -772,7 +752,7 @@
     <section class="contact-cta">
         <h2 class="contact-cta-title">Have questions? <strong>Let's talk.</strong></h2>
         <p class="contact-cta-text">We'd love to hear from artists, collectors, and collaborators.</p>
-        hello@inframint.io
+        <a href="mailto:hello@inframint.io" class="contact-cta-email">hello@inframint.io</a>
     </section>
 
     <!-- Footer -->
@@ -792,34 +772,5 @@
         <div class="footer-copy">© 2026 InfraMint · <a href="admin.html" style="color:var(--gray-400);text-decoration:none;font-size:0.75rem;">Gallery Owner</a></div>
     </footer>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-var db = supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4');
-</script>
-<!-- Auth check + dropdown close -->
-<script>
-(async function(){
-    try {
-        var{data:{session}}=await db.auth.getSession();
-        if(session){
-            var nr=document.getElementById('nav-right');
-            if(!nr) return;
-            var{data:art}=await db.from('artists').select('id').eq('user_id',session.user.id).maybeSingle();
-            if(art){
-                nr.innerHTML='<a href="artist-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
-            } else {
-                var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
-                if(col){
-                    nr.innerHTML='<a href="collector-dashboard.html" class="nav-login" style="color:#a3a3a3">My Account</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
-                } else {
-                    var{data:par}=await db.from('partners').select('id').eq('user_id',session.user.id).maybeSingle();
-                    if(par){
-                        nr.innerHTML='<a href="partner-dashboard.html" class="nav-login" style="color:#a3a3a3">Dashboard</a><a href="#" class="nav-login" id="nav-signout" style="color:#a3a3a3">Sign Out</a>';
-                    }
-                }
-            }
-            var so=document.getElementById('nav-signout');
-            if(so) so.addEventListener('click',async function(e){e.preventDefault();await db.auth.signOut();window.location.reload();});
-        }
-    } catch(e){console.log('A
+</body>
+</html>
