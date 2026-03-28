@@ -14,7 +14,7 @@
         body { overflow-x: hidden; font-family: 'Manrope', sans-serif; background: var(--gray-100); color: var(--black); -webkit-font-smoothing: antialiased; }
 
         /* Layout */
-        .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+        .layout { display: grid; grid-template-columns: 220px 1fr; height: 100vh; overflow: hidden; }
 
         /* Sidebar */
         .sidebar { background: var(--white); border-right: 1px solid var(--gray-200); padding-top: 1.5rem; display: flex; flex-direction: column; }
@@ -37,7 +37,7 @@
         .topbar { display: flex; justify-content: flex-end; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--gray-200); background: var(--white); font-size: 0.875rem; color: var(--gray-600); }
 
         /* Main content */
-        main { padding: 0; }
+        main { padding: 0 0 4rem; overflow-y: auto; }
         .section { display: none; }
         .section.active { display: block; }
         .page-header { padding: 2rem 2rem 1rem; }
@@ -201,10 +201,9 @@
             </div>
             <div class="sidebar-bottom">
             </div>
-            </div>
         </div>
 
-        <div>
+        <div style="overflow-y:auto;height:100vh">
             <div class="topbar" style="justify-content:space-between">
                 <div style="display:flex;gap:1.5rem;align-items:center">
                     <a href="gallery.html" style="font-size:.8125rem;color:var(--gray-500);text-decoration:none">Gallery</a>
