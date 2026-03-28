@@ -41,55 +41,143 @@
         }
 
         /* Navigation - DARK */
-        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--black);
+            height: 4.5rem;
+        }
 
-        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            text-decoration: none;
+        }
 
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        /* Page Header */
-        .page-header {
-            padding: 8rem 4rem 4rem;
+        .logo-bar {
+            width: 3px;
+            height: 1.75rem;
             background: var(--white);
         }
 
-        .page-label {
-            font-size: 0.6875rem;
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            color: var(--gray-400);
-            text-transform: uppercase;
-            margin-bottom: 1rem;
+        .logo-text {
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
         }
 
+        .logo-text span:first-child {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .logo-text span:last-child {
+            font-weight: 200;
+            color: var(--gray-500);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-center a {
+            font-size: 0.9375rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            transition: color 0.2s ease;
+        }
+
+        .nav-center a:hover,
+        .nav-center a.active {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-login {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-login:hover {
+            color: var(--white);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--black);
+            padding: 7rem 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::after {
+            content: 'ABOUT';
+            position: absolute;
+            right: -2%;
+            bottom: -20%;
+            font-size: 18vw;
+            font-weight: 800;
+            color: rgba(255,255,255,.03);
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            font-family: 'Manrope', sans-serif;
+        }
+        .page-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #c8ff00;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .page-eyebrow::before {
+            content: '';
+            width: 2rem;
+            height: 1px;
+            background: #c8ff00;
+        }
+        .page-label { display: none; }
         .page-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: 2.5rem;
             font-weight: 300;
             letter-spacing: -0.03em;
-            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+            position: relative;
+            z-index: 1;
             max-width: 700px;
+            line-height: 1.1;
         }
-
-        .page-title strong {
-            font-weight: 600;
+        .page-title strong { font-weight: 600; }
+        .page-subtitle {
+            font-size: 0.9375rem;
+            color: var(--gray-400);
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
         }
 
         /* Mission Section */
@@ -385,9 +473,13 @@
 
         /* Mobile */
         @media (max-width: 768px) {
-            
+            nav {
+                padding: 0 1.5rem;
+            }
 
-            
+            .nav-center {
+                display: none;
+            }
 
             .page-header {
                 padding: 6rem 1.5rem 3rem;
@@ -459,19 +551,52 @@
         }
     
         /* Hamburger Mobile Menu */
-        
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
 
-        
+        .mobile-dropdown {
+            display: none;
+        }
 
         @media (max-width: 1200px) {
-            
-            
-            
-            
-            
-            
-            
-            
+            .nav-center { display: none !important; }
+            .nav-right { display: none !important; }
+            .hamburger { display: block; }
+            .mobile-dropdown {
+                display: none;
+                position: absolute;
+                top: 4.5rem;
+                left: 0;
+                right: 0;
+                background: var(--black);
+                padding: 1rem 2rem 1.5rem;
+                flex-direction: column;
+                gap: 0;
+                border-top: 1px solid #222;
+            }
+            .mobile-dropdown.open {
+                display: flex;
+            }
+            .mobile-dropdown a {
+                font-size: 0.9375rem;
+                font-weight: 400;
+                color: var(--gray-400);
+                text-decoration: none;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid #1a1a1a;
+                transition: color 0.2s;
+            }
+            .mobile-dropdown a:hover {
+                color: var(--white);
+            }
+            .mobile-dropdown a:last-child {
+                border-bottom: none;
+            }
         }
 
     </style>
@@ -522,7 +647,7 @@
 <body>
 
     <!-- Navigation -->
-        <nav>
+    <nav>
         <a href="index.html" class="logo">
             <div class="logo-bar"></div>
             <div class="logo-text"><span>Infra</span><span>Mint</span></div>
@@ -533,7 +658,7 @@
         <div class="mobile-dropdown" id="mobile-dropdown" onclick="this.classList.remove('open')">
             <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a>
             <a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a>
-            <a href="market-index.html">Market Index</a><a href="about.html">About</a>
+            <a href="market-index.html">Market Index</a><a href="about.html" class="active">About</a>
             <div style="padding:.6rem 2rem .3rem;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:#525252;text-transform:uppercase">Account</div>
             <a href="artist-login.html">Artist</a><a href="collector-login.html">Collector</a>
             <a href="partner-login.html">Partner</a><a href="advisor-login.html">Advisor</a>
@@ -547,7 +672,7 @@
             <a href="auctions.html">Auctions</a>
             <a href="art-advisory.html">Advisory</a>
             <a href="market-index.html">Market Index</a>
-            <a href="about.html" class=active>About</a>
+            <a href="about.html" class="active">About</a>
         </div>
         <div class="nav-right" id="nav-right">
             <button class="signin-btn" id="signin-btn" onclick="document.getElementById('signin-dropdown').classList.toggle('open');this.classList.toggle('open')">
@@ -563,12 +688,13 @@
     </nav>
 
     <!-- Page Header -->
-    <header class="page-header">
-        <div class="page-label">About</div>
+    <div class="page-header">
+        <div class="page-eyebrow">About InfraMint</div>
         <h1 class="page-title">
             Art should find its way<br><strong>into the world</strong>
         </h1>
-    </header>
+        <p class="page-subtitle">Where emerging artists find their collectors</p>
+    </div>
 
     <!-- Mission Section -->
     <section class="mission">
