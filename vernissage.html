@@ -354,77 +354,104 @@
     }
 
     // ─── BUILD WALLS WITH ARTWORKS ───
+    // Respects gallery_wall from DB. If artwork has gallery_wall="AG5", it goes to that wall.
+    // Unassigned artworks get auto-placed on walls with open slots.
     function buildWalls(arts,isLive){
         var slider=document.getElementById('gs');
         slider.innerHTML='';
         document.getElementById('gs-wrap').style.display='block';
 
-        // Assign artworks to wall slots
-        var artIdx=0;
-        var usedWalls=[];
+        // Build a map: wallImg -> WALLS entry
+        var wallMap={};
+        WALLS.forEach(function(w){wallMap[w.img.replace('.png','')]=w});
 
-        for(var w=0;w<WALLS.length&&artIdx<arts.length;w++){
-            var wall=WALLS[w];
-            var hasMatch=false;
-            var wallArts=[];
+        // Step 1: Group artworks by their chosen wall
+        var assigned={};  // wallImg -> [art, art, ...]
+        var unassigned=[];
 
-            for(var s=0;s<wall.slots.length&&artIdx<arts.length;s++){
-                var slot=wall.slots[s];
-                var art=arts[artIdx];
-                var artType=(art.artwork_type||'painting');
-                // Match sculpture slots to sculpture art, else painting
-                if(slot.tp==='sculpture'&&artType!=='sculpture'){
-                    // Try to find a sculpture in remaining arts
-                    var found=false;
-                    for(var k=artIdx;k<arts.length;k++){
-                        if((arts[k].artwork_type||'painting')==='sculpture'){
-                            wallArts.push({slot:slot,art:arts[k],idx:k});
-                            arts.splice(k,1);found=true;break;
-                        }
-                    }
-                    if(!found) wallArts.push({slot:slot,art:arts[artIdx++],idx:artIdx-1});
-                    else hasMatch=true;
-                }else{
-                    wallArts.push({slot:slot,art:art,idx:artIdx});
-                    artIdx++;hasMatch=true;
-                }
+        arts.forEach(function(a){
+            var gw=a.gallery_wall;
+            if(gw && wallMap[gw]){
+                if(!assigned[gw])assigned[gw]=[];
+                assigned[gw].push(a);
+            }else{
+                unassigned.push(a);
             }
+        });
 
+        // Step 2: Build walls for assigned artworks
+        var usedWalls=[];
+        var usedWallImgs={};
+
+        Object.keys(assigned).forEach(function(gw){
+            var wall=wallMap[gw];
+            var wallArts=[];
+            var artsForWall=assigned[gw];
+            for(var s=0;s<wall.slots.length&&s<artsForWall.length;s++){
+                wallArts.push({slot:wall.slots[s],art:artsForWall[s]});
+            }
             if(wallArts.length>0){
                 usedWalls.push({wall:wall,arts:wallArts});
+                usedWallImgs[wall.img]=true;
             }
+            // If more artworks than slots on this wall, overflow to unassigned
+            for(var s=wall.slots.length;s<artsForWall.length;s++){
+                unassigned.push(artsForWall[s]);
+            }
+        });
+
+        // Step 3: Auto-assign remaining artworks to unused walls
+        var availWalls=WALLS.filter(function(w){return !usedWallImgs[w.img]});
+        var awIdx=0;
+
+        while(unassigned.length>0 && awIdx<availWalls.length){
+            var wall=availWalls[awIdx];
+            var wallArts=[];
+            // Fill slots on this wall
+            for(var s=0;s<wall.slots.length&&unassigned.length>0;s++){
+                var slot=wall.slots[s];
+                // Try to match type (sculpture slot → sculpture artwork)
+                var artIndex=-1;
+                if(slot.tp==='sculpture'){
+                    for(var k=0;k<unassigned.length;k++){
+                        if((unassigned[k].artwork_type||'painting')==='sculpture'){artIndex=k;break}
+                    }
+                }
+                if(artIndex===-1) artIndex=0; // just take next available
+                wallArts.push({slot:slot,art:unassigned.splice(artIndex,1)[0]});
+            }
+            if(wallArts.length>0) usedWalls.push({wall:wall,arts:wallArts});
+            awIdx++;
         }
 
-        // If still artworks left, cycle through single-frame walls
+        // Step 4: If still artworks left, cycle single-frame walls
         var singleWalls=[WALLS[0],WALLS[1],WALLS[3],WALLS[4]];
         var si=0;
-        while(artIdx<arts.length){
+        while(unassigned.length>0){
             var sw=singleWalls[si%singleWalls.length];
-            usedWalls.push({wall:sw,arts:[{slot:sw.slots[0],art:arts[artIdx],idx:artIdx}]});
-            artIdx++;si++;
+            usedWalls.push({wall:sw,arts:[{slot:sw.slots[0],art:unassigned.shift()}]});
+            si++;
         }
 
-        // Render walls
-        // Reset allArts for placard clicks
-        allArts=arts;
+        // Step 5: Sort walls by WALLS order for consistent gallery flow
+        var wallOrder={};WALLS.forEach(function(w,i){wallOrder[w.img]=i});
+        usedWalls.sort(function(a,b){return (wallOrder[a.wall.img]||0)-(wallOrder[b.wall.img]||0)});
 
-        usedWalls.forEach(function(uw,wi){
+        // Step 6: Render walls
+        allArts=[];
+        usedWalls.forEach(function(uw){
             var div=document.createElement('div');
             div.className='wall';
             var html='<img class="wall-bg" src="'+uw.wall.img+'" alt="Gallery wall" loading="lazy">';
 
             uw.arts.forEach(function(wa){
                 var a=wa.art,sl=wa.slot;
+                allArts.push(a);
                 var imgUrl=a.image_url||'';
-                // Artwork overlay
                 html+='<div class="wall-art" style="left:'+sl.l+'%;top:'+sl.t+'%;width:'+sl.w+'%;height:'+sl.h+'%" onclick="openDt(\''+a.id+'\')">';
-                if(imgUrl){
-                    html+='<img src="'+E(imgUrl)+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.opacity=0">';
-                }
+                if(imgUrl){html+='<img src="'+E(imgUrl)+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.opacity=0">'}
                 html+='</div>';
-                // Placard
-                var plL=sl.l+sl.w+1;
-                var plT=sl.t+sl.h-12;
+                var plL=sl.l+sl.w+1,plT=sl.t+sl.h-12;
                 if(plL>85)plL=sl.l-12;
                 html+='<div class="wall-placard" style="left:'+plL+'%;top:'+plT+'%" onclick="openDt(\''+a.id+'\')">';
                 html+='<div class="wp-t">'+E(a.title||'Untitled')+'</div>';
@@ -436,11 +463,6 @@
             slider.appendChild(div);
         });
 
-        // Store all arts globally for detail lookup
-        allArts=[];
-        usedWalls.forEach(function(uw){uw.arts.forEach(function(wa){allArts.push(wa.art)})});
-
-        // Update counter
         updTrack();
         updCounter();
     }

@@ -3083,8 +3083,10 @@
                     '<h3>' + (a.title || 'Untitled') + '</h3>' +
                     '<p>' + (a.artist_name || '') + '</p>' +
                     '<p>' + (a.medium || '') + (a.year ? ', ' + a.year : '') + '</p>' +
-                    '<p>' + (a.width_cm || '?') + ' × ' + (a.height_cm || '?') + ' cm</p>' +
-                    (a.price ? '<p style="color:#c8ff00">$' + Number(a.price).toLocaleString() + '</p>' : '') +
+                    '<p>' + (a.width_cm || '?') + ' &times; ' + (a.height_cm || '?') + ' cm</p>' +
+                    '<p style="color:#c8ff00">' + (a.artwork_type || 'painting') + (a.gallery_wall ? ' &middot; Wall: ' + a.gallery_wall : ' &middot; Auto-assign') + '</p>' +
+                    (a.description ? '<p style="color:#777;font-size:.65rem;max-width:250px;margin:0 auto">' + a.description + '</p>' : '') +
+                    (a.price ? '<p style="color:#c8ff00;font-weight:600">$' + Number(a.price).toLocaleString() + '</p>' : '') +
                     '</div>';
             });
             html += '</body></html>';
