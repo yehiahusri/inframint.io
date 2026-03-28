@@ -35,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0 0 4rem;overflow-y:auto;overflow-x:hidden;height:100vh}
+        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -192,7 +192,6 @@
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Settings</div>
-                <a class="sb-lk" data-s="exhibitions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>Exhibitions <span class="ct" id="n-exh"></span></a>
                 <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
@@ -634,30 +633,6 @@
                     </div>
                 </div>
 
-                <!-- Exhibitions -->
-                <div class="sec" id="section-exhibitions">
-                    <div class="ph"><h1>Exhibitions</h1><p>Manage virtual exhibition requests and live shows</p></div>
-
-                    <div class="card">
-                        <div class="ch"><span class="ct2">Exhibition Requests</span></div>
-                        <div style="overflow-x:auto"><table style="width:100%"><thead><tr>
-                            <th>Title</th><th>Exhibitor</th><th>Type</th><th>Dates</th><th>Artworks</th><th>Status</th><th>Actions</th>
-                        </tr></thead><tbody id="tb-exh"></tbody></table></div>
-                    </div>
-
-                    <div class="card" style="margin-top:1.5rem">
-                        <div class="ch"><span class="ct2">Quick Actions</span></div>
-                        <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Create exhibition slots or manually create an exhibition for an artist.</p>
-                        <div class="form-row2">
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Slot Start Date</label><input type="date" class="fi" id="slot-start"></div>
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Slot End Date</label><input type="date" class="fi" id="slot-end"></div>
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Label</label><input type="text" class="fi" id="slot-label" placeholder="e.g. Week 14 — April 2026"></div>
-                        </div>
-                        <button class="fbtn" id="add-slot" style="margin-top:.6rem">Create Slot</button>
-                        <div class="msg-ok" id="slot-msg"></div>
-                    </div>
-                </div>
-
                 <!-- Team / Co-Owners -->
                 <div class="sec" id="section-team">
                     <div class="ph"><h1>Team / Co-Owners</h1><p>Manage who has admin access to the gallery</p></div>
@@ -837,48 +812,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-    const SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
-    const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
-    const db=supabase.createClient(SB_URL,SB_KEY);
-    const CN={AE:'UAE',US:'US',UK:'UK',DE:'DE',FR:'FR',LB:'LB',SA:'SA',QA:'QA',other:'Other'};
-    const CAT={painting:'Painting',photography:'Photography',digital:'Digital',sculpture:'Sculpture',mixed:'Mixed Media',illustration:'Illustration',other:'Other'};
-    const MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photo',mixed:'Mixed',other:'Other'};
+    console.log('Admin JS loaded');
+    var SB_URL='https://vyibnkztkacifahhlxof.supabase.co';
+    var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5aWJua3p0a2FjaWZhaGhseG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE0NzcsImV4cCI6MjA4NDQ4NzQ3N30.k0MGtmRKhQGJ9tX2arw7OUQg1y1SUZP3IBuSkq1E5l4';
+    var db=supabase.createClient(SB_URL,SB_KEY);
+    var CN={AE:'UAE',US:'US',UK:'UK',DE:'DE',FR:'FR',LB:'LB',SA:'SA',QA:'QA',other:'Other'};
+    var CAT={painting:'Painting',photography:'Photography',digital:'Digital',sculpture:'Sculpture',mixed:'Mixed Media',illustration:'Illustration',other:'Other'};
+    var MED={oil:'Oil',acrylic:'Acrylic',watercolor:'Watercolor',digital:'Digital',photography:'Photo',mixed:'Mixed',other:'Other'};
 
-    let allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
+    var allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
 
-    const ADM_LEGACY='yehiahusri@gmail.com';
+    var ADM_LEGACY='yehiahusri@gmail.com';
 
-    // Login — check admin_users table
+    // Login
     document.getElementById('a-login').onclick=async function(){
         var e=document.getElementById('a-email').value,p=document.getElementById('a-pass').value,m=document.getElementById('lm');
         m.textContent='Signing in...';m.className='lm show';m.style.color='#737373';
-        
         try{
             var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
-            if(error){m.textContent='Auth error: '+error.message;m.className='lm show';m.style.color='red';return}
-            
-            m.textContent='Auth OK, checking admin access...';
-            
-            // Check admin_users table OR legacy email
-            var{data:adm,error:admErr}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
-            
-            if(admErr){m.textContent='DB error: '+admErr.message;m.className='lm show';m.style.color='red';return}
-            
-            if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized. Email: '+e+' not in admin_users and not legacy.';m.className='lm show';m.style.color='red';await db.auth.signOut();return}
-            
-            m.textContent='Access granted, loading...';
+            if(error){m.textContent='Error: '+error.message;m.style.color='red';return}
+            m.textContent='Checking admin access...';
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
+            if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.style.color='red';await db.auth.signOut();return}
             showDash(adm);
-        }catch(ex){
-            m.textContent='Exception: '+ex.message;m.className='lm show';m.style.color='red';
-        }
+        }catch(ex){m.textContent='Error: '+ex.message;m.style.color='red';}
     };
 
     async function checkAuth(){
-        var{data:{session}}=await db.auth.getSession();
-        if(session){
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
-            if(adm||session.user.email===ADM_LEGACY)showDash(adm);
-        }
+        try{
+            var{data:{session}}=await db.auth.getSession();
+            if(session){
+                var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
+                if(adm||session.user.email===ADM_LEGACY)showDash(adm);
+            }
+        }catch(ex){console.log('checkAuth error:',ex);}
     }
     checkAuth();
 
@@ -1069,7 +1036,7 @@
             db.from('collectors').select('*').order('created_at',{ascending:false}),
             db.from('partners').select('*,partner_artists(id,artist_id,commission_active)').order('created_at',{ascending:false}),
             db.from('artworks').select('*,artists(artist_name)').order('created_at',{ascending:false}),
-            db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email),artists(artist_name,email)').order('created_at',{ascending:false}),
+            db.from('orders').select('*,artworks(title,price,primary_image_url,medium,width_cm,height_cm),collectors(first_name,last_name,email)').order('created_at',{ascending:false}),
             db.from('partner_artists').select('*,partners(first_name,last_name),artists(artist_name,id)').order('created_at',{ascending:false})
         ]);
         allArtists=a.data||[];allCollectors=c.data||[];allPartners=p.data||[];allArtworks=aw.data||[];allOrders=o.data||[];allPArtists=pa.data||[];
@@ -1106,7 +1073,6 @@
         renderActivity();
         renderBlog();
         renderTeam();
-        loadExhibitions();
         renderNotifications();
         renderReminders();
         populateAuctionArtists();
@@ -1669,9 +1635,8 @@
         var GRACE_DAYS=7;
 
         allOrders.forEach(function(o,i){
-            var art=o.artworks||{};var col=o.collectors||{};var artist=o.artists||{};
+            var art=o.artworks||{};var col=o.collectors||{};
             var ap=Number(o.artwork_price||o.artwork_price||art.price||0),sh=Number(o.shipping_cost||0),cu=Number(o.customs_cost||0);
-            var artistName=artist.artist_name||o.artist_name||'—';
 
             // Calculate days since shipped
             var daysSinceShipped='—';
@@ -1685,9 +1650,7 @@
             }
 
             var statusColors={pending:'b-pending',confirmed:'b-pending',paid:'b-active',shipped:'b-shipped',delivered:'b-approved',cancelled:'b-rejected'};
-            var statusLabels={pending:'Awaiting Quote',confirmed:'Quote Sent',paid:'Paid',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled'};
             var bc=statusColors[o.status]||'b-pending';
-            var statusLabel=statusLabels[o.status]||o.status;
             var timerHTML='—';
             if(o.status==='shipped'){
                 if(graceExpired){
@@ -1701,7 +1664,7 @@
             }
 
             var tr=document.createElement('tr');
-            tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||o.artwork_title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>'+artistName+'</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+statusLabel+'</span></td><td>'+timerHTML+'</td><td></td>';
+            tr.innerHTML='<td class="tn">'+(o.order_number||'#'+(i+1))+'</td><td>'+trunc(art.title||'—',25)+'</td><td>'+(o.collector_name||(col.first_name||'')+' '+(col.last_name||''))+'</td><td>—</td><td>$'+ap.toLocaleString()+'</td><td>$'+sh.toLocaleString()+'</td><td>$'+(ap+sh+cu).toLocaleString()+'</td><td><span class="badge '+bc+'">'+(o.status||'pending')+'</span></td><td>'+timerHTML+'</td><td></td>';
             var td=tr.lastChild;
 
             // View button for every order
@@ -2372,96 +2335,6 @@
     document.getElementById('blog-publish').onclick=function(){saveBlogPost(true)};
 
     // ===== TEAM MANAGEMENT =====
-    // ===== EXHIBITIONS =====
-    async function loadExhibitions() {
-        var { data: exhs } = await db.from('exhibitions').select('*, exhibition_artworks(id, title, image_url, width_cm, height_cm)').order('created_at', { ascending: false });
-        var pending = (exhs || []).filter(function(e) { return e.status === 'pending'; });
-        var el = document.getElementById('n-exh');
-        if (el) el.textContent = pending.length || '';
-
-        var b = document.getElementById('tb-exh');
-        if (!exhs || exhs.length === 0) { b.innerHTML = '<tr class="empty"><td colspan="7">No exhibition requests yet</td></tr>'; return; }
-        b.innerHTML = '';
-
-        exhs.forEach(function(e) {
-            var arts = e.exhibition_artworks || [];
-            var startStr = e.start_date ? new Date(e.start_date).toLocaleDateString() : '—';
-            var endStr = e.end_date ? new Date(e.end_date).toLocaleDateString() : '—';
-            var statusCls = { pending:'b-pending', approved:'b-active', live:'b-approved', ended:'b-shipped', rejected:'b-rejected', archived:'b-shipped', draft:'b-pending' };
-
-            var tr = document.createElement('tr');
-            tr.innerHTML = '<td class="tn">' + trunc(e.title || '—', 25) + '</td>' +
-                '<td>' + (e.exhibitor_name || '—') + '<br><span style="font-size:.65rem;color:var(--g400)">' + (e.exhibitor_email || '') + '</span></td>' +
-                '<td><span style="font-size:.7rem;text-transform:capitalize">' + (e.exhibitor_type || '—') + '</span></td>' +
-                '<td style="font-size:.75rem">' + startStr + '<br>' + endStr + '</td>' +
-                '<td>' + arts.length + '</td>' +
-                '<td><span class="badge ' + (statusCls[e.status] || 'b-pending') + '">' + (e.status || 'draft') + '</span></td>' +
-                '<td id="exh-act-' + e.id + '"></td>';
-            b.appendChild(tr);
-
-            var td = document.getElementById('exh-act-' + e.id);
-
-            // View artworks
-            if (arts.length > 0) {
-                mkBtn(td, 'View Art', 'ab-grey', function() {
-                    var imgs = arts.map(function(a) { return '<div style="margin-bottom:1rem;text-align:center"><img src="' + a.image_url + '" style="max-width:100%;max-height:300px;object-fit:contain"><div style="font-size:.8rem;margin-top:.5rem">' + (a.title || '') + ' (' + (a.width_cm || '?') + '×' + (a.height_cm || '?') + ' cm)</div></div>'; }).join('');
-                    var w = window.open('', '_blank', 'width=600,height=800');
-                    w.document.write('<html><head><title>Exhibition Artworks</title><style>body{font-family:Manrope,sans-serif;padding:2rem;background:#f7f7f7}</style></head><body><h2>' + (e.title || 'Exhibition') + '</h2><p style="color:#737373;margin-bottom:1.5rem">by ' + (e.exhibitor_name || '') + ' · ' + arts.length + ' artworks</p>' + imgs + '</body></html>');
-                });
-            }
-
-            if (e.status === 'pending') {
-                mkBtn(td, 'Approve', 'ab-ok', async function() {
-                    var notes = prompt('Admin notes (optional):');
-                    await db.from('exhibitions').update({ status: 'approved', admin_notes: notes || null, approved_by: 'admin', approved_at: new Date().toISOString() }).eq('id', e.id);
-                    loadExhibitions();
-                });
-                mkBtn(td, 'Reject', 'ab-no', async function() {
-                    var reason = prompt('Rejection reason:');
-                    if (!reason) return;
-                    await db.from('exhibitions').update({ status: 'rejected', admin_notes: reason }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-            if (e.status === 'approved') {
-                mkBtn(td, 'Go Live', 'ab-feat', async function() {
-                    if (!confirm('Set "' + e.title + '" live? It will appear on the Vernissage page.')) return;
-                    await db.from('exhibitions').update({ status: 'live' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-            if (e.status === 'live') {
-                mkBtn(td, 'End', 'ab-grey', async function() {
-                    if (!confirm('End this exhibition?')) return;
-                    await db.from('exhibitions').update({ status: 'ended' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-                mkBtn(td, 'View', 'ab-list', function() { window.open('vernissage.html?exhibition=' + e.id, '_blank'); });
-            }
-            if (e.status === 'ended' || e.status === 'rejected') {
-                mkBtn(td, 'Archive', 'ab-grey', async function() {
-                    await db.from('exhibitions').update({ status: 'archived' }).eq('id', e.id);
-                    loadExhibitions();
-                });
-            }
-        });
-    }
-
-    // Slot creation
-    document.getElementById('add-slot').addEventListener('click', async function() {
-        var start = document.getElementById('slot-start').value;
-        var end = document.getElementById('slot-end').value;
-        var label = document.getElementById('slot-label').value.trim();
-        var msg = document.getElementById('slot-msg');
-        if (!start || !end) { msg.textContent = 'Please set start and end dates.'; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
-        var { error } = await db.from('exhibition_slots').insert({ start_date: start, end_date: end, label: label || null });
-        if (error) { msg.textContent = 'Error: ' + error.message; msg.className = 'msg-ok show'; msg.style.color = 'var(--err)'; return; }
-        msg.textContent = 'Slot created!'; msg.className = 'msg-ok show'; msg.style.color = 'var(--ok)';
-        document.getElementById('slot-start').value = '';
-        document.getElementById('slot-end').value = '';
-        document.getElementById('slot-label').value = '';
-    });
-
     async function renderTeam(){
         var{data}=await db.from('admin_users').select('*').order('created_at',{ascending:true});
         var b=document.getElementById('tb-team');
@@ -2476,29 +2349,9 @@
             // Don't allow removing the primary owner
             if(u.email!==ADM_LEGACY){
                 mkBtn(td,'Remove','ab-no',async function(){
-                    if(!confirm('Remove '+(u.name||u.email)+' from the team?'))return;
-                    this.textContent='Removing...';this.disabled=true;
-                    try{
-                        var{data:delData,error}=await db.from('admin_users').delete().eq('id',u.id).select();
-                        if(error){
-                            alert('Delete error: '+error.message+' (code: '+error.code+')');
-                            this.textContent='Remove';this.disabled=false;
-                            return;
-                        }
-                        if(!delData||delData.length===0){
-                            // delete returned nothing — try by email instead
-                            var{error:e2}=await db.from('admin_users').delete().eq('email',u.email);
-                            if(e2){
-                                alert('Delete by email also failed: '+e2.message);
-                                this.textContent='Remove';this.disabled=false;
-                                return;
-                            }
-                        }
-                        renderTeam();
-                    }catch(ex){
-                        alert('Exception: '+ex.message);
-                        this.textContent='Remove';this.disabled=false;
-                    }
+                    if(!confirm('Remove '+u.name+' from the team?'))return;
+                    await db.from('admin_users').delete().eq('id',u.id);
+                    renderTeam();
                 });
             }else{
                 td.innerHTML='<span style="font-size:.65rem;color:var(--g400)">Primary owner</span>';
@@ -2526,28 +2379,8 @@
             return;
         }
 
-        // Send invitation email
-        var roleLabel=role==='owner'?'Co-Owner':role==='editor'?'Editor':'Admin';
-        var subject='You\'ve been invited to the InfraMint team';
-        var body='Hi '+name+',%0A%0AYou\'ve been added as '+roleLabel+' on InfraMint (inframint.io).%0A%0ATo get started:%0A1. Go to https://inframint.io/collector-login.html%0A2. Create an account using this email ('+email+')%0A3. Once registered, go to https://inframint.io/admin.html to access the admin panel%0A%0AYour role: '+roleLabel+'%0A%0AWelcome to the team!%0AInfraMint';
-        
-        // Try Resend Edge Function
-        try{
-            var{data:{session}}=await db.auth.getSession();
-            fetch('https://vyibnkztkacifahhlxof.supabase.co/functions/v1/send-notification',{
-                method:'POST',
-                headers:{'Content-Type':'application/json','Authorization':'Bearer '+(session?session.access_token:'')},
-                body:JSON.stringify({event:'team_invite',data:{to_email:email,to_name:name,role:roleLabel}})
-            }).catch(function(){});
-        }catch(e){}
-
-        // Also open email client as backup
-        if(confirm(name+' added! Send them an invitation email?')){
-            window.open('mailto:'+email+'?subject='+encodeURIComponent('You\'ve been invited to the InfraMint team')+'&body='+body,'_blank');
-        }
-
-        msgEl.textContent=name+' added to the team as '+roleLabel+'!';
-        msgEl.className='msg-ok show';msgEl.style.color='var(--ok)';
+        msgEl.textContent=name+' added to the team as '+role+'!';
+        msgEl.className='msg-ok show';
         document.getElementById('team-email').value='';
         document.getElementById('team-name').value='';
         renderTeam();
@@ -3120,4 +2953,17 @@
         });
         if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; msg.style.background = '#fef2f2'; msg.style.color = '#dc2626'; }
         else {
-            msg.textContent = 'Painting added!'; msg.style.display = 'block'; msg.style.background = '#f0fdf4'; msg.s
+            msg.textContent = 'Painting added!'; msg.style.display = 'block'; msg.style.background = '#f0fdf4'; msg.style.color = '#16a34a';
+            document.getElementById('lot-title').value = ''; document.getElementById('lot-artist').value = '';
+            document.getElementById('lot-desc').value = ''; document.getElementById('lot-reserve').value = '';
+            document.getElementById('lot-start').value = ''; document.getElementById('lot-preview').style.display = 'none';
+            document.getElementById('lot-upload-text').textContent = 'Click to upload or drag image here';
+            lotImageFile = null;
+            loadLots(selectedAuctionId); loadAuctions();
+        }
+        this.textContent = 'Add Painting to Auction'; this.disabled = false;
+    });
+
+    </script>
+</body>
+</html>

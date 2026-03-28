@@ -121,7 +121,6 @@ tr:hover td{background:var(--g100)}
 
 /* Responsive */
 @media(max-width:768px){.layout{grid-template-columns:1fr}.sb{display:none}.sg{grid-template-columns:repeat(2,1fr);padding:0 1rem 1rem}.card{margin:0 1rem 1rem}.ph{padding:1.5rem 1rem .75rem}.dp{width:100%}.ap-grid{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}}
-main{padding-bottom:4rem!important}
 </style>
 </head>
 <body>
@@ -143,7 +142,7 @@ main{padding-bottom:4rem!important}
     <div class="sb-sec"><div class="sb-lbl">Account</div>
         <a class="sb-lk" data-s="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
     </div>
-    <div class="sb-bottom"><button id="sign-out">Sign Out</button></div>
+    <div class="sb-bottom"></div>
 </div>
 
 <!-- Main -->
@@ -154,6 +153,7 @@ main{padding-bottom:4rem!important}
         <a href="gallery.html" class="topbar-link">Gallery</a>
         <a href="art-advisory.html" class="topbar-link">Advisory Page</a>
         <span id="tb-user" style="font-size:.8rem;color:var(--g600)"></span>
+        <a href="#" id="sign-out" style="font-size:.8rem;color:var(--g500);text-decoration:none" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#737373'">Sign Out</a>
     </div>
 </div>
 
@@ -643,7 +643,7 @@ document.querySelectorAll('.sb-lk[data-s]').forEach(l=>l.onclick=function(){
     document.getElementById('tb-title').textContent=this.textContent.trim().replace(/\d+$/,'').trim();
 });
 
-document.getElementById('sign-out').onclick=async()=>{await db.auth.signOut();window.location.href='advisor-login.html';};
+document.getElementById('sign-out').onclick=async function(e){e.preventDefault();await db.auth.signOut();window.location.href='advisor-login.html';};
 
 // ===== HELPERS =====
 function openModal(id){document.getElementById(id).classList.add('open')}
