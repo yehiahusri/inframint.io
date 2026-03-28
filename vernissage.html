@@ -123,18 +123,60 @@
         .wall-section span{font-size:.5rem;font-weight:700;letter-spacing:.6em;text-transform:uppercase;color:rgba(0,0,0,.18);display:inline-flex;align-items:center;gap:2rem}
         .wall-section span::before,.wall-section span::after{content:'';width:50px;height:1px;background:rgba(0,0,0,.08)}
 
-        /* --- PAINTINGS ROW --- */
+        /* --- PAINTINGS SLIDER --- */
+        .paintings-slider-wrap{
+            position:relative;z-index:2;
+            padding:2rem 0 1rem;
+        }
+        /* Arrow buttons */
+        .slider-arrow{
+            position:absolute;top:50%;transform:translateY(-50%);
+            width:44px;height:44px;
+            background:var(--white);border:1px solid var(--g200);
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;z-index:10;
+            box-shadow:0 2px 12px rgba(0,0,0,.06);
+            transition:all .2s;
+        }
+        .slider-arrow:hover{background:var(--black);border-color:var(--black)}
+        .slider-arrow:hover svg{stroke:var(--white)}
+        .slider-arrow svg{stroke:var(--black);transition:stroke .2s}
+        .slider-arrow.left{left:1.5rem}
+        .slider-arrow.right{right:1.5rem}
+
         .paintings-row{
             display:flex;
-            justify-content:center;
-            align-items:flex-end;
-            gap:clamp(2rem,5vw,6rem);
-            flex-wrap:wrap;
-            padding:3rem 4rem 7rem;
-            position:relative;
-            z-index:2;
+            align-items:center;
+            gap:clamp(3rem,5vw,6rem);
+            padding:3rem 5rem 3rem;
+            overflow-x:auto;
+            scroll-behavior:smooth;
+            -webkit-overflow-scrolling:touch;
+            scrollbar-width:none; /* hide default, we use custom */
             min-height:350px;
         }
+        .paintings-row::-webkit-scrollbar{display:none}
+
+        /* Custom scroll track bar */
+        .slider-track{
+            margin:0 5rem 5rem;
+            height:2px;
+            background:var(--g200);
+            position:relative;z-index:2;
+        }
+        .slider-thumb{
+            height:2px;
+            background:var(--black);
+            min-width:40px;
+            transition:width .1s,left .1s;
+            position:absolute;top:0;left:0;
+        }
+        /* Drag handle area — invisible but taller for easier grab */
+        .slider-track-grab{
+            position:absolute;top:-8px;left:0;right:0;height:18px;
+            cursor:grab;z-index:3;
+        }
+        .slider-track-grab:active{cursor:grabbing}
 
         /* Single painting unit */
         .painting{
@@ -142,6 +184,7 @@
             display:inline-flex;
             flex-direction:column;
             align-items:center;
+            flex-shrink:0;
         }
 
         /* Spotlight cone from above */
@@ -342,7 +385,9 @@
             .live-strip{padding:1rem 1.5rem;flex-wrap:wrap;gap:.65rem}
             .artist-strip{padding:1.5rem;flex-direction:column;align-items:flex-start;gap:.75rem}
             .artist-strip-meta{margin-left:0;text-align:left}
-            .paintings-row{padding:2rem 1rem 6rem;gap:2.5rem}
+            .paintings-row{padding:2rem 2rem 2rem;gap:2.5rem}
+            .slider-track{margin:0 2rem 4rem}
+            .slider-arrow{display:none}
             .sculptures-row{padding:2rem 1rem 4rem;gap:2rem}
             .info-bar{padding:1.25rem 1.5rem;flex-direction:column;gap:.5rem}
             .archive{padding:2.5rem 1.5rem}
@@ -352,10 +397,10 @@
             footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}
         }
         @media(max-width:480px){
-            .paintings-row{flex-direction:column;align-items:center}
             .museum-label{position:relative;right:auto;bottom:auto;margin-top:.5rem;max-width:200px;text-align:center;border-left:none;border-top:2px solid var(--black)}
             .museum-label::before{display:none}
             .museum-label .ml-tap{display:none}
+            .slider-track{margin:0 1rem 3rem}
         }
     </style>
 </head>
@@ -417,7 +462,15 @@
         <!-- THE WALL — paintings -->
         <div class="the-wall" id="the-wall" style="display:none">
             <div class="wall-section"><span>Paintings</span></div>
-            <div class="paintings-row" id="pw"></div>
+            <div class="paintings-slider-wrap">
+                <button class="slider-arrow left" onclick="slideLeft()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <div class="paintings-row" id="pw" onscroll="updateTrack()"></div>
+                <button class="slider-arrow right" onclick="slideRight()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 6 15 12 9 18"/></svg></button>
+            </div>
+            <div class="slider-track" id="slider-track">
+                <div class="slider-thumb" id="slider-thumb"></div>
+                <div class="slider-track-grab" id="slider-grab"></div>
+            </div>
         </div>
 
         <!-- SCULPTURE AREA -->
@@ -528,7 +581,7 @@
         var paintings=allArts.filter(function(a){return(a.artwork_type||'painting')!=='sculpture'});
         var sculptures=allArts.filter(function(a){return a.artwork_type==='sculpture'});
 
-        if(paintings.length){document.getElementById('the-wall').style.display='block';renderPaintings(paintings)}
+        if(paintings.length){document.getElementById('the-wall').style.display='block';renderPaintings(paintings);setTimeout(updateTrack,200)}
         if(sculptures.length){document.getElementById('s-area').style.display='block';renderSculptures(sculptures)}
 
         // Info bar
@@ -567,6 +620,47 @@
             w.appendChild(u);
         });
     }
+
+    // ─── SLIDER CONTROLS ───
+    function slideLeft(){
+        var pw=document.getElementById('pw');
+        pw.scrollBy({left:-400,behavior:'smooth'});
+    }
+    function slideRight(){
+        var pw=document.getElementById('pw');
+        pw.scrollBy({left:400,behavior:'smooth'});
+    }
+    function updateTrack(){
+        var pw=document.getElementById('pw');
+        var track=document.getElementById('slider-track');
+        var thumb=document.getElementById('slider-thumb');
+        if(!pw||!track||!thumb)return;
+        var scrollW=pw.scrollWidth-pw.clientWidth;
+        if(scrollW<=0){thumb.style.width='100%';thumb.style.left='0';return}
+        var pct=pw.scrollLeft/scrollW;
+        var trackW=track.offsetWidth;
+        var thumbW=Math.max(40,trackW*(pw.clientWidth/pw.scrollWidth));
+        thumb.style.width=thumbW+'px';
+        thumb.style.left=Math.round(pct*(trackW-thumbW))+'px';
+    }
+    // Drag the track bar
+    (function(){
+        var dragging=false,startX=0,startScroll=0;
+        document.addEventListener('DOMContentLoaded',function(){
+            var grab=document.getElementById('slider-grab');
+            var pw=document.getElementById('pw');
+            if(!grab||!pw)return;
+            grab.addEventListener('mousedown',function(e){dragging=true;startX=e.clientX;startScroll=pw.scrollLeft;e.preventDefault()});
+            document.addEventListener('mousemove',function(e){if(!dragging)return;var track=document.getElementById('slider-track');var ratio=pw.scrollWidth/track.offsetWidth;pw.scrollLeft=startScroll+(e.clientX-startX)*ratio});
+            document.addEventListener('mouseup',function(){dragging=false});
+            // Touch support
+            grab.addEventListener('touchstart',function(e){dragging=true;startX=e.touches[0].clientX;startScroll=pw.scrollLeft},{passive:true});
+            document.addEventListener('touchmove',function(e){if(!dragging)return;var track=document.getElementById('slider-track');var ratio=pw.scrollWidth/track.offsetWidth;pw.scrollLeft=startScroll+(e.touches[0].clientX-startX)*ratio},{passive:true});
+            document.addEventListener('touchend',function(){dragging=false});
+        });
+        // Also init track position after gallery builds
+        setTimeout(updateTrack,500);
+    })();
 
     // ─── SCULPTURES ───
     function renderSculptures(arts){
