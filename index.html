@@ -751,6 +751,11 @@
         </div>
     </section>
 
+    <!-- Live Events Banner -->
+    <div id="live-events-strip" style="display:none;background:#000;border-bottom:1px solid #262626">
+        <div id="live-events-inner" style="max-width:1400px;margin:0 auto;padding:1rem 3rem;display:flex;gap:1.5rem;flex-wrap:wrap"></div>
+    </div>
+
     <!-- Featured Artworks -->
     <section class="featured" id="gallery">
         <div class="featured-header">
@@ -993,7 +998,24 @@
         })();
     
     document.addEventListener('click',function(e){var b=document.getElementById('signin-btn'),d=document.getElementById('signin-dropdown');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
+
+    // Live Events Banner
+    (async function(){
+        try{
+            var strip=document.getElementById('live-events-strip');
+            var inner=document.getElementById('live-events-inner');
+            var items=[];
+            // Check for live exhibition
+            var exhR=await fetch(SUPABASE_URL+'/rest/v1/exhibitions?status=eq.live&select=id,title,exhibitor_name&limit=1',{headers:{'apikey':SUPABASE_KEY}});
+            if(exhR.ok){var exhs=await exhR.json();if(exhs&&exhs.length){var x=exhs[0];items.push('<a href="vernissage.html" style="display:flex;align-items:center;gap:.75rem;text-decoration:none;padding:.6rem 1.25rem;border:1px solid #333;transition:all .2s" onmouseover="this.style.borderColor=\'#c8ff00\'" onmouseout="this.style.borderColor=\'#333\'"><span style="width:8px;height:8px;border-radius:50%;background:#c8ff00;flex-shrink:0;animation:lpulse 2s infinite"></span><span style="font-size:.85rem;color:#fff">Now Showing: <strong>'+x.title+'</strong></span><span style="font-size:.7rem;color:#a3a3a3;margin-left:.5rem">Enter Gallery →</span></a>')}}
+            // Check for live auction
+            var aucR=await fetch(SUPABASE_URL+'/rest/v1/auctions?status=eq.live&select=id,title&limit=1',{headers:{'apikey':SUPABASE_KEY}});
+            if(aucR.ok){var aucs=await aucR.json();if(aucs&&aucs.length){var a=aucs[0];items.push('<a href="auctions.html" style="display:flex;align-items:center;gap:.75rem;text-decoration:none;padding:.6rem 1.25rem;border:1px solid #333;transition:all .2s" onmouseover="this.style.borderColor=\'#c8ff00\'" onmouseout="this.style.borderColor=\'#333\'"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;animation:lpulse 2s infinite"></span><span style="font-size:.85rem;color:#fff">Live Auction: <strong>'+a.title+'</strong></span><span style="font-size:.7rem;color:#a3a3a3;margin-left:.5rem">Bid Now →</span></a>')}}
+            if(items.length){strip.style.display='block';inner.innerHTML=items.join('')}
+        }catch(e){console.error(e)}
+    })();
     </script>
 
+    <style>@keyframes lpulse{0%,100%{opacity:1}50%{opacity:.3}}</style>
 </body>
 </html>
