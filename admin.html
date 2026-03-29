@@ -3018,14 +3018,14 @@
                 d.style.cssText = 'padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
                 var btns = '';
                 if (ex.status === 'pending') {
-                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;margin-right:.3rem" onclick="updateExhStatus(\'' + ex.id + '\',\'approved\')">Approve</button>' +
-                           '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#ef4444" onclick="updateExhStatus(\'' + ex.id + '\',\'rejected\')">Reject</button>';
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;margin-right:.1rem;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'approved\')">Approve</button>' +
+                           '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#ef4444;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'rejected\')">Reject</button>';
                 } else if (ex.status === 'approved') {
-                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#c8ff00;color:#000" onclick="updateExhStatus(\'' + ex.id + '\',\'live\')">Go Live</button>';
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#c8ff00;color:#000;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'live\')">Go Live</button>';
                 } else if (ex.status === 'live') {
-                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#737373" onclick="updateExhStatus(\'' + ex.id + '\',\'ended\')">End</button>';
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#737373;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'ended\')">End</button>';
                 } else if (ex.status === 'ended') {
-                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#a3a3a3" onclick="updateExhStatus(\'' + ex.id + '\',\'archived\')">Archive</button>';
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#a3a3a3;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'archived\')">Archive</button>';
                 }
 
                 d.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
@@ -3038,11 +3038,11 @@
                             ' · ' + (ex.view_count || 0) + ' views' +
                         '</div>' +
                     '</div>' +
-                    '<div style="display:flex;align-items:center;gap:.5rem">' +
-                        '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#333" onclick="viewExhArt(\'' + ex.id + '\')">View Art</button>' +
+                    '<div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">' +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#333;line-height:1" onclick="viewExhArt(\'' + ex.id + '\')">View Art</button>' +
                         btns +
-                        '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#7f1d1d" onclick="deleteExh(\'' + ex.id + '\',\'' + (ex.title||'').replace(/'/g,'') + '\')">Delete</button>' +
-                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .5rem;background:' + (sc[ex.status]||'#555') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>' +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#7f1d1d;line-height:1" onclick="deleteExh(\'' + ex.id + '\',\'' + (ex.title||'').replace(/'/g,'') + '\')">Delete</button>' +
+                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .5rem;line-height:1;background:' + (sc[ex.status]||'#555') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>' +
                     '</div></div>';
                 list.appendChild(d);
             });

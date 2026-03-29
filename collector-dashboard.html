@@ -1032,53 +1032,92 @@
             var title = document.getElementById('coll-exh-title').value.trim();
             var msg = document.getElementById('coll-exh-msg');
             if (!title) { msg.textContent = 'Please enter a title.'; msg.style.color = '#dc2626'; return; }
-            msg.textContent = 'Submitting...'; msg.style.color = 'var(--gray-500)';
+            msg.textContent = 'Step 1: Creating exhibition...'; msg.style.color = 'var(--gray-500)';
             try {
-                var coverFile = document.getElementById('coll-exh-cover').files[0];
+                // Step 1: Upload cover image
                 var coverUrl = '';
+                var coverFile = document.getElementById('coll-exh-cover').files[0];
                 if (coverFile) {
+                    msg.textContent = 'Uploading cover image...';
                     var cPath = currentUser.id + '/' + Date.now() + '-cover.' + coverFile.name.split('.').pop();
-                    await db.storage.from('exhibition-images').upload(cPath, coverFile);
+                    var { error: upErr } = await db.storage.from('exhibition-images').upload(cPath, coverFile);
+                    if (upErr) { msg.textContent = 'Cover upload failed: ' + upErr.message; msg.style.color = '#dc2626'; return; }
                     coverUrl = db.storage.from('exhibition-images').getPublicUrl(cPath).data.publicUrl;
                 }
-                var { data: exh, error } = await db.from('exhibitions').insert({
-                    exhibitor_type: 'collector', exhibitor_id: currentUser.id,
-                    exhibitor_name: collectorData ? ((collectorData.first_name||'') + ' ' + (collectorData.last_name||'')).trim() : currentUser.email,
-                    exhibitor_email: currentUser.email,
-                    title: title, description: document.getElementById('coll-exh-desc').value.trim(),
-                    cover_image_url: coverUrl, slot_id: document.getElementById('coll-exh-slot').value || null,
-                    status: 'pending'
-                }).select().single();
-                if (error) throw error;
 
+                // Step 2: Create exhibition record
+                msg.textContent = 'Step 2: Saving exhibition...';
+                var exhData = {
+                    exhibitor_type: 'collector',
+                    exhibitor_id: currentUser.id,
+                    exhibitor_name: collectorData ? ((collectorData.first_name||'') + ' ' + (collectorData.last_name||'')).trim() || currentUser.email : currentUser.email,
+                    exhibitor_email: currentUser.email,
+                    title: title,
+                    status: 'pending'
+                };
+                var descVal = document.getElementById('coll-exh-desc').value.trim();
+                if (descVal) exhData.description = descVal;
+                if (coverUrl) exhData.cover_image_url = coverUrl;
+                var slotVal = document.getElementById('coll-exh-slot').value;
+                if (slotVal) exhData.slot_id = slotVal;
+
+                var { data: exh, error: exhErr } = await db.from('exhibitions').insert(exhData).select().single();
+                if (exhErr) { msg.textContent = 'Exhibition create failed: ' + exhErr.message; msg.style.color = '#dc2626'; return; }
+                if (!exh) { msg.textContent = 'Exhibition created but no data returned. Check admin.'; msg.style.color = '#f59e0b'; return; }
+
+                // Step 3: Upload artworks
                 var arts = document.querySelectorAll('#coll-exh-artworks > div');
                 for (var i = 0; i < arts.length; i++) {
-                    var a = arts[i], f = a.querySelector('.ce-file').files[0], imgUrl = '';
+                    var a = arts[i];
+                    msg.textContent = 'Step 3: Uploading artwork ' + (i+1) + ' of ' + arts.length + '...';
+
+                    // Upload image
+                    var imgUrl = '';
+                    var f = a.querySelector('.ce-file').files[0];
                     if (f) {
                         var p = currentUser.id + '/' + Date.now() + '-' + i + '.' + f.name.split('.').pop();
-                        await db.storage.from('exhibition-images').upload(p, f);
+                        var { error: artUpErr } = await db.storage.from('exhibition-images').upload(p, f);
+                        if (artUpErr) {
+                            msg.textContent = 'Image upload failed for artwork ' + (i+1) + ': ' + artUpErr.message;
+                            msg.style.color = '#dc2626'; return;
+                        }
                         imgUrl = db.storage.from('exhibition-images').getPublicUrl(p).data.publicUrl;
                     }
-                    await db.from('exhibition_artworks').insert({
-                        exhibition_id: exh.id, title: a.querySelector('.ce-title').value.trim() || 'Untitled',
-                        artist_name: a.querySelector('.ce-artist').value.trim(),
-                        medium: a.querySelector('.ce-medium').value.trim(),
-                        year: parseInt(a.querySelector('.ce-year').value) || null,
-                        width_cm: parseFloat(a.querySelector('.ce-width').value) || null,
-                        height_cm: parseFloat(a.querySelector('.ce-height').value) || null,
-                        artwork_type: a.querySelector('.ce-type') ? a.querySelector('.ce-type').value : 'painting',
-                        gallery_wall: a.querySelector('.ce-wall') ? a.querySelector('.ce-wall').value || null : null,
-                        description: a.querySelector('.ce-desc') ? a.querySelector('.ce-desc').value.trim() : '',
-                        image_url: imgUrl, display_order: i
-                    });
+
+                    // Build artwork record — only include fields that have values
+                    var artRecord = {
+                        exhibition_id: exh.id,
+                        title: a.querySelector('.ce-title').value.trim() || 'Untitled',
+                        display_order: i
+                    };
+                    var v;
+                    v = a.querySelector('.ce-artist'); if (v && v.value.trim()) artRecord.artist_name = v.value.trim();
+                    v = a.querySelector('.ce-medium'); if (v && v.value.trim()) artRecord.medium = v.value.trim();
+                    v = a.querySelector('.ce-year'); if (v && v.value) artRecord.year = parseInt(v.value) || null;
+                    v = a.querySelector('.ce-width'); if (v && v.value) artRecord.width_cm = parseFloat(v.value) || null;
+                    v = a.querySelector('.ce-height'); if (v && v.value) artRecord.height_cm = parseFloat(v.value) || null;
+                    v = a.querySelector('.ce-type'); if (v && v.value) artRecord.artwork_type = v.value;
+                    v = a.querySelector('.ce-wall'); if (v && v.value) artRecord.gallery_wall = v.value;
+                    v = a.querySelector('.ce-desc'); if (v && v.value.trim()) artRecord.description = v.value.trim();
+                    if (imgUrl) artRecord.image_url = imgUrl;
+
+                    var { error: artErr } = await db.from('exhibition_artworks').insert(artRecord);
+                    if (artErr) {
+                        msg.textContent = 'Artwork ' + (i+1) + ' save failed: ' + artErr.message;
+                        msg.style.color = '#dc2626'; return;
+                    }
                 }
-                msg.textContent = 'Exhibition request submitted!'; msg.style.color = '#22c55e';
+
+                msg.textContent = 'Exhibition submitted with ' + arts.length + ' artworks!';
+                msg.style.color = '#22c55e';
                 document.getElementById('coll-exh-title').value = '';
                 document.getElementById('coll-exh-desc').value = '';
                 document.getElementById('coll-exh-artworks').innerHTML = '';
                 loadCollExhibitions();
             } catch(e) {
-                msg.textContent = 'Error: ' + (e.message || 'Failed'); msg.style.color = '#dc2626';
+                msg.textContent = 'Error: ' + (e.message || JSON.stringify(e));
+                msg.style.color = '#dc2626';
+                console.error('Submit error:', e);
             }
         }
 
