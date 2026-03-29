@@ -390,7 +390,6 @@
     function showLive(x){
         document.getElementById('live-strip').classList.add('on');
         document.getElementById('live-text').innerHTML='Now Showing: <strong>'+E(x.title)+'</strong><span>by '+E(x.exhibitor_name||'Artist')+'</span>';
-        if(x.cover_image_url)document.getElementById('hero-img').src=x.cover_image_url;
     }
 
     async function buildGallery(x){
