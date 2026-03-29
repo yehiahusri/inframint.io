@@ -1027,7 +1027,7 @@
                 }
                 var { data: exh, error } = await db.from('exhibitions').insert({
                     exhibitor_type: 'collector', exhibitor_id: currentUser.id,
-                    exhibitor_name: collectorData ? collectorData.full_name : currentUser.email,
+                    exhibitor_name: collectorData ? ((collectorData.first_name||'') + ' ' + (collectorData.last_name||'')).trim() : currentUser.email,
                     exhibitor_email: currentUser.email,
                     title: title, description: document.getElementById('coll-exh-desc').value.trim(),
                     cover_image_url: coverUrl, slot_id: document.getElementById('coll-exh-slot').value || null,
