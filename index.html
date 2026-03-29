@@ -886,21 +886,38 @@
             try {
                 const { data: { session } } = await db.auth.getSession();
                 if (session) {
-                    const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
-                    if (artist) {
-                        document.getElementById('nav-right').innerHTML = 
-                            '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>' +
-                            '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
-                    } else {
-                        const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
-                        if (collector) {
-                            document.getElementById('nav-right').innerHTML = 
-                                '<a href="collector-dashboard.html" class="nav-login">My Account</a>' +
-                                '<a href="#" class="nav-login" id="sign-out-btn">Sign Out</a>';
-                        }
+                    var navR = document.getElementById('nav-right');
+                    var sigBtn = document.getElementById('signin-btn');
+                    var sigDd = document.getElementById('signin-dropdown');
+                    
+                    const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).maybeSingle();
+                    const { data: collector } = await db.from('collectors').select('id').eq('user_id', session.user.id).maybeSingle();
+                    
+                    var dashLink = null;
+                    if (artist) { dashLink = {href:'artist-dashboard.html', text:'Dashboard'}; }
+                    else if (collector) { dashLink = {href:'collector-dashboard.html', text:'My Account'}; }
+                    
+                    if (dashLink && navR) {
+                        // Replace Sign In button with Dashboard + Sign Out
+                        if (sigBtn) sigBtn.style.display = 'none';
+                        if (sigDd) sigDd.style.display = 'none';
+                        var dl = document.createElement('a');
+                        dl.href = dashLink.href;
+                        dl.style.cssText = 'font-size:.85rem;color:#a3a3a3;text-decoration:none;transition:color .2s';
+                        dl.textContent = dashLink.text;
+                        dl.onmouseover = function(){this.style.color='#fff'};
+                        dl.onmouseout = function(){this.style.color='#a3a3a3'};
+                        navR.insertBefore(dl, navR.firstChild);
+                        
+                        var so = document.createElement('a');
+                        so.href = '#';
+                        so.style.cssText = 'font-size:.85rem;color:#a3a3a3;text-decoration:none;transition:color .2s';
+                        so.textContent = 'Sign Out';
+                        so.onmouseover = function(){this.style.color='#fff'};
+                        so.onmouseout = function(){this.style.color='#a3a3a3'};
+                        so.onclick = async function(e){ e.preventDefault(); await db.auth.signOut(); window.location.reload(); };
+                        navR.insertBefore(so, navR.children[1]);
                     }
-                    var sob = document.getElementById('sign-out-btn');
-                    if (sob) sob.addEventListener('click', async function(e) { e.preventDefault(); await db.auth.signOut(); window.location.reload(); });
                 }
             } catch (err) { console.error('Auth check error:', err); }
 

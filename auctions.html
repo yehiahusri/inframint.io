@@ -290,7 +290,7 @@ var db=supabase.createClient('https://vyibnkztkacifahhlxof.supabase.co','eyJhbGc
 var currentUser=null,collectorId=null,likedLots=[];
 
 async function init(){
-    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').single();
+    var{data:setting}=await db.from('site_settings').select('value').eq('key','auctions_enabled').maybeSingle();
     if(!setting||setting.value!=='true'){
         document.getElementById('coming-soon').style.display='block';
         document.querySelector('.hero').style.display='none';
@@ -299,8 +299,8 @@ async function init(){
     var{data:{session}}=await db.auth.getSession();
     if(session){
         currentUser=session.user;
-        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).single();
-        if(col){collectorId=col.id;document.getElementById('nav-right').innerHTML='<a href="collector-dashboard.html" class="nav-login">My Account</a>';}
+        var{data:col}=await db.from('collectors').select('id').eq('user_id',session.user.id).maybeSingle();
+        if(col){collectorId=col.id;var nl=document.createElement('a');nl.href='collector-dashboard.html';nl.style.cssText='font-size:.85rem;color:#a3a3a3;text-decoration:none';nl.textContent='My Account';document.getElementById('nav-right').insertBefore(nl,document.getElementById('nav-right').firstChild);}
         // Load likes
         if(collectorId){
             var{data:likes}=await db.from('auction_lot_likes').select('lot_id').eq('collector_id',collectorId);

@@ -933,7 +933,7 @@
                 var { data: { session } } = await db.auth.getSession();
                 if (!session) { window.location.href = 'collector-login.html'; return; }
                 
-                var { data: col } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                var { data: col } = await db.from('collectors').select('id').eq('user_id', session.user.id).maybeSingle();
                 if (col) {
                     collectorId = col.id;
                 } else {
@@ -941,7 +941,7 @@
                         user_id: session.user.id,
                         email: session.user.email,
                         first_name: 'User'
-                    }, { onConflict: 'user_id' }).select().single();
+                    }, { onConflict: 'user_id' }).select().maybeSingle();
                     if (nc) collectorId = nc.id;
                     if (ncErr) { alert('Cannot save to wishlist: ' + ncErr.message); return; }
                 }
@@ -1060,14 +1060,14 @@
             if (!session) return;
 
             const navRight = document.getElementById('nav-right');
-            const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).single();
+            const { data: artist } = await db.from('artists').select('id').eq('user_id', session.user.id).maybeSingle();
             
             if (artist) {
-                navRight.innerHTML = '<a href="artist-dashboard.html" class="nav-login">Dashboard</a>';
+                var db_link=document.createElement('a');db_link.href='artist-dashboard.html';db_link.style.cssText='font-size:.85rem;color:#a3a3a3;text-decoration:none';db_link.textContent='Dashboard';navRight.insertBefore(db_link,navRight.firstChild);
             }
 
             // Try to find collector profile
-            var { data: collector, error: findErr } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+            var { data: collector, error: findErr } = await db.from('collectors').select('id').eq('user_id', session.user.id).maybeSingle();
             
             if (!collector) {
                 // Try upsert approach — insert or do nothing
@@ -1078,12 +1078,12 @@
                     email: session.user.email,
                     first_name: meta.first_name || names[0] || 'User',
                     last_name: meta.last_name || names.slice(1).join(' ') || ''
-                }, { onConflict: 'user_id' }).select().single();
+                }, { onConflict: 'user_id' }).select().maybeSingle();
                 
                 if (insErr) {
                     console.error('Collector create error:', insErr);
                     // One more try — just select
-                    var { data: retry } = await db.from('collectors').select('id').eq('user_id', session.user.id).single();
+                    var { data: retry } = await db.from('collectors').select('id').eq('user_id', session.user.id).maybeSingle();
                     if (retry) collector = retry;
                 } else {
                     collector = newCol;
