@@ -87,8 +87,8 @@
         .gallery-slider::-webkit-scrollbar{display:none}
 
         /* Each wall = one photo-based room */
-        .wall{position:relative;flex-shrink:0;width:100vw;overflow:hidden;background:#2a2a2a;aspect-ratio:3/2}
-        .wall-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center}
+        .wall{position:relative;flex-shrink:0;width:100vw;height:70vh;min-height:500px;overflow:hidden;background:#2a2a2a}
+        .wall-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
         /* Artwork overlaid on frame area */
         .wall-art{position:absolute;cursor:pointer;overflow:hidden;transition:opacity .3s;box-shadow:inset 0 0 6px rgba(0,0,0,.1)}
         .wall-art:hover{opacity:.92}
@@ -192,7 +192,7 @@
             .hero-inner{grid-template-columns:1fr}.hero-right{display:none}.hero-left{padding:4rem 1.5rem 3rem}.hero-t{font-size:2.25rem}
             .live-strip{padding:1rem 1.5rem;flex-wrap:wrap;gap:.65rem}
             .artist-strip{padding:1.5rem;flex-direction:column;align-items:flex-start;gap:.75rem}.as-meta{margin-left:0;text-align:left}
-            .wall{aspect-ratio:3/2;min-height:auto}
+            .wall{height:50vh;min-height:350px}
             .info-bar{padding:1.25rem 1.5rem;flex-direction:column;gap:.5rem}
             .archive{padding:2.5rem 1.5rem}.arc-grid{grid-template-columns:1fr}
             .chat-panel{width:calc(100vw - 2rem);right:1rem;bottom:5rem}
