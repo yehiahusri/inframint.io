@@ -87,17 +87,16 @@
         .gallery-slider::-webkit-scrollbar{display:none}
 
         /* Each wall = one photo-based room */
-        .wall{position:relative;flex-shrink:0;width:100vw;height:70vh;min-height:500px;overflow:hidden;background:#2a2a2a}
-        .wall-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+        .wall{position:relative;flex-shrink:0;width:100vw;overflow:hidden;background:#2a2a2a;aspect-ratio:3/2}
+        .wall-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center}
         /* Artwork overlaid on frame area */
-        .wall-art{position:absolute;cursor:pointer;overflow:hidden;transition:transform .3s;box-shadow:inset 0 0 8px rgba(0,0,0,.15)}
-        .wall-art:hover{transform:scale(1.015)}
+        .wall-art{position:absolute;cursor:pointer;overflow:hidden;transition:opacity .3s;box-shadow:inset 0 0 6px rgba(0,0,0,.1)}
+        .wall-art:hover{opacity:.92}
         .wall-art img{width:100%;height:100%;object-fit:cover;display:block}
-        /* Placard on wall */
-        .wall-placard{position:absolute;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);padding:.35rem .55rem;cursor:pointer;z-index:10;max-width:120px;transition:all .2s;border-left:2px solid var(--black)}
-        .wall-placard:hover{background:var(--white);transform:translateX(2px)}
-        .wall-placard .wp-t{font-size:.5rem;font-weight:600;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .wall-placard .wp-s{font-size:.4rem;color:var(--g500);margin-top:.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        /* Hover label on artwork */
+        .wall-art .wall-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.75);color:#fff;padding:.3rem .5rem;font-size:.55rem;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center}
+        .wall-art:hover .wall-label{opacity:1}
+        /* Placard hidden — label on artwork hover instead */
 
         /* Slider arrows */
         .sl-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;transition:all .2s;backdrop-filter:blur(4px)}
@@ -193,7 +192,7 @@
             .hero-inner{grid-template-columns:1fr}.hero-right{display:none}.hero-left{padding:4rem 1.5rem 3rem}.hero-t{font-size:2.25rem}
             .live-strip{padding:1rem 1.5rem;flex-wrap:wrap;gap:.65rem}
             .artist-strip{padding:1.5rem;flex-direction:column;align-items:flex-start;gap:.75rem}.as-meta{margin-left:0;text-align:left}
-            .wall{height:50vh;min-height:350px}
+            .wall{aspect-ratio:3/2;min-height:auto}
             .info-bar{padding:1.25rem 1.5rem;flex-direction:column;gap:.5rem}
             .archive{padding:2.5rem 1.5rem}.arc-grid{grid-template-columns:1fr}
             .chat-panel{width:calc(100vw - 2rem);right:1rem;bottom:5rem}
@@ -352,21 +351,21 @@
     // Gallery wall definitions — frame positions as % of image
     // Each wall: {img, slots: [{left,top,width,height,type}]}
     var WALLS=[
-        {img:'AG2.png',slots:[{l:25,t:16,w:44,h:40,tp:'painting'}]},
-        {img:'AG3.png',slots:[{l:19,t:20,w:52,h:40,tp:'painting'}]},
-        {img:'AG4.png',slots:[{l:12,t:19,w:30,h:46,tp:'painting'},{l:55,t:17,w:32,h:48,tp:'painting'}]},
-        {img:'AG5.png',slots:[{l:32,t:10,w:24,h:62,tp:'painting'}]},
-        {img:'AG6.png',slots:[{l:32,t:16,w:30,h:40,tp:'painting'}]},
-        {img:'AG1.png',slots:[{l:9,t:20,w:21,h:42,tp:'painting'},{l:37,t:18,w:25,h:40,tp:'painting'},{l:70,t:20,w:20,h:42,tp:'painting'}]},
-        {img:'AG7.png',slots:[{l:37,t:12,w:24,h:46,tp:'sculpture'}]},
-        {img:'AG9.png',slots:[{l:16,t:18,w:34,h:42,tp:'painting'},{l:64,t:18,w:14,h:42,tp:'sculpture'}]},
-        {img:'AG8.png',slots:[{l:15,t:16,w:18,h:42,tp:'sculpture'},{l:65,t:16,w:18,h:42,tp:'sculpture'}]},
-        {img:'AG10.png',slots:[{l:10,t:16,w:34,h:48,tp:'painting'},{l:58,t:16,w:32,h:46,tp:'painting'}]},
-        {img:'AG11.png',slots:[{l:10,t:12,w:26,h:50,tp:'painting'},{l:64,t:20,w:14,h:38,tp:'sculpture'}]},
-        {img:'AG12.png',slots:[{l:16,t:27,w:58,h:23,tp:'painting'}]},
-        {img:'AG14.png',slots:[{l:16,t:16,w:17,h:24,tp:'painting'},{l:38,t:10,w:24,h:50,tp:'painting'},{l:69,t:39,w:17,h:26,tp:'painting'}]},
-        {img:'AG13.png',slots:[{l:7,t:15,w:11,h:46,tp:'painting'},{l:24,t:15,w:11,h:46,tp:'painting'},{l:67,t:15,w:22,h:44,tp:'painting'}]},
-        {img:'AG15.png',slots:[{l:33,t:28,w:28,h:22,tp:'painting'}]}
+        {img:'AG2.png',slots:[{l:27,t:18,w:40,h:38,tp:'painting'}]},
+        {img:'AG3.png',slots:[{l:20,t:22,w:50,h:36,tp:'painting'}]},
+        {img:'AG4.png',slots:[{l:13,t:20,w:28,h:44,tp:'painting'},{l:56,t:18,w:30,h:46,tp:'painting'}]},
+        {img:'AG5.png',slots:[{l:33,t:12,w:22,h:58,tp:'painting'}]},
+        {img:'AG6.png',slots:[{l:33,t:18,w:28,h:36,tp:'painting'}]},
+        {img:'AG1.png',slots:[{l:10,t:22,w:19,h:38,tp:'painting'},{l:38,t:20,w:22,h:36,tp:'painting'},{l:71,t:22,w:18,h:38,tp:'painting'}]},
+        {img:'AG7.png',slots:[{l:38,t:14,w:22,h:42,tp:'sculpture'}]},
+        {img:'AG9.png',slots:[{l:17,t:20,w:32,h:38,tp:'painting'},{l:65,t:20,w:13,h:38,tp:'sculpture'}]},
+        {img:'AG8.png',slots:[{l:16,t:18,w:16,h:38,tp:'sculpture'},{l:66,t:18,w:16,h:38,tp:'sculpture'}]},
+        {img:'AG10.png',slots:[{l:11,t:18,w:32,h:44,tp:'painting'},{l:59,t:18,w:30,h:42,tp:'painting'}]},
+        {img:'AG11.png',slots:[{l:11,t:14,w:24,h:46,tp:'painting'},{l:65,t:22,w:12,h:34,tp:'sculpture'}]},
+        {img:'AG12.png',slots:[{l:17,t:28,w:56,h:20,tp:'painting'}]},
+        {img:'AG14.png',slots:[{l:17,t:18,w:15,h:22,tp:'painting'},{l:39,t:12,w:22,h:46,tp:'painting'},{l:70,t:40,w:15,h:22,tp:'painting'}]},
+        {img:'AG13.png',slots:[{l:8,t:17,w:10,h:42,tp:'painting'},{l:25,t:17,w:10,h:42,tp:'painting'},{l:68,t:17,w:20,h:40,tp:'painting'}]},
+        {img:'AG15.png',slots:[{l:35,t:30,w:24,h:18,tp:'painting'}]}
     ];
 
     document.addEventListener('click',function(e){var b=document.getElementById('signin-btn'),d=document.getElementById('signin-dropdown');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
@@ -398,18 +397,23 @@
         document.getElementById('as-name').innerHTML='<strong>'+E(n.split(' ')[0])+'</strong> '+E(n.split(' ').slice(1).join(' '));
         document.getElementById('as-bio').textContent=x.description||'';
         document.getElementById('as-title').textContent=x.title||'';
-        document.getElementById('as-dates').textContent=fs(x.start_date)+' — '+fs(x.end_date);
+        var dateStr='';
+        if(x.start_date&&x.end_date)dateStr=fs(x.start_date)+' — '+fs(x.end_date);
+        else if(x.start_date)dateStr='From '+fs(x.start_date);
+        else dateStr='Now showing';
+        document.getElementById('as-dates').textContent=dateStr;
         var ph=document.getElementById('as-photo');if(x.exhibitor_photo_url){ph.src=x.exhibitor_photo_url}else{ph.style.display='none'}
 
         var arts=await sbG('exhibition_artworks','exhibition_id=eq.'+x.id+'&select=*&order=display_order.asc');
         document.getElementById('g-load').style.display='none';
         allArts=arts||[];
 
-        // Build gallery walls
         buildWalls(allArts,x.status==='live');
 
         document.getElementById('i-bar').style.display='flex';
-        document.getElementById('ib-d').innerHTML='<strong>'+E(x.title)+'</strong> &middot; '+fs(x.start_date)+' — '+fs(x.end_date);
+        var infoHtml='<strong>'+E(x.title)+'</strong>';
+        if(x.start_date&&x.end_date)infoHtml+=' &middot; '+fs(x.start_date)+' — '+fs(x.end_date);
+        document.getElementById('ib-d').innerHTML=infoHtml;
         document.getElementById('vc').textContent=x.view_count||0;
 
         if(x.status==='live'){document.getElementById('cf').classList.add('on');document.getElementById('ch-n').textContent='Chat with '+(x.exhibitor_name||'Exhibitor');loadChat(x.id)}
@@ -512,13 +516,9 @@
                 var imgUrl=a.image_url||'';
                 html+='<div class="wall-art" style="left:'+sl.l+'%;top:'+sl.t+'%;width:'+sl.w+'%;height:'+sl.h+'%" onclick="openDt(\''+a.id+'\')">';
                 if(imgUrl){html+='<img src="'+E(imgUrl)+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.opacity=0">'}
+                html+='<div class="wall-label">'+E(a.title||'Untitled')+(a.artist_name?' — '+E(a.artist_name):'')+'</div>';
                 html+='</div>';
-                var plL=sl.l+sl.w+1,plT=sl.t+sl.h-12;
-                if(plL>85)plL=sl.l-12;
-                html+='<div class="wall-placard" style="left:'+plL+'%;top:'+plT+'%" onclick="openDt(\''+a.id+'\')">';
-                html+='<div class="wp-t">'+E(a.title||'Untitled')+'</div>';
-                html+='<div class="wp-s">'+E(a.artist_name||'')+'</div>';
-                html+='</div>';
+            });
             });
 
             div.innerHTML=html;
