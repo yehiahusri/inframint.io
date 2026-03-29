@@ -379,9 +379,14 @@
     async function init(){
         try{
             var live=await sbG('exhibitions','status=eq.live&select=*&order=start_date.desc&limit=1');
-            if(live&&live.length){curExh=live[0];showLive(curExh);await buildGallery(curExh);incV(curExh.id)}
-            await loadArc();
-        }catch(e){console.error(e);document.getElementById('g-load').textContent='Unable to load exhibitions.'}
+            if(live&&live.length){
+                curExh=live[0];
+                showLive(curExh);
+                try{ await buildGallery(curExh); }catch(ge){ console.error('Gallery build error:',ge); document.getElementById('g-load').textContent='Gallery error: '+ge.message; }
+                incV(curExh.id);
+            }
+        }catch(e){console.error('Init error:',e);document.getElementById('g-load').textContent='Unable to load: '+e.message;}
+        try{ await loadArc(); }catch(ae){ console.error('Archive error:',ae); }
     }
 
     function showLive(x){
