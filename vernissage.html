@@ -282,7 +282,7 @@
             <div class="hero-s">Step inside our virtual gallery. Curated exhibitions by emerging artists — paintings, sculptures, and installations displayed in an immersive space.</div>
             <div class="hero-btns"><a href="#gallery-room" class="btn-p" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a><a href="#archive" class="btn-s">Past Exhibitions</a></div>
         </div>
-        <div class="hero-right"><img class="hero-img" id="hero-img" src="AG13.png" alt="Gallery hallway" onerror="this.src='advisoryhero.png'"><div class="hero-overlay"></div></div>
+        <div class="hero-right"><img class="hero-img" id="hero-img" src="exhibitions_main_pic.png" alt="Gallery exhibition" onerror="this.src='advisoryhero.png'"><div class="hero-overlay"></div></div>
     </div></div>
 
     <div class="live-strip" id="live-strip"><div class="live-dot"></div><div class="live-strip-text" id="live-text">Now Showing</div><a href="#gallery-room" class="live-strip-btn" onclick="document.getElementById('gallery-room').scrollIntoView({behavior:'smooth'})">Enter Gallery</a></div>
@@ -352,21 +352,18 @@
     // Gallery wall definitions — frame positions as % of image
     // Each wall: {img, slots: [{left,top,width,height,type}]}
     var WALLS=[
-        {img:'AG2.png',slots:[{l:27,t:18,w:40,h:38,tp:'painting'}]},
-        {img:'AG3.png',slots:[{l:20,t:22,w:50,h:36,tp:'painting'}]},
-        {img:'AG4.png',slots:[{l:13,t:20,w:28,h:44,tp:'painting'},{l:56,t:18,w:30,h:46,tp:'painting'}]},
-        {img:'AG5.png',slots:[{l:33,t:12,w:22,h:58,tp:'painting'}]},
-        {img:'AG6.png',slots:[{l:33,t:18,w:28,h:36,tp:'painting'}]},
-        {img:'AG1.png',slots:[{l:10,t:22,w:19,h:38,tp:'painting'},{l:38,t:20,w:22,h:36,tp:'painting'},{l:71,t:22,w:18,h:38,tp:'painting'}]},
-        {img:'AG7.png',slots:[{l:38,t:14,w:22,h:42,tp:'sculpture'}]},
-        {img:'AG9.png',slots:[{l:17,t:20,w:32,h:38,tp:'painting'},{l:65,t:20,w:13,h:38,tp:'sculpture'}]},
-        {img:'AG8.png',slots:[{l:16,t:18,w:16,h:38,tp:'sculpture'},{l:66,t:18,w:16,h:38,tp:'sculpture'}]},
-        {img:'AG10.png',slots:[{l:11,t:18,w:32,h:44,tp:'painting'},{l:59,t:18,w:30,h:42,tp:'painting'}]},
-        {img:'AG11.png',slots:[{l:11,t:14,w:24,h:46,tp:'painting'},{l:65,t:22,w:12,h:34,tp:'sculpture'}]},
-        {img:'AG12.png',slots:[{l:17,t:28,w:56,h:20,tp:'painting'}]},
-        {img:'AG14.png',slots:[{l:17,t:18,w:15,h:22,tp:'painting'},{l:39,t:12,w:22,h:46,tp:'painting'},{l:70,t:40,w:15,h:22,tp:'painting'}]},
-        {img:'AG13.png',slots:[{l:8,t:17,w:10,h:42,tp:'painting'},{l:25,t:17,w:10,h:42,tp:'painting'},{l:68,t:17,w:20,h:40,tp:'painting'}]},
-        {img:'AG15.png',slots:[{l:35,t:30,w:24,h:18,tp:'painting'}]}
+        {img:'AG2.png',slots:[{l:20,t:18,w:55,h:40,tp:'painting'}]},
+        {img:'AG3.png',slots:[{l:15,t:15,w:65,h:45,tp:'painting'}]},
+        {img:'AG4.png',slots:[{l:8,t:18,w:35,h:40,tp:'painting'},{l:55,t:18,w:35,h:40,tp:'painting'}]},
+        {img:'AG6.png',slots:[{l:18,t:12,w:58,h:38,tp:'painting'}]},
+        {img:'AG1.png',slots:[{l:8,t:15,w:38,h:38,tp:'painting'},{l:58,t:15,w:30,h:38,tp:'painting'}]},
+        {img:'AG7.png',slots:[{l:38,t:15,w:22,h:40,tp:'sculpture'}]},
+        {img:'AG9.png',slots:[{l:10,t:15,w:42,h:42,tp:'painting'},{l:62,t:30,w:16,h:30,tp:'sculpture'}]},
+        {img:'AG8.png',slots:[{l:12,t:15,w:20,h:38,tp:'sculpture'},{l:65,t:15,w:20,h:38,tp:'sculpture'}]},
+        {img:'AG10.png',slots:[{l:8,t:15,w:38,h:40,tp:'painting'},{l:55,t:15,w:38,h:40,tp:'painting'}]},
+        {img:'AG11.png',slots:[{l:5,t:12,w:35,h:40,tp:'painting'},{l:62,t:22,w:16,h:35,tp:'sculpture'}]},
+        {img:'AG12.png',slots:[{l:10,t:15,w:75,h:50,tp:'painting'}]},
+        {img:'AG14.png',slots:[]}
     ];
 
     document.addEventListener('click',function(e){var b=document.getElementById('signin-btn'),d=document.getElementById('signin-dropdown');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
@@ -530,6 +527,12 @@
             div.innerHTML=html;
             slider.appendChild(div);
         });
+
+        // Always add exit room as final slide
+        var exitDiv=document.createElement('div');
+        exitDiv.className='wall';
+        exitDiv.innerHTML='<div class="wall-inner"><img class="wall-bg" src="AG14.png" alt="Exit" loading="lazy"></div>';
+        slider.appendChild(exitDiv);
 
         updTrack();
         updCounter();
