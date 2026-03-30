@@ -12,28 +12,10 @@
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--black:#000;--white:#fff;--g100:#f7f7f7;--g200:#e5e5e5;--g300:#d4d4d4;--g400:#a3a3a3;--g500:#737373;--g600:#525252;--g800:#262626;--ok:#16a34a;--err:#dc2626;--warn:#f59e0b;--blue:#2563eb}
         body{font-family:'Manrope',sans-serif;background:var(--g100);color:var(--black);-webkit-font-smoothing:antialiased;font-size:13px}
-
-        /* Public Nav Bar */
-        #public-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 3rem;display:flex;justify-content:space-between;align-items:center;background:var(--black);height:4.5rem}
-        #public-nav .logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
-        #public-nav .logo-bar{width:3px;height:1.75rem;background:#fff}
-        #public-nav .logo-text{font-size:1.25rem;letter-spacing:-.01em}
-        #public-nav .logo-text span:first-child{font-weight:600;color:#fff}
-        #public-nav .logo-text span:last-child{font-weight:200;color:var(--g500)}
-        #public-nav .nav-center{display:flex;gap:2rem;align-items:center}
-        #public-nav .nav-center a{font-size:.875rem;color:var(--g400);text-decoration:none;transition:color .2s}
-        #public-nav .nav-center a:hover{color:#fff}
-        #public-nav .nav-right{display:flex;gap:1.25rem;align-items:center}
-        #public-nav .nav-user{font-size:.8rem;color:#c8ff00;font-weight:500}
-        #public-nav .nav-link{font-size:.8rem;color:var(--g400);text-decoration:none;cursor:pointer;transition:color .2s}
-        #public-nav .nav-link:hover{color:#fff}
-        #public-nav .hamburger{display:none;background:none;border:none;cursor:pointer;padding:.5rem}
-        @media(max-width:1200px){#public-nav .nav-center{display:none}#public-nav .nav-right{display:none}#public-nav .hamburger{display:block}#public-nav .mobile-dropdown{display:none;position:fixed;top:4.5rem;left:0;right:0;background:#000;border-top:1px solid #262626;flex-direction:column;z-index:199;max-height:calc(100vh - 4.5rem);overflow-y:auto}#public-nav .mobile-dropdown.open{display:flex}#public-nav .mobile-dropdown a{padding:.75rem 2rem;font-size:.9rem;color:var(--g400);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05)}#public-nav .mobile-dropdown a:hover{color:#fff}}
-
-        .layout{display:grid;grid-template-columns:230px 1fr;height:calc(100vh - 4.5rem);overflow:hidden;margin-top:4.5rem}
+        .layout{display:grid;grid-template-columns:230px 1fr;height:100vh;overflow:hidden}
 
         /* Sidebar */
-        .sb{background:#0a0a0a;padding-top:1.25rem;display:flex;flex-direction:column;overflow-y:auto;height:calc(100vh - 4.5rem)}
+        .sb{background:#0a0a0a;padding-top:1.25rem;display:flex;flex-direction:column;overflow-y:auto;height:100vh}
         .sb-logo{display:flex;align-items:center;gap:.6rem;padding:0 1.25rem 1.25rem;text-decoration:none;border-bottom:1px solid #1a1a1a}
         .sb-logo .bar{width:2px;height:1.1rem;background:#fff}
         .sb-logo .t{font-size:1rem;letter-spacing:-.01em}
@@ -53,7 +35,7 @@
 
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1.5rem;border-bottom:1px solid var(--g200);background:var(--white);font-size:.75rem;color:var(--g500)}
 
-        main{padding:0;overflow-y:auto;overflow-x:hidden;height:calc(100vh - 4.5rem)}
+        main{padding:0;overflow-y:auto;overflow-x:hidden;height:100vh}
         .sec{display:none}
         .sec.active{display:block}
         .ph{padding:1.25rem 1.5rem .75rem}
@@ -162,34 +144,6 @@
     </div>
 
     <div class="layout" id="dash" style="display:none">
-        <!-- Public Nav Bar -->
-        <nav id="public-nav" style="display:none">
-            <a href="index.html" class="logo">
-                <div class="logo-bar"></div>
-                <div class="logo-text"><span>Infra</span><span>Mint</span></div>
-            </a>
-            <button class="hamburger" onclick="document.querySelector('#public-nav .mobile-dropdown').classList.toggle('open')">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
-            <div class="mobile-dropdown" onclick="this.classList.remove('open')">
-                <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="blog.html">The Drip</a>
-                <a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a>
-                <a href="market-index.html">Market Index</a><a href="about.html">About</a>
-            </div>
-            <div class="nav-center">
-                <a href="gallery.html">Gallery</a>
-                <a href="artists.html">Artists</a>
-                <a href="blog.html">The Drip</a>
-                <a href="auctions.html">Auctions</a>
-                <a href="art-advisory.html">Advisory</a>
-                <a href="market-index.html">Market Index</a>
-                <a href="about.html">About</a>
-            </div>
-            <div class="nav-right">
-                <span class="nav-user" id="admin-nav-name">Admin</span>
-                <a class="nav-link" id="nav-sign-out">Sign Out</a>
-            </div>
-        </nav>
         <div class="sb">
             <a href="index.html" class="sb-logo"><div class="bar"></div><div class="t"><span>Infra</span><span>Mint</span></div></a>
             <div class="sb-badge">Gallery Owner</div>
@@ -222,6 +176,8 @@
                 <a class="sb-lk" data-s="finance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Finance</a>
                 <a class="sb-lk" data-s="commissions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Commissions</a>
                 <a class="sb-lk" data-s="auctions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>Auctions <span class="ct" id="n-auctions">0</span></a>
+                <a class="sb-lk" data-s="exhibitions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Exhibitions <span class="ct" id="n-exhibitions">0</span></a>
+                <a class="sb-lk" data-s="private-sellers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="17"/></svg>Private Sellers <span class="ct" id="n-sellers">0</span></a>
             </div>
             <div class="sb-sec">
                 <div class="sb-lbl">Communication</div>
@@ -241,11 +197,11 @@
                 <a class="sb-lk" data-s="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team / Co-Owners</a>
                 <a class="sb-lk" data-s="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
             </div>
-            <div class="sb-bot"><button id="sign-out">Sign Out</button></div>
+            <div class="sb-bot"></div>
         </div>
 
         <div>
-            <div class="topbar"><span>InfraMint Admin</span><span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span></div>
+            <div class="topbar"><span>InfraMint Admin</span><div style="display:flex;align-items:center;gap:1.5rem"><span id="aname" style="font-size:.8rem;color:var(--g600)">Admin</span><button id="sign-out" style="font-family:'Manrope',sans-serif;font-size:.75rem;color:#999;background:none;border:1px solid #ddd;padding:.3rem .75rem;cursor:pointer">Sign Out</button></div></div>
             <main>
                 <!-- Dashboard -->
                 <div class="sec active" id="section-overview">
@@ -800,6 +756,47 @@
                     </div>
                 </div>
 
+                <!-- Exhibitions -->
+                <div class="sec" id="section-exhibitions">
+                    <div class="ph"><h1>Exhibitions</h1><p>Manage virtual exhibition requests</p></div>
+
+                    <!-- Create Slot -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Create Exhibition Slot</span></div>
+                        <div class="form-row2">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Label</label><input type="text" class="fi" id="slot-label" placeholder="e.g. July 2026"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Max Exhibitions</label><input type="number" class="fi" id="slot-max" value="1"></div>
+                        </div>
+                        <div class="form-row2" style="margin-top:.5rem">
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Start Date</label><input type="date" class="fi" id="slot-start"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">End Date</label><input type="date" class="fi" id="slot-end"></div>
+                        </div>
+                        <div id="slot-msg" style="font-size:.75rem;margin:.5rem 0"></div>
+                        <button class="fbtn" onclick="createSlot()">Create Slot</button>
+                    </div>
+
+                    <!-- Existing Slots -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Exhibition Slots</span></div>
+                        <div id="admin-slots-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+
+                    <!-- Exhibition Requests -->
+                    <div class="card">
+                        <div class="ch"><span class="ct2">Exhibition Requests</span></div>
+                        <div id="admin-exh-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+                </div>
+
+                <!-- Private Sellers -->
+                <div class="sec" id="section-private-sellers">
+                    <div class="ph"><h1>Private Sellers</h1><p>Review and verify private seller accounts</p></div>
+                    <div class="card">
+                        <div class="ch"><span class="ct2">All Private Sellers</span></div>
+                        <div id="admin-sellers-list"><p style="color:var(--g500);font-size:.8rem;padding:.5rem 0">Loading...</p></div>
+                    </div>
+                </div>
+
                 <!-- Settings -->
                 <div class="sec" id="section-settings">
                     <div class="ph"><h1>Settings</h1><p>Platform configuration</p></div>
@@ -875,7 +872,7 @@
         var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
         if(error){m.textContent=error.message;m.className='lm show';return}
         // Check admin_users table OR legacy email
-        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
         if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
         showDash(adm);
     };
@@ -883,7 +880,7 @@
     async function checkAuth(){
         var{data:{session}}=await db.auth.getSession();
         if(session){
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
             if(adm||session.user.email===ADM_LEGACY)showDash(adm);
         }
     }
@@ -892,10 +889,7 @@
     function showDash(adm){
         document.getElementById('lov').style.display='none';
         document.getElementById('dash').style.display='grid';
-        document.getElementById('public-nav').style.display='flex';
-        var adminName=adm?adm.name:(ADM_LEGACY);
-        document.getElementById('aname').textContent=adminName;
-        document.getElementById('admin-nav-name').textContent=adminName;
+        document.getElementById('aname').textContent=adm?adm.name:(ADM_LEGACY);
         loadAll();
         loadAuctionSetting();
     }
@@ -908,9 +902,7 @@
         document.getElementById('section-'+this.dataset.s).classList.add('active');
     })});
 
-    async function doSignOut(){await db.auth.signOut();window.location.href='index.html';}
-    document.getElementById('sign-out').onclick=doSignOut;
-    document.getElementById('nav-sign-out').onclick=doSignOut;
+    document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};
 
     // Commission calculator
     document.getElementById('set-gallery').oninput=function(){
@@ -944,7 +936,7 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
         var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
@@ -965,7 +957,7 @@
 
     // ===== ADVISORY HERO IMAGE =====
     (async function(){
-        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').maybeSingle();
+        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').single();
         if (setting && setting.value) {
             document.getElementById('adv-hero-preview').innerHTML = '<img src="' + setting.value + '" style="width:100%;max-width:400px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--g200)">';
         }
@@ -1009,7 +1001,7 @@
 
         // Load initial state
         (async function() {
-            var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
+            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
@@ -3008,6 +3000,204 @@
         }
         this.textContent = 'Add Painting to Auction'; this.disabled = false;
     });
+
+    // ═══════ EXHIBITIONS ADMIN ═══════
+    async function loadAdminExhibitions() {
+        try {
+            var { data: exhs } = await db.from('exhibitions').select('*').order('created_at', { ascending: false });
+            var el = document.getElementById('n-exhibitions');
+            if (el) el.textContent = exhs ? exhs.filter(function(e){ return e.status === 'pending'; }).length : 0;
+
+            var list = document.getElementById('admin-exh-list');
+            if (!exhs || !exhs.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No exhibition requests.</p>'; return; }
+            list.innerHTML = '';
+
+            exhs.forEach(function(ex) {
+                var sc = { pending:'#f59e0b', approved:'#22c55e', rejected:'#ef4444', live:'#c8ff00', ended:'#737373', archived:'#a3a3a3', draft:'#d4d4d4' };
+                var d = document.createElement('div');
+                d.style.cssText = 'padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                var btns = '';
+                if (ex.status === 'pending') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;margin-right:.1rem;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'approved\')">Approve</button>' +
+                           '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#ef4444;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'rejected\')">Reject</button>';
+                } else if (ex.status === 'approved') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#c8ff00;color:#000;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'live\')">Go Live</button>';
+                } else if (ex.status === 'live') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#737373;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'ended\')">End</button>';
+                } else if (ex.status === 'ended') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#a3a3a3;line-height:1" onclick="updateExhStatus(\'' + ex.id + '\',\'archived\')">Archive</button>';
+                }
+
+                d.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                    '<div>' +
+                        '<div style="font-weight:500;font-size:.85rem;color:#fff">' + (ex.title || 'Untitled') + '</div>' +
+                        '<div style="font-size:.7rem;color:var(--g500)">' + (ex.exhibitor_name || '') + ' (' + (ex.exhibitor_type || '') + ') · ' + (ex.exhibitor_email || '') + '</div>' +
+                        '<div style="font-size:.7rem;color:var(--g500);margin-top:.2rem">' +
+                            (ex.start_date ? new Date(ex.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'No dates') +
+                            ' — ' + (ex.end_date ? new Date(ex.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '') +
+                            ' · ' + (ex.view_count || 0) + ' views' +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">' +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#333;line-height:1" onclick="viewExhArt(\'' + ex.id + '\')">View Art</button>' +
+                        btns +
+                        '<button class="fbtn" style="font-size:.65rem;padding:.3rem .6rem;background:#7f1d1d;line-height:1" onclick="deleteExh(\'' + ex.id + '\',\'' + (ex.title||'').replace(/'/g,'') + '\')">Delete</button>' +
+                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .5rem;line-height:1;background:' + (sc[ex.status]||'#555') + ';color:' + (ex.status==='live'?'#000':'#fff') + '">' + ex.status + '</span>' +
+                    '</div></div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error('loadAdminExhibitions error:', e); }
+    }
+
+    async function updateExhStatus(id, status) {
+        try {
+            await db.from('exhibitions').update({ status: status, updated_at: new Date().toISOString() }).eq('id', id);
+            loadAdminExhibitions();
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    async function deleteExh(id, title) {
+        if (!confirm('Delete exhibition "' + title + '"? This will also delete all its artworks. This cannot be undone.')) return;
+        try {
+            // Delete artworks first (cascade should handle it but be safe)
+            await db.from('exhibition_artworks').delete().eq('exhibition_id', id);
+            await db.from('exhibition_chat_messages').delete().eq('exhibition_id', id);
+            await db.from('exhibitions').delete().eq('id', id);
+            loadAdminExhibitions();
+        } catch(e) { alert('Error deleting: ' + e.message); }
+    }
+
+    async function viewExhArt(exhId) {
+        try {
+            var { data: arts } = await db.from('exhibition_artworks').select('*').eq('exhibition_id', exhId).order('display_order');
+            if (!arts || !arts.length) { alert('No artworks in this exhibition.'); return; }
+
+            var html = '<html><head><title>Exhibition Artworks</title><style>body{font-family:Manrope,sans-serif;background:#111;color:#fff;padding:2rem}' +
+                '.art{display:inline-block;margin:1rem;text-align:center;vertical-align:top}' +
+                '.art img{max-width:280px;max-height:280px;object-fit:contain;border:4px solid #fff;box-shadow:0 4px 20px rgba(0,0,0,.4)}' +
+                '.art h3{font-size:.85rem;margin-top:.5rem;font-weight:500}.art p{font-size:.7rem;color:#999}</style></head><body>';
+            html += '<h2 style="font-size:1.2rem;font-weight:300;margin-bottom:1.5rem">' + arts.length + ' Artwork' + (arts.length>1?'s':'') + '</h2>';
+            arts.forEach(function(a) {
+                html += '<div class="art">' +
+                    (a.image_url ? '<img src="' + a.image_url + '">' : '<div style="width:200px;height:200px;background:#333;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#666">No image</div>') +
+                    '<h3>' + (a.title || 'Untitled') + '</h3>' +
+                    '<p>' + (a.artist_name || '') + '</p>' +
+                    '<p>' + (a.medium || '') + (a.year ? ', ' + a.year : '') + '</p>' +
+                    '<p>' + (a.width_cm || '?') + ' &times; ' + (a.height_cm || '?') + ' cm</p>' +
+                    '<p style="color:#c8ff00">' + (a.artwork_type || 'painting') + (a.gallery_wall ? ' &middot; Wall: ' + a.gallery_wall : ' &middot; Auto-assign') + '</p>' +
+                    (a.description ? '<p style="color:#777;font-size:.65rem;max-width:250px;margin:0 auto">' + a.description + '</p>' : '') +
+                    (a.price ? '<p style="color:#c8ff00;font-weight:600">$' + Number(a.price).toLocaleString() + '</p>' : '') +
+                    '</div>';
+            });
+            html += '</body></html>';
+            var w = window.open('', '_blank', 'width=900,height=600');
+            w.document.write(html); w.document.close();
+        } catch(e) { alert('Error loading artworks: ' + e.message); }
+    }
+
+    async function createSlot() {
+        var label = document.getElementById('slot-label').value.trim();
+        var start = document.getElementById('slot-start').value;
+        var end = document.getElementById('slot-end').value;
+        var max = parseInt(document.getElementById('slot-max').value) || 1;
+        var msg = document.getElementById('slot-msg');
+
+        if (!start || !end) { msg.textContent = 'Please set dates.'; msg.style.color = '#ef4444'; return; }
+        if (new Date(end) <= new Date(start)) { msg.textContent = 'End date must be after start.'; msg.style.color = '#ef4444'; return; }
+
+        try {
+            await db.from('exhibition_slots').insert({
+                label: label || 'Exhibition Slot',
+                start_date: start, end_date: end,
+                max_exhibitions: max, is_available: true
+            });
+            msg.textContent = 'Slot created!'; msg.style.color = '#22c55e';
+            document.getElementById('slot-label').value = '';
+            document.getElementById('slot-start').value = '';
+            document.getElementById('slot-end').value = '';
+            loadAdminSlots();
+        } catch(e) { msg.textContent = 'Error: ' + e.message; msg.style.color = '#ef4444'; }
+    }
+
+    async function loadAdminSlots() {
+        try {
+            var { data: slots } = await db.from('exhibition_slots').select('*').order('start_date', { ascending: true });
+            var list = document.getElementById('admin-slots-list');
+            if (!slots || !slots.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No slots created.</p>'; return; }
+            list.innerHTML = '';
+            slots.forEach(function(s) {
+                var d = document.createElement('div');
+                d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                d.innerHTML = '<div>' +
+                    '<span style="font-weight:500;font-size:.85rem;color:#fff">' + (s.label || 'Slot') + '</span>' +
+                    '<span style="font-size:.75rem;color:var(--g500);margin-left:.75rem">' +
+                        new Date(s.start_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' — ' +
+                        new Date(s.end_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) +
+                    '</span></div>' +
+                    '<div style="display:flex;gap:.5rem;align-items:center">' +
+                        '<span style="font-size:.7rem;color:' + (s.is_available?'#22c55e':'#ef4444') + '">' + (s.is_available?'Available':'Taken') + '</span>' +
+                        '<button class="fbtn" style="font-size:.6rem;padding:.2rem .5rem;background:#ef4444" onclick="deleteSlot(\'' + s.id + '\')">Delete</button>' +
+                    '</div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    async function deleteSlot(id) {
+        if (!confirm('Delete this slot?')) return;
+        await db.from('exhibition_slots').delete().eq('id', id);
+        loadAdminSlots();
+    }
+
+    // ═══════ PRIVATE SELLERS ADMIN ═══════
+    async function loadAdminSellers() {
+        try {
+            var { data: sellers } = await db.from('private_sellers').select('*').order('created_at', { ascending: false });
+            var el = document.getElementById('n-sellers');
+            if (el) el.textContent = sellers ? sellers.length : 0;
+
+            var list = document.getElementById('admin-sellers-list');
+            if (!sellers || !sellers.length) { list.innerHTML = '<p style="color:var(--g500);font-size:.8rem">No private sellers registered.</p>'; return; }
+            list.innerHTML = '';
+            sellers.forEach(function(s) {
+                var vc = { unverified:'#a3a3a3', pending:'#f59e0b', verified:'#22c55e', rejected:'#ef4444' };
+                var d = document.createElement('div');
+                d.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.06)';
+                var btns = '';
+                if (s.verification_status === 'pending') {
+                    btns = '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;margin-right:.3rem" onclick="verifySeller(\'' + s.id + '\',\'verified\')">Verify</button>' +
+                           '<button class="fbtn" style="font-size:.65rem;padding:.25rem .6rem;background:#ef4444" onclick="verifySeller(\'' + s.id + '\',\'rejected\')">Reject</button>';
+                }
+                var docs = '';
+                if (s.id_document_url) docs += '<a href="' + s.id_document_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00;margin-right:.5rem">ID</a>';
+                if (s.ownership_proof_url) docs += '<a href="' + s.ownership_proof_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00;margin-right:.5rem">Proof</a>';
+                if (s.photo_with_art_url) docs += '<a href="' + s.photo_with_art_url + '" target="_blank" style="font-size:.65rem;color:#c8ff00">Photo</a>';
+
+                d.innerHTML = '<div>' +
+                    '<div style="font-weight:500;font-size:.85rem;color:#fff">' + (s.full_name || 'Unknown') + '</div>' +
+                    '<div style="font-size:.7rem;color:var(--g500)">' + (s.email || '') + (s.phone ? ' · ' + s.phone : '') + '</div>' +
+                    (docs ? '<div style="margin-top:.2rem">' + docs + '</div>' : '') +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:.5rem">' +
+                        btns +
+                        '<span style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .5rem;background:' + (vc[s.verification_status]||'#555') + ';color:#fff">' + (s.verification_status || 'unknown') + '</span>' +
+                    '</div>';
+                list.appendChild(d);
+            });
+        } catch(e) { console.error('loadAdminSellers error:', e); }
+    }
+
+    async function verifySeller(id, status) {
+        try {
+            var updates = { verification_status: status };
+            if (status === 'verified') updates.verified_at = new Date().toISOString();
+            await db.from('private_sellers').update(updates).eq('id', id);
+            loadAdminSellers();
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    // Load exhibitions and sellers on init
+    setTimeout(function() { loadAdminExhibitions(); loadAdminSlots(); loadAdminSellers(); }, 1500);
 
     </script>
 </body>
