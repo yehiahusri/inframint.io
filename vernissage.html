@@ -363,7 +363,17 @@
         {img:'AG10.png',slots:[{l:8,t:15,w:38,h:40,tp:'painting'},{l:55,t:15,w:38,h:40,tp:'painting'}]},
         {img:'AG11.png',slots:[{l:5,t:12,w:35,h:40,tp:'painting'},{l:62,t:22,w:16,h:35,tp:'sculpture'}]},
         {img:'AG12.png',slots:[{l:10,t:15,w:75,h:50,tp:'painting'}]},
-        {img:'AG14.png',slots:[]}
+        {img:'AG14.png',slots:[],montage:true}
+    ];
+
+    // AG14 montage positions — artwork thumbnails on the wall visible through the exit archway
+    // These are small and centered to simulate perspective depth through the doorway
+    var MONTAGE_SLOTS=[
+        {l:30,t:22,w:16,h:24},
+        {l:50,t:22,w:16,h:24},
+        {l:30,t:50,w:16,h:20},
+        {l:50,t:50,w:16,h:20},
+        {l:40,t:20,w:18,h:28}
     ];
 
     document.addEventListener('click',function(e){var b=document.getElementById('signin-btn'),d=document.getElementById('signin-dropdown');if(b&&d&&!b.contains(e.target)&&!d.contains(e.target)){d.classList.remove('open');b.classList.remove('open')}});
@@ -396,7 +406,7 @@
         document.getElementById('gallery-room').classList.add('on');
         var strip=document.getElementById('a-strip');strip.style.display='flex';
         var n=x.exhibitor_name||'';
-        document.getElementById('as-name').innerHTML='<strong>'+E(n.split(' ')[0])+'</strong> '+E(n.split(' ').slice(1).join(' '));
+        document.getElementById('as-name').innerHTML='';
         document.getElementById('as-bio').textContent=x.description||'';
         document.getElementById('as-title').textContent=x.title||'';
         var dateStr='';
@@ -410,7 +420,24 @@
         document.getElementById('g-load').style.display='none';
         allArts=arts||[];
 
+        // Resolve artist name — prefer artist_name from artworks over exhibitor_name
+        var resolvedName=x.exhibitor_name||'';
+        if(allArts.length>0){
+            // Find the most common artist_name from artworks
+            var names={};
+            allArts.forEach(function(a){if(a.artist_name){names[a.artist_name]=(names[a.artist_name]||0)+1}});
+            var best='',bestC=0;
+            Object.keys(names).forEach(function(n){if(names[n]>bestC){best=n;bestC=names[n]}});
+            if(best) resolvedName=best;
+        }
+
+        // Update artist strip with resolved name
+        document.getElementById('as-name').innerHTML='<strong>'+E(resolvedName.split(' ')[0])+'</strong> '+E(resolvedName.split(' ').slice(1).join(' '));
+
         buildWalls(allArts,x.status==='live');
+
+        // Update live strip with resolved name
+        document.getElementById('live-text').innerHTML='Now Showing: <strong>'+E(x.title)+'</strong><span>by '+E(resolvedName)+'</span>';
 
         document.getElementById('i-bar').style.display='flex';
         var infoHtml='<strong>'+E(x.title)+'</strong>';
@@ -418,7 +445,7 @@
         document.getElementById('ib-d').innerHTML=infoHtml;
         document.getElementById('vc').textContent=x.view_count||0;
 
-        if(x.status==='live'){document.getElementById('cf').classList.add('on');document.getElementById('ch-n').textContent='Chat with '+(x.exhibitor_name||'Exhibitor');loadChat(x.id)}
+        if(x.status==='live'){document.getElementById('cf').classList.add('on');document.getElementById('ch-n').textContent='Chat with '+(resolvedName||'Exhibitor');loadChat(x.id)}
     }
 
     // ─── BUILD WALLS WITH ARTWORKS ───
@@ -527,10 +554,33 @@
             slider.appendChild(div);
         });
 
-        // Always add exit room as final slide
+        // Always add exit room as final slide — with random artwork montage
         var exitDiv=document.createElement('div');
         exitDiv.className='wall';
-        exitDiv.innerHTML='<div class="wall-inner"><img class="wall-bg" src="AG14.png" alt="Exit" loading="lazy"></div>';
+        var exitHtml='<div class="wall-inner"><img class="wall-bg" src="AG14.png" alt="Exit" loading="lazy">';
+
+        // Pick random artworks for the montage on the back wall
+        if(allArts.length>0){
+            var pool=allArts.slice();
+            // Shuffle
+            for(var si2=pool.length-1;si2>0;si2--){var rj=Math.floor(Math.random()*(si2+1));var tmp=pool[si2];pool[si2]=pool[rj];pool[rj]=tmp;}
+            // Pick layout based on count: 1-2 → single row, 3-4 → grid, 5+ → full grid
+            var pick,layout;
+            if(pool.length<=2){pick=pool.slice(0,pool.length);layout=pool.length===1?[MONTAGE_SLOTS[4]]:[MONTAGE_SLOTS[0],MONTAGE_SLOTS[1]];}
+            else if(pool.length<=4){pick=pool.slice(0,pool.length);layout=MONTAGE_SLOTS.slice(0,pool.length);}
+            else{pick=pool.slice(0,5);layout=MONTAGE_SLOTS.slice(0,5);}
+
+            pick.forEach(function(a,idx){
+                var ms=layout[idx];
+                exitHtml+='<div class="wall-art" style="left:'+ms.l+'%;top:'+ms.t+'%;width:'+ms.w+'%;height:'+ms.h+'%;opacity:.85;cursor:default" title="'+E(a.title||'')+'">';
+                if(a.image_url) exitHtml+='<img src="'+E(a.image_url)+'" alt="'+E(a.title||'')+'" loading="lazy" onerror="this.style.opacity=0">';
+                exitHtml+='<div class="wall-label">'+E(a.title||'Untitled')+'</div>';
+                exitHtml+='</div>';
+            });
+        }
+
+        exitHtml+='</div>';
+        exitDiv.innerHTML=exitHtml;
         slider.appendChild(exitDiv);
 
         updTrack();
