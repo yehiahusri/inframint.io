@@ -130,10 +130,10 @@
 <body>
     <div class="lov" id="lov">
         <div class="lc">
-            <a href="index.html" style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:1.25rem;text-decoration:none;color:inherit">
+            <div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:1.25rem">
                 <div style="width:2px;height:1.1rem;background:var(--black)"></div>
                 <div style="font-size:1rem"><span style="font-weight:600">Infra</span><span style="font-weight:200;color:var(--g400)">Mint</span></div>
-            </a>
+            </div>
             <h2>Gallery Owner</h2>
             <p>Admin access only</p>
             <div class="lm" id="lm"></div>
@@ -644,7 +644,7 @@
                         <div class="msg-ok" id="team-msg"></div>
                         <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Add someone as a co-owner or admin. They'll need a Supabase account (register via any login page first), then add their email here.</p>
                         <div class="form-row2">
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Email</label><input type="email" class="fi" id="team-email" placeholder="name@example"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Email</label><input type="email" class="fi" id="team-email" placeholder="email@example.com"></div>
                             <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Name</label><input type="text" class="fi" id="team-name" placeholder="Full name"></div>
                         </div>
                         <div style="margin-top:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Role</label>
@@ -811,7 +811,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="354c505d5c545d4046475c755258545c591b565a58">[email&#160;protected]</a></strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="28514d404149405d5b5a41684f45494144064b4745">[email&#160;protected]</a></strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -864,7 +864,7 @@
 
     let allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
 
-    const ADM_LEGACY=['yehiahusri','gmail.com'].join('@');
+    const ADM_LEGACY='yehiahusri@gmail.com';
 
     // Login — check admin_users table
     document.getElementById('a-login').onclick=async function(){
@@ -872,7 +872,7 @@
         var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
         if(error){m.textContent=error.message;m.className='lm show';return}
         // Check admin_users table OR legacy email
-        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
         if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
         showDash(adm);
     };
@@ -880,7 +880,7 @@
     async function checkAuth(){
         var{data:{session}}=await db.auth.getSession();
         if(session){
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
             if(adm||session.user.email===ADM_LEGACY)showDash(adm);
         }
     }
@@ -936,7 +936,7 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
         var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
@@ -957,7 +957,7 @@
 
     // ===== ADVISORY HERO IMAGE =====
     (async function(){
-        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').maybeSingle();
+        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').single();
         if (setting && setting.value) {
             document.getElementById('adv-hero-preview').innerHTML = '<img src="' + setting.value + '" style="width:100%;max-width:400px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--g200)">';
         }
@@ -1001,7 +1001,7 @@
 
         // Load initial state
         (async function() {
-            var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
+            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
@@ -2126,7 +2126,7 @@
                     'Please log into your InfraMint account and click "I Received My Artwork" in your purchases to confirm delivery.\n\n' +
                     'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
                     'If you have any issues with your order, please reply to this email.\n\n' +
-                    'Thank you,\nInfraMint Team\n'+'hello'+'@'+'inframint'+'.io';
+                    'Thank you,\nInfraMint Team\nhello@inframint.io';
                 
                 window.open('mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
                 
@@ -2171,7 +2171,7 @@
             'Please log into your InfraMint account at inframint.io/collector-dashboard.html and click "I Received My Artwork" for each delivered order.\n\n' +
             'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
             'If you have any issues, reply to this email.\n\n' +
-            'Thank you,\nInfraMint Team\n'+'hello'+'@'+'inframint'+'.io';
+            'Thank you,\nInfraMint Team\nhello@inframint.io';
 
         window.open('mailto:' + emails.join(',') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
 
