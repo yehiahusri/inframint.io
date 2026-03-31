@@ -130,43 +130,16 @@
 <body>
     <div class="lov" id="lov">
         <div class="lc">
-            <div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:1.25rem">
+            <a href="index.html" style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:1.25rem;text-decoration:none;color:inherit">
                 <div style="width:2px;height:1.1rem;background:var(--black)"></div>
                 <div style="font-size:1rem"><span style="font-weight:600">Infra</span><span style="font-weight:200;color:var(--g400)">Mint</span></div>
-            </div>
+            </a>
             <h2>Gallery Owner</h2>
             <p>Admin access only</p>
             <div class="lm" id="lm"></div>
             <input type="email" class="fi" id="a-email" placeholder="Email">
             <input type="password" class="fi" id="a-pass" placeholder="Password">
             <button class="fbtn" id="a-login">Sign In</button>
-        </div>
-    </div>
-
-    <style>#adm-nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.5rem}#adm-nav-mob{display:none;position:fixed;top:4.5rem;left:0;right:0;background:#000;border-top:1px solid #262626;flex-direction:column;z-index:199;max-height:calc(100vh - 4.5rem);overflow-y:auto}#adm-nav-mob.open{display:flex}#adm-nav-mob a{padding:.75rem 2rem;font-size:.9rem;color:#a3a3a3;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05)}#adm-nav-mob a:hover{color:#fff}@media(max-width:1200px){#adm-nav-links{display:none!important}#adm-nav-ham{display:block!important}}</style>
-    <div id="adm-nav" style="display:none;position:fixed;top:0;left:0;right:0;z-index:200;padding:0 3rem;justify-content:space-between;align-items:center;background:#000;height:4.5rem;font-family:Manrope,sans-serif">
-        <a href="index.html" style="display:flex;align-items:center;gap:.875rem;text-decoration:none"><div style="width:3px;height:1.75rem;background:#fff"></div><div style="font-size:1.25rem;letter-spacing:-.01em"><span style="font-weight:600;color:#fff">Infra</span><span style="font-weight:200;color:#737373">Mint</span></div></a>
-        <button id="adm-nav-ham" onclick="document.getElementById('adm-nav-mob').classList.toggle('open')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div id="adm-nav-mob" onclick="this.classList.remove('open')">
-            <a href="gallery.html">Gallery</a><a href="artists.html">Artists</a><a href="vernissage.html">Vernissage</a>
-            <a href="blog.html">The Drip</a><a href="auctions.html">Auctions</a><a href="art-advisory.html">Advisory</a>
-            <a href="market-index.html">Market Index</a><a href="about.html">About</a>
-        </div>
-        <div id="adm-nav-links" style="display:flex;gap:2.5rem;align-items:center">
-            <a href="gallery.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Gallery</a>
-            <a href="artists.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Artists</a>
-            <a href="vernissage.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Vernissage</a>
-            <a href="blog.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">The Drip</a>
-            <a href="auctions.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Auctions</a>
-            <a href="art-advisory.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Advisory</a>
-            <a href="market-index.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">Market Index</a>
-            <a href="about.html" style="font-size:.9375rem;color:#a3a3a3;text-decoration:none">About</a>
-        </div>
-        <div style="display:flex;gap:1.25rem;align-items:center">
-            <span id="adm-nav-name" style="font-size:.8rem;color:#c8ff00;font-weight:500">Admin</span>
-            <button id="adm-nav-so" style="font-size:.8rem;color:#a3a3a3;background:none;border:1px solid #333;padding:.4rem 1rem;cursor:pointer;font-family:Manrope,sans-serif">Sign Out</button>
         </div>
     </div>
 
@@ -838,7 +811,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c352924252d24393f3e250c2b212d2520622f2321">[email&#160;protected]</a></strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee978b86878f869b9d9c87ae89838f8782c08d8183">[email&#160;protected]</a></strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -916,17 +889,7 @@
     function showDash(adm){
         document.getElementById('lov').style.display='none';
         document.getElementById('dash').style.display='grid';
-        var adminName=adm?adm.name:(ADM_LEGACY);
-        document.getElementById('aname').textContent=adminName;
-        try{
-            var nav=document.getElementById('adm-nav');
-            nav.style.display='flex';
-            document.getElementById('adm-nav-name').textContent=adminName;
-            document.getElementById('dash').style.marginTop='4.5rem';
-            document.getElementById('dash').style.height='calc(100vh - 4.5rem)';
-            var sb=document.querySelector('.sb');if(sb)sb.style.height='calc(100vh - 4.5rem)';
-            var mn=document.querySelector('main');if(mn)mn.style.height='calc(100vh - 4.5rem)';
-        }catch(e){console.error('Nav error:',e)}
+        document.getElementById('aname').textContent=adm?adm.name:(ADM_LEGACY);
         loadAll();
         loadAuctionSetting();
     }
@@ -940,7 +903,6 @@
     })});
 
     document.getElementById('sign-out').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};
-    try{document.getElementById('adm-nav-so').onclick=async function(){await db.auth.signOut();window.location.href='index.html'};}catch(e){}
 
     // Commission calculator
     document.getElementById('set-gallery').oninput=function(){
