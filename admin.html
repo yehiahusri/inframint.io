@@ -644,7 +644,7 @@
                         <div class="msg-ok" id="team-msg"></div>
                         <p style="font-size:.75rem;color:var(--g500);margin-bottom:.75rem">Add someone as a co-owner or admin. They'll need a Supabase account (register via any login page first), then add their email here.</p>
                         <div class="form-row2">
-                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Email</label><input type="email" class="fi" id="team-email" placeholder="email@example.com"></div>
+                            <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Email</label><input type="email" class="fi" id="team-email" placeholder="name@example"></div>
                             <div><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Name</label><input type="text" class="fi" id="team-name" placeholder="Full name"></div>
                         </div>
                         <div style="margin-top:.6rem"><label style="font-size:.7rem;font-weight:600;display:block;margin-bottom:.3rem">Role</label>
@@ -811,7 +811,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f68f939e9f979e8385849fb6919b979f9ad895999b">[email&#160;protected]</a></strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="354c505d5c545d4046475c755258545c591b565a58">[email&#160;protected]</a></strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -864,7 +864,7 @@
 
     let allArtists=[],allCollectors=[],allPartners=[],allArtworks=[],allOrders=[],allPArtists=[];
 
-    const ADM_LEGACY='yehiahusri@gmail.com';
+    const ADM_LEGACY=['yehiahusri','gmail.com'].join('@');
 
     // Login — check admin_users table
     document.getElementById('a-login').onclick=async function(){
@@ -2126,7 +2126,7 @@
                     'Please log into your InfraMint account and click "I Received My Artwork" in your purchases to confirm delivery.\n\n' +
                     'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
                     'If you have any issues with your order, please reply to this email.\n\n' +
-                    'Thank you,\nInfraMint Team\nhello@inframint.io';
+                    'Thank you,\nInfraMint Team\n'+'hello'+'@'+'inframint'+'.io';
                 
                 window.open('mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
                 
@@ -2171,7 +2171,7 @@
             'Please log into your InfraMint account at inframint.io/collector-dashboard.html and click "I Received My Artwork" for each delivered order.\n\n' +
             'If you don\'t confirm within 7 days of shipping, payment will be released to the artist automatically.\n\n' +
             'If you have any issues, reply to this email.\n\n' +
-            'Thank you,\nInfraMint Team\nhello@inframint.io';
+            'Thank you,\nInfraMint Team\n'+'hello'+'@'+'inframint'+'.io';
 
         window.open('mailto:' + emails.join(',') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
 
