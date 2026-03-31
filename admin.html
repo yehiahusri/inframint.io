@@ -811,7 +811,7 @@
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Admin Email</span></div>
-                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee978b86878f869b9d9c87ae89838f8782c08d8183">[email&#160;protected]</a></strong></p>
+                        <p style="font-size:.75rem;color:var(--g600)">Current admin: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3e475b56575f564b4d4c577e59535f5752105d5153">[email&#160;protected]</a></strong></p>
                     </div>
                     <div class="card">
                         <div class="ch"><span class="ct2">Advisory Hero Image</span></div>
@@ -872,7 +872,7 @@
         var{data,error}=await db.auth.signInWithPassword({email:e,password:p});
         if(error){m.textContent=error.message;m.className='lm show';return}
         // Check admin_users table OR legacy email
-        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).maybeSingle();
+        var{data:adm}=await db.from('admin_users').select('*').eq('email',e).single();
         if(!adm&&e!==ADM_LEGACY){m.textContent='Not authorized as admin.';m.className='lm show';await db.auth.signOut();return}
         showDash(adm);
     };
@@ -880,7 +880,7 @@
     async function checkAuth(){
         var{data:{session}}=await db.auth.getSession();
         if(session){
-            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).maybeSingle();
+            var{data:adm}=await db.from('admin_users').select('*').eq('email',session.user.email).single();
             if(adm||session.user.email===ADM_LEGACY)showDash(adm);
         }
     }
@@ -936,7 +936,7 @@
     var toggleStatus = document.getElementById('toggle-status');
 
     async function loadAuctionSetting() {
-        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').maybeSingle();
+        var { data } = await db.from('site_settings').select('value').eq('key', 'auctions_enabled').single();
         var isOn = data && data.value === 'true';
         auctionToggle.checked = isOn;
         updateToggleUI(isOn);
@@ -957,7 +957,7 @@
 
     // ===== ADVISORY HERO IMAGE =====
     (async function(){
-        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').maybeSingle();
+        var { data: setting } = await db.from('site_settings').select('value').eq('key', 'advisory_hero_url').single();
         if (setting && setting.value) {
             document.getElementById('adv-hero-preview').innerHTML = '<img src="' + setting.value + '" style="width:100%;max-width:400px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--g200)">';
         }
@@ -1001,7 +1001,7 @@
 
         // Load initial state
         (async function() {
-            var { data } = await db.from('site_settings').select('value').eq('key', key).maybeSingle();
+            var { data } = await db.from('site_settings').select('value').eq('key', key).single();
             var isOn = data && data.value === 'true';
             cb.checked = isOn;
             updateUI(isOn);
